@@ -22,11 +22,13 @@ import '../auth/login_screen.dart';
 class BrowseProductsScreen extends StatefulWidget {
   final String? category;
   final bool isGuestMode;
+  final Function(VoidCallback)? onResetCallback;
 
   const BrowseProductsScreen({
     super.key,
     this.category,
     this.isGuestMode = false,
+    this.onResetCallback,
   });
 
   @override
@@ -69,6 +71,8 @@ class _BrowseProductsScreenState extends State<BrowseProductsScreen> {
       _loadCounts();
       _loadFavorites();
     }
+    // Register reset callback
+    widget.onResetCallback?.call(resetToAllProducts);
     // Start continuous smooth auto-scroll
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _startContinuousScroll();
@@ -83,6 +87,18 @@ class _BrowseProductsScreenState extends State<BrowseProductsScreen> {
     _autoScrollTimer?.cancel();
     _bannerTimer?.cancel();
     super.dispose();
+  }
+
+  // Method to reset to "All Products" view
+  void resetToAllProducts() {
+    if (_selectedCategory != 'All') {
+      setState(() {
+        _selectedCategory = 'All';
+        _searchController.clear();
+        _loadProducts();
+        _loadHeroProducts();
+      });
+    }
   }
 
   void _startBannerRotation() {
@@ -461,25 +477,25 @@ class _BrowseProductsScreenState extends State<BrowseProductsScreen> {
 
   Widget _buildCategoryCarousel() {
     final categories = [
-      {'name': 'Dresses', 'value': 'Dresses', 'image': 'https://via.placeholder.com/600x400/D3BD9B/FFFFFF?text=Dresses'},
-      {'name': 'Skirts', 'value': 'Skirts', 'image': 'https://via.placeholder.com/600x400/C4A77D/FFFFFF?text=Skirts'},
-      {'name': 'Tops', 'value': 'Tops', 'image': 'https://via.placeholder.com/600x400/B8956A/FFFFFF?text=Tops'},
-      {'name': 'Blouses', 'value': 'Blouses', 'image': 'https://via.placeholder.com/600x400/A88558/FFFFFF?text=Blouses'},
-      {'name': 'Activewear', 'value': 'Activewear', 'image': 'https://via.placeholder.com/600x400/9A7547/FFFFFF?text=Activewear'},
-      {'name': 'Yoga Pants', 'value': 'Yoga Pants', 'image': 'https://via.placeholder.com/600x400/8B6536/FFFFFF?text=Yoga+Pants'},
-      {'name': 'Lingerie', 'value': 'Lingerie', 'image': 'https://via.placeholder.com/600x400/7D5626/FFFFFF?text=Lingerie'},
-      {'name': 'Sleepwear', 'value': 'Sleepwear', 'image': 'https://via.placeholder.com/600x400/6F4716/FFFFFF?text=Sleepwear'},
-      {'name': 'Jackets', 'value': 'Jackets', 'image': 'https://via.placeholder.com/600x400/613808/FFFFFF?text=Jackets'},
-      {'name': 'Coats', 'value': 'Coats', 'image': 'https://via.placeholder.com/600x400/532A00/FFFFFF?text=Coats'},
-      {'name': 'Shoes', 'value': 'Shoes', 'image': 'https://via.placeholder.com/600x400/D3BD9B/FFFFFF?text=Shoes'},
-      {'name': 'Accessories', 'value': 'Accessories', 'image': 'https://via.placeholder.com/600x400/C4A77D/FFFFFF?text=Accessories'},
+      {'name': 'Dresses', 'value': 'Dresses', 'image': 'assets/images/categories/dresses.jpeg'},
+      {'name': 'Skirts', 'value': 'Skirts', 'image': 'assets/images/categories/skirts.jpeg'},
+      {'name': 'Tops', 'value': 'Tops', 'image': 'assets/images/categories/tops.jpeg'},
+      {'name': 'Blouses', 'value': 'Blouses', 'image': 'assets/images/categories/blouses.jpeg'},
+      {'name': 'Activewear', 'value': 'Activewear', 'image': 'assets/images/categories/activewear.jpeg'},
+      {'name': 'Yoga Pants', 'value': 'Yoga Pants', 'image': 'assets/images/categories/yogapants.jpeg'},
+      {'name': 'Lingerie', 'value': 'Lingerie', 'image': 'assets/images/categories/lingerie.jpeg'},
+      {'name': 'Sleepwear', 'value': 'Sleepwear', 'image': 'assets/images/categories/sleepwear.jpeg'},
+      {'name': 'Jackets', 'value': 'Jackets', 'image': 'assets/images/categories/jackets.jpeg'},
+      {'name': 'Coats', 'value': 'Coats', 'image': 'assets/images/categories/coats.jpeg'},
+      {'name': 'Shoes', 'value': 'Shoes', 'image': 'assets/images/categories/shoes.jpeg'},
+      {'name': 'Accessories', 'value': 'Accessories', 'image': 'assets/images/categories/accessories.jpeg'},
     ];
 
     // Triple the categories for infinite scroll
     final infiniteCategories = [...categories, ...categories, ...categories];
 
     return Container(
-      height: 240,
+      height: 300, // Increased carousel container height
       margin: const EdgeInsets.symmetric(vertical: 16),
       child: NotificationListener<ScrollNotification>(
         onNotification: (notification) {
@@ -503,7 +519,7 @@ class _BrowseProductsScreenState extends State<BrowseProductsScreen> {
         child: ListView.builder(
           controller: _carouselController,
           scrollDirection: Axis.horizontal,
-          padding: const EdgeInsets.symmetric(horizontal: 16),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20), // Added vertical padding
           itemCount: infiniteCategories.length,
           itemBuilder: (context, index) {
             final category = infiniteCategories[index];
@@ -516,7 +532,7 @@ class _BrowseProductsScreenState extends State<BrowseProductsScreen> {
                 });
               },
               child: Container(
-                width: 200,
+                width: 165, // Increased card width
                 margin: const EdgeInsets.only(right: 12),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(12),
@@ -533,16 +549,10 @@ class _BrowseProductsScreenState extends State<BrowseProductsScreen> {
                   child: Stack(
                     fit: StackFit.expand,
                     children: [
-                      CachedNetworkImage(
-                        imageUrl: category['image']!,
+                      Image.asset(
+                        category['image']!,
                         fit: BoxFit.cover,
-                        placeholder: (context, url) => Container(
-                          color: Colors.grey[200],
-                          child: const Center(
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          ),
-                        ),
-                        errorWidget: (context, url, error) => Container(
+                        errorBuilder: (context, error, stackTrace) => Container(
                           color: const Color(0xFFD3BD9B),
                           child: Center(
                             child: Icon(
@@ -566,14 +576,14 @@ class _BrowseProductsScreenState extends State<BrowseProductsScreen> {
                         ),
                       ),
                       Positioned(
-                        bottom: 12,
-                        left: 12,
-                        right: 12,
+                        bottom: 8,
+                        left: 8,
+                        right: 8,
                         child: Text(
                           category['name']!,
                           style: GoogleFonts.playfairDisplay(
                             color: Colors.white,
-                            fontSize: 16,
+                            fontSize: 14,
                             fontWeight: FontWeight.bold,
                           ),
                           textAlign: TextAlign.center,
