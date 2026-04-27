@@ -180,7 +180,7 @@ class _VerificationDocumentsScreenState
         ),
         title: Text(
           'Verification Documents',
-          style: GoogleFonts.poppins(
+          style: GoogleFonts.goudyBookletter1911(
             color: Colors.black,
             fontWeight: FontWeight.w600,
           ),
@@ -218,7 +218,7 @@ class _VerificationDocumentsScreenState
                           foregroundColor: Colors.white,
                           padding: const EdgeInsets.symmetric(vertical: 16),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: BorderRadius.circular(5),
                           ),
                         ),
                         onPressed: _isUploading ? null : _uploadDocuments,
@@ -233,7 +233,7 @@ class _VerificationDocumentsScreenState
                               )
                             : Text(
                                 'Upload Documents',
-                                style: GoogleFonts.poppins(
+                                style: GoogleFonts.goudyBookletter1911(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600,
                                 ),
@@ -251,7 +251,7 @@ class _VerificationDocumentsScreenState
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.blue[50],
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(5),
         border: Border.all(color: Colors.blue[200]!),
       ),
       child: Row(
@@ -261,7 +261,10 @@ class _VerificationDocumentsScreenState
           Expanded(
             child: Text(
               'Upload clear photos of your OR/CR and Driver\'s License for verification purposes.',
-              style: GoogleFonts.poppins(fontSize: 13, color: Colors.blue[900]),
+              style: GoogleFonts.goudyBookletter1911(
+                fontSize: 13,
+                color: Colors.blue[900],
+              ),
             ),
           ),
         ],
@@ -279,7 +282,7 @@ class _VerificationDocumentsScreenState
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(5),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.05),
@@ -293,7 +296,7 @@ class _VerificationDocumentsScreenState
         children: [
           Text(
             title,
-            style: GoogleFonts.poppins(
+            style: GoogleFonts.goudyBookletter1911(
               fontSize: 16,
               fontWeight: FontWeight.w600,
             ),
@@ -306,17 +309,17 @@ class _VerificationDocumentsScreenState
               width: double.infinity,
               decoration: BoxDecoration(
                 color: Colors.grey[100],
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(5),
                 border: Border.all(color: Colors.grey[300]!, width: 2),
               ),
               child: newImage != null
                   ? ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(5),
                       child: Image.file(newImage, fit: BoxFit.cover),
                     )
                   : existingUrl != null
                   ? ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(5),
                       child: Image.network(
                         existingUrl,
                         fit: BoxFit.cover,
@@ -337,7 +340,7 @@ class _VerificationDocumentsScreenState
                     padding: const EdgeInsets.symmetric(vertical: 12),
                     side: const BorderSide(color: Colors.black),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(5),
                     ),
                   ),
                   onPressed: () => _pickImage(documentType),
@@ -346,7 +349,7 @@ class _VerificationDocumentsScreenState
                     newImage != null || existingUrl != null
                         ? 'Change Photo'
                         : 'Select Photo',
-                    style: GoogleFonts.poppins(fontSize: 13),
+                    style: GoogleFonts.goudyBookletter1911(fontSize: 13),
                   ),
                 ),
               ),
@@ -377,7 +380,7 @@ class _VerificationDocumentsScreenState
                   const SizedBox(width: 4),
                   Text(
                     'Document uploaded',
-                    style: GoogleFonts.poppins(
+                    style: GoogleFonts.goudyBookletter1911(
                       fontSize: 12,
                       color: Colors.green,
                       fontWeight: FontWeight.w500,
@@ -399,11 +402,17 @@ class _VerificationDocumentsScreenState
         const SizedBox(height: 8),
         Text(
           'Tap to select image',
-          style: GoogleFonts.poppins(fontSize: 14, color: Colors.grey[600]),
+          style: GoogleFonts.goudyBookletter1911(
+            fontSize: 14,
+            color: Colors.grey[600],
+          ),
         ),
         Text(
           'JPG or PNG only',
-          style: GoogleFonts.poppins(fontSize: 12, color: Colors.grey[500]),
+          style: GoogleFonts.goudyBookletter1911(
+            fontSize: 12,
+            color: Colors.grey[500],
+          ),
         ),
       ],
     );

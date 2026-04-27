@@ -232,20 +232,30 @@ class _RiderReportScreenState extends State<RiderReportScreen>
     return await showDialog<bool>(
           context: context,
           builder: (context) => AlertDialog(
-            title: Text('Submit Report?', style: GoogleFonts.inter()),
+            title: Text(
+              'Submit Report?',
+              style: GoogleFonts.goudyBookletter1911(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
             content: Text(
               'Are you sure you want to submit this report?',
-              style: GoogleFonts.inter(),
+              style: GoogleFonts.goudyBookletter1911(),
             ),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context, false),
-                child: Text('Cancel', style: GoogleFonts.inter()),
+                child: Text('Cancel', style: GoogleFonts.goudyBookletter1911()),
               ),
               ElevatedButton(
                 onPressed: () => Navigator.pop(context, true),
                 style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-                child: Text('Submit', style: GoogleFonts.inter()),
+                child: Text(
+                  'Submit',
+                  style: GoogleFonts.goudyBookletter1911(
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
               ),
             ],
           ),
@@ -266,7 +276,7 @@ class _RiderReportScreenState extends State<RiderReportScreen>
         ),
         title: Text(
           'Report User',
-          style: GoogleFonts.inter(
+          style: GoogleFonts.goudyBookletter1911(
             color: Colors.black,
             fontSize: 20,
             fontWeight: FontWeight.w600,
@@ -277,11 +287,11 @@ class _RiderReportScreenState extends State<RiderReportScreen>
           labelColor: Colors.black,
           unselectedLabelColor: Colors.grey[600],
           indicatorColor: Colors.black,
-          labelStyle: GoogleFonts.inter(
+          labelStyle: GoogleFonts.goudyBookletter1911(
             fontSize: 16,
             fontWeight: FontWeight.w600,
           ),
-          unselectedLabelStyle: GoogleFonts.inter(
+          unselectedLabelStyle: GoogleFonts.goudyBookletter1911(
             fontSize: 16,
             fontWeight: FontWeight.normal,
           ),
@@ -311,20 +321,22 @@ class _RiderReportScreenState extends State<RiderReportScreen>
             value: _selectedUserType,
             decoration: InputDecoration(
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(5),
               ),
               hintText: 'Select user type',
-              hintStyle: GoogleFonts.inter(color: Colors.grey[500]),
+              hintStyle: GoogleFonts.goudyBookletter1911(
+                color: Colors.grey[500],
+              ),
             ),
-            style: GoogleFonts.inter(color: Colors.black),
+            style: GoogleFonts.goudyBookletter1911(color: Colors.black),
             items: [
               DropdownMenuItem(
                 value: 'buyer',
-                child: Text('Buyer', style: GoogleFonts.inter()),
+                child: Text('Buyer', style: GoogleFonts.goudyBookletter1911()),
               ),
               DropdownMenuItem(
                 value: 'seller',
-                child: Text('Seller', style: GoogleFonts.inter()),
+                child: Text('Seller', style: GoogleFonts.goudyBookletter1911()),
               ),
             ],
             onChanged: (value) {
@@ -346,17 +358,22 @@ class _RiderReportScreenState extends State<RiderReportScreen>
                     value: _selectedDelivery,
                     decoration: InputDecoration(
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(5),
                       ),
                       hintText: 'No specific delivery',
-                      hintStyle: GoogleFonts.inter(color: Colors.grey[500]),
+                      hintStyle: GoogleFonts.goudyBookletter1911(
+                        color: Colors.grey[500],
+                      ),
                       contentPadding: const EdgeInsets.symmetric(
                         horizontal: 12,
                         vertical: 12,
                       ),
                     ),
                     isExpanded: true,
-                    style: GoogleFonts.inter(color: Colors.black, fontSize: 13),
+                    style: GoogleFonts.goudyBookletter1911(
+                      color: Colors.black,
+                      fontSize: 13,
+                    ),
                     items: _deliveries.map((delivery) {
                       return DropdownMenuItem(
                         value: delivery,
@@ -366,7 +383,7 @@ class _RiderReportScreenState extends State<RiderReportScreen>
                           children: [
                             Text(
                               'Delivery #${delivery.deliveryId} - ${delivery.orderNumber}',
-                              style: GoogleFonts.inter(
+                              style: GoogleFonts.goudyBookletter1911(
                                 fontSize: 13,
                                 fontWeight: FontWeight.w600,
                               ),
@@ -376,7 +393,7 @@ class _RiderReportScreenState extends State<RiderReportScreen>
                             const SizedBox(height: 2),
                             Text(
                               'Buyer: ${delivery.buyerName}',
-                              style: GoogleFonts.inter(
+                              style: GoogleFonts.goudyBookletter1911(
                                 fontSize: 11,
                                 color: Colors.grey[600],
                               ),
@@ -385,7 +402,7 @@ class _RiderReportScreenState extends State<RiderReportScreen>
                             ),
                             Text(
                               'Seller: ${delivery.sellerName}',
-                              style: GoogleFonts.inter(
+                              style: GoogleFonts.goudyBookletter1911(
                                 fontSize: 11,
                                 color: Colors.grey[600],
                               ),
@@ -400,7 +417,7 @@ class _RiderReportScreenState extends State<RiderReportScreen>
                       return _deliveries.map((delivery) {
                         return Text(
                           'Delivery #${delivery.deliveryId} - ${delivery.orderNumber}',
-                          style: GoogleFonts.inter(
+                          style: GoogleFonts.goudyBookletter1911(
                             fontSize: 13,
                             color: Colors.black,
                           ),
@@ -416,7 +433,10 @@ class _RiderReportScreenState extends State<RiderReportScreen>
             const SizedBox(height: 4),
             Text(
               'Piliin kung may kaugnayan sa specific delivery',
-              style: GoogleFonts.inter(fontSize: 12, color: Colors.grey[600]),
+              style: GoogleFonts.goudyBookletter1911(
+                fontSize: 12,
+                color: Colors.grey[600],
+              ),
             ),
             const SizedBox(height: 24),
           ],
@@ -428,16 +448,21 @@ class _RiderReportScreenState extends State<RiderReportScreen>
             value: _selectedCategory,
             decoration: InputDecoration(
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(5),
               ),
               hintText: 'Select category',
-              hintStyle: GoogleFonts.inter(color: Colors.grey[500]),
+              hintStyle: GoogleFonts.goudyBookletter1911(
+                color: Colors.grey[500],
+              ),
             ),
-            style: GoogleFonts.inter(color: Colors.black),
+            style: GoogleFonts.goudyBookletter1911(color: Colors.black),
             items: ReportCategory.values.map((category) {
               return DropdownMenuItem(
                 value: category,
-                child: Text(category.label, style: GoogleFonts.inter()),
+                child: Text(
+                  category.label,
+                  style: GoogleFonts.goudyBookletter1911(),
+                ),
               );
             }).toList(),
             onChanged: (value) {
@@ -452,13 +477,15 @@ class _RiderReportScreenState extends State<RiderReportScreen>
           TextField(
             controller: _reasonController,
             maxLines: 5,
-            style: GoogleFonts.inter(color: Colors.black),
+            style: GoogleFonts.goudyBookletter1911(color: Colors.black),
             decoration: InputDecoration(
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(5),
               ),
               hintText: 'Describe the issue in detail...',
-              hintStyle: GoogleFonts.inter(color: Colors.grey[500]),
+              hintStyle: GoogleFonts.goudyBookletter1911(
+                color: Colors.grey[500],
+              ),
             ),
           ),
           const SizedBox(height: 24),
@@ -470,7 +497,7 @@ class _RiderReportScreenState extends State<RiderReportScreen>
             Stack(
               children: [
                 ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(5),
                   child: Image.file(
                     _evidenceImage!,
                     height: 200,
@@ -500,7 +527,7 @@ class _RiderReportScreenState extends State<RiderReportScreen>
             icon: const Icon(Icons.image),
             label: Text(
               _evidenceImage == null ? 'Upload Evidence' : 'Change Evidence',
-              style: GoogleFonts.inter(),
+              style: GoogleFonts.goudyBookletter1911(),
             ),
             style: ElevatedButton.styleFrom(
               minimumSize: const Size(double.infinity, 48),
@@ -511,7 +538,10 @@ class _RiderReportScreenState extends State<RiderReportScreen>
           const SizedBox(height: 4),
           Text(
             'Upload screenshot or image as evidence (JPG or PNG only)',
-            style: GoogleFonts.inter(fontSize: 12, color: Colors.grey[600]),
+            style: GoogleFonts.goudyBookletter1911(
+              fontSize: 12,
+              color: Colors.grey[600],
+            ),
           ),
           const SizedBox(height: 24),
 
@@ -521,7 +551,7 @@ class _RiderReportScreenState extends State<RiderReportScreen>
             decoration: BoxDecoration(
               color: Colors.orange[50],
               border: Border.all(color: Colors.orange),
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(5),
             ),
             child: Row(
               children: [
@@ -530,7 +560,7 @@ class _RiderReportScreenState extends State<RiderReportScreen>
                 Expanded(
                   child: RichText(
                     text: TextSpan(
-                      style: GoogleFonts.inter(
+                      style: GoogleFonts.goudyBookletter1911(
                         fontSize: 13,
                         color: Colors.black,
                       ),
@@ -559,7 +589,7 @@ class _RiderReportScreenState extends State<RiderReportScreen>
               backgroundColor: Colors.red,
               minimumSize: const Size(double.infinity, 56),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(5),
               ),
             ),
             child: _isSubmitting
@@ -578,7 +608,7 @@ class _RiderReportScreenState extends State<RiderReportScreen>
                       const SizedBox(width: 8),
                       Text(
                         'Submit Report',
-                        style: GoogleFonts.inter(
+                        style: GoogleFonts.goudyBookletter1911(
                           fontSize: 18,
                           fontWeight: FontWeight.w600,
                         ),
@@ -605,7 +635,10 @@ class _RiderReportScreenState extends State<RiderReportScreen>
             const SizedBox(height: 16),
             Text(
               'No reports submitted yet',
-              style: GoogleFonts.inter(fontSize: 16, color: Colors.grey[600]),
+              style: GoogleFonts.goudyBookletter1911(
+                fontSize: 16,
+                color: Colors.grey[600],
+              ),
             ),
           ],
         ),
@@ -628,10 +661,10 @@ class _RiderReportScreenState extends State<RiderReportScreen>
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
       elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
       child: InkWell(
         onTap: () => _showReportDetails(report),
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(5),
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Column(
@@ -642,7 +675,7 @@ class _RiderReportScreenState extends State<RiderReportScreen>
                 children: [
                   Text(
                     'Report #${report.reportId}',
-                    style: GoogleFonts.inter(
+                    style: GoogleFonts.goudyBookletter1911(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
                     ),
@@ -658,7 +691,7 @@ class _RiderReportScreenState extends State<RiderReportScreen>
                   Expanded(
                     child: Text(
                       report.reportedUserName ?? 'Unknown User',
-                      style: GoogleFonts.inter(fontSize: 14),
+                      style: GoogleFonts.goudyBookletter1911(fontSize: 14),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -668,12 +701,18 @@ class _RiderReportScreenState extends State<RiderReportScreen>
               const SizedBox(height: 8),
               Text(
                 report.categoryEnum?.label ?? report.reportCategory,
-                style: GoogleFonts.inter(fontSize: 13, color: Colors.grey[700]),
+                style: GoogleFonts.goudyBookletter1911(
+                  fontSize: 13,
+                  color: Colors.grey[700],
+                ),
               ),
               const SizedBox(height: 4),
               Text(
                 _formatDate(report.createdAt),
-                style: GoogleFonts.inter(fontSize: 12, color: Colors.grey[600]),
+                style: GoogleFonts.goudyBookletter1911(
+                  fontSize: 12,
+                  color: Colors.grey[600],
+                ),
               ),
             ],
           ),
@@ -703,11 +742,11 @@ class _RiderReportScreenState extends State<RiderReportScreen>
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
         color: color.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(4),
+        borderRadius: BorderRadius.circular(5),
       ),
       child: Text(
         status.label,
-        style: GoogleFonts.inter(
+        style: GoogleFonts.goudyBookletter1911(
           fontSize: 12,
           fontWeight: FontWeight.w600,
           color: color,
@@ -733,11 +772,11 @@ class _RiderReportScreenState extends State<RiderReportScreen>
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
       decoration: BoxDecoration(
         color: color.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(4),
+        borderRadius: BorderRadius.circular(5),
       ),
       child: Text(
         userType.toUpperCase(),
-        style: GoogleFonts.inter(
+        style: GoogleFonts.goudyBookletter1911(
           fontSize: 10,
           fontWeight: FontWeight.w600,
           color: color,
@@ -750,7 +789,10 @@ class _RiderReportScreenState extends State<RiderReportScreen>
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Report Details', style: GoogleFonts.inter()),
+        title: Text(
+          'Report Details',
+          style: GoogleFonts.goudyBookletter1911(fontWeight: FontWeight.w600),
+        ),
         content: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -770,18 +812,20 @@ class _RiderReportScreenState extends State<RiderReportScreen>
               const SizedBox(height: 12),
               Text(
                 'Reason:',
-                style: GoogleFonts.inter(fontWeight: FontWeight.w600),
+                style: GoogleFonts.goudyBookletter1911(
+                  fontWeight: FontWeight.w600,
+                ),
               ),
               const SizedBox(height: 4),
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
                   color: Colors.grey[100],
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(5),
                 ),
                 child: Text(
                   report.reportReason,
-                  style: GoogleFonts.inter(fontSize: 14),
+                  style: GoogleFonts.goudyBookletter1911(fontSize: 14),
                 ),
               ),
               if (report.evidenceImage != null &&
@@ -789,11 +833,13 @@ class _RiderReportScreenState extends State<RiderReportScreen>
                 const SizedBox(height: 12),
                 Text(
                   'Evidence:',
-                  style: GoogleFonts.inter(fontWeight: FontWeight.w600),
+                  style: GoogleFonts.goudyBookletter1911(
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
                 const SizedBox(height: 4),
                 ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(5),
                   child: Image.network(
                     _getImageUrl(report.evidenceImage!),
                     fit: BoxFit.cover,
@@ -832,7 +878,7 @@ class _RiderReportScreenState extends State<RiderReportScreen>
                             const SizedBox(height: 8),
                             Text(
                               'Failed to load image',
-                              style: GoogleFonts.inter(
+                              style: GoogleFonts.goudyBookletter1911(
                                 fontSize: 12,
                                 color: Colors.grey,
                               ),
@@ -849,18 +895,20 @@ class _RiderReportScreenState extends State<RiderReportScreen>
                 const SizedBox(height: 12),
                 Text(
                   'Admin Notes:',
-                  style: GoogleFonts.inter(fontWeight: FontWeight.w600),
+                  style: GoogleFonts.goudyBookletter1911(
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
                 const SizedBox(height: 4),
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
                     color: Colors.blue[50],
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(5),
                   ),
                   child: Text(
                     report.adminNotes!,
-                    style: GoogleFonts.inter(fontSize: 14),
+                    style: GoogleFonts.goudyBookletter1911(fontSize: 14),
                   ),
                 ),
               ],
@@ -872,7 +920,7 @@ class _RiderReportScreenState extends State<RiderReportScreen>
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text('Close', style: GoogleFonts.inter()),
+            child: Text('Close', style: GoogleFonts.goudyBookletter1911()),
           ),
         ],
       ),
@@ -889,7 +937,7 @@ class _RiderReportScreenState extends State<RiderReportScreen>
             width: 120,
             child: Text(
               '$label:',
-              style: GoogleFonts.inter(
+              style: GoogleFonts.goudyBookletter1911(
                 fontWeight: FontWeight.w600,
                 fontSize: 13,
               ),
@@ -898,7 +946,7 @@ class _RiderReportScreenState extends State<RiderReportScreen>
           Expanded(
             child: Text(
               value ?? 'N/A',
-              style: GoogleFonts.inter(fontSize: 13),
+              style: GoogleFonts.goudyBookletter1911(fontSize: 13),
             ),
           ),
         ],
@@ -909,7 +957,7 @@ class _RiderReportScreenState extends State<RiderReportScreen>
   Widget _buildSectionTitle(String title) {
     return Text(
       title,
-      style: GoogleFonts.inter(
+      style: GoogleFonts.goudyBookletter1911(
         fontSize: 16,
         fontWeight: FontWeight.w600,
         color: Colors.black,

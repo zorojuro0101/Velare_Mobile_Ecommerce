@@ -354,14 +354,16 @@ class _RiderChatScreenState extends State<RiderChatScreen>
                 Container(
                   decoration: BoxDecoration(
                     color: Colors.grey[100],
-                    borderRadius: BorderRadius.circular(20),
+                    borderRadius: BorderRadius.circular(5),
                   ),
                   child: TextField(
                     controller: _searchController,
-                    style: GoogleFonts.inter(color: Colors.black),
+                    style: GoogleFonts.goudyBookletter1911(color: Colors.black),
                     decoration: InputDecoration(
                       hintText: 'Search',
-                      hintStyle: GoogleFonts.inter(color: Colors.grey[500]),
+                      hintStyle: GoogleFonts.goudyBookletter1911(
+                        color: Colors.grey[500],
+                      ),
                       prefixIcon: Icon(Icons.search, color: Colors.grey[600]),
                       border: InputBorder.none,
                       contentPadding: const EdgeInsets.symmetric(
@@ -459,7 +461,7 @@ class _RiderChatScreenState extends State<RiderChatScreen>
             const SizedBox(height: 16),
             Text(
               'No $type yet',
-              style: GoogleFonts.inter(
+              style: GoogleFonts.goudyBookletter1911(
                 fontSize: 18,
                 color: Colors.grey[600],
                 fontWeight: FontWeight.w600,
@@ -468,7 +470,10 @@ class _RiderChatScreenState extends State<RiderChatScreen>
             const SizedBox(height: 8),
             Text(
               'Accept deliveries to start chatting',
-              style: GoogleFonts.inter(fontSize: 14, color: Colors.grey[500]),
+              style: GoogleFonts.goudyBookletter1911(
+                fontSize: 14,
+                color: Colors.grey[500],
+              ),
               textAlign: TextAlign.center,
             ),
           ],
@@ -616,7 +621,7 @@ class _RiderChatScreenState extends State<RiderChatScreen>
                             child: Center(
                               child: Text(
                                 unreadCount.toString(),
-                                style: GoogleFonts.inter(
+                                style: GoogleFonts.goudyBookletter1911(
                                   fontSize: 11,
                                   color: Colors.white,
                                   fontWeight: FontWeight.w600,
@@ -663,12 +668,18 @@ class _RiderChatScreenState extends State<RiderChatScreen>
             const SizedBox(height: 16),
             Text(
               'No messages yet',
-              style: GoogleFonts.inter(fontSize: 16, color: Colors.grey[600]),
+              style: GoogleFonts.goudyBookletter1911(
+                fontSize: 16,
+                color: Colors.grey[600],
+              ),
             ),
             const SizedBox(height: 8),
             Text(
               'Start the conversation',
-              style: GoogleFonts.inter(fontSize: 14, color: Colors.grey[500]),
+              style: GoogleFonts.goudyBookletter1911(
+                fontSize: 14,
+                color: Colors.grey[500],
+              ),
             ),
           ],
         ),
@@ -732,10 +743,10 @@ class _RiderChatScreenState extends State<RiderChatScreen>
                   decoration: BoxDecoration(
                     color: isSent ? const Color(0xFF0084FF) : Colors.grey[200],
                     borderRadius: BorderRadius.only(
-                      topLeft: const Radius.circular(18),
-                      topRight: const Radius.circular(18),
-                      bottomLeft: Radius.circular(isSent ? 18 : 4),
-                      bottomRight: Radius.circular(isSent ? 4 : 18),
+                      topLeft: const Radius.circular(5),
+                      topRight: const Radius.circular(5),
+                      bottomLeft: Radius.circular(isSent ? 5 : 2),
+                      bottomRight: Radius.circular(isSent ? 2 : 5),
                     ),
                   ),
                   child: Text(
@@ -752,7 +763,7 @@ class _RiderChatScreenState extends State<RiderChatScreen>
                   padding: const EdgeInsets.symmetric(horizontal: 4),
                   child: Text(
                     time,
-                    style: GoogleFonts.inter(
+                    style: GoogleFonts.goudyBookletter1911(
                       fontSize: 11,
                       color: Colors.grey[600],
                     ),
@@ -782,15 +793,18 @@ class _RiderChatScreenState extends State<RiderChatScreen>
             child: Container(
               decoration: BoxDecoration(
                 color: Colors.grey[100],
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: BorderRadius.circular(5),
               ),
               child: TextField(
                 controller: _messageController,
                 enabled: !_isSendingMessage,
-                style: GoogleFonts.inter(fontSize: 15, color: Colors.black),
+                style: GoogleFonts.goudyBookletter1911(
+                  fontSize: 15,
+                  color: Colors.black,
+                ),
                 decoration: InputDecoration(
                   hintText: 'Message',
-                  hintStyle: GoogleFonts.inter(
+                  hintStyle: GoogleFonts.goudyBookletter1911(
                     color: Colors.grey[500],
                     fontSize: 15,
                   ),
