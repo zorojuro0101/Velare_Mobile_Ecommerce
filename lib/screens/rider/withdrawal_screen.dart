@@ -90,7 +90,10 @@ class _WithdrawalScreenState extends State<WithdrawalScreen> {
       }
     } catch (e) {
       if (mounted) {
-        SnackBarHelper.showError(context, 'Failed to submit withdrawal request');
+        SnackBarHelper.showError(
+          context,
+          'Failed to submit withdrawal request',
+        );
       }
     } finally {
       if (mounted) {
@@ -112,7 +115,7 @@ class _WithdrawalScreenState extends State<WithdrawalScreen> {
         ),
         title: Text(
           'Withdraw Earnings',
-          style: GoogleFonts.poppins(
+          style: GoogleFonts.goudyBookletter1911(
             color: Colors.black,
             fontWeight: FontWeight.w600,
           ),
@@ -128,7 +131,10 @@ class _WithdrawalScreenState extends State<WithdrawalScreen> {
               );
             },
             icon: const Icon(Icons.history, size: 20),
-            label: Text('History', style: GoogleFonts.poppins(fontSize: 14)),
+            label: Text(
+              'History',
+              style: GoogleFonts.goudyBookletter1911(fontSize: 14),
+            ),
           ),
         ],
       ),
@@ -164,7 +170,7 @@ class _WithdrawalScreenState extends State<WithdrawalScreen> {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(5),
         boxShadow: [
           BoxShadow(
             color: Colors.green.withValues(alpha: 0.3),
@@ -178,12 +184,15 @@ class _WithdrawalScreenState extends State<WithdrawalScreen> {
         children: [
           Text(
             'Available Balance',
-            style: GoogleFonts.poppins(color: Colors.white70, fontSize: 14),
+            style: GoogleFonts.goudyBookletter1911(
+              color: Colors.white70,
+              fontSize: 14,
+            ),
           ),
           const SizedBox(height: 8),
           Text(
             '₱${balance.availableBalance.toStringAsFixed(2)}',
-            style: GoogleFonts.poppins(
+            style: GoogleFonts.goudyBookletter1911(
               color: Colors.white,
               fontSize: 36,
               fontWeight: FontWeight.bold,
@@ -212,7 +221,7 @@ class _WithdrawalScreenState extends State<WithdrawalScreen> {
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
                 color: Colors.orange.withValues(alpha: 0.2),
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(5),
                 border: Border.all(color: Colors.orange.shade300),
               ),
               child: Row(
@@ -222,7 +231,7 @@ class _WithdrawalScreenState extends State<WithdrawalScreen> {
                   Expanded(
                     child: Text(
                       'Pending: ₱${balance.pendingAmount.toStringAsFixed(2)}',
-                      style: GoogleFonts.poppins(
+                      style: GoogleFonts.goudyBookletter1911(
                         color: Colors.white,
                         fontSize: 13,
                         fontWeight: FontWeight.w500,
@@ -244,12 +253,15 @@ class _WithdrawalScreenState extends State<WithdrawalScreen> {
       children: [
         Text(
           label,
-          style: GoogleFonts.poppins(color: Colors.white70, fontSize: 12),
+          style: GoogleFonts.goudyBookletter1911(
+            color: Colors.white70,
+            fontSize: 12,
+          ),
         ),
         const SizedBox(height: 4),
         Text(
           value,
-          style: GoogleFonts.poppins(
+          style: GoogleFonts.goudyBookletter1911(
             color: Colors.white,
             fontSize: 16,
             fontWeight: FontWeight.w600,
@@ -267,7 +279,7 @@ class _WithdrawalScreenState extends State<WithdrawalScreen> {
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(5),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.05),
@@ -281,7 +293,7 @@ class _WithdrawalScreenState extends State<WithdrawalScreen> {
         children: [
           Text(
             'Request Withdrawal',
-            style: GoogleFonts.poppins(
+            style: GoogleFonts.goudyBookletter1911(
               fontSize: 18,
               fontWeight: FontWeight.w600,
             ),
@@ -296,12 +308,12 @@ class _WithdrawalScreenState extends State<WithdrawalScreen> {
               hintText: 'Minimum ₱100.00',
               prefixText: '₱ ',
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(5),
               ),
-              labelStyle: GoogleFonts.poppins(),
-              hintStyle: GoogleFonts.poppins(fontSize: 13),
+              labelStyle: GoogleFonts.goudyBookletter1911(),
+              hintStyle: GoogleFonts.goudyBookletter1911(fontSize: 13),
             ),
-            style: GoogleFonts.poppins(),
+            style: GoogleFonts.goudyBookletter1911(),
           ),
           const SizedBox(height: 16),
           DropdownButtonFormField<String>(
@@ -309,11 +321,11 @@ class _WithdrawalScreenState extends State<WithdrawalScreen> {
             decoration: InputDecoration(
               labelText: 'Withdrawal Method',
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(5),
               ),
-              labelStyle: GoogleFonts.poppins(),
+              labelStyle: GoogleFonts.goudyBookletter1911(),
             ),
-            style: GoogleFonts.poppins(color: Colors.black),
+            style: GoogleFonts.goudyBookletter1911(color: Colors.black),
             items: ['Cash', 'Bank Transfer', 'GCash']
                 .map(
                   (method) =>
@@ -337,12 +349,12 @@ class _WithdrawalScreenState extends State<WithdrawalScreen> {
               labelText: 'Notes (Optional)',
               hintText: 'Add any additional information...',
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(5),
               ),
-              labelStyle: GoogleFonts.poppins(),
-              hintStyle: GoogleFonts.poppins(fontSize: 13),
+              labelStyle: GoogleFonts.goudyBookletter1911(),
+              hintStyle: GoogleFonts.goudyBookletter1911(fontSize: 13),
             ),
-            style: GoogleFonts.poppins(),
+            style: GoogleFonts.goudyBookletter1911(),
           ),
           const SizedBox(height: 24),
           if (hasPending)
@@ -350,7 +362,7 @@ class _WithdrawalScreenState extends State<WithdrawalScreen> {
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 color: Colors.orange.shade50,
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(5),
                 border: Border.all(color: Colors.orange.shade200),
               ),
               child: Row(
@@ -360,7 +372,7 @@ class _WithdrawalScreenState extends State<WithdrawalScreen> {
                   Expanded(
                     child: Text(
                       'You have a pending withdrawal. Please wait for it to be processed.',
-                      style: GoogleFonts.poppins(
+                      style: GoogleFonts.goudyBookletter1911(
                         fontSize: 13,
                         color: Colors.orange.shade900,
                       ),
@@ -378,7 +390,7 @@ class _WithdrawalScreenState extends State<WithdrawalScreen> {
                   foregroundColor: Colors.white,
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(5),
                   ),
                 ),
                 onPressed: _isSubmitting ? null : _submitWithdrawal,
@@ -395,7 +407,7 @@ class _WithdrawalScreenState extends State<WithdrawalScreen> {
                       )
                     : Text(
                         'Submit Request',
-                        style: GoogleFonts.poppins(
+                        style: GoogleFonts.goudyBookletter1911(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
                         ),
@@ -407,7 +419,7 @@ class _WithdrawalScreenState extends State<WithdrawalScreen> {
             '• Minimum withdrawal: ₱100.00\n'
             '• Only one pending request at a time\n'
             '• Processing time: 1-3 business days',
-            style: GoogleFonts.poppins(
+            style: GoogleFonts.goudyBookletter1911(
               fontSize: 12,
               color: Colors.grey[600],
               height: 1.5,

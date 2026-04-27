@@ -242,7 +242,7 @@ class _DeliveryManagementScreenState extends State<DeliveryManagementScreen>
                   ),
                   decoration: BoxDecoration(
                     color: Colors.orange,
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(5),
                   ),
                   child: Text(
                     '${_pendingPickups.length}',
@@ -273,7 +273,7 @@ class _DeliveryManagementScreenState extends State<DeliveryManagementScreen>
                   ),
                   decoration: BoxDecoration(
                     color: Colors.blue,
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(5),
                   ),
                   child: Text(
                     '${_activeDeliveries.length}',
@@ -458,7 +458,7 @@ class _DeliveryManagementScreenState extends State<DeliveryManagementScreen>
                   ),
                   decoration: BoxDecoration(
                     color: Colors.orange,
-                    borderRadius: BorderRadius.circular(6),
+                    borderRadius: BorderRadius.circular(5),
                   ),
                   child: Text(
                     'PENDING',
@@ -529,7 +529,7 @@ class _DeliveryManagementScreenState extends State<DeliveryManagementScreen>
                         foregroundColor: Colors.red,
                         side: const BorderSide(color: Colors.red),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: BorderRadius.circular(5),
                         ),
                         padding: const EdgeInsets.symmetric(
                           horizontal: 16,
@@ -550,7 +550,7 @@ class _DeliveryManagementScreenState extends State<DeliveryManagementScreen>
                         backgroundColor: Colors.black,
                         foregroundColor: Colors.white,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: BorderRadius.circular(5),
                         ),
                         padding: const EdgeInsets.symmetric(
                           horizontal: 20,
@@ -624,7 +624,7 @@ class _DeliveryManagementScreenState extends State<DeliveryManagementScreen>
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(5),
           onTap: () {
             Navigator.push(
               context,
@@ -660,7 +660,7 @@ class _DeliveryManagementScreenState extends State<DeliveryManagementScreen>
                         ),
                         decoration: BoxDecoration(
                           color: statusColor,
-                          borderRadius: BorderRadius.circular(6),
+                          borderRadius: BorderRadius.circular(5),
                         ),
                         child: Text(
                           statusText,

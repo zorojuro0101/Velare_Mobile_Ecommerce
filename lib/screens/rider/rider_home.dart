@@ -541,7 +541,7 @@ class _RiderHomeState extends State<RiderHome> {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(5),
         border: Border.all(color: Colors.grey[300]!),
         boxShadow: [
           BoxShadow(
@@ -573,7 +573,7 @@ class _RiderHomeState extends State<RiderHome> {
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
                   color: color.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(5),
                 ),
                 child: Icon(icon, color: color, size: 20),
               ),
@@ -663,7 +663,7 @@ class _RiderHomeState extends State<RiderHome> {
       margin: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(5),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.05),
@@ -779,7 +779,7 @@ class _RiderHomeState extends State<RiderHome> {
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
                   color: Colors.orange.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(4),
+                  borderRadius: BorderRadius.circular(5),
                 ),
                 child: Text(
                   'PENDING',
@@ -811,7 +811,7 @@ class _RiderHomeState extends State<RiderHome> {
                     foregroundColor: Colors.red,
                     side: const BorderSide(color: Colors.red),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(5),
                     ),
                   ),
                   onPressed: () {
@@ -830,7 +830,7 @@ class _RiderHomeState extends State<RiderHome> {
                     backgroundColor: Colors.black,
                     foregroundColor: Colors.white,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(5),
                     ),
                   ),
                   onPressed: () => _acceptOrder(pickup),
@@ -852,7 +852,7 @@ class _RiderHomeState extends State<RiderHome> {
       margin: const EdgeInsets.fromLTRB(16, 0, 16, 16),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(5),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.05),
@@ -983,7 +983,7 @@ class _RiderHomeState extends State<RiderHome> {
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
                   color: Colors.blue.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(4),
+                  borderRadius: BorderRadius.circular(5),
                 ),
                 child: Text(
                   'IN PROGRESS',
@@ -1037,7 +1037,7 @@ class _RiderHomeState extends State<RiderHome> {
       margin: const EdgeInsets.fromLTRB(16, 0, 16, 16),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(5),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.05),
@@ -1151,7 +1151,7 @@ class _RiderHomeState extends State<RiderHome> {
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
                   color: Colors.green.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(4),
+                  borderRadius: BorderRadius.circular(5),
                 ),
                 child: Text(
                   'DELIVERED',

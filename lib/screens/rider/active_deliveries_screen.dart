@@ -94,7 +94,7 @@ class _ActiveDeliveriesScreenState extends State<ActiveDeliveriesScreen> {
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(5),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.05),
@@ -106,7 +106,7 @@ class _ActiveDeliveriesScreenState extends State<ActiveDeliveriesScreen> {
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(5),
           onTap: () {
             Navigator.push(
               context,
@@ -137,7 +137,7 @@ class _ActiveDeliveriesScreenState extends State<ActiveDeliveriesScreen> {
                       ),
                       decoration: BoxDecoration(
                         color: statusColor,
-                        borderRadius: BorderRadius.circular(6),
+                        borderRadius: BorderRadius.circular(5),
                       ),
                       child: Text(
                         statusText,
@@ -196,7 +196,7 @@ class _ActiveDeliveriesScreenState extends State<ActiveDeliveriesScreen> {
                             vertical: 12,
                           ),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: BorderRadius.circular(5),
                           ),
                         ),
                         onPressed: () => _pickupOrder(delivery),
@@ -218,7 +218,7 @@ class _ActiveDeliveriesScreenState extends State<ActiveDeliveriesScreen> {
                             vertical: 12,
                           ),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: BorderRadius.circular(5),
                           ),
                         ),
                         onPressed: () => _markAsDelivered(delivery),

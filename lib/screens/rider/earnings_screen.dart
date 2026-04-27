@@ -119,7 +119,7 @@ class _EarningsScreenState extends State<EarningsScreen> {
         builder: (context, setDialogState) => AlertDialog(
           title: Text(
             'Request Withdrawal',
-            style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+            style: GoogleFonts.goudyBookletter1911(fontWeight: FontWeight.w600),
           ),
           content: SingleChildScrollView(
             child: Column(
@@ -128,7 +128,7 @@ class _EarningsScreenState extends State<EarningsScreen> {
               children: [
                 Text(
                   'Available: ₱${_balanceInfo?.availableBalance.toStringAsFixed(2) ?? '0.00'}',
-                  style: GoogleFonts.poppins(
+                  style: GoogleFonts.goudyBookletter1911(
                     fontSize: 13,
                     color: Colors.green[700],
                     fontWeight: FontWeight.w500,
@@ -143,11 +143,11 @@ class _EarningsScreenState extends State<EarningsScreen> {
                     hintText: 'Minimum ₱100.00',
                     prefixText: '₱ ',
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(5),
                     ),
-                    labelStyle: GoogleFonts.poppins(),
+                    labelStyle: GoogleFonts.goudyBookletter1911(),
                   ),
-                  style: GoogleFonts.poppins(),
+                  style: GoogleFonts.goudyBookletter1911(),
                 ),
                 const SizedBox(height: 16),
                 DropdownButtonFormField<String>(
@@ -155,11 +155,11 @@ class _EarningsScreenState extends State<EarningsScreen> {
                   decoration: InputDecoration(
                     labelText: 'Withdrawal Method',
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(5),
                     ),
-                    labelStyle: GoogleFonts.poppins(),
+                    labelStyle: GoogleFonts.goudyBookletter1911(),
                   ),
-                  style: GoogleFonts.poppins(color: Colors.black),
+                  style: GoogleFonts.goudyBookletter1911(color: Colors.black),
                   items: ['Cash', 'Bank Transfer', 'GCash']
                       .map(
                         (method) => DropdownMenuItem(
@@ -182,11 +182,11 @@ class _EarningsScreenState extends State<EarningsScreen> {
                     labelText: 'Notes (Optional)',
                     hintText: 'Add any additional information...',
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(5),
                     ),
-                    labelStyle: GoogleFonts.poppins(),
+                    labelStyle: GoogleFonts.goudyBookletter1911(),
                   ),
-                  style: GoogleFonts.poppins(),
+                  style: GoogleFonts.goudyBookletter1911(),
                 ),
               ],
             ),
@@ -196,7 +196,7 @@ class _EarningsScreenState extends State<EarningsScreen> {
               onPressed: () => Navigator.pop(context, false),
               child: Text(
                 'Cancel',
-                style: GoogleFonts.poppins(color: Colors.grey),
+                style: GoogleFonts.goudyBookletter1911(color: Colors.grey),
               ),
             ),
             ElevatedButton(
@@ -211,7 +211,7 @@ class _EarningsScreenState extends State<EarningsScreen> {
                     SnackBar(
                       content: Text(
                         'Please enter a valid amount',
-                        style: GoogleFonts.poppins(),
+                        style: GoogleFonts.goudyBookletter1911(),
                       ),
                       backgroundColor: Colors.orange,
                     ),
@@ -236,7 +236,7 @@ class _EarningsScreenState extends State<EarningsScreen> {
                     SnackBar(
                       content: Text(
                         e.toString().replaceAll('Exception: ', ''),
-                        style: GoogleFonts.poppins(),
+                        style: GoogleFonts.goudyBookletter1911(),
                       ),
                       backgroundColor: Colors.red,
                     ),
@@ -245,7 +245,9 @@ class _EarningsScreenState extends State<EarningsScreen> {
               },
               child: Text(
                 'Submit',
-                style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+                style: GoogleFonts.goudyBookletter1911(
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
           ],
@@ -260,7 +262,7 @@ class _EarningsScreenState extends State<EarningsScreen> {
           SnackBar(
             content: Text(
               'Withdrawal request submitted successfully!',
-              style: GoogleFonts.poppins(),
+              style: GoogleFonts.goudyBookletter1911(),
             ),
             backgroundColor: Colors.green,
           ),
@@ -338,7 +340,7 @@ class _EarningsScreenState extends State<EarningsScreen> {
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(5),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.05),
@@ -355,7 +357,7 @@ class _EarningsScreenState extends State<EarningsScreen> {
               children: [
                 Text(
                   'Available Balance',
-                  style: GoogleFonts.poppins(
+                  style: GoogleFonts.goudyBookletter1911(
                     fontSize: 14,
                     color: Colors.grey[600],
                   ),
@@ -378,7 +380,7 @@ class _EarningsScreenState extends State<EarningsScreen> {
                 const SizedBox(height: 4),
                 Text(
                   'Minimum withdrawal: ₱100.00',
-                  style: GoogleFonts.poppins(
+                  style: GoogleFonts.goudyBookletter1911(
                     fontSize: 11,
                     color: Colors.grey[500],
                   ),
@@ -398,7 +400,7 @@ class _EarningsScreenState extends State<EarningsScreen> {
                     vertical: 12,
                   ),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(5),
                   ),
                 ),
                 onPressed: (_balanceInfo?.hasPending ?? false)
@@ -408,7 +410,7 @@ class _EarningsScreenState extends State<EarningsScreen> {
                 label: Text(
                   'Request\nWithdrawal',
                   textAlign: TextAlign.center,
-                  style: GoogleFonts.poppins(
+                  style: GoogleFonts.goudyBookletter1911(
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
                   ),
@@ -426,7 +428,10 @@ class _EarningsScreenState extends State<EarningsScreen> {
                 },
                 child: Text(
                   'View History',
-                  style: GoogleFonts.poppins(fontSize: 11, color: Colors.blue),
+                  style: GoogleFonts.goudyBookletter1911(
+                    fontSize: 11,
+                    color: Colors.blue,
+                  ),
                 ),
               ),
             ],
@@ -445,7 +450,7 @@ class _EarningsScreenState extends State<EarningsScreen> {
         children: [
           Text(
             'Filter by Date:',
-            style: GoogleFonts.poppins(
+            style: GoogleFonts.goudyBookletter1911(
               fontSize: 13,
               fontWeight: FontWeight.w500,
               color: Colors.grey[700],
@@ -464,7 +469,7 @@ class _EarningsScreenState extends State<EarningsScreen> {
                     ),
                     decoration: BoxDecoration(
                       border: Border.all(color: Colors.grey[300]!),
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(5),
                       color: Colors.white,
                     ),
                     child: Row(
@@ -480,7 +485,7 @@ class _EarningsScreenState extends State<EarningsScreen> {
                             _startDate != null
                                 ? _formatDateShort(_startDate!)
                                 : 'Start Date',
-                            style: GoogleFonts.poppins(
+                            style: GoogleFonts.goudyBookletter1911(
                               fontSize: 13,
                               color: _startDate != null
                                   ? Colors.black
@@ -497,7 +502,7 @@ class _EarningsScreenState extends State<EarningsScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 8),
                 child: Text(
                   'to',
-                  style: GoogleFonts.poppins(
+                  style: GoogleFonts.goudyBookletter1911(
                     fontSize: 13,
                     color: Colors.grey[600],
                   ),
@@ -513,7 +518,7 @@ class _EarningsScreenState extends State<EarningsScreen> {
                     ),
                     decoration: BoxDecoration(
                       border: Border.all(color: Colors.grey[300]!),
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(5),
                       color: Colors.white,
                     ),
                     child: Row(
@@ -529,7 +534,7 @@ class _EarningsScreenState extends State<EarningsScreen> {
                             _endDate != null
                                 ? _formatDateShort(_endDate!)
                                 : 'End Date',
-                            style: GoogleFonts.poppins(
+                            style: GoogleFonts.goudyBookletter1911(
                               fontSize: 13,
                               color: _endDate != null
                                   ? Colors.black
@@ -574,7 +579,7 @@ class _EarningsScreenState extends State<EarningsScreen> {
               icon: const Icon(Icons.clear, size: 16),
               label: Text(
                 'Clear Filter',
-                style: GoogleFonts.poppins(fontSize: 12),
+                style: GoogleFonts.goudyBookletter1911(fontSize: 12),
               ),
             ),
           ],
@@ -674,7 +679,7 @@ class _EarningsScreenState extends State<EarningsScreen> {
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(5),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.05),
@@ -707,7 +712,7 @@ class _EarningsScreenState extends State<EarningsScreen> {
                 },
                 child: Text(
                   'View All',
-                  style: GoogleFonts.poppins(fontSize: 13),
+                  style: GoogleFonts.goudyBookletter1911(fontSize: 13),
                 ),
               ),
             ],
@@ -741,7 +746,7 @@ class _EarningsScreenState extends State<EarningsScreen> {
                         const SizedBox(height: 8),
                         Text(
                           'No withdrawal history',
-                          style: GoogleFonts.poppins(
+                          style: GoogleFonts.goudyBookletter1911(
                             fontSize: 13,
                             color: Colors.grey[600],
                           ),
@@ -775,7 +780,7 @@ class _EarningsScreenState extends State<EarningsScreen> {
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: Colors.grey[50],
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(5),
         border: Border.all(color: Colors.grey[200]!),
       ),
       child: Row(
@@ -786,7 +791,7 @@ class _EarningsScreenState extends State<EarningsScreen> {
               children: [
                 Text(
                   _formatDate(withdrawal.requestedAt),
-                  style: GoogleFonts.poppins(
+                  style: GoogleFonts.goudyBookletter1911(
                     fontSize: 12,
                     color: Colors.grey[600],
                   ),
@@ -807,12 +812,12 @@ class _EarningsScreenState extends State<EarningsScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             decoration: BoxDecoration(
               color: statusColor.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(6),
+              borderRadius: BorderRadius.circular(5),
               border: Border.all(color: statusColor),
             ),
             child: Text(
               withdrawal.status.toUpperCase(),
-              style: GoogleFonts.poppins(
+              style: GoogleFonts.goudyBookletter1911(
                 fontSize: 10,
                 fontWeight: FontWeight.w600,
                 color: statusColor,
@@ -837,7 +842,7 @@ class _EarningsScreenState extends State<EarningsScreen> {
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(5),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.05),
@@ -867,7 +872,7 @@ class _EarningsScreenState extends State<EarningsScreen> {
                   ),
                   decoration: BoxDecoration(
                     color: Colors.green.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(6),
+                    borderRadius: BorderRadius.circular(5),
                   ),
                   child: Text(
                     'Total: ₱${totalEarnings.toStringAsFixed(2)}',
@@ -896,7 +901,7 @@ class _EarningsScreenState extends State<EarningsScreen> {
                     const SizedBox(height: 16),
                     Text(
                       'No delivery history',
-                      style: GoogleFonts.poppins(
+                      style: GoogleFonts.goudyBookletter1911(
                         fontSize: 14,
                         color: Colors.grey[600],
                       ),
@@ -904,7 +909,7 @@ class _EarningsScreenState extends State<EarningsScreen> {
                     const SizedBox(height: 4),
                     Text(
                       'Complete deliveries to start earning',
-                      style: GoogleFonts.poppins(
+                      style: GoogleFonts.goudyBookletter1911(
                         fontSize: 12,
                         color: Colors.grey[500],
                       ),
@@ -935,7 +940,7 @@ class _EarningsScreenState extends State<EarningsScreen> {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.grey[50],
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(5),
         border: Border.all(color: Colors.grey[200]!),
       ),
       child: Column(
@@ -961,7 +966,7 @@ class _EarningsScreenState extends State<EarningsScreen> {
                       deliveredAt != null
                           ? _formatDate(DateTime.parse(deliveredAt))
                           : 'N/A',
-                      style: GoogleFonts.poppins(
+                      style: GoogleFonts.goudyBookletter1911(
                         fontSize: 11,
                         color: Colors.grey[600],
                       ),
@@ -976,7 +981,7 @@ class _EarningsScreenState extends State<EarningsScreen> {
                 ),
                 decoration: BoxDecoration(
                   color: Colors.green.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(6),
+                  borderRadius: BorderRadius.circular(5),
                 ),
                 child: Text(
                   '+₱${deliveryFee.toStringAsFixed(2)}',

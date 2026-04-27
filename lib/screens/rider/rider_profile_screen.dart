@@ -152,7 +152,7 @@ class _RiderProfileScreenState extends State<RiderProfileScreen> {
                             return Center(
                               child: Text(
                                 initial,
-                                style: GoogleFonts.poppins(
+                                style: GoogleFonts.goudyBookletter1911(
                                   fontSize: 40,
                                   fontWeight: FontWeight.bold,
                                   color: Colors.grey[600],
@@ -165,7 +165,7 @@ class _RiderProfileScreenState extends State<RiderProfileScreen> {
                     : Center(
                         child: Text(
                           initial,
-                          style: GoogleFonts.poppins(
+                          style: GoogleFonts.goudyBookletter1911(
                             fontSize: 40,
                             fontWeight: FontWeight.bold,
                             color: Colors.grey[600],
@@ -213,14 +213,17 @@ class _RiderProfileScreenState extends State<RiderProfileScreen> {
           const SizedBox(height: 4),
           Text(
             email,
-            style: GoogleFonts.poppins(fontSize: 13, color: Colors.grey[600]),
+            style: GoogleFonts.goudyBookletter1911(
+              fontSize: 13,
+              color: Colors.grey[600],
+            ),
           ),
           const SizedBox(height: 8),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             decoration: BoxDecoration(
               color: Colors.green.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(5),
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
@@ -253,7 +256,7 @@ class _RiderProfileScreenState extends State<RiderProfileScreen> {
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(5),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.05),
@@ -311,7 +314,7 @@ class _RiderProfileScreenState extends State<RiderProfileScreen> {
       margin: const EdgeInsets.symmetric(horizontal: 16),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(5),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.05),
@@ -383,7 +386,7 @@ class _RiderProfileScreenState extends State<RiderProfileScreen> {
                   color: isDestructive
                       ? Colors.red.withValues(alpha: 0.1)
                       : Colors.grey[100],
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(5),
                 ),
                 child: Icon(
                   icon,
@@ -492,7 +495,7 @@ class _RiderProfileScreenState extends State<RiderProfileScreen> {
       builder: (context) => AlertDialog(
         title: Text(
           'Personal Information',
-          style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+          style: GoogleFonts.goudyBookletter1911(fontWeight: FontWeight.w600),
         ),
         content: SingleChildScrollView(
           child: Column(
@@ -503,11 +506,11 @@ class _RiderProfileScreenState extends State<RiderProfileScreen> {
                 decoration: InputDecoration(
                   labelText: 'First Name',
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(5),
                   ),
-                  labelStyle: GoogleFonts.poppins(),
+                  labelStyle: GoogleFonts.goudyBookletter1911(),
                 ),
-                style: GoogleFonts.poppins(),
+                style: GoogleFonts.goudyBookletter1911(),
               ),
               const SizedBox(height: 16),
               TextField(
@@ -515,11 +518,11 @@ class _RiderProfileScreenState extends State<RiderProfileScreen> {
                 decoration: InputDecoration(
                   labelText: 'Last Name',
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(5),
                   ),
-                  labelStyle: GoogleFonts.poppins(),
+                  labelStyle: GoogleFonts.goudyBookletter1911(),
                 ),
-                style: GoogleFonts.poppins(),
+                style: GoogleFonts.goudyBookletter1911(),
               ),
               const SizedBox(height: 16),
               TextField(
@@ -530,12 +533,12 @@ class _RiderProfileScreenState extends State<RiderProfileScreen> {
                   labelText: 'Phone Number',
                   hintText: '09XXXXXXXXX',
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(5),
                   ),
-                  labelStyle: GoogleFonts.poppins(),
+                  labelStyle: GoogleFonts.goudyBookletter1911(),
                   counterText: '',
                 ),
-                style: GoogleFonts.poppins(),
+                style: GoogleFonts.goudyBookletter1911(),
               ),
             ],
           ),
@@ -545,7 +548,7 @@ class _RiderProfileScreenState extends State<RiderProfileScreen> {
             onPressed: () => Navigator.pop(context),
             child: Text(
               'Cancel',
-              style: GoogleFonts.poppins(color: Colors.grey),
+              style: GoogleFonts.goudyBookletter1911(color: Colors.grey),
             ),
           ),
           ElevatedButton(
@@ -594,7 +597,9 @@ class _RiderProfileScreenState extends State<RiderProfileScreen> {
             },
             child: Text(
               'Save',
-              style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+              style: GoogleFonts.goudyBookletter1911(
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
         ],
@@ -615,7 +620,7 @@ class _RiderProfileScreenState extends State<RiderProfileScreen> {
         builder: (context, setDialogState) => AlertDialog(
           title: Text(
             'Vehicle Information',
-            style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+            style: GoogleFonts.goudyBookletter1911(fontWeight: FontWeight.w600),
           ),
           content: SingleChildScrollView(
             child: Column(
@@ -626,11 +631,11 @@ class _RiderProfileScreenState extends State<RiderProfileScreen> {
                   decoration: InputDecoration(
                     labelText: 'Vehicle Type',
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(5),
                     ),
-                    labelStyle: GoogleFonts.poppins(),
+                    labelStyle: GoogleFonts.goudyBookletter1911(),
                   ),
-                  style: GoogleFonts.poppins(color: Colors.black),
+                  style: GoogleFonts.goudyBookletter1911(color: Colors.black),
                   items: ['Motorcycle', 'Bicycle', 'Tricycle', 'Car', 'Van']
                       .map(
                         (type) =>
@@ -650,11 +655,11 @@ class _RiderProfileScreenState extends State<RiderProfileScreen> {
                     labelText: 'Plate Number',
                     hintText: 'ABC 1234',
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(5),
                     ),
-                    labelStyle: GoogleFonts.poppins(),
+                    labelStyle: GoogleFonts.goudyBookletter1911(),
                   ),
-                  style: GoogleFonts.poppins(),
+                  style: GoogleFonts.goudyBookletter1911(),
                   textCapitalization: TextCapitalization.characters,
                 ),
               ],
@@ -665,7 +670,7 @@ class _RiderProfileScreenState extends State<RiderProfileScreen> {
               onPressed: () => Navigator.pop(context),
               child: Text(
                 'Cancel',
-                style: GoogleFonts.poppins(color: Colors.grey),
+                style: GoogleFonts.goudyBookletter1911(color: Colors.grey),
               ),
             ),
             ElevatedButton(
@@ -708,7 +713,9 @@ class _RiderProfileScreenState extends State<RiderProfileScreen> {
               },
               child: Text(
                 'Save',
-                style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+                style: GoogleFonts.goudyBookletter1911(
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
           ],
