@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Veláre - Manage Sellers</title>
+	<link rel="icon" type="image/png" href="{{ url_for('static', filename='images/Velare Logo Tab 1.png') }}">
+	<!-- Google Fonts for aesthetic, expensive look -->
+	<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@100;300;400;700&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Goodie&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/accounts/myAccount_profile.css') }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/admin/admin_manage_seller.css') }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/logout-modal.css') }}">
+	<!-- Bootstrap Icons CDN -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+<body>
+	<div class="header-container">
+		<span class="header"><a href="{{ url_for('admin_dashboard.admin_dashboard') }}" style="color: inherit; text-decoration: none;">Veláre</a></span>
+	</div>
+	<hr class="divider">
+
+	<div class="main-content-container">
+		<div class="account-left-nav">
+			<div class="account-profile-header">
+				<div class="profile-img-placeholder">
+					<img src="{{ url_for('static', filename='images/Velare Logo Tab 1.png') }}" alt="Velare Logo" style="width: 100%; height: 100%; object-fit: contain;">
+				</div>
+				<span class="profile-name-placeholder">Admin</span>
+			</div>
+			<div class="account-nav-divider"></div>
+			<div class="account-nav-list">
+				<a href="{{ url_for('admin_dashboard.admin_dashboard') }}" class="main-tab" style="text-decoration: none; color: inherit;">
+					<i class="bi bi-speedometer2" style="font-size:1.2em; vertical-align:middle; margin-right:10px;"></i>
+					<span class="main-tab-label">Dashboard</span>
+				</a>
+				<div class="main-tab active" id="manageSellersTab">
+					<i class="bi bi-shop" style="font-size:1.2em; vertical-align:middle; margin-right:10px;"></i>
+					<span class="main-tab-label">Manage Sellers</span>
+				</div>
+				<a href="{{ url_for('admin_users_riders.admin_users_riders') }}" class="main-tab" style="text-decoration: none; color: inherit;">
+					<i class="bi bi-bicycle" style="font-size:1.2em; vertical-align:middle; margin-right:10px;"></i>
+					<span class="main-tab-label">Manage Riders</span>
+				</a>
+				<a href="{{ url_for('admin_users_buyers.admin_users_buyers') }}" class="main-tab" style="text-decoration: none; color: inherit;">
+					<i class="bi bi-people" style="font-size:1.2em; vertical-align:middle; margin-right:10px;"></i>
+					<span class="main-tab-label">Manage Buyers</span>
+				</a>
+				<a href="{{ url_for('admin_sales_reports.admin_sales_reports') }}" class="main-tab" style="text-decoration: none; color: inherit;">
+					<i class="bi bi-cash-stack" style="font-size:1.2em; vertical-align:middle; margin-right:10px;"></i>
+					<span class="main-tab-label">Sales & Commissions</span>
+				</a>
+				<a href="{{ url_for('admin_vouchers.admin_vouchers') }}" class="main-tab" style="text-decoration: none; color: inherit;">
+					<i class="bi bi-ticket-perforated" style="font-size:1.2em; vertical-align:middle; margin-right:10px;"></i>
+					<span class="main-tab-label">Manage Vouchers</span>
+				</a>
+				<a href="{{ url_for('admin_user_reports.user_reports') }}" class="main-tab" style="text-decoration: none; color: inherit;">
+					<i class="bi bi-flag" style="font-size:1.2em; vertical-align:middle; margin-right:10px;"></i>
+					<span class="main-tab-label">User Reports</span>
+				</a>
+				<div class="main-tab" id="logout-link" data-logout-url="{{ url_for('auth.login') }}">
+					<i class="bi bi-box-arrow-right" style="font-size:1.2em; vertical-align:middle; margin-right:10px;"></i>
+					<span class="main-tab-label">Logout</span>
+				</div>
+			</div>
+			<div class="sidebar-vertical-line"></div>
+		</div>
+		<div class="account-card-container">
+			
+			<div class="product-approvals-main-content">
+			<h2 class="product-approvals-title">Manage Sellers</h2>
+			<hr class="product-approvals-divider">
+			
+			<div class="product-approvals-content">
+				<!-- Search and Filter Controls -->
+				<div class="approvals-controls">
+					<div class="search-filter-section">
+						<div class="search-box">
+							<i class="bi bi-search"></i>
+							<input type="text" placeholder="Search sellers..." id="sellerSearch">
+						</div>
+						<div class="filter-dropdown">
+							<select id="statusFilter">
+								<option value="all">All Status</option>
+								<option value="pending">Pending</option>
+								<option value="active">Active</option>
+								<option value="rejected">Rejected</option>
+								<option value="suspended">Suspended</option>
+								<option value="banned">Banned</option>
+							</select>
+						</div>
+					</div>
+					<div class="approvals-stats">
+						<span class="stat-badge pending">
+							<i class="bi bi-clock-history"></i>
+							<span id="pendingCount">0</span> Pending
+						</span>
+					</div>
+				</div>
+
+				<!-- Seller Approval Cards Grid -->
+				<div class="approval-cards-container" id="sellersGrid">
+					<!-- Sellers will be loaded dynamically -->
+				</div>
+			</div>
+		</div>
+		</div>
+	</div>
+
+	<!-- Logout Modal Overlay and Confirmation Modal -->
+	<div id="logout-modal-overlay"></div>
+	<div id="logout-modal" class="modal">
+		<div class="modal-content">
+			<div class="modal-title">Do you want to Logout?</div>
+			<div class="modal-actions">
+				<button id="confirm-logout" class="modal-btn">Logout</button>
+				<button id="cancel-logout" class="modal-btn">Cancel</button>
+			</div>
+		</div>
+	</div>
+
+	<!-- Action Confirmation Modal (Suspend/Ban) -->
+	<div id="action-confirm-modal-overlay"></div>
+	<div id="action-confirm-modal" class="modal">
+		<div class="modal-content">
+			<div class="modal-title" id="action-confirm-title">Confirm Action?</div>
+			<div class="modal-message" id="action-confirm-message">Are you sure you want to perform this action?</div>
+			<div class="modal-actions">
+				<button id="confirm-action-btn" class="modal-btn">Confirm</button>
+				<button id="cancel-action-btn" class="modal-btn">Cancel</button>
+			</div>
+		</div>
+	</div>
+	<script defer src="{{ url_for('static', filename='js/logout-modal.js') }}"></script>
+	<script defer src="{{ url_for('static', filename='js/admin/admin-nav-hover.js') }}"></script>
+	<script defer src="{{ url_for('static', filename='js/admin/admin-sellers.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,1252 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+    background-color: #faf9f7;
+    color: #181818;
+}
+
+/* Hide scrollbar */
+::-webkit-scrollbar {
+    width: 0px;
+    height: 0px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: transparent;
+}
+
+* {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.dashboard-container {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* Sidebar Styles */
+.sidebar {
+    width: 260px;
+    background-color: #ffffff;
+    color: #000000;
+    padding: 20px 0;
+    position: fixed;
+    height: 100vh;
+    overflow-y: auto;
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+    border-right: 1.5px solid #D3BD9B;
+}
+
+.logo {
+    padding: 0 20px 20px;
+    border-bottom: 1.5px solid #D3BD9B;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+}
+
+.logo h2 {
+    font-family: 'Cinzel', serif;
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: #181818;
+    text-shadow: 0 2px 12px rgba(191,161,74,0.08), 0 1px 0 #fffbe8;
+    margin-top: 20px;
+}
+
+.logo img {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+    margin-top: 20px;
+}
+
+/* Sidebar Profile */
+.sidebar-profile-link {
+    text-decoration: none;
+    display: block;
+    margin: 0 10px 20px;
+    transition: all 0.3s ease;
+}
+
+.sidebar-profile {
+    padding: 20px;
+    background: transparent;
+    border-radius: 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer !important;
+    transition: all 0.3s ease;
+    border: none;
+    user-select: none;
+    pointer-events: auto !important;
+    z-index: 100;
+}
+
+.sidebar-profile-link:hover .sidebar-profile {
+    background: rgba(211, 189, 155, 0.1);
+    border-color: transparent;
+    transform: translateY(-2px);
+}
+
+.sidebar-profile-link:active .sidebar-profile {
+    transform: translateY(0);
+}
+
+.sidebar-profile-img {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: none;
+    background: #e0d7c6;
+    box-shadow: 0 2px 8px rgba(44,34,54,0.08);
+    flex-shrink: 0;
+}
+
+.sidebar-profile-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.profile-initial {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, rgba(211,189,155,0.35) 0%, rgba(105,91,68,0.35) 100%);
+    color: #8b7355;
+    font-size: 24px;
+    font-weight: 600;
+    font-family: 'Playfair Display', serif;
+    text-transform: uppercase;
+}
+
+.sidebar-profile-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.sidebar-profile-name {
+    font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+    font-size: 1.18rem;
+    font-weight: 600;
+    color: #181818 !important;
+    margin: 0 0 4px 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.sidebar-profile-link:hover .sidebar-profile-name {
+    color: #181818 !important;
+}
+
+.sidebar-profile-role {
+    font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+    font-size: 0.9rem;
+    color: #6d6552;
+    margin: 0;
+}
+
+.nav-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    padding: 15px 20px;
+    padding-left: 20px;
+    color: #181818;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border-left: 3px solid transparent;
+    font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    position: relative;
+    margin-top: 0;
+    margin-bottom: 0;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+    flex-wrap: nowrap;
+}
+
+.nav-item span:not(.icon):not(.dropdown-arrow) {
+    display: inline-block;
+    position: relative;
+    z-index: 1;
+    padding-bottom: 2px;
+    white-space: nowrap;
+}
+
+.nav-item span:not(.icon):not(.dropdown-arrow)::after {
+    content: '';
+    display: block;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 2px;
+    background: #D3BD9B;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.28s cubic-bezier(.4,0,.2,1);
+}
+
+.nav-item:hover span:not(.icon):not(.dropdown-arrow)::after,
+.nav-item.active span:not(.icon):not(.dropdown-arrow)::after {
+    transform: scaleX(1);
+}
+
+.nav-item:hover,
+.nav-item.active {
+    background-color: transparent;
+    border-left-color: transparent;
+    color: #D3BD9B !important;
+    text-shadow: 0 1px 4px rgba(211,189,155,0.3), 0 0.5px 0 #fffbe8;
+}
+
+.nav-item:hover .icon,
+.nav-item.active .icon {
+    color: #D3BD9B !important;
+}
+
+.nav-item .icon {
+    font-size: 20px;
+    margin-right: 12px;
+    width: 24px;
+    flex-shrink: 0;
+}
+
+.dropdown-arrow {
+    margin-left: auto;
+    font-size: 14px;
+    transition: transform 0.3s ease;
+    flex-shrink: 0;
+}
+
+.dropdown-arrow.open {
+    transform: rotate(180deg);
+}
+
+/* Navigation Item Group */
+.nav-item-group {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Submenu Styles */
+.nav-submenu {
+    display: none;
+    flex-direction: column;
+    background: transparent;
+    margin-left: 56px;
+    border-left: 3px solid transparent;
+    overflow: hidden;
+    gap: 6px;
+    opacity: 0;
+    transform: translateX(0);
+    transition: opacity 0.28s cubic-bezier(.4,0,.2,1), transform 0.28s cubic-bezier(.4,0,.2,1);
+    pointer-events: none;
+}
+
+.nav-submenu.open {
+    display: flex;
+    opacity: 1;
+    transform: translateX(0);
+    pointer-events: auto;
+}
+
+.nav-submenu.closing {
+    opacity: 0;
+    transform: translateX(-36px);
+    pointer-events: none;
+    transition: opacity 0.28s cubic-bezier(.4,0,.2,1), transform 0.28s cubic-bezier(.4,0,.2,1);
+}
+
+.nav-subitem {
+    display: flex;
+    align-items: center;
+    padding: 0;
+    padding-bottom: 2px;
+    margin-left: 10px;
+    color: #6d6552;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border-left: none;
+    font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    line-height: 2.2;
+    position: relative;
+    white-space: nowrap;
+    flex-wrap: nowrap;
+}
+
+.nav-subitem span:not(.icon) {
+    display: inline-block;
+    position: relative;
+    padding-bottom: 2px;
+    white-space: nowrap;
+}
+
+.nav-subitem span:not(.icon)::after {
+    content: '';
+    display: block;
+    position: absolute;
+    left: 0;
+    bottom: 4px;
+    width: 100%;
+    height: 2px;
+    background: #181818;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.28s cubic-bezier(.4,0,.2,1);
+    z-index: 1;
+}
+
+.nav-subitem:hover span:not(.icon)::after,
+.nav-subitem.active span:not(.icon)::after {
+    transform: scaleX(1);
+}
+
+.nav-subitem:hover span:not(.icon),
+.nav-subitem.active span:not(.icon) {
+    color: #181818;
+    text-shadow: 0 1px 3px rgba(24,24,24,0.15), 0 0.5px 0 #fffbe8;
+}
+
+.nav-subitem.active span:not(.icon) {
+    color: #000000;
+    font-weight: 700;
+}
+
+.nav-subitem .icon {
+    font-size: 16px;
+    margin-right: 10px;
+    width: 20px;
+    flex-shrink: 0;
+}
+
+/* Main Content Styles */
+.main-content {
+    margin-left: 260px;
+    flex: 1;
+    padding: 30px;
+}
+
+/* Header Styles */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    background: white;
+    padding: 20px 30px;
+    border-radius: 2px;
+    box-shadow: 0 8px 32px 0 rgba(44, 34, 54, 0.10);
+}
+
+.header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: #181818;
+    letter-spacing: 0.5px;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+/* Total Earnings Display */
+.total-earnings {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #ffffff;
+    padding: 12px 24px;
+    border-radius: 2px;
+    border: 2px solid #D3BD9B;
+    box-shadow: 0 4px 12px rgba(211, 189, 155, 0.3);
+}
+
+.earnings-label {
+    font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: #000000;
+    letter-spacing: 0.5px;
+}
+
+.earnings-amount {
+    font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: #000000;
+    text-shadow: none;
+}
+
+/* Filter Section */
+.filter-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    background: white;
+    padding: 20px 30px;
+    border-radius: 2px;
+    box-shadow: 0 8px 32px 0 rgba(44, 34, 54, 0.10);
+}
+
+.filter-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.filter-group label {
+    font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: #181818;
+}
+
+/* Date Range Inputs */
+.date-range-inputs {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.date-input {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.9rem;
+    padding: 10px 15px;
+    border: none;
+    background: #f8f6f2;
+    color: #181818;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    flex: 1;
+}
+
+.date-input:hover,
+.date-input:focus {
+    background: #e0d7c6;
+    outline: none;
+}
+
+.date-separator {
+    font-family: 'Montserrat', sans-serif;
+    color: #666;
+    font-weight: 500;
+}
+
+.refresh-btn {
+    background: #ffffff;
+    color: #181818;
+    border: 1.5px solid #bbb;
+    padding: 10px 20px;
+    border-radius: 2px;
+    cursor: pointer;
+    font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    box-shadow: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.refresh-btn i {
+    font-size: 16px;
+}
+
+.refresh-btn:hover {
+    background: #000000;
+    color: #ffffff;
+    border-color: #000000;
+}
+
+/* Earnings Section */
+.earnings-section {
+    background: white;
+    padding: 25px;
+    border-radius: 2px;
+    box-shadow: 0 8px 32px 0 rgba(44, 34, 54, 0.10);
+    border: 1px solid #e0e0e0;
+    min-height: 500px;
+}
+
+.earnings-table-container {
+    overflow-x: auto;
+    position: relative;
+    min-height: 400px;
+}
+
+/* Earnings Table */
+.earnings-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+}
+
+.earnings-table thead {
+    background: #faf9f7;
+    border-bottom: 2px solid #D3BD9B;
+}
+
+.earnings-table th {
+    padding: 16px 12px;
+    text-align: left;
+    font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: #181818;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.earnings-table tbody tr {
+    border-bottom: 1px solid #e0e0e0;
+    transition: background-color 0.2s ease;
+}
+
+.earnings-table tbody tr:hover {
+    background-color: #faf9f7;
+}
+
+.earnings-table td {
+    padding: 16px 12px;
+    font-size: 17px;
+    color: #181818;
+    vertical-align: top;
+}
+
+/* Order ID Column */
+.order-id {
+    font-family: 'Courier New', monospace;
+    font-weight: 600;
+    color: #181818;
+    font-size: 16px;
+}
+
+/* Buyer Info Column */
+.buyer-info,
+.seller-info {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.info-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    font-size: 16px;
+}
+
+.info-label {
+    font-weight: 600;
+    color: #666666;
+    min-width: 80px;
+}
+
+.info-value {
+    color: #181818;
+    flex: 1;
+    font-weight: 600;
+}
+
+/* Product Name Column */
+.product-name {
+    font-weight: 600;
+    color: #181818;
+    font-size: 17px;
+}
+
+/* Amount Column */
+.amount-cell {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.amount-plus {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #4CAF50;
+    font-weight: 700;
+    font-size: 18px;
+    background: none;
+    border: none;
+    border-radius: 0;
+    width: auto;
+    height: auto;
+    padding: 0;
+    margin: 0;
+}
+
+.amount-value {
+    font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+    font-size: 19px;
+    font-weight: 700;
+    color: #4CAF50;
+}
+
+/* Empty State */
+.empty-state {
+    display: none;
+    text-align: center;
+    padding: 60px 20px;
+    color: #666666;
+}
+
+.empty-state.show {
+    display: block;
+}
+
+.empty-icon {
+    font-size: 64px;
+    color: #D3BD9B;
+    margin-bottom: 16px;
+}
+
+.empty-state p {
+    font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+    font-size: 16px;
+    margin-bottom: 8px;
+}
+
+.empty-subtitle {
+    font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+    font-size: 14px;
+    color: #999999;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 70px;
+    }
+
+    .logo h2 {
+        font-size: 18px;
+    }
+
+    .sidebar-profile {
+        flex-direction: column;
+        padding: 10px;
+        gap: 5px;
+    }
+
+    .sidebar-profile-info {
+        display: none;
+    }
+
+    .sidebar-profile-img {
+        width: 40px;
+        height: 40px;
+    }
+
+    .nav-item span:not(.icon) {
+        display: none;
+    }
+
+    .nav-subitem span:not(.icon) {
+        display: none;
+    }
+
+    .main-content {
+        margin-left: 70px;
+        padding: 20px;
+    }
+
+    .header {
+        flex-direction: column;
+        gap: 15px;
+        align-items: flex-start;
+    }
+
+    .filter-section {
+        flex-direction: column;
+        gap: 15px;
+        align-items: stretch;
+    }
+
+    .filter-group {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .earnings-table {
+        font-size: 12px;
+    }
+
+    .earnings-table th,
+    .earnings-table td {
+        padding: 12px 8px;
+    }
+
+    .info-label {
+        min-width: 60px;
+        font-size: 11px;
+    }
+
+    .info-value {
+        font-size: 11px;
+    }
+}
+
+/* Withdrawal Section */
+.withdrawal-section {
+    margin-bottom: 30px;
+}
+
+.withdrawal-card {
+    background: #FFFFFF;
+    border: 2px solid #D3BD9B;
+    border-radius: 12px;
+    padding: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 12px rgba(211, 189, 155, 0.2);
+}
+
+.withdrawal-info h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    color: #333333;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+.available-balance {
+    font-family: 'Playfair Display', serif;
+    font-size: 36px;
+    color: #D3BD9B;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.balance-note {
+    font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+    font-size: 13px;
+    color: #666666;
+}
+
+.withdraw-btn {
+    background: #FFFFFF;
+    color: #333333;
+    border: 2px solid #D3BD9B;
+    padding: 14px 28px;
+    border-radius: 8px;
+    font-family: 'Playfair Display', serif;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.withdraw-btn:hover {
+    background: #D3BD9B;
+    color: #FFFFFF;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(211, 189, 155, 0.4);
+}
+
+.withdraw-btn:active {
+    transform: translateY(0);
+}
+
+.withdraw-btn i {
+    font-size: 18px;
+}
+
+/* Withdrawal History Section */
+.withdrawal-history-section {
+    margin-bottom: 40px;
+}
+
+.withdrawal-history-section h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px;
+    color: #333333;
+    margin-bottom: 20px;
+    font-weight: 600;
+}
+
+.withdrawal-history-container {
+    background: #FFFFFF;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.withdrawal-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.withdrawal-table thead {
+    background: #F8F8F8;
+}
+
+.withdrawal-table th {
+    padding: 16px;
+    text-align: left;
+    font-family: 'Playfair Display', serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: #666666;
+    border-bottom: 2px solid #E0E0E0;
+}
+
+.withdrawal-table td {
+    padding: 16px;
+    font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+    font-size: 14px;
+    color: #333333;
+    border-bottom: 1px solid #F0F0F0;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 2px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+.status-pending {
+    background: #FFF3CD;
+    color: #856404;
+}
+
+.status-approved {
+    background: #D4EDDA;
+    color: #155724;
+}
+
+.status-rejected {
+    background: #F8D7DA;
+    color: #721C24;
+}
+
+.status-completed {
+    background: #D4EDDA;
+    color: #155724;
+}
+
+/* Withdrawal Modal */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 9998;
+}
+
+.modal-overlay.show {
+    display: block;
+}
+
+#withdrawal-modal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #FFFFFF;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    z-index: 9999;
+    min-width: 500px;
+    max-width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+#withdrawal-modal.show {
+    display: block;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 25px 30px 20px;
+    border-bottom: 1px solid #E0E0E0;
+}
+
+#withdrawal-modal .modal-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px;
+    color: #333333;
+    font-weight: 600;
+    margin: 0;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    font-size: 20px;
+    color: #999999;
+    cursor: pointer;
+    padding: 5px;
+    transition: color 0.3s ease;
+}
+
+.modal-close:hover {
+    color: #333333;
+}
+
+#withdrawal-modal .modal-body {
+    padding: 30px;
+}
+
+/* Form Styles */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    font-family: 'Playfair Display', serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: #333333;
+    margin-bottom: 8px;
+}
+
+.input-with-currency {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.currency-symbol {
+    position: absolute;
+    left: 15px;
+    font-family: 'Playfair Display', serif;
+    font-size: 16px;
+    color: #666666;
+    font-weight: 600;
+}
+
+.form-group input[type="number"] {
+    width: 100%;
+    padding: 12px 15px 12px 35px;
+    border: 2px solid #E0E0E0;
+    border-radius: 8px;
+    font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+    font-size: 16px;
+    color: #333333;
+    transition: border-color 0.3s ease;
+}
+
+.form-group input[type="number"]:focus {
+    outline: none;
+    border-color: #D3BD9B;
+}
+
+.form-group select {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #E0E0E0;
+    border-radius: 8px;
+    font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+    font-size: 15px;
+    color: #333333;
+    background: #FFFFFF;
+    cursor: pointer;
+    transition: border-color 0.3s ease;
+}
+
+.form-group select:focus {
+    outline: none;
+    border-color: #D3BD9B;
+}
+
+.form-group textarea {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #E0E0E0;
+    border-radius: 8px;
+    font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+    font-size: 14px;
+    color: #333333;
+    resize: vertical;
+    transition: border-color 0.3s ease;
+}
+
+.form-group textarea:focus {
+    outline: none;
+    border-color: #D3BD9B;
+}
+
+.form-hint {
+    display: block;
+    font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+    font-size: 12px;
+    color: #999999;
+    margin-top: 5px;
+}
+
+.error-message {
+    display: block;
+    font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+    font-size: 12px;
+    color: #DC3545;
+    margin-top: 5px;
+}
+
+#withdrawal-modal .modal-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    margin-top: 25px;
+}
+
+#withdrawal-modal .modal-btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-family: 'Playfair Display', serif;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.submit-btn {
+    background: #D3BD9B;
+    color: #FFFFFF;
+}
+
+.submit-btn:hover:not(:disabled) {
+    background: #B8A07E;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(211, 189, 155, 0.3);
+}
+
+.submit-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.cancel-btn {
+    background: #E0E0E0;
+    color: #666666;
+}
+
+.cancel-btn:hover {
+    background: #D0D0D0;
+}
+
+/* Earnings Section Title */
+.earnings-section h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px;
+    color: #333333;
+    margin-bottom: 20px;
+    font-weight: 600;
+}
+
+/* Responsive for Withdrawal */
+@media (max-width: 768px) {
+    .withdrawal-card {
+        flex-direction: column;
+        gap: 20px;
+        text-align: center;
+    }
+
+    .available-balance {
+        font-size: 28px;
+    }
+
+    .withdraw-btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    #withdrawal-modal {
+        min-width: 90%;
+        max-width: 95%;
+    }
+
+    .modal-header {
+        padding: 20px;
+    }
+
+    #withdrawal-modal .modal-body {
+        padding: 20px;
+    }
+
+    #withdrawal-modal .modal-title {
+        font-size: 20px;
+    }
+
+    #withdrawal-modal .modal-actions {
+        flex-direction: column;
+    }
+
+    #withdrawal-modal .modal-btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .withdrawal-table {
+        font-size: 12px;
+    }
+
+    .withdrawal-table th,
+    .withdrawal-table td {
+        padding: 12px 8px;
+    }
+}
+
+/* Error Message Styling */
+.error-message {
+    display: block;
+    font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+    font-size: 12px;
+    color: #DC3545;
+    margin-top: 5px;
+    margin-left: 20px;
+}
+
+/* Withdrawal Confirmation Modal (Logout Style) */
+#withdraw-confirm-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.18);
+    z-index: 9998;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+#withdraw-confirm-modal-overlay.show {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+#withdraw-confirm-modal.modal {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.25);
+    align-items: center;
+    justify-content: center;
+}
+
+#withdraw-confirm-modal.modal.active {
+    display: flex;
+}
+
+#withdraw-confirm-modal .modal-content {
+    background: #fff;
+    padding: 32px 28px 24px 28px;
+    border-radius: 2px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.13);
+    min-width: 320px;
+    max-width: 90vw;
+    text-align: center;
+}
+
+#withdraw-confirm-modal .modal-title {
+    font-size: 1.25rem;
+    font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+    margin-bottom: 12px;
+    color: #181818;
+    font-weight: 600;
+}
+
+#withdraw-confirm-modal .modal-message {
+    font-size: 0.95rem;
+    font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+    margin-bottom: 18px;
+    color: #555;
+    line-height: 1.5;
+    white-space: pre-line;
+}
+
+#withdraw-confirm-modal .modal-actions {
+    display: flex;
+    gap: 18px;
+    justify-content: center;
+}
+
+#withdraw-confirm-modal .modal-btn {
+    border: none;
+    border-radius: 2px;
+    padding: 8px 24px;
+    font-size: 1rem;
+    font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+    cursor: pointer;
+}
+
+#withdraw-confirm-modal #confirm-withdraw {
+    background: #181818;
+    color: #fff;
+}
+
+#withdraw-confirm-modal #cancel-withdraw {
+    background: #e0d7c6;
+    color: #181818;
+}
+
+#withdraw-confirm-modal .modal-btn:hover {
+    background: #D3BD9B !important;
+    color: #181818;
+}

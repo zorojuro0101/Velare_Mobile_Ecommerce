@@ -1,0 +1,83 @@
+<!-- Preload profile data to prevent flickering on page navigation -->
+<style>
+	/* Prevent flickering - show immediately, no transitions */
+	#sidebarProfileName,
+	#sidebarProfileImg {
+		opacity: 1 !important;
+		visibility: visible !important;
+	}
+	
+	/* Ensure profile image maintains its styling */
+	#sidebarProfileImg {
+		background-size: cover !important;
+		background-position: center !important;
+		background-repeat: no-repeat !important;
+	}
+</style>
+<script>
+// CRITICAL: This script runs INLINE to prevent any flickering
+// It executes BEFORE the page renders to update profile data from cache
+(function() {
+	'use strict';
+	
+	// Get cached profile data
+	var cachedProfile = sessionStorage.getItem('userProfile') || 
+	                    localStorage.getItem('userProfile') ||
+	                    sessionStorage.getItem('sidebarProfileCache');
+	
+	if (!cachedProfile) {
+		console.log('No cached profile data found');
+		return;
+	}
+	
+	try {
+		var profile = JSON.parse(cachedProfile);
+		
+		// Store in a global variable for immediate access
+		window.__cachedProfileData = profile;
+		
+		// Function to apply profile data IMMEDIATELY
+		function applyProfileData() {
+			var nameEl = document.getElementById('sidebarProfileName');
+			var imgEl = document.getElementById('sidebarProfileImg');
+			
+			if (nameEl && profile) {
+				if (profile.first_name && profile.last_name) {
+					nameEl.textContent = profile.first_name + ' ' + profile.last_name;
+				} else if (profile.name) {
+					nameEl.textContent = profile.name;
+				}
+			}
+			
+			if (imgEl && profile) {
+				var imageUrl = profile.profile_image || (profile.image ? profile.image.replace(/^url\(['"]?|['"]?\)$/g, '') : null);
+				if (imageUrl) {
+					imgEl.style.backgroundImage = "url('" + imageUrl + "')";
+					imgEl.style.backgroundSize = 'cover';
+					imgEl.style.backgroundPosition = 'center';
+					imgEl.style.backgroundRepeat = 'no-repeat';
+				}
+			}
+		}
+		
+		// Try to apply immediately if elements exist
+		if (document.getElementById('sidebarProfileName')) {
+			applyProfileData();
+		}
+		
+		// Also apply on DOMContentLoaded as backup
+		if (document.readyState === 'loading') {
+			document.addEventListener('DOMContentLoaded', applyProfileData);
+		} else {
+			applyProfileData();
+		}
+		
+		// Apply again after a tiny delay to catch any late renders
+		setTimeout(applyProfileData, 0);
+		setTimeout(applyProfileData, 10);
+		
+	} catch(e) {
+		console.error('Profile preload error:', e);
+	}
+})();
+</script>

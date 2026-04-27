@@ -1,0 +1,1445 @@
+/* About Us Page Styles */
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Playfair Display', serif;
+    background-color: #fafafa;
+}
+
+/* Ensure hamburger button stays on top of sidebar and overlay */
+#menuToggle {
+    position: fixed;
+    left: 24px;
+    top: 33px;
+    z-index: 14001 !important;
+}
+
+#hamburgerBtn {
+    position: relative;
+    z-index: 14001 !important;
+}
+
+/* Notification icon adjustment */
+.notification-icon-wrapper .icon {
+    position: relative;
+    top: -2px;
+}
+
+/* Video Section */
+.video-placeholder-full {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+    margin-top: -20px;
+}
+
+.video-bg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* Video Overlay Text */
+.video-overlay-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: #ffffff;
+    z-index: 2;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
+}
+
+.main-title {
+    font-family: 'Cinzel', serif;
+    font-size: 5rem;
+    font-weight: 700;
+    margin: 0;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.subtitle {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 300;
+    margin: 20px 0 0 0;
+    letter-spacing: 0.05em;
+}
+
+/* About Content Section */
+.about-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 80px 60px;
+}
+
+/* Content Sections */
+.content-section {
+    display: flex;
+    gap: 80px;
+    margin-bottom: 120px;
+    align-items: center;
+    margin-top: 200px;
+}
+
+.content-section.section-2 {
+    margin-top: 200px;
+}
+
+/* Section 1: Image Left, Content Right */
+.section-1 {
+    flex-direction: row;
+}
+
+.image-placeholder {
+    flex: 1;
+    min-height: 500px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.slideshow-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 1.5s ease-in-out;
+    border-radius: 8px;
+}
+
+.slideshow-image.active {
+    opacity: 1;
+}
+
+/* Section 5 Slideshow */
+.sustainability-hero-background {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.slideshow-image-section5 {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 1.5s ease-in-out;
+}
+
+.slideshow-image-section5.active {
+    opacity: 1;
+}
+
+/* Section 4 Slideshow */
+.slideshow-image-section4 {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 1.5s ease-in-out;
+}
+
+.slideshow-image-section4.active {
+    opacity: 1;
+}
+
+/* Section 6 Slideshow */
+.slideshow-image-section6 {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 1.5s ease-in-out;
+}
+
+.slideshow-image-section6.active {
+    opacity: 1;
+}
+
+.placeholder-text {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    color: #6b5d4f;
+    letter-spacing: 0.05em;
+}
+
+.text-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    text-align: center;
+}
+
+.velare-logo {
+    width: 200px;
+    height: auto;
+    margin: 0 auto 20px auto;
+    margin-bottom: -60px;
+}
+
+.statement {
+    font-family: 'Goudy Old Style', 'Garamond', serif;
+    font-size: 1.5rem;
+    line-height: 1.8;
+    color: #333;
+    margin: 0;
+    font-weight: 500;
+}
+
+/* Section 2: Text Left, Content Right */
+.section-2 {
+    flex-direction: row;
+}
+
+.text-content-left {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+
+.story-title {
+    font-family: 'Goudy Old Style', 'Garamond', serif;
+    font-size: 5.9rem;
+    font-weight: 520;
+    color: #6b5d4f;
+    margin: 0 0 30px 0;
+    line-height: 1.2;
+}
+
+.story-subtitle {
+    font-family: 'Goudy Old Style', 'Garamond', serif;
+    font-size: 4.5rem;
+    font-weight: 550;
+    color: #6b5d4f;
+    margin: 0 0 40px 0;
+    line-height: 1.2;
+}
+
+.story-subtitle .highlight {
+    color: #bf9f4a;
+}
+
+.text-content-right {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    text-align: center;
+}
+
+.story-description {
+    font-family: 'Goudy Old Style', 'Garamond', serif;
+    font-size: 1.4rem;
+    line-height: 1.8;
+    color: #333;
+    margin: 0;
+    font-weight: 500;
+}
+
+/* Section 3: Sustainability */
+.section-3 {
+    flex-direction: column;
+    text-align: center;
+    margin-top: 230px;
+}
+
+.sustainability-content {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 40px;
+}
+
+.sustainability-statement {
+    font-family: 'Goudy Old Style', 'Garamond', serif;
+    font-size: 2rem;
+    line-height: 1.8;
+    color: #6b5d4f;
+    margin: 0;
+    font-weight: 500;
+    max-width: 1200px;
+    text-align: center;
+}
+
+.sdg-intro {
+    font-family: 'Goudy Old Style', 'Garamond', serif;
+    font-size: 1.2rem;
+    line-height: 1.6;
+    color: #6b5d4f;
+    margin: 20px 0 0 0;
+    font-weight: 500;
+}
+
+.sdg-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 20px;
+    margin-top: 30px;
+    max-width: 1200px;
+    width: 100%;
+}
+
+.sdg-placeholder {
+    aspect-ratio: 1 / 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.sdg-image-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #e0d7c6 0%, #c4b5a0 100%);
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    color: #6b5d4f;
+    font-weight: 600;
+}
+
+.sdg-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+/* Section 4: Empowerment */
+.section-4 {
+    flex-direction: row;
+    margin-top: 300px;
+}
+
+.sustainability-hero {
+    position: relative;
+    width: 100%;
+    height: 500px;
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sustainability-hero-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #e0d7c6 0%, #c4b5a0 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sustainability-hero-background::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 1;
+}
+
+.sustainability-hero-content {
+    position: relative;
+    z-index: 3;
+    text-align: center;
+    color: #6b5d4f;
+}
+
+.sustainability-main-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 4rem;
+    font-weight: 700;
+    margin: 0 0 20px 0;
+    letter-spacing: 0.05em;
+    color: #ffffff;
+    text-shadow: 3px 3px 10px rgba(0, 0, 0, 0.9), 0 0 30px rgba(0, 0, 0, 0.7), 0 0 40px rgba(0, 0, 0, 0.5);
+}
+
+.sustainability-subtitle {
+    font-family: 'Goudy Old Style', 'Garamond', serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0;
+    letter-spacing: 0.03em;
+    color: #ffffff;
+    opacity: 1;
+    text-shadow: 3px 3px 8px rgba(0, 0, 0, 0.9), 0 0 25px rgba(0, 0, 0, 0.7), 0 0 35px rgba(0, 0, 0, 0.5);
+}
+
+.sustainability-details {
+    display: flex;
+    align-items: center;
+    gap: 50px;
+    width: 100%;
+}
+
+.sustainability-sdg-left {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    flex-shrink: 0;
+    align-items: center;
+}
+
+.sustainability-sdg-image {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 4px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.sustainability-text {
+    flex: 1;
+}
+
+.sustainability-description {
+    font-family: 'Goudy Old Style', 'Garamond', serif;
+    font-size: 1.4rem;
+    line-height: 1.8;
+    color: #333;
+    margin: 0;
+    font-weight: 500;
+    text-align: left;
+}
+
+/* Section 5: Sustainability in Every Stitch */
+.section-5 {
+    flex-direction: column;
+    margin-top: 300px;
+    gap: 60px;
+}
+
+.empowerment-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    text-align: left;
+    align-items: center;
+}
+
+.empowerment-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem;
+    font-weight: 600;
+    color: #6b5d4f;
+    margin: 0;
+    line-height: 1.3;
+    text-align: center;
+}
+
+.empowerment-description {
+    font-family: 'Goudy Old Style', 'Garamond', serif;
+    font-size: 1.3rem;
+    line-height: 1.8;
+    color: #333;
+    margin: 0;
+    font-weight: 500;
+}
+
+.empowerment-sdg {
+    display: flex;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.empowerment-sdg-image {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+/* Section 6: Tradition Meets Innovation */
+.section-6 {
+    flex-direction: row;
+    margin-top: 300px;
+}
+
+.tradition-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    text-align: left;
+    padding-right: 40px;
+}
+
+.tradition-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem;
+    font-weight: 600;
+    color: #6b5d4f;
+    margin: 0;
+    line-height: 1.3;
+    text-align: center;
+}
+
+.tradition-description {
+    font-family: 'Goudy Old Style', 'Garamond', serif;
+    font-size: 1.3rem;
+    line-height: 1.8;
+    color: #333;
+    margin: 0;
+    font-weight: 500;
+}
+
+.tradition-sdg-container {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.tradition-sdg-image {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 4px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Section 7: Collaborating for Change */
+.section-7 {
+    flex-direction: row;
+    margin-top: 300px;
+    align-items: flex-start;
+}
+
+.collaboration-content {
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    text-align: left;
+    padding-right: 60px;
+}
+
+.collaboration-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem;
+    font-weight: 600;
+    color: #6b5d4f;
+    margin: 0;
+    line-height: 1.3;
+}
+
+.collaboration-subtitle {
+    font-family: 'Goudy Old Style', 'Garamond', serif;
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: #bf9f4a;
+    margin: 0;
+    line-height: 1.4;
+}
+
+.collaboration-description {
+    font-family: 'Goudy Old Style', 'Garamond', serif;
+    font-size: 1.3rem;
+    line-height: 1.8;
+    color: #333;
+    margin: 0;
+    font-weight: 500;
+}
+
+.collaboration-sdg {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding-top: 40px;
+}
+
+.collaboration-sdg-image {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 4px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Section 8: Partnership Showcase */
+.section-8 {
+    flex-direction: column;
+    margin-top: 100px;
+}
+
+.partnership-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 40px;
+    width: 100%;
+}
+
+.partnership-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.partnership-item:hover {
+    transform: translateY(-5px);
+}
+
+.partnership-item:hover .partnership-image-placeholder {
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+.partnership-image-placeholder {
+    width: 100%;
+    margin-top: -70px;
+    height: 400px;
+    background: linear-gradient(135deg, #e0d7c6 0%, #c4b5a0 100%);
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    transition: box-shadow 0.3s ease;
+}
+
+.partnership-image-placeholder::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(196, 181, 160, 0.7);
+    border-radius: 8px;
+    z-index: 1;
+}
+
+.partnership-label {
+    font-family: 'Playfair Display', serif;
+    font-size: 3rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin: 0;
+    text-align: center;
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 3;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+}
+
+.partnership-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+/* Section 9: Our Promise */
+.section-9 {
+    flex-direction: column;
+    margin-top: 300px;
+    gap: 60px;
+}
+
+.promise-hero {
+    position: relative;
+    width: 100%;
+    height: 500px;
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.promise-hero-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #e0d7c6 0%, #c4b5a0 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.promise-hero-background::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 1;
+}
+
+.promise-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.promise-hero-content {
+    position: relative;
+    z-index: 3;
+    text-align: center;
+    color: #6b5d4f;
+    max-width: 900px;
+    padding: 0 40px;
+}
+
+.promise-main-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 4.5rem;
+    font-weight: 700;
+    margin: 0 0 30px 0;
+    letter-spacing: 0.05em;
+    color: #ffffff;
+    text-shadow: 3px 3px 10px rgba(0, 0, 0, 0.9), 0 0 30px rgba(0, 0, 0, 0.7), 0 0 40px rgba(0, 0, 0, 0.5);
+}
+
+.promise-subtitle {
+    font-family: 'Goudy Old Style', 'Garamond', serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin: 0;
+    letter-spacing: 0.03em;
+    color: #ffffff;
+    line-height: 1.6;
+    text-shadow: 3px 3px 8px rgba(0, 0, 0, 0.9), 0 0 25px rgba(0, 0, 0, 0.7), 0 0 35px rgba(0, 0, 0, 0.5);
+}
+
+.promise-description-container {
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    padding: 0;
+}
+
+.promise-description {
+    font-family: 'Goudy Old Style', 'Garamond', serif;
+    font-size: 1.4rem;
+    line-height: 1.8;
+    color: #333;
+    margin: 0;
+    font-weight: 500;
+    text-align: left;
+    width: 100%;
+}
+
+/* Scroll Animation */
+.fade-in-section {
+    opacity: 0;
+    transform: translateY(50px);
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+
+.fade-in-section.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Section 1 Sequential Animations */
+.section-1 .text-content {
+    opacity: 0;
+    transform: translateY(60px);
+    transition: opacity 1.2s ease-out, transform 1.2s ease-out;
+}
+
+.section-1.is-visible .text-content {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0s;
+}
+
+.section-1 .image-placeholder {
+    opacity: 0;
+    transform: translateY(60px);
+    transition: opacity 1.2s ease-out, transform 1.2s ease-out;
+}
+
+.section-1.is-visible .image-placeholder {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 1.2s;
+}
+
+/* Section 2 Sequential Animations */
+.section-2 .story-title {
+    opacity: 0;
+    transform: translateY(60px);
+    transition: opacity 1.2s ease-out, transform 1.2s ease-out;
+}
+
+.section-2.is-visible .story-title {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0s;
+}
+
+.section-2 .story-subtitle {
+    opacity: 0;
+    transform: translateY(60px);
+    transition: opacity 1.2s ease-out, transform 1.2s ease-out;
+}
+
+.section-2 .story-subtitle .highlight {
+    opacity: 0;
+    transform: translateY(30px);
+    display: inline-block;
+    transition: opacity 1s ease-out, transform 1s ease-out;
+}
+
+.section-2.is-visible .story-subtitle:nth-of-type(1) {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 1s;
+}
+
+.section-2.is-visible .story-subtitle:nth-of-type(1) .highlight {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 2s;
+}
+
+.section-2.is-visible .story-subtitle:nth-of-type(2) {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 3s;
+}
+
+.section-2.is-visible .story-subtitle:nth-of-type(2) .highlight {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 4s;
+}
+
+.section-2 .story-description {
+    opacity: 0;
+    transform: translateY(60px);
+    transition: opacity 1.2s ease-out, transform 1.2s ease-out;
+}
+
+.section-2.is-visible .story-description {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 5s;
+}
+
+/* Section 3 Sequential Animations */
+.section-3 .sustainability-statement {
+    opacity: 0;
+    transform: translateY(60px);
+    transition: opacity 1.2s ease-out, transform 1.2s ease-out;
+}
+
+.section-3.is-visible .sustainability-statement {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0s;
+}
+
+.section-3 .sdg-intro {
+    opacity: 0;
+    transform: translateY(60px);
+    transition: opacity 1.2s ease-out, transform 1.2s ease-out;
+}
+
+.section-3.is-visible .sdg-intro {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 1s;
+}
+
+.section-3 .sdg-placeholder {
+    opacity: 0;
+    transform: translateY(60px);
+    transition: opacity 1s ease-out, transform 1s ease-out;
+}
+
+.section-3.is-visible .sdg-placeholder:nth-child(1) {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 2s;
+}
+
+.section-3.is-visible .sdg-placeholder:nth-child(2) {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 2.8s;
+}
+
+.section-3.is-visible .sdg-placeholder:nth-child(3) {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 3.6s;
+}
+
+.section-3.is-visible .sdg-placeholder:nth-child(4) {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 4.4s;
+}
+
+.section-3.is-visible .sdg-placeholder:nth-child(5) {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 5.2s;
+}
+
+.section-3.is-visible .sdg-placeholder:nth-child(6) {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 6s;
+}
+
+/* Section 4 Sequential Animations */
+.section-4 .empowerment-content {
+    opacity: 0;
+    transform: translateY(60px);
+    transition: opacity 1.2s ease-out, transform 1.2s ease-out;
+}
+
+.section-4.is-visible .empowerment-content {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0s;
+}
+
+.section-4 .image-placeholder {
+    opacity: 0;
+    transform: translateY(60px);
+    transition: opacity 1.2s ease-out, transform 1.2s ease-out;
+}
+
+.section-4.is-visible .image-placeholder {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 1.2s;
+}
+
+/* Section 5 Sequential Animations */
+.section-5 .sustainability-hero {
+    opacity: 0;
+    transform: translateY(60px);
+    transition: opacity 1.2s ease-out, transform 1.2s ease-out;
+}
+
+.section-5.is-visible .sustainability-hero {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0s;
+}
+
+.section-5 .sustainability-details {
+    opacity: 0;
+    transform: translateY(60px);
+    transition: opacity 1.2s ease-out, transform 1.2s ease-out;
+}
+
+.section-5.is-visible .sustainability-details {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 1.2s;
+}
+
+/* Section 6 Sequential Animations */
+.section-6 .tradition-content {
+    opacity: 0;
+    transform: translateY(60px);
+    transition: opacity 1.2s ease-out, transform 1.2s ease-out;
+}
+
+.section-6.is-visible .tradition-content {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0s;
+}
+
+.section-6 .image-placeholder {
+    opacity: 0;
+    transform: translateY(60px);
+    transition: opacity 1.2s ease-out, transform 1.2s ease-out;
+}
+
+.section-6.is-visible .image-placeholder {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 1.2s;
+}
+
+/* Section 7 Sequential Animations */
+.section-7 .collaboration-title {
+    opacity: 0;
+    transform: translateY(60px);
+    transition: opacity 1.2s ease-out, transform 1.2s ease-out;
+}
+
+.section-7.is-visible .collaboration-title {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0s;
+}
+
+.section-7 .collaboration-subtitle {
+    opacity: 0;
+    transform: translateY(60px);
+    transition: opacity 1.2s ease-out, transform 1.2s ease-out;
+}
+
+.section-7.is-visible .collaboration-subtitle {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0s;
+}
+
+.section-7 .collaboration-description {
+    opacity: 0;
+    transform: translateY(60px);
+    transition: opacity 1.2s ease-out, transform 1.2s ease-out;
+}
+
+.section-7.is-visible .collaboration-description {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0s;
+}
+
+.section-7 .collaboration-sdg {
+    opacity: 0;
+    transform: translateY(60px);
+    transition: opacity 1.2s ease-out, transform 1.2s ease-out;
+}
+
+.section-7.is-visible .collaboration-sdg {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0s;
+}
+
+/* Section 8 Sequential Animations */
+.section-8 .partnership-item {
+    opacity: 0;
+    transform: translateY(60px);
+    transition: opacity 1s ease-out, transform 1s ease-out;
+}
+
+.section-8.is-visible .partnership-item:nth-child(1) {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0s;
+}
+
+.section-8.is-visible .partnership-item:nth-child(2) {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0.8s;
+}
+
+.section-8.is-visible .partnership-item:nth-child(3) {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 1.6s;
+}
+
+/* Section 9 Sequential Animations */
+.section-9 .promise-hero {
+    opacity: 0;
+    transform: translateY(60px);
+    transition: opacity 1.2s ease-out, transform 1.2s ease-out;
+}
+
+.section-9.is-visible .promise-hero {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0s;
+}
+
+.section-9 .promise-description-container {
+    opacity: 0;
+    transform: translateY(60px);
+    transition: opacity 1.2s ease-out, transform 1.2s ease-out;
+}
+
+.section-9.is-visible .promise-description-container {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 1.2s;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .about-content {
+        padding: 60px 40px;
+    }
+
+    .content-section {
+        gap: 50px;
+        margin-bottom: 80px;
+    }
+
+    .main-title {
+        font-size: 4rem;
+    }
+
+    .subtitle {
+        font-size: 1.5rem;
+    }
+
+    .story-title {
+        font-size: 3rem;
+    }
+
+    .story-subtitle {
+        font-size: 2.5rem;
+    }
+
+    .sustainability-statement {
+        font-size: 1.6rem;
+    }
+
+    .sdg-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 15px;
+    }
+
+    .sustainability-main-title {
+        font-size: 2.5rem;
+    }
+
+    .sustainability-subtitle {
+        font-size: 1.2rem;
+    }
+
+    .sustainability-hero {
+        height: 400px;
+    }
+
+    .sustainability-details {
+        gap: 30px;
+    }
+
+    .sustainability-sdg-image {
+        width: 100px;
+        height: 100px;
+    }
+
+    .sustainability-description {
+        font-size: 1.2rem;
+    }
+
+    .empowerment-title {
+        font-size: 2rem;
+    }
+
+    .empowerment-description {
+        font-size: 1.2rem;
+    }
+
+    .empowerment-sdg-image {
+        width: 100px;
+        height: 100px;
+    }
+
+    .tradition-title {
+        font-size: 2rem;
+    }
+
+    .tradition-description {
+        font-size: 1.2rem;
+    }
+
+    .tradition-sdg-image {
+        width: 100px;
+        height: 100px;
+    }
+
+    .collaboration-title {
+        font-size: 2rem;
+    }
+
+    .collaboration-subtitle {
+        font-size: 1.3rem;
+    }
+
+    .collaboration-description {
+        font-size: 1.2rem;
+    }
+
+    .collaboration-content {
+        padding-right: 40px;
+    }
+
+    .collaboration-sdg-image {
+        width: 120px;
+        height: 120px;
+    }
+
+    .partnership-grid {
+        gap: 30px;
+    }
+
+    .partnership-image-placeholder {
+        height: 280px;
+    }
+
+    .partnership-label {
+        font-size: 1.3rem;
+    }
+
+    .promise-main-title {
+        font-size: 3rem;
+    }
+
+    .promise-subtitle {
+        font-size: 1.5rem;
+    }
+
+    .promise-hero {
+        height: 400px;
+    }
+
+    .promise-description {
+        font-size: 1.2rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .about-content {
+        padding: 40px 20px;
+    }
+
+    .content-section {
+        flex-direction: column;
+        gap: 40px;
+        margin-bottom: 60px;
+    }
+
+    .main-title {
+        font-size: 3rem;
+    }
+
+    .subtitle {
+        font-size: 1.2rem;
+    }
+
+    .image-placeholder {
+        min-height: 300px;
+    }
+
+    .velare-logo {
+        width: 150px;
+    }
+
+    .statement {
+        font-size: 1.2rem;
+    }
+
+    .story-title {
+        font-size: 2.5rem;
+    }
+
+    .story-subtitle {
+        font-size: 2rem;
+    }
+
+    .story-description {
+        font-size: 1.2rem;
+    }
+
+    .sustainability-statement {
+        font-size: 1.3rem;
+    }
+
+    .sdg-intro {
+        font-size: 1rem;
+    }
+
+    .sdg-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+
+    .sdg-image-placeholder {
+        font-size: 0.8rem;
+    }
+
+    .sustainability-main-title {
+        font-size: 2rem;
+    }
+
+    .sustainability-subtitle {
+        font-size: 1rem;
+    }
+
+    .sustainability-hero {
+        height: 300px;
+    }
+
+    .sustainability-details {
+        flex-direction: column;
+        gap: 30px;
+        text-align: center;
+    }
+
+    .sustainability-sdg-left {
+        flex-direction: row;
+        justify-content: center;
+        gap: 15px;
+    }
+
+    .sustainability-sdg-image {
+        width: 80px;
+        height: 80px;
+    }
+
+    .sustainability-description {
+        font-size: 1.1rem;
+        text-align: center;
+    }
+
+    .empowerment-title {
+        font-size: 1.8rem;
+        text-align: center;
+    }
+
+    .empowerment-content {
+        text-align: center;
+    }
+
+    .empowerment-description {
+        font-size: 1.1rem;
+    }
+
+    .empowerment-sdg {
+        justify-content: center;
+    }
+
+    .empowerment-sdg-image {
+        width: 80px;
+        height: 80px;
+    }
+
+    .tradition-content {
+        padding-right: 0;
+        text-align: center;
+    }
+
+    .tradition-title {
+        font-size: 1.8rem;
+        text-align: center;
+    }
+
+    .tradition-description {
+        font-size: 1.1rem;
+        text-align: center;
+    }
+
+    .tradition-sdg-image {
+        width: 80px;
+        height: 80px;
+    }
+
+    .collaboration-content {
+        padding-right: 0;
+    }
+
+    .collaboration-title {
+        font-size: 1.8rem;
+        text-align: center;
+    }
+
+    .collaboration-subtitle {
+        font-size: 1.2rem;
+        text-align: center;
+    }
+
+    .collaboration-description {
+        font-size: 1.1rem;
+        text-align: center;
+    }
+
+    .collaboration-sdg {
+        padding-top: 20px;
+        justify-content: center;
+    }
+
+    .collaboration-sdg-image {
+        width: 100px;
+        height: 100px;
+    }
+
+    .partnership-grid {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+
+    .partnership-image-placeholder {
+        height: 280px;
+        max-width: 300px;
+        margin: 0 auto;
+    }
+
+    .partnership-label {
+        font-size: 1.2rem;
+    }
+
+    .promise-main-title {
+        font-size: 2.5rem;
+    }
+
+    .promise-subtitle {
+        font-size: 1.3rem;
+    }
+
+    .promise-hero {
+        height: 350px;
+    }
+
+    .promise-hero-content {
+        padding: 0 20px;
+    }
+
+    .promise-description-container {
+        padding: 0 20px;
+    }
+
+    .promise-description {
+        font-size: 1.1rem;
+    }
+}

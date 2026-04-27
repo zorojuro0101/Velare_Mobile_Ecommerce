@@ -1,0 +1,90 @@
+	
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Seller Dashboard</title>
+	<!-- Google Fonts for aesthetic, expensive look -->
+	<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@100;300;400;700&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Goodie&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="{{ url_for('static', filename='seller_dashboard.css') }}">
+	<!-- Bootstrap Icons CDN for dropdown icons if needed -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+</head>
+<body>
+		<div class="header-container">
+			<a href="{{ url_for('home') }}" class="header"><span>Veláre</span></a>
+		</div>
+		<hr class="divider">
+		<!-- Seller dashboard profile section -->
+		<div class="profile-section">
+			<div class="profile-pic-container">
+				<img src="{{ url_for('static', filename='images/user.png') }}" alt="Profile Picture" class="profile-pic">
+			</div>
+			<div class="profile-divider-container">
+				<div class="seller-name">Name of the Seller</div>
+				<div class="seller-tabs">
+					<a href="#" class="seller-tab-link">Dashboard</a>
+					<a href="#" class="seller-tab-link">Product Management</a>
+					<a href="#" class="seller-tab-link">Customer Feedback</a>
+					<a href="#" class="seller-tab-link">Logout</a>
+				</div>
+			</div>
+			<div class="profile-vertical-line"></div>
+			<div class="dashboard-main-content">
+				<div class="order-status-cards">
+					<a href="#" class="order-status-card">
+						<div class="order-status-title">Pending Shipment</div>
+						<div class="order-status-number">3</div>
+					</a>
+					<a href="#" class="order-status-card">
+						<div class="order-status-title">In Transit</div>
+						<div class="order-status-number">5</div>
+					</a>
+					<a href="#" class="order-status-card">
+						<div class="order-status-title">Delivered</div>
+						<div class="order-status-number">12</div>
+					</a>
+					<a href="#" class="order-status-card">
+						<div class="order-status-title">Cancelled</div>
+						<div class="order-status-number">1</div>
+					</a>
+				</div>
+				<div class="orders-section">
+					<div class="orders-title">Orders</div>
+					<div class="orders-card-box">
+						<table class="orders-table">
+							<thead>
+								<tr>
+									<th class="orders-th-number">#</th>
+									<th class="orders-th-item">Item</th>
+									<th class="orders-th-name">Product Name</th>
+									<th class="orders-th-date">Date</th>
+									<th class="orders-th-status">Status</th>
+									<th class="orders-th-buyer">Buyer</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td class="orders-td-number">1</td>
+									<td class="orders-td-item">
+										<img src="{{ url_for('static', filename='images/sampleimage1.jpg') }}" alt="Product" class="order-product-pic">
+									</td>
+									<td class="orders-td-name">MAGANDANG SAPATOS</td>
+									<td class="orders-td-date">September 6, 2025</td>
+									<td class="orders-td-status">Pending Shipment</td>
+									<td class="orders-td-buyer">SymonKiel@gmail.com</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- Seller dashboard content goes here -->
+		<!-- Navigation removed as requested -->
+</body>
+</html>

@@ -1,0 +1,211 @@
+Implement the Rider Report User feature in Flutter based on the complete documentation in RIDER_REPORT_IMPLEMENTATION_PROMPT.md file.
+
+CRITICAL REQUIREMENTS:
+
+1. READ THE DOCUMENTATION FIRST
+   - Read RIDER_REPORT_IMPLEMENTATION_PROMPT.md completely
+   - Read Velare Ecommerce/blueprints/rider_report_user.py for backend logic
+   - Read Velare Ecommerce/templates/rider/rider_report_user.html for UI reference
+
+2. DELIVERY DROPDOWN LOGIC (VERY IMPORTANT)
+   - Show ALL deliveries in dropdown (NO FILTERING)
+   - Each option displays: "Delivery #X - Order #Y (Buyer: Name1, Seller: Name2)"
+   - When user selects delivery, extract correct ID based on user type:
+     * If reporting Buyer → use buyer_id from selected delivery
+     * If reporting Seller → use seller_id from selected delivery
+   - This is the EXACT logic from the web implementation
+
+3. FILES TO CREATE
+
+   a) lib/models/report_model.dart
+      - Report class
+      - DeliveryOption class
+      - ReportCategory enum
+      - ReportStatus enum
+
+   b) lib/services/rider_report_service.dart
+      - getRiderDeliveries(int riderId) - Query deliveries with buyer/seller info
+      - getRiderReports(int userId) - Query rider's submitted reports
+      - submitReport(...) - Submit report with evidence upload
+      - uploadEvidence(File file) - Upload to Supabase Storage
+
+   c) lib/screens/rider/rider_report_screen.dart
+      - Two tabs: Submit Report, My Reports
+      - Submit report form with all fields
+      - My reports list with detail modal
+      - Image picker integration
+      - Confirmation dialogs
+
+4. SUPABASE QUERIES
+
+   Get Deliveries:
+   ```dart
+   final response = await _supabase
+     .from('deliveries')
+     .select('''
+       delivery_id,
+       order_id,
+       orders!inner(
+         order_id,
+         order_number,
+         buyer_id,
+         seller_id,
+         buyers!inner(
+           buyer_id,
+           first_name,
+           last_name,
+           user_id
+         ),
+         sellers!inner(
+           seller_id,
+           shop_name,
+           user_id
+         )
+       )
+     ''')
+     .eq('rider_id', riderId)
+     .order('created_at', ascending: false);
+   ```
+
+   Submit Report:
+   ```dart
+   // 1. Get reported_user_id
+   if (reportedType == 'buyer') {
+     final response = await _supabase
+       .from('buyers')
+       .select('user_id')
+       .eq('buyer_id', reportedId)
+       .single();
+     reportedUserId = response['user_id'];
+   } else {
+     final response = await _supabase
+       .from('sellers')
+       .select('user_id')
+       .eq('seller_id', reportedId)
+       .single();
+     reportedUserId = response['user_id'];
+   }
+
+   // 2. Upload evidence if provided
+   if (evidenceFile != null) {
+     final fileName = 'report_${DateTime.now().millisecondsSinceEpoch}_${path.basename(evidenceFile.path)}';
+     await _supabase.storage
+       .from('reports')
+       .upload(fileName, evidenceFile);
+     evidencePath = _supabase.storage.from('reports').getPublicUrl(fileName);
+   }
+
+   // 3. Insert report
+   await _supabase.from('user_reports').insert({
+     'reporter_id': currentUserId,
+     'reporter_type': 'rider',
+     'reported_user_id': reportedUserId,
+     'reported_user_type': reportedType,
+     'report_category': category,
+     'report_reason': reason,
+     'order_id': orderId,
+     'delivery_id': deliveryId,
+     'evidence_image': evidencePath,
+     'status': 'pending',
+   });
+
+   // 4. Update report count
+   final countResponse = await _supabase
+     .from('user_reports')
+     .select('report_id', count: CountOption.exact)
+     .eq('reported_user_id', reportedUserId);
+
+   if (reportedType == 'buyer') {
+     await _supabase
+       .from('buyers')
+       .update({'report_count': countResponse.count})
+       .eq('user_id', reportedUserId);
+   } else {
+     await _supabase
+       .from('sellers')
+       .update({'report_count': countResponse.count})
+       .eq('user_id', reportedUserId);
+   }
+   ```
+
+5. UI REQUIREMENTS
+   - Match existing rider screen styling (use Google Fonts Inter)
+   - Two tabs: Submit Report and My Reports
+   - Form fields:
+     * User Type dropdown (Buyer/Seller) - required
+     * Delivery dropdown (shows after user type selected) - optional
+     * Category dropdown - required
+     * Reason textarea - required
+     * Evidence image picker - optional
+   - Warning message: "False reporting may result in account suspension"
+   - Confirmation dialog before submit
+   - Success/error messages
+   - Loading states
+
+6. FORM VALIDATION
+   - User type: required
+   - Category: required
+   - Reason: required, min 10 characters
+   - Delivery: optional
+   - Evidence: optional
+
+7. REPORT CATEGORIES
+   - fraud - Fraud/Scam
+   - harassment - Harassment
+   - poor_service - Poor Service
+   - rude_behavior - Rude Behavior
+   - fake_product - Fake Product Claim
+   - other - Other
+
+8. STATUS COLORS
+   - pending: Orange
+   - under_review: Blue
+   - resolved: Green
+   - dismissed: Grey
+
+9. NAVIGATION
+   - Add "Report User" menu item in lib/screens/rider/rider_home.dart
+   - Icon: Icons.flag
+   - Route to RiderReportScreen
+
+10. IMAGE UPLOAD
+    - Use image_picker package
+    - Show preview after selection
+    - Upload to Supabase Storage bucket 'reports'
+    - Store public URL in database
+
+11. AUTH
+    - Use AuthService().currentUserId for rider's user_id
+    - Get rider_id from riders table using user_id
+
+12. ERROR HANDLING
+    - Handle network errors
+    - Show user-friendly error messages
+    - Handle Supabase errors
+    - Validate all inputs
+
+IMPLEMENTATION STEPS:
+1. Create report_model.dart with all classes
+2. Create rider_report_service.dart with Supabase queries
+3. Create rider_report_screen.dart with UI
+4. Update rider_home.dart to add navigation
+5. Test all flows
+
+TESTING CHECKLIST:
+- [ ] User type dropdown works
+- [ ] Delivery dropdown appears after user type selected
+- [ ] Delivery dropdown shows ALL deliveries with both buyer and seller names
+- [ ] Correct ID extracted based on user type (buyer_id or seller_id)
+- [ ] Category dropdown works
+- [ ] Reason field validates (required, min 10 chars)
+- [ ] Image picker works and shows preview
+- [ ] Submit confirmation dialog appears
+- [ ] Report successfully submitted to database
+- [ ] Report count updated on buyer/seller table
+- [ ] Success message shown
+- [ ] My Reports tab shows submitted reports
+- [ ] View details modal works
+- [ ] Status badges show with correct colors
+- [ ] Evidence image displays in detail view
+
+Start implementation now. Follow the web implementation logic exactly.

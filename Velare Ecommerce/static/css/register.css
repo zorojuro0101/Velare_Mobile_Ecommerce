@@ -1,0 +1,970 @@
+/* Password input wrapper for show/hide icon */
+.password-input-wrapper {
+    position: relative;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    height: 2.5em; /* Fixed height to prevent any shifting */
+    flex-shrink: 0; /* Prevent shrinking */
+}
+
+.password-input-wrapper input[type="password"],
+.password-input-wrapper input[type="text"] {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px 40px 8px 0; /* Make room for the icon */
+    border: none;
+    border-bottom: 2px solid #bbb;
+    font-size: 1.3em;
+    outline: none;
+    background: transparent;
+    font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+    transition: border-color 0.2s;
+    line-height: 1.2;
+    height: 2.5em; /* Fixed height to match wrapper */
+    flex-shrink: 0;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    border: none;
+    background: none;
+    color: #6d6552;
+    cursor: pointer;
+    padding: 4px;
+    font-size: 1rem;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    opacity: 1 !important;
+    visibility: visible !important;
+    z-index: 10;
+}
+
+.password-toggle:hover {
+    color: #181818;
+    background: none !important;
+}
+
+.password-guidelines {
+    margin-top: 12px;
+    margin-bottom: 20px;
+    min-height: 24px;
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0s, opacity 0.2s linear;
+}
+
+.password-guidelines.visible {
+    visibility: visible;
+    opacity: 1;
+}
+
+.password-guidelines-list {
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 10px 16px;
+    justify-content: center;
+}
+
+.password-guidelines-list li {
+    display: none; /* Hidden by default */
+    position: relative;
+    padding-left: 16px;
+    font-size: 0.9rem;
+    font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+    color: #b23a48;
+    transition: color 0.2s ease;
+    white-space: nowrap;
+}
+
+.password-guidelines-list li::before {
+    content: '\2022';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #b23a48; /* Default to unmet color */
+    font-size: 1.2rem;
+    line-height: 1;
+    transition: color 0.2s ease;
+}
+
+.password-guidelines-list li.unmet {
+    display: list-item; /* Only show when unmet */
+}
+
+.password-guidelines-list li.met {
+    display: none; /* Hide when met */
+}
+
+.password-guidelines-list li.met::before {
+    color: #2d6a4f;
+}
+
+
+.password-input-wrapper input[type="password"]:focus,
+.password-input-wrapper input[type="text"]:focus {
+    border-bottom: 2.5px solid #111;
+}
+
+/* Add gap to register-link */
+.register-link {
+	display: flex;
+	margin-top: 6px;
+	align-items: center;
+	font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+	font-size: 1.1em;
+}
+.register-link a, .register-link a:visited {
+	color: #181818;
+	text-decoration: underline;
+	transition: color 0.18s;
+}
+.register-link a:hover, .register-link a:focus {
+	color: #D3BD9B;
+	text-decoration: underline;
+}
+/* Welcome title style for register page */
+.welcome-title {
+	font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+	font-size: 1.5em;
+	color: #222;
+	margin-bottom: 15px;
+	font-weight: 500;
+	margin-top: 40px;
+	text-align: center;
+}
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+  display: none;
+}
+.welcome-sub {
+	font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+	font-size: 1.1em;
+	color: #222;
+	font-weight: 400;
+	margin-bottom: 15px;
+	text-align: center;
+}
+.custom-file-group {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+.custom-file-label {
+	display: inline-block;
+	padding: 6px 3px;
+	width: 110px;
+	max-width: 110px;
+	min-width: 110px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	background: #fafbfc;
+	color: #222;
+	border: 1px solid #bbb;
+	border-radius: 2px;
+	font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+	font-size: 1.08em;
+	cursor: pointer;
+	transition: background 0.2s, color 0.2s;
+}
+.custom-file-label:hover {
+	background: #f0f0f0;
+}
+.custom-file-filename {
+	font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+	font-size: 1.08em;
+	color: #222;
+	margin-left: 6px;
+	max-width: 160px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+.register-form input[type="file"] {
+	display: none;
+}
+.register-form input[type="file"]::-webkit-file-upload-button {
+	font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+	font-size: 1.08em;
+	background: #fafbfc;
+	color: #222;
+	border: 1px solid #bbb;
+	border-radius: 2px;
+	padding: 6px 16px;
+	cursor: pointer;
+	transition: background 0.2s, color 0.2s;
+}
+.register-form input[type="file"]::-ms-browse {
+	font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+	font-size: 1.08em;
+	background: #fafbfc;
+	color: #222;
+	border: 1px solid #bbb;
+	border-radius: 2px;
+	padding: 6px 16px;
+	cursor: pointer;
+	transition: background 0.2s, color 0.2s;
+}
+.register-form input[type="file"]::file-selector-button {
+	font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+	font-size: 1.08em;
+	background: #fafbfc;
+	color: #222;
+	border: 1px solid #bbb;
+	border-radius: 2px;
+	padding: 6px 16px;
+	cursor: pointer;
+	transition: background 0.2s, color 0.2s;
+}
+body, html {
+	height: 100%;
+	margin: 0;
+	padding: 0;
+	font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+	background: #fafbfc;
+	overflow: hidden;
+}
+
+.container {
+	display: flex;
+	height: 100vh;
+	width: 100vw;
+	min-height: 100vh;
+}
+
+.left {
+	flex: 1;
+	background: #f0f0f0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	overflow: hidden;
+	position: relative;
+}
+
+.left .slideshow-image {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	position: absolute;
+	top: 0;
+	left: 0;
+	opacity: 0;
+	transition: opacity 1.5s ease-in-out;
+}
+
+.left .slideshow-image.active {
+	opacity: 1;
+}
+
+.right {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: flex-start;
+	background: #fff;
+	min-height: 100vh;
+	padding-top: 48px;
+	box-sizing: border-box;
+	position: relative;
+	min-width: 0;
+	padding: 40px 32px 0 32px;
+}
+
+.register-header {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	margin-bottom: 20px;
+	margin-top: 0;
+	position: relative;
+}
+
+.brand-logo img {
+	max-width: 120px;
+	height: auto;
+	display: block;
+}
+.brand-logo {
+	margin-bottom: 15px;
+}
+
+.register-title {
+	background: none;
+	border: none;
+	outline: none;
+	font-size: 2em;
+	font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+	padding: 12px 36px 8px 36px;
+	color: #111;
+	font-weight: bold;
+	position: relative;
+	z-index: 2;
+	transition: color 0.2s, font-weight 0.2s;
+	display: inline-block;
+	margin: 0;
+	margin-bottom: 0;
+	margin-top: -32px;
+	letter-spacing: 1px;
+}
+
+/* Move up the rest of the content after the logo even more */
+.welcome-message,
+.register-tab-nav,
+.register-tab-underline-bg,
+.register-tabs-content-wrapper {
+	margin-top: -18px;
+}
+
+.register-tab-nav {
+	display: flex;
+	justify-content: center;
+	align-items: flex-end;
+	gap: 24px;
+	margin-top: 18px;
+	margin-bottom: 0;
+	width: 100%;
+	max-width: 400px;
+	position: relative;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.register-tab {
+	background: none;
+	border: none;
+	outline: none;
+	font-size: 1.2em;
+	font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+	padding: 10px 32px 6px 32px;
+	cursor: pointer;
+	color: #222;
+	font-weight: 400;
+	position: relative;
+	z-index: 2;
+	transition: color 0.2s, font-weight 0.2s;
+}
+
+/* Buyer tab specific margin */
+.register-tab {
+	/* ...existing code... */
+	margin-top: 0 !important;
+}
+.register-tab.buyer {
+	margin-top: 15px !important;
+}
+.register-tab.active {
+	color: #111;
+	font-weight: 600;
+}
+
+.register-tab-underline-bg {
+	position: relative;
+	width: 100%;
+	max-width: 400px;
+	height: 3px;
+	margin: 0 auto 0 auto;
+	margin-top: 6px;
+	background: #e0e0e0;
+	border-radius: 2px 2px 0 0;
+	overflow: visible;
+}
+.register-tab-underline {
+	position: absolute;
+	left: 0;
+	bottom: 0;
+	height: 3px;
+	background: #111;
+	border-radius: 2px 2px 0 0;
+	transition: width 0.3s, transform 0.3s;
+	display: block;
+	z-index: 1;
+}
+
+.register-tabs-content-wrapper {
+	width: 100%;
+	max-width: 350px;
+	margin: 0 auto;
+	margin-top: 32px;
+}
+
+.register-tab-content {
+	width: 100%;
+}
+
+.register-form {
+	width: 100%;
+	max-width: 350px;
+	display: flex;
+	flex-direction: column;
+	align-items: stretch;
+	gap: 0;
+}
+
+/* Name row for side-by-side first and last name */
+.name-row {
+	display: flex;
+	gap: 12px;
+	width: 100%;
+}
+
+.name-row input {
+	flex: 1;
+}
+
+/* Address group styling */
+.address-group {
+	display: flex;
+	flex-direction: column;
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+.address-group label {
+	font-size: 1.08em;
+	color: #222;
+	font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+	margin-top: 8px;
+	margin-bottom: 4px;
+}
+
+.register-form input[type="text"],
+.register-form input[type="email"],
+.register-form input[type="password"] {
+	border: none;
+	border-bottom: 2px solid #bbb;
+	padding: 10px 4px 8px 0;
+	font-size: 1.3em;
+	outline: none;
+	background: transparent;
+	margin-bottom: 0;
+	transition: border-color 0.2s;
+	width: 100%;
+	box-sizing: border-box;
+	font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+}
+
+.register-form input[type="text"]:focus,
+.register-form input[type="email"]:focus,
+.register-form input[type="password"]:focus {
+	border-bottom: 2.5px solid #111;
+}
+
+.register-form input::placeholder {
+	color: #bbb;
+	opacity: 1;
+	font-size: 1em;
+	font-family: inherit;
+}
+
+.register-form input:focus::placeholder {
+	color: transparent;
+}
+
+.register-form input[type="file"] {
+	margin-top: 10px;
+	margin-bottom: 10px;
+	font-size: 1.08em;
+	color: #222;
+	background: #fafbfc;
+	border: none;
+	font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+}
+
+.register-form select {
+	margin-top: 8px;
+	margin-bottom: 10px;
+	padding: 8px 4px;
+	font-size: 1.08em;
+	border: 1px solid #bbb;
+	border-radius: 2px;
+	background: #fafbfc;
+	color: #222;
+	font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+	outline: none;
+	transition: border-color 0.2s;
+}
+.register-form select:focus {
+	border-color: #111;
+}
+
+.id-upload-group {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	margin-top: -20px;
+	margin-bottom: 8px;
+	gap: 16px;
+}
+.id-upload-group label {
+	font-size: 1.08em;
+	color: #222;
+	font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+	margin-bottom: 0;
+	margin-right: 8px;
+	white-space: nowrap;
+	align-self: center;
+}
+
+.register-btn {
+	width: 100%;
+	padding: 14px 0;
+	background: #111;
+	color: #fff;
+	font-size: 1.08em;
+	font-weight: normal;
+	border: none;
+	border-radius: 0;
+	cursor: pointer;
+	letter-spacing: 1px;
+	margin-top: -3px;
+	margin-bottom: 0;
+	transition: background 0.2s;
+	font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+}
+.register-btn:hover {
+	background: #D3BD9B !important;
+}
+
+/* Style for all other buttons in the form (if any) */
+button, input[type="submit"], input[type="button"] {
+	font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+	font-size: 0.98em;
+}
+
+@media (max-width: 1023px) and (min-width: 768px) {
+	.container {
+		flex-direction: row;
+	}
+	.left {
+		flex: 0 0 40%;
+	}
+	.right {
+		flex: 0 0 60%;
+		padding: 0 24px;
+	}
+}
+
+@media (max-width: 767px) {
+	.container {
+		flex-direction: column;
+		height: auto;
+		min-height: 100vh;
+	}
+	.left {
+		width: 100vw;
+		height: 220px;
+		min-height: 180px;
+		max-height: 250px;
+		flex: none;
+	}
+	.left img {
+		width: 100vw;
+		height: 100%;
+		object-fit: cover;
+	}
+	.right {
+		width: 100vw;
+		flex: none;
+		padding: 32px 8vw 24px 8vw;
+		min-width: 0;
+		justify-content: flex-start;
+	}
+	.register-tab-nav {
+		max-width: 100vw;
+	}
+	.register-tabs-content-wrapper {
+		max-width: 100vw;
+	}
+	.brand-logo img {
+		max-width: 90px;
+	}
+}
+
+@media (max-width: 480px) {
+	.register-form input[type="text"],
+	.register-form input[type="email"],
+	.register-form input[type="password"],
+	.register-btn {
+		font-size: 1em;
+		padding: 12px 0;
+	}
+	.brand-logo img {
+		max-width: 70px;
+	}
+}
+.register-tab-underline-bg {
+	position: relative;
+	width: 100%;
+	max-width: 400px;
+	height: 3px;
+	margin: 0 auto 0 auto;
+	margin-top: 6px;
+	background: #e0e0e0;
+	border-radius: 2px 2px 0 0;
+	overflow: visible;
+}
+body, html {
+	height: 100%;
+	margin: 0;
+	padding: 0;
+	font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+	overflow: hidden;
+}
+.container {
+	display: flex;
+	height: 100vh;
+}
+.left {
+	flex: 1;
+	background: url('../static/images/sampleimage1.jpg') no-repeat center center;
+	background-size: cover;
+}
+.right {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: flex-start;
+	background: #fff;
+	min-height: 100vh;
+	padding-top: 48px;
+	box-sizing: border-box;
+}
+.form-box {
+	width: 80%;
+	max-width: 400px;
+	padding: 40px;
+	box-shadow: 0 0 10px rgba(0,0,0,0.1);
+	border-radius: 2px;
+	background: #fafafa;
+}
+.form-box h2 {
+	margin-bottom: 24px;
+	text-align: center;
+}
+.form-box input[type="text"],
+.form-box input[type="email"],
+.form-box input[type="password"] {
+	border: none;
+	border-bottom: 2px solid #bbb;
+	padding: 10px 4px 8px 0;
+	font-size: 1.3em;
+	outline: none;
+	background: transparent;
+	margin-bottom: 0;
+	transition: border-color 0.2s;
+	width: 100%;
+	box-sizing: border-box;
+	font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+}
+.form-box input[type="text"]:focus,
+.form-box input[type="email"]:focus,
+.form-box input[type="password"]:focus {
+	border-bottom: 2.5px solid #a259ff;
+}
+.form-box input::placeholder {
+	color: #bbb;
+	opacity: 1;
+	font-size: 1em;
+	font-family: inherit;
+	transition: color 0.2s;
+}
+.form-box input:focus::placeholder {
+	color: transparent;
+}
+.form-box button {
+	width: 100%;
+	padding: 12px;
+	background: #007bff;
+	color: #fff;
+	border: none;
+	border-radius: 4px;
+	font-size: 16px;
+	cursor: pointer;
+}
+.form-box button:hover {
+	background: #0056b3;
+}
+
+.brand-logo img {
+	max-width: 120px;
+	height: auto;
+	display: block;
+}
+.brand-logo {
+	margin-bottom: 15px;
+}
+
+.register-header {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	margin-bottom: 20px;
+	margin-top: 0;
+}
+
+.register-title {
+	font-size: 2em;
+	font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+	color: #111;
+	font-weight: bold;
+	margin-bottom: 0;
+	margin-top: -32px;
+	letter-spacing: 1px;
+}
+
+.register-tab-nav {
+	display: flex;
+	justify-content: center;
+	align-items: flex-end;
+	gap: 24px;
+	margin-top: 18px;
+	margin-bottom: 0;
+	width: 100%;
+	max-width: 400px;
+	position: relative;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.register-tab {
+	background: none;
+	border: none;
+	outline: none;
+	font-size: 1.2em;
+	font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+	padding: 10px 32px 6px 32px;
+	cursor: pointer;
+	color: #222;
+	font-weight: 400;
+	position: relative;
+	z-index: 2;
+	transition: color 0.2s, font-weight 0.2s;
+}
+.register-tab.active {
+	color: #111;
+	font-weight: 600;
+}
+
+.register-tab-underline {
+	position: absolute;
+	left: 0;
+	bottom: 0;
+	height: 3px;
+	background: #111;
+	border-radius: 2px 2px 0 0;
+	transition: width 0.3s, transform 0.3s;
+	display: block;
+	z-index: 1;
+}
+.register-header {
+	position: relative;
+}
+.register-tab-nav {
+	position: relative;
+	width: 100%;
+}
+
+@media (max-width: 767px) {
+	.brand-logo img {
+		max-width: 90px;
+	}
+}
+
+@media (max-width: 480px) {
+	.brand-logo img {
+		max-width: 70px;
+	}
+}
+
+/* Address Tabs Dropdown Panel Styles */
+.address-tabs-dropdown {
+	position: fixed;
+	background: #fff;
+	border-radius: 4px;
+	box-shadow: 0 8px 32px 0 rgba(44,34,54,0.13);
+	z-index: 10000;
+	max-width: 500px;
+	width: 500px;
+	padding: 16px 12px 10px 12px;
+	display: flex;
+	flex-direction: column;
+	align-items: stretch;
+	font-family: 'Goudy Old Style', Goudy, serif;
+}
+
+/* Address Tabs - Register Page Style */
+.address-tabs {
+	display: flex;
+	justify-content: center;
+	align-items: flex-end;
+	gap: 8px;
+	margin-top: 18px;
+	margin-bottom: 0;
+	width: 100%;
+	max-width: 500px;
+	position: relative;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.address-tab {
+	background: none;
+	border: none;
+	outline: none;
+	font-size: 1.1em;
+	font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+	padding: 8px 14px 5px 14px;
+	cursor: pointer;
+	color: #222;
+	font-weight: 400;
+	position: relative;
+	z-index: 2;
+	transition: color 0.2s, font-weight 0.2s;
+	margin-top: 0 !important;
+}
+
+.address-tab.active {
+	color: #111;
+	font-weight: 600;
+}
+
+.address-tab:disabled {
+	background: none;
+	color: #b0a58a;
+	cursor: not-allowed;
+}
+
+.address-tabs-underline-bg {
+	position: relative;
+	width: 100%;
+	max-width: 500px;
+	height: 3px;
+	margin: 0 auto 0 auto;
+	margin-top: 6px;
+	background: #e0e0e0;
+	border-radius: 2px 2px 0 0;
+	overflow: visible;
+}
+
+.address-tabs-underline {
+	position: absolute;
+	left: 0;
+	bottom: 0;
+	height: 3px;
+	background: #111;
+	border-radius: 2px 2px 0 0;
+	transition: width 0.3s, transform 0.3s;
+	display: block;
+	z-index: 1;
+}
+
+.address-tab-content {
+	margin-bottom: 0;
+	margin-top: 20px;
+	display: block;
+	font-family: 'Goudy Old Style', Goudy, serif;
+}
+
+.address-tab-content label {
+	font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+	font-size: 1.05rem;
+	color: #181818;
+	font-weight: 600;
+	margin-bottom: 4px;
+	display: block;
+}
+
+.address-tab-content select {
+	font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+	font-size: 1.08rem;
+	padding: 7px 10px;
+	border: 1.2px solid #d3bd9b;
+	border-radius: 2px;
+	background: transparent;
+	color: #181818;
+	margin-bottom: 2px;
+	outline: none;
+	transition: border-color 0.18s;
+	width: 100%;
+}
+
+.address-tab-content select:focus {
+	border-color: #181818;
+}
+
+.address-tab-content input[type="text"] {
+	font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+	font-size: 1.08rem;
+	padding: 7px 10px;
+	border: 1.2px solid #d3bd9b;
+	border-radius: 2px;
+	background: #faf9f7;
+	color: #181818;
+	margin-bottom: 2px;
+	outline: none;
+	transition: border-color 0.18s;
+	width: 95%;
+	max-width: 550px;
+}
+
+.address-tab-content input[type="text"]:focus {
+	border-color: #181818;
+}
+
+.address-tab-content input[type="text"]:read-only {
+	background: #f0f0f0;
+	cursor: not-allowed;
+}
+
+.modal-actions {
+	display: flex;
+	justify-content: flex-end;
+	gap: 12px;
+	margin-top: 18px;
+}
+
+.modal-btn {
+	padding: 7px 18px;
+	border: 1.5px solid #181818;
+	background: #fff;
+	color: #181818;
+	font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+	font-size: 1rem;
+	font-weight: 600;
+	cursor: pointer;
+	border-radius: 2px;
+	transition: background 0.18s, color 0.18s;
+}
+
+.modal-btn:hover {
+	background: #181818;
+	color: #fff;
+}
+
+.modal-btn:disabled {
+	background: #f0f0f0;
+	color: #999;
+	border-color: #ccc;
+	cursor: not-allowed;
+}
+
+.modal-btn:disabled:hover {
+	background: #f0f0f0;
+	color: #999;
+}

@@ -1,0 +1,2155 @@
+
+.main-content-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: flex-start;
+    min-height: 70vh;
+    position: relative;
+    margin-top: 40px;
+}
+
+.account-card-container {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-start;
+    padding-right: 60px;
+}
+
+html,
+body {
+    height: 100%;
+    overflow: hidden !important;
+    max-width: 100vw;
+}
+
+.header-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.header {
+    text-align: center;
+    padding: 10px 0 8px 0;
+    font-size: 2.3rem;
+    font-weight: 700;
+    letter-spacing: 3px;
+    color: #181818;
+    margin-bottom: 10px;
+    font-family: 'Cinzel', serif;
+    text-shadow: 0 2px 12px rgba(191,161,74,0.08), 0 1px 0 #fffbe8;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.header:visited,
+.header:active,
+.header:focus {
+    color: #181818;
+    text-decoration: none;
+}
+
+.icon-bar {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    gap: 24px;
+    margin-right: 32px;
+    z-index: 2000;
+}
+
+.icon-wrapper {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.icon-label {
+    display: block;
+    position: absolute;
+    top: -32px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #181818;
+    padding: 3px 12px;
+    border-radius: 2px;
+    font-size: 0.95rem;
+    font-family: 'Goodie', serif;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 1000;
+    border: 1px solid #e0d7c6;
+    box-shadow: 0 2px 8px rgba(44,34,54,0.08);
+    transition: opacity 0.2s;
+}
+
+.icon-wrapper:hover .icon-label {
+    opacity: 1;
+}
+
+.icon {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+    opacity: 0.85;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.2s;
+}
+
+.icon:hover {
+    opacity: 1;
+    transform: scale(1.08);
+}
+
+#menuToggle {
+    position: fixed;
+    left: 24px;
+    top: 33px;
+    z-index: 14001;
+}
+
+/* Ensure hamburger/close button is always above sidebar and overlay */
+#hamburgerBtn {
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    width: 20px;
+    height: 11px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    z-index: 14001;
+    transition: background 0.2s, box-shadow 0.2s;
+}
+
+.bar {
+    width: 100%;
+    height: 2px;
+    border-radius: 1px;
+    background: #181818;
+    margin: 0;
+    transition: all 0.32s cubic-bezier(.4,0,.2,1);
+    position: absolute;
+    left: 0;
+}
+
+.bar--top {
+    top: 1.5px;
+}
+
+.bar--bottom {
+    top: 7.5px;
+}
+
+#hamburgerBtn.open .bar--top {
+    top: 4.5px;
+    transform: rotate(45deg);
+}
+
+#hamburgerBtn.open .bar--bottom {
+    top: 4.5px;
+    transform: rotate(-45deg);
+}
+
+.dropdown-divider {
+    height: 1px;
+    width: 90%;
+    background: #e0d7c6;
+    margin: 8px auto;
+    border: none;
+    border-radius: 2px;
+}
+
+.side-menu-divider {
+    width: 85%;
+    height: 0;
+    border-bottom: 1.5px solid #e0d7c6;
+    margin: 10px 18px auto;
+}
+
+.account-left-nav {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    min-width: 260px;
+    max-width: 280px;
+    margin-right: 32px;
+    margin-left: 24px;
+    margin-top: 0;
+    margin-bottom: 0;
+    position: relative;
+}
+
+.account-profile-header {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-bottom: 32px;
+    margin-top: 0;
+}
+
+.profile-img-placeholder {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: #e0d7c6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    color: #b0a58a;
+    box-shadow: 0 2px 8px rgba(44,34,54,0.08);
+    position: relative;
+}
+
+.profile-img-placeholder .profile-initial {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, rgba(211,189,155,0.35) 0%, rgba(105,91,68,0.35) 100%);
+    color: #8b7355;
+    font-size: 24px;
+    font-weight: 600;
+    font-family: 'Playfair Display', serif;
+    text-transform: uppercase;
+    border-radius: 50%;
+}
+
+.profile-name-placeholder {
+    font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+    font-size: 1.18rem;
+    font-weight: 600;
+    color: #181818;
+    letter-spacing: 0.5px;
+}
+
+.account-nav-divider {
+    width: 100%;
+    height: 1.5px;
+    background: linear-gradient(90deg, rgba(211,189,155,0.10) 0%, rgba(44,34,54,0.13) 100%);
+    margin: 5px 0 18px 0;
+    border: none;
+    border-radius: 2px;
+    box-shadow: 0 1px 8px 0 rgba(44,34,54,0.06);
+}
+
+.account-nav-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.sidebar-vertical-line {
+    position: absolute;
+    top: -41px;
+    right: -18px;
+    height: 1000px;
+    width: 1.5px;
+    background: linear-gradient(180deg, #e0d7c6 0%, #d3bd9b 100%);
+    border-radius: 2px;
+    box-shadow: 0 0 8px 0 rgba(44,34,54,0.08);
+    z-index: 2;
+}
+
+.main-tab {
+    font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+    font-size: 1.1rem;
+    color: #181818;
+    font-weight: 700;
+    margin-top: 18px;
+    margin-bottom: 2px;
+    margin-left: 30px;
+    letter-spacing: 0.5px;
+}
+
+.main-tab:first-child {
+margin-top: 0;
+}
+
+/* Notification Badge */
+.notification-badge {
+position: absolute;
+top: -4px;
+right: 4px;
+background: #bf9f4a;
+color: #fff;
+font-size: 0.55rem;
+font-weight: 700;
+font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+padding: 0px 4px;
+border-radius: 6px;
+min-width: 13px;
+height: 13px;
+display: flex;
+align-items: center;
+justify-content: center;
+box-shadow: 0 1px 4px rgba(191,159,74,0.4);
+animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+0%, 100% {
+transform: scale(1);
+box-shadow: 0 2px 6px rgba(191,159,74,0.4);
+}
+50% {
+transform: scale(1.05);
+box-shadow: 0 2px 8px rgba(191,159,74,0.6);
+}
+}
+
+.main-tab .main-tab-label {
+display: inline-block;
+position: relative;
+z-index: 1;
+padding-bottom: 2px;
+    z-index: 1;
+    padding-bottom: 2px;
+}
+
+.main-tab .main-tab-label::after {
+    content: '';
+    display: block;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 2px;
+    background: #D3BD9B;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.28s cubic-bezier(.4,0,.2,1);
+}
+
+.main-tab:hover .main-tab-label::after,
+.main-tab.active .main-tab-label::after {
+    transform: scaleX(1);
+}
+
+.main-tab:hover,
+.main-tab.active {
+    color: #D3BD9B !important;
+    text-shadow: 0 1px 4px rgba(211,189,155,0.3), 0 0.5px 0 #fffbe8;
+}
+
+/* Specific styling for My Purchases active state */
+#myPurchasesTab.active,
+#myPurchasesTab.active .main-tab-label,
+#myPurchasesTab.active i {
+    color: #D3BD9B !important;
+    text-shadow: 0 1px 4px rgba(211,189,155,0.3), 0 0.5px 0 #fffbe8;
+}
+
+/* Ensure all main tabs with active class get gold color */
+.main-tab.active,
+.main-tab.active .main-tab-label,
+.main-tab.active i {
+    color: #D3BD9B !important;
+    text-shadow: 0 1px 4px rgba(211,189,155,0.3), 0 0.5px 0 #fffbe8;
+}
+
+.sub-tabs {
+    display: none;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 0;
+    margin-left: 66px;
+    height: auto;
+}
+
+.sub-tabs.open {
+    display: flex;
+}
+
+.sub-tabs .sub-tab {
+    margin-left: 18px;
+    font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+    font-size: 1rem;
+    color: #6d6552;
+    font-weight: 500;
+    cursor: pointer;
+    margin-bottom: 0;
+    line-height: 2.2;
+    position: relative;
+    display: inline-block;
+    padding-bottom: 2px;
+}
+
+.sub-tabs .sub-tab-label {
+    display: inline-block;
+    position: relative;
+    padding-bottom: 2px;
+}
+
+.sub-tabs .sub-tab-label::after {
+    content: '';
+    display: block;
+    position: absolute;
+    left: 0;
+    bottom: 4px;
+    width: 100%;
+    height: 2px;
+    background: #181818;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.28s cubic-bezier(.4,0,.2,1);
+    z-index: 1;
+}
+
+.sub-tabs .sub-tab:hover .sub-tab-label::after,
+.sub-tabs .sub-tab.active .sub-tab-label::after {
+    transform: scaleX(1);
+}
+
+.sub-tabs .sub-tab:hover .sub-tab-label,
+.sub-tabs .sub-tab.active .sub-tab-label {
+    color: #181818;
+    text-shadow: 0 1px 3px rgba(24,24,24,0.15), 0 0.5px 0 #fffbe8;
+}
+
+.account-nav-divider + .account-nav-list .main-tab.has-sub.active {
+    color: #D3BD9B;
+}
+
+.account-nav-divider + .account-nav-list .main-tab.has-sub.active .main-tab-label::after {
+    transform: scaleX(1);
+}
+
+.sub-tabs .sub-tab.active .sub-tab-label {
+    color: #000000;
+    font-weight: 700;
+}
+
+.account-card-bg {
+    height: 635px;
+    width: 1500px;
+    background: #ffffff;
+    box-shadow: 0 8px 32px 0 rgba(44,34,54,0.10);
+    border-radius: 2px;
+    margin-top: 0;
+    margin-bottom: 48px;
+    margin-right: -392px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    position: fixed;
+    z-index: 1;
+}
+
+.profile-section-title-row {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    width: 100%;
+}
+
+.profile-section-title {
+    font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+    font-size: 1.4rem !important;
+    font-weight: 500 !;
+    color: #181818;
+    margin-top: 56px;
+    margin-bottom: 10px;
+    margin-left: 53px;
+    text-align: left;
+    line-height: 1.1;
+}
+
+.account-card-bg h2 {
+	font-family: 'Playfair Display', serif;
+	font-size: 2rem;
+	font-weight: 700;
+	color: #181818;
+	margin-bottom: 12px;
+}
+.profile-section-divider {
+    width: 860px;
+    border: none;
+    border-top: 1.2px solid #e0d7c6;
+    margin: 0 0 24px 0;
+    margin-top: 12px;
+    margin-left: 53px;
+}
+
+.purchase-status-tabs {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-end;
+    gap: 140px;
+    margin-bottom: 0;
+    margin-left: 113px;
+    margin-right: auto;
+    width: 100%;
+    max-width: 920px;
+    position: relative;
+    background: rgba(211,189,155,0.06);
+    border: 1px solid rgba(211,189,155,0.2);
+    border-radius: 4px;
+    padding: 16px -10px 0 24px;
+    box-shadow: 0 2px 8px rgba(44,34,54,0.06);
+    justify-content: center;
+    margin-bottom: 30px;
+}
+
+.purchase-tab {
+    background: none;
+    border: none;
+    outline: none;
+    font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+    font-size: 1.1rem;
+    color: #6d6552;
+    cursor: pointer;
+    padding: 12px 0;
+    position: relative;
+    z-index: 2;
+    transition: color 0.2s;
+    white-space: nowrap;
+    font-weight: 400;
+    text-decoration: none;
+}
+
+.purchase-tab:focus,
+.purchase-tab:active,
+.purchase-tab:visited {
+    text-decoration: none;
+    outline: none;
+}
+
+.purchase-tab.active {
+    color: #111 !important;
+    font-weight: 600 !important;
+    text-decoration: none !important;
+}
+
+.tab-count {
+    display: inline;
+    margin-left: 4px;
+    color: #6d6552;
+    font-size: 1rem;
+    font-weight: 400;
+}
+
+.purchase-tab.active .tab-count {
+    color: #111;
+    font-weight: 600;
+}
+
+
+.purchase-tab-underline-bg {
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: transparent;
+    border-radius: 0;
+    overflow: visible;
+    pointer-events: none;
+}
+
+.purchase-tab-underline {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 120px;
+    height: 2px;
+    background: #181818;
+    border-radius: 2px 2px 0 0;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity: 0;
+}
+
+.purchase-tab-underline.ready {
+    opacity: 1;
+}
+
+
+.purchase-orders {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    width: 100%;
+    max-width: 920px;
+    margin-left: 113px;
+    opacity: 0;
+}
+
+.purchase-orders.ready {
+    opacity: 1;
+    padding-right: 140px;
+    margin-bottom: 32px;
+}
+
+.order-card {
+    border: 1.2px solid rgba(24,24,24,0.12);
+    border-radius: 6px;
+    padding: 24px;
+    background: #ffffff;
+    box-shadow: 0 4px 18px rgba(44,34,54,0.10);
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.order-card-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: flex-start;
+	gap: 12px;
+}
+
+.header-right-section {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-end;
+	gap: 10px;
+}
+
+.order-actions-inline {
+	display: flex;
+	gap: 8px;
+	margin-top: 4px;
+}
+
+.order-header-divider {
+	width: 100%;
+	height: 1px;
+	background: linear-gradient(90deg, rgba(211,189,155,0.2) 0%, rgba(44,34,54,0.15) 50%, rgba(211,189,155,0.2) 100%);
+	margin: 16px 0;
+	border-radius: 1px;
+}
+
+.store-header-info {
+	display: flex;
+	align-items: center;
+	gap: 16px;
+}
+
+.store-header-image {
+	width: 48px;
+	height: 48px;
+	background: linear-gradient(135deg, rgba(211,189,155,0.35), rgba(105,91,68,0.35));
+	border-radius: 8px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 1.3rem;
+	color: #8b7355;
+	flex-shrink: 0;
+	font-family: 'Playfair Display', serif;
+	font-weight: 600;
+	text-transform: uppercase;
+}
+
+.store-header-details {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+}
+
+.order-meta {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.08rem;
+    font-weight: 600;
+    color: #181818;
+}
+
+.order-date {
+    font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+    font-size: 1.02rem;
+    color: #6d6552;
+    margin-top: 4px;
+}
+
+.order-address {
+    font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+    font-size: 0.95rem;
+    color: #8b7355;
+    margin-top: 6px;
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    line-height: 1.4;
+}
+
+.order-address i {
+    font-size: 0.9rem;
+    margin-top: 2px;
+    flex-shrink: 0;
+}
+
+.order-status.badge {
+    font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    padding: 6px 12px;
+    border-radius: 2px;
+    min-width: 92px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+}
+
+.order-status.preparing {
+    color: #d97706;
+    text-shadow: 0 1px 3px rgba(217,119,6,0.2);
+}
+
+.order-status.preparing::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(217,119,6,0.2), transparent);
+    animation: shimmer 2s infinite;
+}
+
+.order-status.pending-shipment {
+    color: #6d6552;
+    text-shadow: 0 1px 3px rgba(109,101,82,0.2);
+}
+
+.order-status.pending-shipment::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(109,101,82,0.2), transparent);
+    animation: shimmer 2s infinite;
+}
+
+.order-status.in-transit {
+    color: #5a4cb1;
+    text-shadow: 0 1px 3px rgba(90,76,177,0.2);
+}
+
+.order-status.in-transit::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(90,76,177,0.2), transparent);
+    animation: shimmer 2s infinite;
+}
+
+.order-status.delivered {
+    color: #2d6a4f;
+    text-shadow: 0 1px 3px rgba(45,106,79,0.2);
+}
+
+
+.order-status.cancelled {
+    color: #b23a48;
+    text-shadow: 0 1px 3px rgba(178,58,72,0.2);
+}
+
+
+@keyframes shimmer {
+    0% {
+        left: -100%;
+    }
+    100% {
+        left: 100%;
+    }
+}
+
+.order-card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.store-info-section {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px;
+    background: rgba(211,189,155,0.06);
+    border-radius: 6px;
+    border: 1px solid rgba(211,189,155,0.15);
+}
+
+.store-photo-placeholder {
+    width: 64px;
+    height: 64px;
+    background: linear-gradient(135deg, rgba(211,189,155,0.35), rgba(105,91,68,0.35));
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: #8b7355;
+    flex-shrink: 0;
+}
+
+.store-photo-placeholder::before {
+    content: "🏪";
+}
+
+.store-details {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.store-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #181818;
+}
+
+.store-address {
+    font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+    font-size: 0.95rem;
+    color: #6d6552;
+}
+
+.order-item-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.order-item {
+    display: grid;
+    grid-template-columns: 72px 1fr auto;
+    grid-template-rows: auto auto;
+    align-items: start;
+    gap: 18px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(24,24,24,0.08);
+}
+
+.order-item:last-child {
+    border-bottom: none;
+}
+
+.item-thumb {
+    width: 72px;
+    height: 72px;
+    background: linear-gradient(135deg, rgba(211,189,155,0.25), rgba(105,91,68,0.25));
+    border-radius: 4px;
+    grid-row: 1 / 3;
+}
+
+.item-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    grid-row: 1 / 3;
+}
+
+.item-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.08rem;
+    color: #181818;
+    font-weight: 600;
+}
+
+.item-materials {
+    font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+    font-size: 0.95rem;
+    color: #8b7355;
+    font-style: italic;
+    margin-bottom: 2px;
+}
+
+.item-variant {
+    font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+    font-size: 1rem;
+    color: #6d6552;
+}
+
+.item-quantity {
+    font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+    font-size: 0.95rem;
+    color: #6d6552;
+    font-weight: 600;
+    grid-column: 3;
+    grid-row: 2;
+    text-align: right;
+}
+
+.item-store {
+    font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+    font-size: 0.95rem;
+    color: #5a4f42;
+    font-weight: 600;
+    margin-top: 4px;
+}
+
+.item-price {
+    font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+    font-size: 1.08rem;
+    color: #181818;
+    font-weight: 600;
+    grid-column: 3;
+    grid-row: 1;
+    text-align: right;
+}
+
+.order-summary {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 16px;
+    border-radius: 4px;
+    background: rgba(211,189,155,0.08);
+}
+
+.order-summary-row {
+    display: flex;
+    justify-content: space-between;
+    font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+    font-size: 1rem;
+    color: #444137;
+}
+
+.order-summary-row.discount span:last-child {
+    font-weight: 600;
+}
+
+.order-summary-row.total {
+    font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+    font-size: 1.15rem;
+    font-weight: 900;
+    color: #181818;
+}
+
+.order-summary-row.total span:last-child {
+    font-weight: 900;
+}
+
+.order-card-footer {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.order-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.order-action-btn {
+    padding: 10px 22px;
+    border: 1.5px solid #181818;
+    background: #ffffff;
+    color: #181818;
+    font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+    font-size: 0.98rem;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: background 0.18s, color 0.18s, border-color 0.18s, box-shadow 0.18s;
+}
+
+.order-action-btn:hover {
+    background: #181818;
+    color: #ffffff;
+    box-shadow: 0 8px 24px rgba(24,24,24,0.18);
+}
+
+.order-action-btn:disabled {
+    background: #f5f5f5;
+    color: #9e9e9e;
+    border-color: #e0e0e0;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.order-action-btn:disabled:hover {
+    background: #f5f5f5;
+    color: #9e9e9e;
+    box-shadow: none;
+    transform: none;
+}
+
+.order-pay-btn {
+    background: #ffffff;
+    color: #181818;
+    border-color: #181818;
+}
+
+.order-pay-btn:hover {
+    background: #181818;
+    border-color: #181818;
+    color: #ffffff;
+}
+
+.order-action-btn:first-child:not(:disabled) {
+    background: #181818;
+    color: #ffffff;
+    border-color: #181818;
+}
+
+.order-action-btn:first-child:not(:disabled):hover {
+    background: #ffffff;
+    color: #181818;
+    border-color: #181818;
+}
+
+.order-details {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 18px;
+    border-radius: 4px;
+    background: rgba(24,24,24,0.04);
+    font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+    font-size: 1rem;
+    color: #444137;
+}
+
+.order-detail-row {
+    display: flex;
+    gap: 16px;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.order-detail-row span:first-child {
+    font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+    font-weight: 600;
+    color: #181818;
+    min-width: 160px;
+}
+
+.purchase-empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 80px 0;
+    margin-left: 363px;
+}
+
+.purchase-empty-state[hidden] {
+    display: none !important;
+}
+
+.empty-icon {
+    width: 84px;
+    height: 84px;
+    border-radius: 50%;
+    background: rgba(211,189,155,0.12);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.empty-icon i {
+    font-size: 2rem;
+    color: #6d6552;
+}
+
+.empty-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.35rem;
+    color: #181818;
+    margin: 0;
+}
+
+.empty-subtitle {
+    font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+    font-size: 1.05rem;
+    color: #6d6552;
+    margin: 0;
+}
+
+.side-menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.18);
+    z-index: 12000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+.side-menu-overlay.show {
+    opacity: 1;
+    pointer-events: auto;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+/* Blur the navbar when sidebar overlay is active */
+.side-menu-overlay.show ~ .header-container {
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    background: rgba(255,255,255,0.85);
+    transition: backdrop-filter 0.25s, background 0.25s;
+}
+
+.side-menu {
+    position: fixed;
+    top: 15px;
+    left: 10px;
+    transform: scale(1) translateX(-120%);
+    height: auto;
+    min-height: 320px;
+    width: 320px;
+    background: #fff;
+    box-shadow: 0 8px 32px 0 rgba(44,34,54,0.22);
+    border-radius: 2px;
+    z-index: 12000;
+    padding: 44px 0 24px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    transition: transform 0.32s cubic-bezier(.4,0,.2,1);
+}
+
+.side-menu.open {
+    transform: scale(1) translateX(0);
+}
+
+.side-menu a {
+    font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+    color: #181818;
+    text-decoration: none;
+    font-size: 1.25rem;
+    padding: 16px 32px;
+    margin: 0 12px;
+    transition: background 0.18s, color 0.18s;
+    position: relative;
+    display: block;
+    width: fit-content;
+    min-width: 0;
+}
+
+.side-menu a span {
+    position: relative;
+    z-index: 1;
+    display: inline-block;
+    padding-bottom: 6px;
+    background-image: linear-gradient(#181818, #181818);
+    background-repeat: no-repeat;
+    background-size: 0% 2px;
+    background-position: center bottom;
+    transition: background-size 0.28s cubic-bezier(.4,0,.2,1);
+}
+
+.side-menu a:hover span {
+    background-size: 100% 2px;
+}
+
+/* Utility: text-shadow for #D3BD9B color */
+.text-gold-shadow, .main-tab:hover, .main-tab.active, .main-tab .main-tab-label[style*="color: #D3BD9B"] {
+    text-shadow: 0 1px 4px rgba(211,189,155,0.3), 0 0.5px 0 #fffbe8;
+}
+
+/* Profile dropdown styles */
+.profile-icon-wrapper {
+    position: relative;
+}
+
+.profile-dropdown {
+    display: none;
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    min-width: 140px;
+    background: #fff;
+    border: 1px solid #e0d7c6;
+    box-shadow: 0 4px 16px rgba(44,34,54,0.10);
+    border-radius: 2px;
+    z-index: 1000;
+    padding: 8px 0;
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.profile-icon-wrapper:hover .profile-dropdown,
+.profile-dropdown:hover {
+    display: flex;
+}
+
+.dropdown-item {
+    font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+    color: #181818;
+    padding: 10px 24px;
+    text-align: left;
+    text-decoration: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.08rem;
+    transition: background 0.18s, color 0.18s;
+    position: relative;
+}
+
+.dropdown-item::after {
+    content: '';
+    display: block;
+    position: absolute;
+    left: 24px;
+    bottom: 6px;
+    width: calc(100% - 48px);
+    height: 1.5px;
+    background: #0b0b0b;
+    border-radius: 2px;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s cubic-bezier(.4,0,.2,1);
+}
+
+.dropdown-item:hover::after {
+    transform: scaleX(1);
+}
+
+.dropdown-item:hover {
+    background: transparent;
+    color: #070707;
+}
+
+.divider {
+    width: 95%;
+    margin: 0 auto 18px auto;
+    border: none;
+    border-top: 1.6px solid rgba(44, 34, 54, 0.13);
+}
+
+/* Sub-tab active state styling */
+.sub-tabs .sub-tab.active .sub-tab-label {
+    color: #000000;
+    font-weight: 700;
+}
+
+#addressesTab {
+    color: #6d6552;
+    font-weight: 500;
+}
+
+#changePasswordTab {
+    font-weight: 500 !important;
+    color: #6d6552 !important;
+}
+
+#profileTab {
+    font-weight: 500 !important;
+    color: #6d6552 !important;
+}
+
+/* Main tab has-sub styling */
+.main-tab.has-sub {
+    position: relative;
+    overflow: visible;
+}
+
+.main-tab.has-sub .main-tab-label {
+    display: inline-block;
+    position: relative;
+    z-index: 1;
+    padding-bottom: 2px;
+}
+
+.main-tab.has-sub .main-tab-label::after {
+    content: '';
+    display: block;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 2px;
+    background: #D3BD9B;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.28s cubic-bezier(.4,0,.2,1);
+}
+
+.main-tab.has-sub:hover .main-tab-label::after,
+.main-tab.has-sub.active .main-tab-label::after {
+    transform: scaleX(1);
+}
+
+.main-tab.has-sub:hover,
+.main-tab.has-sub.active {
+    color: #D3BD9B;
+    text-shadow: 0 1px 4px rgba(211,189,155,0.3), 0 0.5px 0 #fffbe8;
+}
+
+/* Sub-tabs animation and styling */
+.sub-tabs {
+    display: none;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 0;
+    margin-left: 66px;
+    height: auto;
+}
+
+.sub-tabs.open {
+    display: flex;
+}
+
+.sub-tabs .sub-tab {
+    margin-left: 18px;
+    font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+    font-size: 1rem;
+    color: #6d6552;
+    font-weight: 500;
+    cursor: pointer;
+    margin-bottom: 0;
+    line-height: 2.2;
+    position: relative;
+    display: inline-block;
+    padding-bottom: 2px;
+}
+
+.sub-tabs .sub-tab-label {
+    display: inline-block;
+    position: relative;
+    padding-bottom: 2px;
+}
+
+.sub-tabs .sub-tab-label::after {
+    content: '';
+    display: block;
+    position: absolute;
+    left: 0;
+    bottom: 4px;
+    width: 100%;
+    height: 2px;
+    background: #181818;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.28s cubic-bezier(.4,0,.2,1);
+    z-index: 1;
+}
+
+.sub-tabs .sub-tab:hover .sub-tab-label::after,
+.sub-tabs .sub-tab.active .sub-tab-label::after {
+    transform: scaleX(1);
+}
+
+.sub-tabs .sub-tab:hover .sub-tab-label,
+.sub-tabs .sub-tab.active .sub-tab-label {
+    color: #181818;
+    text-shadow: 0 1px 3px rgba(24,24,24,0.15), 0 0.5px 0 #fffbe8;
+}
+
+.sub-tabs .sub-tab::after {
+    content: '';
+    display: block;
+    position: absolute;
+    user-select: none;
+}
+
+@media (max-width: 1200px) {
+    .account-card-bg {
+        margin-right: -60px;
+        padding: 72px 90px 72px 90px;
+    }
+}
+
+/* Content area positioning to match address page */
+.profile-content-row {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    width: 100%;
+    padding-left: 48px;
+    padding-right: 120px;
+}
+
+@media (max-width: 992px) {
+    .account-card-container {
+        justify-content: center;
+        padding-right: 0;
+    }
+
+    .account-card-bg {
+        position: static;
+        width: 100%;
+        max-width: 720px;
+        margin-right: 0;
+    }
+
+    .profile-section-title-row,
+    .profile-section-divider,
+    .purchase-status-tabs,
+    .purchase-orders,
+    .purchase-empty-state {
+        margin-left: 0;
+    }
+
+    .purchase-orders {
+        padding-right: 0;
+    }
+}
+
+@media (max-width: 768px) {
+    .order-item {
+        grid-template-columns: 56px 1fr auto;
+        grid-template-rows: auto auto;
+    }
+
+    .item-thumb {
+        grid-row: 1 / 3;
+    }
+
+    .item-info {
+        grid-row: 1 / 3;
+    }
+
+    .item-price {
+        grid-column: 3;
+        grid-row: 1;
+        text-align: right;
+    }
+
+    .item-quantity {
+        grid-column: 3;
+        grid-row: 2;
+        text-align: right;
+    }
+}
+
+@media (max-width: 768px) {
+    .profile-content-row {
+        padding-left: 24px;
+        padding-right: 24px;
+    }
+}
+
+@media (max-width: 768px) {
+    .purchase-status-tabs {
+        gap: 40px;
+        max-width: 100%;
+    }
+    
+    .purchase-tab {
+        font-size: 1rem;
+        padding: 10px 0;
+    }
+    
+    .purchase-tab-underline-bg {
+        max-width: 100%;
+    }
+    
+    .purchase-tab-underline {
+        width: 100px;
+    }
+}
+
+@media (max-width: 576px) {
+    .account-card-bg {
+        padding: 56px 32px 56px 32px;
+    }
+
+    .purchase-status-tabs {
+        gap: 12px;
+        flex-wrap: wrap;
+        justify-content: space-around;
+    }
+
+    .purchase-tab {
+        flex: 1 1 calc(50% - 12px);
+        text-align: center;
+        font-size: 0.95rem;
+        padding: 8px 0;
+        min-width: 120px;
+    }
+    
+    .purchase-tab-underline-bg {
+        display: none; /* Hide underline on very small screens */
+    }
+
+    .order-actions {
+        justify-content: stretch;
+    }
+
+    .order-action-btn {
+        flex: 1 1 100%;
+    }
+
+    .order-detail-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+    }
+
+    .profile-content-row {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+}
+
+/* Review Modal Styles */
+#review-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.18);
+    z-index: 9998;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+#review-modal-overlay.show {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+#review-modal.modal {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.25);
+    align-items: center;
+    justify-content: center;
+}
+
+#review-modal.modal.active {
+    display: flex;
+}
+
+#review-modal .review-modal-content {
+    background: #fff;
+    padding: 32px 28px 24px 28px;
+    border-radius: 2px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.13);
+    min-width: 560px;
+    max-width: 90vw;
+    max-height: 85vh;
+    overflow-y: auto;
+    text-align: center;
+}
+
+#review-modal .modal-title {
+    font-size: 1.35rem;
+    font-family: 'Playfair Display', serif;
+    margin-bottom: 24px;
+    color: #181818;
+    font-weight: 600;
+}
+
+.review-products-container {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    margin-bottom: 24px;
+    max-height: 60vh;
+    overflow-y: auto;
+    padding-right: 8px;
+}
+
+.product-review-section {
+    padding: 20px;
+    background: rgba(211,189,155,0.06);
+    border: 1.5px solid rgba(211,189,155,0.2);
+    border-radius: 6px;
+    text-align: left;
+}
+
+.review-product-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 18px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid rgba(211,189,155,0.2);
+}
+
+.review-rating-section {
+    margin-bottom: 16px;
+}
+
+.review-product-thumb {
+    width: 56px;
+    height: 56px;
+    background: linear-gradient(135deg, rgba(211,189,155,0.35), rgba(105,91,68,0.35));
+    border-radius: 6px;
+    flex-shrink: 0;
+}
+
+.review-product-info {
+    flex: 1;
+}
+
+.review-product-name {
+    font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+    font-size: 1.05rem;
+    color: #181818;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.review-product-variant {
+    font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+    font-size: 0.95rem;
+    color: #6d6552;
+}
+
+.rating-label {
+    font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+    font-size: 1rem;
+    color: #181818;
+    margin-bottom: 10px;
+    font-weight: 500;
+}
+
+.star-rating {
+    display: flex;
+    justify-content: flex-start;
+    gap: 8px;
+}
+
+.star-rating .star {
+    font-size: 1.6rem;
+    color: #f5f5f5;
+    cursor: pointer;
+    transition: color 0.2s ease, transform 0.2s ease;
+    -webkit-text-stroke: 1px #d0d0d0;
+}
+
+.star-rating .star:hover,
+.star-rating .star.active {
+    color: #D3BD9B;
+    transform: scale(1.1);
+    -webkit-text-stroke: 1px #b8a06f;
+}
+
+.star-rating .star.filled {
+    color: #D3BD9B;
+    -webkit-text-stroke: 1px #b8a06f;
+}
+
+.review-comment-section {
+    margin-bottom: 0;
+    text-align: left;
+}
+
+.comment-label {
+    font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+    font-size: 1rem;
+    color: #181818;
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.review-textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1.5px solid #e0d7c6;
+    border-radius: 2px;
+    font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+    font-size: 1rem;
+    color: #181818;
+    resize: vertical;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    box-sizing: border-box;
+}
+
+.review-textarea:focus {
+    outline: none;
+    border-color: #D3BD9B;
+    box-shadow: 0 0 0 3px rgba(211,189,155,0.15);
+}
+
+.review-textarea::placeholder {
+    color: #9e9e9e;
+    font-style: italic;
+}
+
+#review-modal .modal-actions {
+    display: flex;
+    gap: 18px;
+    justify-content: center;
+}
+
+#review-modal .modal-btn {
+    border-radius: 2px;
+    padding: 10px 28px;
+    font-size: 1rem;
+    font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+#review-modal #submit-review {
+    background: #181818;
+    color: #fff;
+    border: 1.5px solid #181818;
+}
+
+#review-modal #cancel-review {
+    background: #fff;
+    color: #181818;
+    border: 1.5px solid #181818;
+}
+
+#review-modal .modal-btn:hover {
+    background: #D3BD9B !important;
+    color: #181818;
+}
+
+@media (max-width: 768px) {
+    #review-modal .review-modal-content {
+        min-width: 90vw;
+        padding: 28px 20px;
+    }
+    
+    .review-products-container {
+        max-height: 55vh;
+    }
+    
+    .product-review-section {
+        padding: 16px;
+    }
+}
+
+@media (max-width: 576px) {
+    #review-modal .review-modal-content {
+        min-width: 95vw;
+        padding: 24px 16px;
+    }
+    
+    .star-rating .star {
+        font-size: 1.4rem;
+    }
+    
+    .review-product-thumb {
+        width: 48px;
+        height: 48px;
+    }
+    
+    .review-product-name {
+        font-size: 0.98rem;
+    }
+    
+    .review-product-variant {
+        font-size: 0.88rem;
+    }
+}
+
+/* Cancel Order Modal Styles */
+#cancel-order-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.18);
+    z-index: 9998;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+#cancel-order-modal-overlay.show {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+#cancel-order-modal.modal {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.25);
+    align-items: center;
+    justify-content: center;
+}
+
+#cancel-order-modal.modal.active {
+    display: flex;
+}
+
+#cancel-order-modal .modal-content {
+    background: #fff;
+    padding: 32px 28px 24px 28px;
+    border-radius: 2px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.13);
+    min-width: 380px;
+    max-width: 90vw;
+    text-align: center;
+}
+
+#cancel-order-modal .modal-title {
+    font-size: 1.25rem;
+    font-family: 'Playfair Display', serif;
+    margin-bottom: 12px;
+    color: #181818;
+    font-weight: 600;
+}
+
+#cancel-order-modal .modal-message {
+    font-size: 1rem;
+    font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+    margin-bottom: 24px;
+    color: #6d6552;
+    line-height: 1.5;
+}
+
+#cancel-order-modal .modal-actions {
+    display: flex;
+    gap: 18px;
+    justify-content: center;
+}
+
+#cancel-order-modal .modal-btn {
+    border: none;
+    border-radius: 2px;
+    padding: 10px 24px;
+    font-size: 1rem;
+    font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease;
+    font-weight: 500;
+}
+
+#cancel-order-modal #confirm-cancel-order {
+    background: #181818;
+    color: #fff;
+    border: 1.5px solid #181818;
+}
+
+#cancel-order-modal #cancel-cancel-order {
+    background: #fff;
+    color: #181818;
+    border: 1.5px solid #181818;
+}
+
+#cancel-order-modal #confirm-cancel-order:hover {
+    background: #D3BD9B;
+    color: #181818;
+    border-color: #D3BD9B;
+}
+
+#cancel-order-modal #cancel-cancel-order:hover {
+    background: #D3BD9B;
+    color: #181818;
+    border-color: #D3BD9B;
+}
+
+@media (max-width: 576px) {
+    #cancel-order-modal .modal-content {
+        min-width: 90vw;
+        padding: 28px 20px;
+    }
+}
+
+/* Confirmation Popup (like notification page) */
+.confirm-received-popup {
+    position: absolute;
+    right: calc(100% + 10px);
+    top: 50%;
+    transform: translateY(-50%);
+    background: #fff;
+    border: 2px solid #e0d7c6;
+    border-radius: 4px;
+    padding: 16px 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    z-index: 1000;
+    animation: slideInLeft 0.2s ease;
+}
+
+@keyframes slideInLeft {
+    from {
+        transform: translateY(-50%) translateX(20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(-50%) translateX(0);
+        opacity: 1;
+    }
+}
+
+.confirm-received-popup .confirm-text {
+    font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+    font-size: 0.95rem;
+    color: #181818;
+    margin-bottom: 12px;
+    white-space: nowrap;
+}
+
+.confirm-received-popup .confirm-buttons {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+}
+
+.confirm-received-popup .confirm-yes,
+.confirm-received-popup .confirm-no {
+    border: none;
+    border-radius: 2px;
+    padding: 6px 16px;
+    font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.confirm-received-popup .confirm-yes {
+    background: #181818;
+    color: #fff;
+}
+
+.confirm-received-popup .confirm-no {
+    background: #e0d7c6;
+    color: #181818;
+}
+
+.confirm-received-popup .confirm-yes:hover,
+.confirm-received-popup .confirm-no:hover {
+    background: #D3BD9B;
+    color: #181818;
+}
+
+/* Review Modal Styles */
+#review-modal .modal-content {
+    min-width: 500px;
+    max-width: 550px;
+    max-height: 85vh;
+    overflow-y: auto;
+}
+
+#review-modal .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+#review-modal .modal-close-btn {
+    background: none;
+    border: none;
+    font-size: 2rem;
+    line-height: 1;
+    cursor: pointer;
+    color: #666;
+    padding: 0;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s;
+}
+
+#review-modal .modal-close-btn:hover {
+    color: #181818;
+}
+
+.review-products-container {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    margin-bottom: 24px;
+    max-height: 50vh;
+    overflow-y: auto;
+    padding-right: 8px;
+}
+
+.review-product-item {
+    background: #fff;
+    border: 1px solid #e0d7c6;
+    border-radius: 8px;
+    padding: 24px;
+}
+
+.review-product-info {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.review-product-image {
+    width: 80px;
+    height: 80px;
+    border-radius: 6px;
+    background-color: #f5f5f5;
+    flex-shrink: 0;
+    border: 1px solid #ddd;
+    object-fit: cover;
+}
+
+.review-product-details {
+    flex: 1;
+    text-align: left;
+}
+
+.review-product-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: #181818;
+    margin-bottom: 6px;
+    text-align: left;
+}
+
+.review-product-price {
+    font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+    font-size: 1rem;
+    color: #444;
+    font-weight: 600;
+    margin-bottom: 6px;
+    text-align: left;
+}
+
+.review-product-variant {
+    font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+    font-size: 0.9rem;
+    color: #888;
+    text-align: left;
+}
+
+.review-rating-section {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.review-rating-section label {
+    font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+    font-size: 1rem;
+    color: #444;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+.star-rating {
+    display: flex;
+    gap: 8px;
+    font-size: 1.8rem;
+    justify-content: center;
+}
+
+.star-rating i {
+    color: #ddd;
+    cursor: pointer;
+    transition: color 0.2s, transform 0.2s;
+}
+
+.star-rating i:hover {
+    transform: scale(1.15);
+}
+
+.star-rating i.bi-star-fill {
+    color: #FFD600;
+}
+
+.review-text-section {
+    margin-top: 12px;
+}
+
+.review-text-section label {
+    font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+    font-size: 1rem;
+    color: #444;
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.review-textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1.5px solid #e0d7c6;
+    border-radius: 6px;
+    font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+    font-size: 0.95rem;
+    color: #333;
+    resize: vertical;
+    min-height: 80px;
+    transition: border-color 0.2s;
+    line-height: 1.6;
+}
+
+.review-textarea:focus {
+    outline: none;
+    border-color: #bf9f4a;
+}
+
+.review-textarea::placeholder {
+    color: #999;
+    font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+}
+
+#review-modal .modal-btn-primary {
+    background: #181818;
+    color: #fff;
+    border: 1.5px solid #181818;
+    transition: all 0.3s ease;
+}
+
+#review-modal .modal-btn-primary:hover {
+    background: #D3BD9B;
+    color: #181818;
+    border-color: #D3BD9B;
+}
+
+#review-modal .modal-btn:not(.modal-btn-primary):hover {
+    background: #D3BD9B;
+    color: #181818;
+    border-color: #D3BD9B;
+}
+
+@media (max-width: 768px) {
+    #review-modal .modal-content {
+        min-width: 90vw;
+        max-width: 90vw;
+    }
+    
+    .review-product-image {
+        width: 60px;
+        height: 60px;
+    }
+}

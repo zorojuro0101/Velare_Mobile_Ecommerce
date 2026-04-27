@@ -1,0 +1,71 @@
+<div class="report-detail">
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <h6>Reporter Information</h6>
+            <p><strong>Type:</strong> <span class="badge bg-info">{{ report.reporter_type }}</span></p>
+            <p><strong>Name:</strong> {{ report.reporter_name }}</p>
+        </div>
+        <div class="col-md-6">
+            <h6>Reported User Information</h6>
+            <p><strong>Type:</strong> <span class="badge bg-warning">{{ report.reported_user_type }}</span></p>
+            <p><strong>Name:</strong> {{ report.reported_user_name }}</p>
+        </div>
+    </div>
+
+    <hr>
+
+    <div class="mb-3">
+        <h6>Report Details</h6>
+        <p><strong>Category:</strong> <span class="badge bg-secondary">{{ report.report_category }}</span></p>
+        <p><strong>Reason:</strong></p>
+        <div class="alert alert-light">{{ report.report_reason }}</div>
+    </div>
+
+    {% if report.order_number %}
+    <div class="mb-3">
+        <p><strong>Related Order:</strong> #{{ report.order_number }}</p>
+    </div>
+    {% endif %}
+
+    {% if report.delivery_id %}
+    <div class="mb-3">
+        <p><strong>Related Delivery:</strong> #{{ report.delivery_id }}</p>
+    </div>
+    {% endif %}
+
+    {% if report.evidence_image %}
+    <div class="mb-3">
+        <h6>Evidence</h6>
+        <img src="/{{ report.evidence_image }}" alt="Evidence" class="img-fluid" style="max-height: 300px;">
+    </div>
+    {% endif %}
+
+    <hr>
+
+    <div class="mb-3">
+        <h6>Admin Action</h6>
+        <div class="mb-2">
+            <label class="form-label">Status:</label>
+            <select class="form-select" id="reportStatus">
+                <option value="pending" {% if report.status == 'pending' %}selected{% endif %}>Pending</option>
+                <option value="under_review" {% if report.status == 'under_review' %}selected{% endif %}>Under Review</option>
+                <option value="resolved" {% if report.status == 'resolved' %}selected{% endif %}>Resolved</option>
+                <option value="dismissed" {% if report.status == 'dismissed' %}selected{% endif %}>Dismissed</option>
+            </select>
+        </div>
+        <div class="mb-2">
+            <label class="form-label">Admin Notes:</label>
+            <textarea class="form-control" id="adminNotes" rows="3">{{ report.admin_notes or '' }}</textarea>
+        </div>
+        <button class="btn btn-primary" onclick="updateReportStatus({{ report.report_id }})">
+            Update Status
+        </button>
+    </div>
+
+    <div class="text-muted small">
+        <p><strong>Submitted:</strong> {{ report.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+        {% if report.resolved_at %}
+        <p><strong>Resolved:</strong> {{ report.resolved_at.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+        {% endif %}
+    </div>
+</div>

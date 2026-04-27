@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Veláre - Rider Payouts</title>
+	<link rel="icon" type="image/png" href="{{ url_for('static', filename='images/Velare Logo Tab 1.png') }}">
+	<!-- Google Fonts for aesthetic, expensive look -->
+	<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@100;300;400;700&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Goodie&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/accounts/myAccount_profile.css') }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/admin/admin_payments.css') }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/logout-modal.css') }}">
+	<!-- Bootstrap Icons CDN -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+<body>
+	<div class="header-container">
+		<span class="header"><a href="{{ url_for('admin_dashboard.admin_dashboard') }}" style="color: inherit; text-decoration: none;">Veláre</a></span>
+	</div>
+	<hr class="divider">
+
+	<div class="main-content-container">
+		<div class="account-left-nav">
+			<div class="account-profile-header">
+				<div class="profile-img-placeholder">
+					<img src="{{ url_for('static', filename='images/Velare Logo Tab 1.png') }}" alt="Velare Logo" style="width: 100%; height: 100%; object-fit: contain;">
+				</div>
+				<span class="profile-name-placeholder">Admin</span>
+			</div>
+			<div class="account-nav-divider"></div>
+			<div class="account-nav-list">
+				<a href="{{ url_for('admin_dashboard.admin_dashboard') }}" class="main-tab" style="text-decoration: none; color: inherit;">
+					<i class="bi bi-speedometer2" style="font-size:1.2em; vertical-align:middle; margin-right:10px;"></i>
+					<span class="main-tab-label">Dashboard</span>
+				</a>
+				<a href="{{ url_for('admin_users_sellers.admin_users_sellers') }}" class="main-tab" style="text-decoration: none; color: inherit;">
+					<i class="bi bi-shop" style="font-size:1.2em; vertical-align:middle; margin-right:10px;"></i>
+					<span class="main-tab-label">Manage Sellers</span>
+				</a>
+				<a href="{{ url_for('admin_users_riders.admin_users_riders') }}" class="main-tab" style="text-decoration: none; color: inherit;">
+					<i class="bi bi-bicycle" style="font-size:1.2em; vertical-align:middle; margin-right:10px;"></i>
+					<span class="main-tab-label">Manage Riders</span>
+				</a>
+				<a href="{{ url_for('admin_users_buyers.admin_users_buyers') }}" class="main-tab" style="text-decoration: none; color: inherit;">
+					<i class="bi bi-people" style="font-size:1.2em; vertical-align:middle; margin-right:10px;"></i>
+					<span class="main-tab-label">Manage Buyers</span>
+				</a>
+				<div class="main-tab active" id="paymentsTab">
+					<i class="bi bi-cash-stack" style="font-size:1.2em; vertical-align:middle; margin-right:10px;"></i>
+					<span class="main-tab-label">Sales & Commissions</span>
+				</div>
+				<a href="{{ url_for('admin_vouchers.admin_vouchers') }}" class="main-tab" style="text-decoration: none; color: inherit;">
+					<i class="bi bi-ticket-perforated" style="font-size:1.2em; vertical-align:middle; margin-right:10px;"></i>
+					<span class="main-tab-label">Manage Vouchers</span>
+				</a>
+				<a href="{{ url_for('admin_user_reports.user_reports') }}" class="main-tab" style="text-decoration: none; color: inherit;">
+					<i class="bi bi-flag" style="font-size:1.2em; vertical-align:middle; margin-right:10px;"></i>
+					<span class="main-tab-label">User Reports</span>
+				</a>
+				<div class="main-tab" id="logout-link" data-logout-url="{{ url_for('auth.login') }}">
+					<i class="bi bi-box-arrow-right" style="font-size:1.2em; vertical-align:middle; margin-right:10px;"></i>
+					<span class="main-tab-label">Logout</span>
+				</div>
+			</div>
+			<div class="sidebar-vertical-line"></div>
+		</div>
+		<div class="account-card-container">
+			
+			<div class="payments-main-content">
+				<!-- Sub-navigation tabs -->
+				<div class="payments-sub-nav">
+					<a href="{{ url_for('admin_sales_reports.admin_sales_reports') }}" class="sub-nav-tab">
+						<i class="bi bi-graph-up"></i>
+						Sales Reports
+					</a>
+					<a href="{{ url_for('admin_rider_payouts.admin_rider_payouts') }}" class="sub-nav-tab active">
+						<i class="bi bi-wallet2"></i>
+						Rider Payouts
+					</a>
+				</div>
+
+				<h2 class="payments-management-title">Rider Payouts</h2>
+				<hr class="payments-management-divider">
+
+				<!-- Combined Stats and Filters Card -->
+				<div class="rider-summary-card">
+					<div class="rider-stats-section">
+						<div class="rider-stat-item">
+							<div class="rider-stat-icon">
+								<i class="bi bi-bicycle"></i>
+							</div>
+							<div class="rider-stat-info">
+								<div class="rider-stat-label">Active Riders</div>
+								<div class="rider-stat-value">{{ stats.active_riders }}</div>
+								<div class="rider-stat-change positive">
+									<i class="bi bi-arrow-up"></i> 5 new this month
+								</div>
+							</div>
+						</div>
+						<div class="rider-stat-item">
+							<div class="rider-stat-icon">
+								<i class="bi bi-cash-coin"></i>
+							</div>
+							<div class="rider-stat-info">
+								<div class="rider-stat-label">Total Earnings</div>
+								<div class="rider-stat-value">₱{{ "%.0f"|format(stats.total_earnings) }}</div>
+								<div class="rider-stat-change positive">
+									<i class="bi bi-arrow-up"></i> 14.2% from last month
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="rider-filters-section">
+						<div class="rider-search-box">
+							<i class="bi bi-search"></i>
+							<input type="text" placeholder="Search riders..." id="riderSearch">
+						</div>
+						<div class="date-range-inputs">
+							<input type="date" id="startDate" class="date-input" placeholder="Start Date">
+							<span class="date-separator">to</span>
+							<input type="date" id="endDate" class="date-input" placeholder="End Date">
+						</div>
+					</div>
+				</div>
+
+				<!-- Withdrawal Requests Section -->
+				<div class="withdrawal-requests-section">
+					<h3 class="section-title">
+						<i class="bi bi-wallet2"></i> Pending Withdrawal Requests
+					</h3>
+					<div class="withdrawal-requests-container">
+						<table class="withdrawal-requests-table">
+							<thead>
+								<tr>
+									<th>Rider</th>
+									<th>Amount</th>
+									<th>Method</th>
+									<th>Requested</th>
+									<th>Notes</th>
+									<th>Actions</th>
+								</tr>
+							</thead>
+							<tbody id="withdrawalRequestsBody">
+								<!-- Loaded via JavaScript -->
+							</tbody>
+						</table>
+						<div class="empty-state" id="emptyWithdrawalRequests">
+							<i class="bi bi-inbox"></i>
+							<p>No pending withdrawal requests</p>
+						</div>
+					</div>
+				</div>
+
+				<!-- Platform Commission Deductions Section -->
+				<div class="commission-deductions-section">
+					<h3 class="section-title">
+						<i class="bi bi-cash-stack"></i> Platform Commission Deductions (Free Shipping)
+					</h3>
+					<div class="commission-summary-card">
+						<div class="commission-stat">
+							<span class="commission-label">Total Deducted:</span>
+							<span class="commission-value" id="totalDeducted">₱0.00</span>
+						</div>
+						<div class="commission-note">
+							Platform pays riders when buyers use free shipping vouchers
+						</div>
+					</div>
+					<div class="commission-deductions-container">
+						<table class="commission-deductions-table">
+							<thead>
+								<tr>
+									<th>Order</th>
+									<th>Rider</th>
+									<th>Buyer</th>
+									<th>Amount Paid</th>
+									<th>From Commission</th>
+									<th>Date</th>
+								</tr>
+							</thead>
+							<tbody id="commissionDeductionsBody">
+								<!-- Loaded via JavaScript -->
+							</tbody>
+						</table>
+						<div class="empty-state" id="emptyCommissionDeductions">
+							<i class="bi bi-inbox"></i>
+							<p>No commission deductions yet</p>
+						</div>
+					</div>
+				</div>
+
+				<!-- Riders Payout Table -->
+				<div class="payments-table-container">
+					<h3 class="section-title">
+						<i class="bi bi-people"></i> Rider Earnings Summary
+					</h3>
+					<table class="payments-table">
+						<thead>
+							<tr>
+								<th>Rider</th>
+								<th>Total Deliveries</th>
+								<th>Total Earnings</th>
+							</tr>
+						</thead>
+						<tbody>
+							{% for rider in stats.rider_payouts %}
+							<tr>
+								<td>
+									<div class="user-profile-cell">
+										<div class="user-avatar">{{ rider.name[:2].upper() }}</div>
+										<div class="user-info">
+											<div class="user-name">{{ rider.name }}</div>
+											<div class="user-email">rider{{ rider.rider_id }}@velare.com</div>
+										</div>
+									</div>
+								</td>
+								<td>{{ rider.total_deliveries }}</td>
+								<td class="net-payout">₱{{ "%.0f"|format(rider.total_earnings) }}</td>
+							</tr>
+							{% else %}
+							<tr>
+								<td colspan="3" style="text-align: center; padding: 40px;">
+									<div style="color: #666;">
+										<i class="bi bi-inbox" style="font-size: 2rem; display: block; margin-bottom: 10px;"></i>
+										No rider payout data available
+									</div>
+								</td>
+							</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Commission Breakdown Modal -->
+	<div id="breakdown-modal-overlay" class="modal-overlay"></div>
+	<div id="breakdown-modal" class="breakdown-modal">
+		<div class="breakdown-modal-content">
+			<div class="breakdown-modal-header">
+				<h3 class="breakdown-modal-title">Commission Breakdown</h3>
+				<button class="close-modal-btn" onclick="closeBreakdownModal()">
+					<i class="bi bi-x-lg"></i>
+				</button>
+			</div>
+			<div class="breakdown-modal-body">
+				<div class="breakdown-rider-info">
+					<div class="user-avatar large" id="modalRiderAvatar">MR</div>
+					<div class="breakdown-rider-details">
+						<h4 id="modalRiderName">Miguel Reyes</h4>
+						<p id="modalRiderEmail">miguel.r@velare.com</p>
+					</div>
+				</div>
+				<hr class="breakdown-divider">
+				<div class="breakdown-details">
+					<div class="breakdown-row">
+						<span class="breakdown-label">Total Deliveries</span>
+						<span class="breakdown-value" id="modalDeliveries">142</span>
+					</div>
+					<div class="breakdown-row">
+						<span class="breakdown-label">Base Delivery Fee (₱50/delivery)</span>
+						<span class="breakdown-value" id="modalBaseEarnings">₱7,100</span>
+					</div>
+					<div class="breakdown-row highlight">
+						<span class="breakdown-label">Platform Commission</span>
+						<span class="breakdown-value">
+							<span id="modalCommissionPercent">15</span>% = <span id="modalCommissionAmount">₱1,065</span>
+						</span>
+					</div>
+					<div class="breakdown-row total">
+						<span class="breakdown-label">Net Payout</span>
+						<span class="breakdown-value" id="modalNetPayout">₱6,035</span>
+					</div>
+				</div>
+			</div>
+			<div class="breakdown-modal-footer">
+				<button class="modal-btn secondary-btn" onclick="closeBreakdownModal()">Close</button>
+				<button class="modal-btn primary-btn">
+					<i class="bi bi-check-circle"></i>
+					Mark as Paid
+				</button>
+			</div>
+		</div>
+	</div>
+
+	<!-- Logout Modal Overlay and Confirmation Modal -->
+	<div id="logout-modal-overlay"></div>
+	<div id="logout-modal" class="modal">
+		<div class="modal-content">
+			<div class="modal-title">Do you want to Logout?</div>
+			<div class="modal-actions">
+				<button id="confirm-logout" class="modal-btn">Logout</button>
+				<button id="cancel-logout" class="modal-btn">Cancel</button>
+			</div>
+		</div>
+	</div>
+	<script defer src="{{ url_for('static', filename='js/logout-modal.js') }}"></script>
+	<script defer src="{{ url_for('static', filename='js/admin/admin-nav-hover.js') }}"></script>
+	<script defer src="{{ url_for('static', filename='js/admin/admin-rider-payouts.js') }}"></script>
+</body>
+</html>

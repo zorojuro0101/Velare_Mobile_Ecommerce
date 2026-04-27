@@ -1,0 +1,15 @@
+/* Admin Manage Rider Page Styles - Same as Buyer */
+@import url('admin_manage_buyer.css');
+
+/* ORCR Image Label */
+.image-label {
+	text-align: center;
+	font-family: 'Montserrat', sans-serif;
+	font-size: 0.85rem;
+	font-weight: 600;
+	color: #6d6552;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+	padding: 8px 0;
+	margin-top: -12px;
+}

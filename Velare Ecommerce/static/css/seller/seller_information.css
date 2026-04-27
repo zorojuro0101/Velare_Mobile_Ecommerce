@@ -1,0 +1,802 @@
+/* Seller Information Page Styles */
+
+/* Increase base font size for seller pages */
+body {
+	font-size: calc(1rem + 0.2rem);
+}
+
+/* Match product-management-main-content layout */
+.seller-information-main-content {
+	background: #ffffff;
+	border-radius: 0px;
+	padding: 32px;
+	box-shadow: 0 8px 32px rgba(44, 34, 54, 0.08);
+	border: 1px solid #d0b996;
+	margin: 0;
+	margin-top: -26px;
+	width: calc(100% - 60px);
+	max-width: none;
+	height: 80vh;
+	overflow-y: auto;
+	overflow-x: hidden;
+	padding-right: 15px;
+	box-sizing: border-box;
+}
+
+.seller-information-title {
+	font-family: 'Playfair Display', serif;
+	font-size: 2.2rem;
+	font-weight: 600;
+	color: #2c2236;
+	margin: 0 0 16px 0;
+	letter-spacing: -0.02em;
+}
+
+.seller-information-divider {
+	width: 100%;
+	height: 2px;
+	background: linear-gradient(90deg, rgba(211,189,155,0.3) 0%, rgba(44,34,54,0.1) 100%);
+	border: none;
+	margin: 0 0 32px 0;
+	border-radius: 2px;
+}
+
+.seller-information-content {
+	width: 100%;
+	font-family: 'Goudy Old Style', 'Goudy', serif;
+}
+
+/* Profile Content Row - Two Column Layout */
+.profile-content-row {
+	display: flex;
+	flex-direction: row;
+	align-items: flex-start;
+	width: 100%;
+	gap: 32px;
+	flex: 1;
+	min-height: 0;
+}
+
+/* Form Styles - Left Column */
+.profile-form {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+	max-width: 400px;
+}
+
+.profile-form .form-group {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	gap: 16px;
+	width: 100%;
+	margin-bottom: 20px;
+	margin-left: -120px;
+}
+
+.profile-form .form-group:last-child {
+	margin-bottom: 0;
+	justify-content: flex-end;
+	margin-left: 0;
+	width: calc(100% + 400px);
+	max-width: none;
+	margin-top: -80px;
+}
+
+.profile-form label {
+	min-width: 110px;
+	width: 130px;
+	text-align: right;
+	margin-bottom: 0;
+	margin-right: 8px;
+	font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+	font-size: 1.08em;
+	font-weight: 600;
+	color: #181818;
+	flex-shrink: 0;
+}
+
+.profile-form input[type="text"],
+.profile-form input[type="email"],
+.profile-form input[type="tel"] {
+	flex: 1;
+	border: none;
+	border-bottom: 2px solid #bbb;
+	padding: 10px 4px 8px 0;
+	font-size: 1.15em;
+	outline: none;
+	background: transparent;
+	margin-bottom: 0;
+	transition: border-color 0.2s;
+	width: 100%;
+	box-sizing: border-box;
+	font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+	color: #181818;
+}
+
+.profile-form input[type="text"]:focus,
+.profile-form input[type="email"]:focus,
+.profile-form input[type="tel"]:focus {
+	border-bottom: 2.5px solid #d3bd9b;
+}
+
+/* Business Type Buttons */
+.business-type-buttons {
+	display: flex;
+	gap: 12px;
+	margin-top: 2px;
+	margin-bottom: 2px;
+}
+
+.business-type-btn {
+	padding: 7px 18px;
+	border: none;
+	border-bottom: 2px solid #bbb;
+	border-radius: 0;
+	background: transparent;
+	color: #222;
+	font-weight: 400;
+	font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+	cursor: pointer;
+	transition: color 0.18s, border-color 0.18s, background 0.18s;
+	font-size: 1em;
+}
+
+.business-type-btn.active,
+.business-type-btn:focus {
+	color: #d3bd9b;
+	border-bottom: 2.5px solid #d3bd9b;
+	background: transparent;
+}
+
+.business-type-btn:hover {
+	color: #bfa14a;
+	border-bottom: 2.5px solid #bfa14a;
+	background: transparent;
+}
+
+/* Save Button */
+.save-btn {
+	width: 200px;
+	padding: 12px 24px;
+	background: #181818;
+	color: #ffffff;
+	border: none;
+	border-radius: 8px;
+	font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+	font-size: 0.95rem;
+	font-weight: 600;
+	cursor: pointer;
+	transition: all 0.3s ease;
+	letter-spacing: 0.5px;
+	margin-top: 8px;
+	box-shadow: 0 2px 8px rgba(24, 24, 24, 0.3);
+}
+
+.save-btn:hover {
+	background: linear-gradient(135deg, #D3BD9B 0%, #c4a882 100%);
+	transform: translateY(-1px);
+	box-shadow: 0 4px 12px rgba(211, 189, 155, 0.4);
+}
+
+/* Documents Save Button - Different Style */
+.documents-save-btn {
+	background: #181818;
+	color: #ffffff;
+	border: 2px solid #181818;
+}
+
+.documents-save-btn:hover {
+	background: linear-gradient(135deg, #D3BD9B 0%, #c4a882 100%);
+	border-color: #D3BD9B;
+	transform: translateY(-1px);
+	box-shadow: 0 4px 12px rgba(211, 189, 155, 0.4);
+}
+
+/* Vertical Divider */
+.profile-vertical-divider {
+	width: 1.5px;
+	background: #e0d7c6;
+	min-height: 400px;
+	align-self: stretch;
+	border-radius: 2px;
+	margin-left: -25px;
+	margin-right: 40px;
+}
+
+/* Image Section - Right Column */
+.profile-image-section {
+	flex: 0 0 300px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: flex-start;
+	gap: 16px;
+	padding: 0 16px;
+	padding-left: 60px;
+	text-align: center;
+}
+
+.profile-picture-container {
+	position: relative;
+	width: 200px;
+	height: 200px;
+	border-radius: 2px;
+	overflow: hidden;
+	border: 3px solid #D3BD9B;
+	background: #e0d7c6;
+	cursor: pointer;
+	transition: all 0.3s ease;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 3.5rem;
+	color: #b0a58a;
+}
+
+.profile-picture-container:hover {
+	border-color: #181818;
+	transform: translateY(-5px);
+	box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+}
+
+.upload-placeholder {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: #f5f5f5;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 10px;
+	color: #999;
+	transition: all 0.3s ease;
+}
+
+.upload-placeholder i {
+	font-size: 40px;
+}
+
+.upload-placeholder span {
+	font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+	font-size: 16px;
+	font-weight: 600;
+}
+
+.profile-picture-container:hover .upload-placeholder {
+	background: #e8e8e8;
+	color: #666;
+}
+
+.upload-overlay {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(0, 0, 0, 0.6);
+	display: none;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 10px;
+	opacity: 0;
+	transition: opacity 0.3s ease;
+	color: white;
+}
+
+.profile-picture-container:hover .upload-overlay {
+	opacity: 1;
+}
+
+.profile-picture-container.has-image .upload-overlay {
+	display: flex;
+}
+
+.upload-overlay i {
+	font-size: 40px;
+}
+
+.upload-overlay span {
+	font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+	font-size: 16px;
+	font-weight: 600;
+}
+
+.upload-hint {
+	font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+	font-size: 0.8rem;
+	color: #6d6552;
+	text-align: center;
+	margin-top: 8px;
+}
+
+/* Store Description */
+.description-group {
+	margin-top: 30px;
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	margin-left: 0;
+}
+
+.description-group label {
+	width: 100%;
+	text-align: center;
+	margin-bottom: 20px;
+	font-family: 'Playfair Display', serif;
+	font-size: 1.4em;
+	font-weight: 600;
+	color: #2c2236;
+	margin-left: 0;
+	margin-top: 0;
+}
+
+.description-group textarea {
+	width: 280px;
+	height: 200px;
+	padding: 16px;
+	border: 2px solid #d3bd9b;
+	border-radius: 8px;
+	resize: none;
+	font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+	font-size: 1em;
+	outline: none;
+	background: #faf8f5;
+	transition: border-color 0.3s, box-shadow 0.3s;
+	box-sizing: border-box;
+	color: #181818;
+	position: relative;
+	margin-left: 0;
+	margin-top: 0;
+	box-shadow: 0 2px 8px rgba(211, 189, 155, 0.1);
+	overflow-y: auto;
+}
+
+.description-group textarea:focus {
+	border-color: #bfa14a;
+	box-shadow: 0 0 0 3px rgba(191, 161, 74, 0.1), 0 4px 12px rgba(211, 189, 155, 0.2);
+}
+
+.description-group textarea::placeholder {
+	color: #999;
+	font-style: italic;
+}
+
+/* Hide Scrollbar */
+.seller-information-main-content::-webkit-scrollbar {
+	width: 0px;
+	background: transparent;
+}
+
+.seller-information-main-content {
+	scrollbar-width: none; /* Firefox */
+	-ms-overflow-style: none; /* Internet Explorer 10+ */
+}
+
+/* Active state for profile name - seller_information is active page */
+.profile-name-placeholder.clickable-profile.active {
+	color: #bfa14a !important;
+	text-shadow: 0 3px 12px #bfa14a66, 0 1px 0 #fffbe8 !important;
+}
+
+.profile-name-placeholder.clickable-profile.active::after {
+	background: linear-gradient(90deg, #bfa14a 0%, #D3BD9B 100%);
+	height: 3px;
+	transform: scaleX(1);
+}
+
+/* Clickable Profile Name Styling */
+.profile-name-placeholder.clickable-profile {
+	cursor: pointer;
+	text-decoration: none;
+	color: inherit;
+	position: relative;
+	padding-bottom: 2px;
+	transition: color 0.2s, text-shadow 0.2s;
+}
+
+.profile-name-placeholder.clickable-profile::after {
+	content: '';
+	display: block;
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	height: 2px;
+	background: linear-gradient(90deg, #D3BD9B 0%, #bfa14a 100%);
+	transform: scaleX(0);
+	transform-origin: left;
+	transition: transform 0.28s cubic-bezier(.4,0,.2,1);
+}
+
+.profile-name-placeholder.clickable-profile:hover {
+	color: #bfa14a !important;
+	text-shadow: 0 3px 12px #bfa14a66, 0 1px 0 #fffbe8 !important;
+}
+
+.profile-name-placeholder.clickable-profile:hover::after {
+	background: linear-gradient(90deg, #bfa14a 0%, #D3BD9B 100%);
+	height: 3px;
+	transform: scaleX(1);
+}
+
+/* Address Tabs Dropdown Panel Styles */
+.address-tabs-dropdown {
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 100%;
+	margin-top: 6px;
+	background: #fff;
+	border-radius: 4px;
+	box-shadow: 0 8px 32px 0 rgba(44,34,54,0.13);
+	z-index: 1200;
+	max-width: 400px;
+	width: 400px;
+	padding: 16px 12px 10px 12px;
+	display: flex;
+	flex-direction: column;
+	align-items: stretch;
+	font-family: 'Goudy Old Style', Goudy, serif;
+}
+
+/* Address Tabs - Register Page Style */
+.address-tabs {
+	display: flex;
+	justify-content: center;
+	align-items: flex-end;
+	gap: 8px;
+	margin-top: 18px;
+	margin-bottom: 0;
+	width: 100%;
+	max-width: 400px;
+	position: relative;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.address-tab {
+	background: none;
+	border: none;
+	outline: none;
+	font-size: 1.1em;
+	font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+	padding: 8px 14px 5px 14px;
+	cursor: pointer;
+	color: #222;
+	font-weight: 400;
+	position: relative;
+	z-index: 2;
+	transition: color 0.2s, font-weight 0.2s;
+	margin-top: 0 !important;
+}
+
+.address-tab.active {
+	color: #111;
+	font-weight: 600;
+}
+
+.address-tab:disabled {
+	background: none;
+	color: #b0a58a;
+	cursor: not-allowed;
+}
+
+.address-tabs-underline-bg {
+	position: relative;
+	width: 100%;
+	max-width: 400px;
+	height: 3px;
+	margin: 0 auto 0 auto;
+	margin-top: 6px;
+	background: #e0e0e0;
+	border-radius: 2px 2px 0 0;
+	overflow: visible;
+}
+
+.address-tabs-underline {
+	position: absolute;
+	left: 0;
+	bottom: 0;
+	height: 3px;
+	background: #111;
+	border-radius: 2px 2px 0 0;
+	transition: width 0.3s, transform 0.3s;
+	display: block;
+	z-index: 1;
+}
+
+.address-tab-content {
+	margin-bottom: 0;
+	margin-top: 20px;
+	display: block;
+	font-family: 'Goudy Old Style', Goudy, serif;
+}
+
+.address-tab-content label {
+	font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+	font-size: 1.05rem;
+	color: #181818;
+	font-weight: 600;
+	margin-bottom: 4px;
+	display: block;
+}
+
+.address-tab-content select {
+	font-family: 'Cormorant Garamond', serif;
+	font-size: 1.08rem;
+	padding: 7px 10px;
+	border: 1.2px solid #d3bd9b;
+	border-radius: 2px;
+	background: #faf9f7;
+	color: #181818;
+	margin-bottom: 2px;
+	outline: none;
+	transition: border-color 0.18s;
+	width: 100%;
+}
+
+.address-tab-content select:focus {
+	border-color: #181818;
+}
+
+/* Modal Actions for Address Dropdown */
+.address-tabs-dropdown .modal-actions {
+	display: flex;
+	justify-content: flex-end;
+	gap: 12px;
+	margin-top: 18px;
+}
+
+.address-tabs-dropdown .modal-btn {
+	padding: 7px 18px;
+	border: 1.5px solid #181818;
+	background: #fff;
+	color: #181818;
+	border-radius: 2px;
+	font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+	font-size: 1rem;
+	font-weight: 600;
+	cursor: pointer;
+	transition: background 0.18s, color 0.18s, border-color 0.18s;
+}
+
+.address-tabs-dropdown .modal-btn:hover {
+	background: #181818;
+	color: #fff;
+	border-color: #181818;
+}
+
+.address-tabs-dropdown .modal-btn:disabled {
+	opacity: 0.5;
+	cursor: not-allowed;
+}
+
+/* Add Phone Link */
+#addPhoneLink {
+	color: #000000;
+	text-decoration: underline;
+	cursor: pointer;
+	font-size: 1.15em;
+	display: inline-block;
+	margin-left: 1px;
+	transition: color 0.18s;
+	font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif !important;
+	font-weight: 600;
+}
+
+#addPhoneLink:hover {
+	color: #a88c3d;
+	text-decoration: underline;
+}
+
+/* Documents Section */
+.documents-section {
+	margin-top: 48px;
+	padding-top: 32px;
+	border-top: 2px solid #e0d7c6;
+	margin-left: 80px;
+}
+
+.documents-title {
+	font-family: 'Playfair Display', serif;
+	font-size: 1.5rem;
+	font-weight: 600;
+	color: #2c2236;
+	margin-bottom: 24px;
+}
+
+.documents-row {
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	gap: 48px;
+	max-width: 800px;
+}
+
+.document-column {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.document-label {
+	font-family: 'Goudy Old Style', 'Goudy', serif;
+	font-size: 1rem;
+	font-weight: 600;
+	color: #6d6552;
+	margin-bottom: 16px;
+	text-align: center;
+}
+
+.document-image-container {
+	width: 280px;
+	height: 280px;
+	border-radius: 8px;
+	border: 2px dashed #d3bd9b;
+	overflow: hidden;
+	position: relative;
+	cursor: pointer;
+	transition: all 0.3s ease;
+	background: #fafbfc;
+}
+
+.document-image-container:hover {
+	border-color: #bfa14a;
+	box-shadow: 0 4px 12px rgba(191, 161, 74, 0.2);
+}
+
+.document-image-container .upload-placeholder {
+	width: 100%;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	color: #6d6552;
+	transition: all 0.3s ease;
+}
+
+.document-image-container .upload-placeholder i {
+	font-size: 3rem;
+	margin-bottom: 12px;
+	color: #d3bd9b;
+}
+
+.document-image-container .upload-placeholder span {
+	font-family: 'Goudy Old Style', 'Goudy', serif;
+	font-size: 0.9rem;
+	font-weight: 500;
+}
+
+.document-image-container:hover .upload-placeholder {
+	color: #2c2236;
+}
+
+.document-image-container:hover .upload-placeholder i {
+	color: #bfa14a;
+}
+
+.document-image-container .upload-overlay {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(44, 34, 54, 0.85);
+	display: none;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	opacity: 0;
+	transition: opacity 0.3s ease;
+	color: white;
+}
+
+.document-image-container.has-image .upload-overlay {
+	display: flex;
+}
+
+.document-image-container:hover .upload-overlay {
+	opacity: 1;
+}
+
+.document-image-container .upload-overlay i {
+	font-size: 2.5rem;
+	margin-bottom: 12px;
+}
+
+.document-image-container .upload-overlay span {
+	font-family: 'Goudy Old Style', 'Goudy', serif;
+	font-size: 1rem;
+	font-weight: 600;
+	letter-spacing: 0.5px;
+}
+
+.document-image-container.has-image .upload-placeholder {
+	display: none;
+}
+
+
+
+.id-type-select {
+	width: 280px;
+	padding: 12px 16px;
+	border: 1.5px solid #e0d7c6;
+	border-radius: 8px;
+	font-family: 'Goudy Old Style', 'Goudy', serif;
+	font-size: 0.95rem;
+	background: white;
+	cursor: pointer;
+	transition: all 0.3s ease;
+	margin-top: 16px;
+	appearance: none;
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236d6552' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+	background-repeat: no-repeat;
+	background-position: right 12px center;
+	padding-right: 40px;
+}
+
+.id-type-select:focus {
+	outline: none;
+	border-color: #d3bd9b;
+	box-shadow: 0 0 0 3px rgba(211, 189, 155, 0.1);
+}
+
+.id-type-select:hover {
+	border-color: #d3bd9b;
+}
+
+/* Submit Documents Button */
+.submit-documents-btn {
+	width: 280px;
+	padding: 14px 24px;
+	background: #181818;
+	color: #ffffff;
+	border: none;
+	border-radius: 8px;
+	font-family: 'Goudy Old Style', 'Goudy', serif;
+	font-size: 0.95rem;
+	font-weight: 600;
+	cursor: pointer;
+	transition: all 0.3s ease;
+	letter-spacing: 0.5px;
+	margin-top: 16px;
+	box-shadow: 0 2px 8px rgba(24, 24, 24, 0.3);
+}
+
+.submit-documents-btn:hover {
+	background: linear-gradient(135deg, #D3BD9B 0%, #c4a882 100%);
+	transform: translateY(-2px);
+	box-shadow: 0 4px 12px rgba(211, 189, 155, 0.4);
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+	.documents-row {
+		grid-template-columns: 1fr;
+		gap: 32px;
+	}
+	
+	.document-column {
+		align-items: center;
+	}
+}
+
+/* Seller Information Save Button Container - positioned within form */
+.profile-form .save-button-container {
+	margin-top: 20px;
+	border-top: none;
+	padding-top: 0;
+	justify-content: flex-end;
+	margin-left: 0;
+	width: calc(100% + 400px);
+	max-width: none;
+}
+

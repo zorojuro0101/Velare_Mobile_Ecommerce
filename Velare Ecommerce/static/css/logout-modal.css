@@ -1,0 +1,838 @@
+/* Overlay for modal background blur */
+#logout-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.18);
+    z-index: 9998;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+#logout-modal-overlay.show {
+    opacity: 1;
+    pointer-events: auto;
+}
+/* logout-modal.css - Styles for the logout confirmation modal */
+
+#logout-modal.modal {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.25);
+    align-items: center;
+    justify-content: center;
+}
+#logout-modal.modal.active {
+    display: flex;
+}
+#logout-modal .modal-content {
+    background: #fff;
+    padding: 32px 28px 24px 28px;
+    border-radius: 2px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.13);
+    min-width: 320px;
+    max-width: 90vw;
+    text-align: center;
+}
+#logout-modal .modal-title {
+    font-size: 1.25rem;
+    font-family: 'Goudy Old Style', 'Goudy', serif;
+    margin-bottom: 18px;
+    color: #181818;
+}
+#logout-modal .modal-actions {
+    display: flex;
+    gap: 18px;
+    justify-content: center;
+}
+#logout-modal .modal-btn {
+    border: none;
+    border-radius: 2px;
+    padding: 8px 24px;
+    font-size: 1rem;
+    cursor: pointer;
+    font-family: 'Goudy Old Style', 'Goudy', serif;
+}
+#logout-modal #confirm-logout {
+    background: #181818;
+    color: #fff;
+}
+#logout-modal #cancel-logout {
+    background: #e0d7c6;
+    color: #181818;
+}
+
+#logout-modal .modal-btn:hover {
+    background: #D3BD9B !important;
+    color: #181818;
+}
+
+/* Remove Favorite Modal - Same styling as logout modal */
+#remove-favorite-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.18);
+    z-index: 9998;
+    display: none;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+#remove-favorite-modal.modal {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    align-items: center;
+    justify-content: center;
+}
+
+#remove-favorite-modal .modal-content {
+    background: #fff;
+    padding: 32px 28px 24px 28px;
+    border-radius: 2px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.13);
+    min-width: 320px;
+    max-width: 90vw;
+    text-align: center;
+}
+
+#remove-favorite-modal .modal-title {
+    font-size: 1.25rem;
+    font-family: 'Playfair Display',serif;
+    margin-bottom: 18px;
+    color: #181818;
+}
+
+#remove-favorite-modal .modal-actions {
+    display: flex;
+    gap: 18px;
+    justify-content: center;
+}
+
+#remove-favorite-modal .modal-btn {
+    border: none;
+    border-radius: 2px;
+    padding: 8px 24px;
+    font-size: 1rem;
+    cursor: pointer;
+    font-family: 'Goudy Old Style', 'Goudy', serif;
+}
+
+#remove-favorite-modal #confirm-remove-favorite {
+    background: #181818;
+    color: #fff;
+}
+
+#remove-favorite-modal #cancel-remove-favorite {
+    background: #e0d7c6;
+    color: #181818;
+}
+
+#remove-favorite-modal .modal-btn:hover {
+    background: #D3BD9B !important;
+    color: #181818;
+}
+
+/* Archive Modal - Same styling as logout modal */
+#archive-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.18);
+    z-index: 9998;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+#archive-modal-overlay.show {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+#archive-modal.modal {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    align-items: center;
+    justify-content: center;
+}
+
+#archive-modal .modal-content {
+    background: #fff;
+    padding: 32px 28px 24px 28px;
+    border-radius: 2px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.13);
+    min-width: 320px;
+    max-width: 90vw;
+    text-align: center;
+}
+
+#archive-modal .modal-title {
+    font-size: 1.25rem;
+    font-family: 'Playfair Display',serif;
+    margin-bottom: 12px;
+    color: #181818;
+}
+
+#archive-modal .modal-message {
+    font-size: 0.95rem;
+    font-family: 'Goudy Old Style', 'Goudy', serif;
+    margin-bottom: 18px;
+    color: #555;
+    line-height: 1.5;
+}
+
+#archive-modal .modal-actions {
+    display: flex;
+    gap: 18px;
+    justify-content: center;
+}
+
+#archive-modal .modal-btn {
+    border: none;
+    border-radius: 2px;
+    padding: 8px 24px;
+    font-size: 1rem;
+    cursor: pointer;
+    font-family: 'Goudy Old Style', 'Goudy', serif;
+}
+
+#archive-modal #confirm-archive {
+    background: #181818;
+    color: #fff;
+}
+
+#archive-modal #cancel-archive {
+    background: #e0d7c6;
+    color: #181818;
+}
+
+#archive-modal .modal-btn:hover {
+    background: #D3BD9B !important;
+    color: #181818;
+}
+
+/* Save Changes Modal - Same styling as logout modal */
+#save-changes-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.18);
+    z-index: 10998;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+#save-changes-modal-overlay.show {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+#save-changes-modal.modal {
+    display: none;
+    position: fixed;
+    z-index: 10999;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+}
+
+#save-changes-modal.modal.active {
+    display: flex;
+}
+
+#save-changes-modal .modal-content {
+    background: #fff;
+    padding: 32px 28px 24px 28px;
+    border-radius: 2px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.13);
+    min-width: 320px;
+    max-width: 90vw;
+    text-align: center;
+    pointer-events: auto;
+}
+
+#save-changes-modal .modal-title {
+    font-size: 1.25rem;
+    font-family: 'Playfair Display',serif;
+    margin-bottom: 18px;
+    color: #181818;
+}
+
+#save-changes-modal .modal-actions {
+    display: flex;
+    gap: 18px;
+    justify-content: center;
+}
+
+#save-changes-modal .modal-btn {
+    border: none;
+    border-radius: 2px;
+    padding: 8px 24px;
+    font-size: 1rem;
+    cursor: pointer;
+    font-family: 'Goudy Old Style', 'Goudy', serif;
+}
+
+#save-changes-modal #confirm-save-changes {
+    background: #181818;
+    color: #fff;
+}
+
+#save-changes-modal #cancel-save-changes {
+    background: #e0d7c6;
+    color: #181818;
+}
+
+#save-changes-modal .modal-btn:hover {
+    background: #D3BD9B !important;
+    color: #181818;
+}
+
+/* Delete Product Modal - Same styling as logout modal */
+#delete-product-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.18);
+    z-index: 9998;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+#delete-product-modal-overlay.show {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+#delete-product-modal.modal {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+}
+
+#delete-product-modal.modal.active {
+    display: flex;
+}
+
+#delete-product-modal .modal-content {
+    background: #fff;
+    padding: 32px 28px 24px 28px;
+    border-radius: 2px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.13);
+    min-width: 320px;
+    max-width: 90vw;
+    text-align: center;
+    pointer-events: auto;
+}
+
+#delete-product-modal .modal-title {
+    font-size: 1.25rem;
+    font-family: 'Playfair Display',serif;
+    margin-bottom: 12px;
+    color: #181818;
+}
+
+#delete-product-modal .modal-message {
+    font-size: 0.95rem;
+    font-family: 'Goudy Old Style', 'Goudy', serif;
+    margin-bottom: 18px;
+    color: #555;
+    line-height: 1.5;
+}
+
+#delete-product-modal .modal-actions {
+    display: flex;
+    gap: 18px;
+    justify-content: center;
+}
+
+#delete-product-modal .modal-btn {
+    border: none;
+    border-radius: 2px;
+    padding: 8px 24px;
+    font-size: 1rem;
+    cursor: pointer;
+    font-family: 'Goudy Old Style', 'Goudy', serif;
+}
+
+#delete-product-modal #confirm-delete-product {
+    background: #181818;
+    color: #fff;
+}
+
+#delete-product-modal #cancel-delete-product {
+    background: #e0d7c6;
+    color: #181818;
+}
+
+#delete-product-modal .modal-btn:hover {
+    background: #D3BD9B !important;
+    color: #181818;
+}
+
+/* Action Confirmation Modal (Suspend/Ban) - Same styling as logout modal */
+#action-confirm-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.18);
+    z-index: 9998;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+#action-confirm-modal-overlay.show {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+#action-confirm-modal.modal {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+}
+
+#action-confirm-modal.modal.active {
+    display: flex;
+}
+
+#action-confirm-modal .modal-content {
+    background: #fff;
+    padding: 32px 28px 24px 28px;
+    border-radius: 2px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.13);
+    min-width: 320px;
+    max-width: 90vw;
+    text-align: center;
+    pointer-events: auto;
+}
+
+#action-confirm-modal .modal-title {
+    font-size: 1.25rem;
+    font-family: 'Playfair Display',serif;
+    margin-bottom: 12px;
+    color: #181818;
+}
+
+#action-confirm-modal .modal-message {
+    font-size: 0.95rem;
+    font-family: 'Goudy Old Style', 'Goudy', serif;
+    margin-bottom: 18px;
+    color: #555;
+    line-height: 1.5;
+}
+
+#action-confirm-modal .modal-actions {
+    display: flex;
+    gap: 18px;
+    justify-content: center;
+}
+
+#action-confirm-modal .modal-btn {
+    border: none;
+    border-radius: 2px;
+    padding: 8px 24px;
+    font-size: 1rem;
+    cursor: pointer;
+    font-family: 'Goudy Old Style', 'Goudy', serif;
+}
+
+#action-confirm-modal #confirm-action-btn {
+    background: #181818;
+    color: #fff;
+}
+
+#action-confirm-modal #cancel-action-btn {
+    background: #e0d7c6;
+    color: #181818;
+}
+
+#action-confirm-modal .modal-btn:hover {
+    background: #D3BD9B !important;
+    color: #181818;
+}
+
+
+/* Status Update Modal - Same styling as logout modal */
+#status-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.3);
+    z-index: 10998;
+    display: none;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+#status-modal.modal {
+    display: none;
+    position: fixed;
+    z-index: 10999;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    align-items: center;
+    justify-content: center;
+}
+
+#status-modal.modal.active {
+    display: flex;
+}
+
+#status-modal .modal-content {
+    background: #fff;
+    padding: 32px 28px 24px 28px;
+    border-radius: 2px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.13);
+    min-width: 320px;
+    max-width: 90vw;
+    text-align: center;
+}
+
+#status-modal .modal-title {
+    font-size: 1.25rem;
+    font-family: 'Playfair Display',serif;
+    margin-bottom: 18px;
+    color: #181818;
+}
+
+#status-modal .modal-actions {
+    display: flex;
+    gap: 18px;
+    justify-content: center;
+}
+
+#status-modal .modal-btn {
+    border: none;
+    border-radius: 2px;
+    padding: 8px 24px;
+    font-size: 1rem;
+    cursor: pointer;
+    font-family: 'Goudy Old Style', 'Goudy', serif;
+}
+
+#status-modal .modal-btn:hover {
+    background: #D3BD9B !important;
+    color: #181818;
+}
+
+/* Accept Delivery Modal - Same styling as logout modal */
+#accept-delivery-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.18);
+    z-index: 9998;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+#accept-delivery-modal-overlay.show {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+#accept-delivery-modal.modal {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.25);
+    align-items: center;
+    justify-content: center;
+}
+
+#accept-delivery-modal.modal.active {
+    display: flex;
+}
+
+#accept-delivery-modal .modal-content {
+    background: #fff;
+    padding: 32px 28px 24px 28px;
+    border-radius: 2px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.13);
+    min-width: 320px;
+    max-width: 90vw;
+    text-align: center;
+    font-family: 'Goudy Old Style', 'Goudy', serif;
+}
+
+#accept-delivery-modal .modal-title {
+    font-size: 1.25rem;
+    font-family: 'Playfair Display',serif;
+    margin-bottom: 18px;
+    color: #181818;
+}
+
+#accept-delivery-modal .modal-actions {
+    display: flex;
+    gap: 18px;
+    justify-content: center;
+}
+
+#accept-delivery-modal .modal-btn {
+    border: none;
+    border-radius: 2px;
+    padding: 8px 24px;
+    font-size: 1rem;
+    cursor: pointer;
+    font-family: 'Goudy Old Style', 'Goudy', serif;
+}
+
+#accept-delivery-modal #confirm-accept-delivery {
+    background: #181818;
+    color: #fff;
+}
+
+#accept-delivery-modal #cancel-accept-delivery {
+    background: #e0d7c6;
+    color: #181818;
+}
+
+#accept-delivery-modal .modal-btn:hover {
+    background: #D3BD9B !important;
+    color: #181818;
+}
+
+/* Pickup Package Modal - Same styling as logout modal */
+#pickup-package-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.18);
+    z-index: 9998;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+#pickup-package-modal-overlay.show {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+#pickup-package-modal.modal {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.25);
+    align-items: center;
+    justify-content: center;
+}
+
+#pickup-package-modal.modal.active {
+    display: flex;
+}
+
+#pickup-package-modal .modal-content {
+    background: #fff;
+    padding: 32px 28px 24px 28px;
+    border-radius: 2px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.13);
+    min-width: 320px;
+    max-width: 90vw;
+    text-align: center;
+    font-family: 'Goudy Old Style', 'Goudy', serif;
+}
+
+#pickup-package-modal .modal-title {
+    font-size: 1.25rem;
+    font-family: 'Playfair Display',serif;
+    margin-bottom: 18px;
+    color: #181818;
+}
+
+#pickup-package-modal .modal-actions {
+    display: flex;
+    gap: 18px;
+    justify-content: center;
+}
+
+#pickup-package-modal .modal-btn {
+    border: none;
+    border-radius: 2px;
+    padding: 8px 24px;
+    font-size: 1rem;
+    cursor: pointer;
+    font-family: 'Goudy Old Style', 'Goudy', serif;
+}
+
+#pickup-package-modal #confirm-pickup-package {
+    background: #181818;
+    color: #fff;
+}
+
+#pickup-package-modal #cancel-pickup-package {
+    background: #e0d7c6;
+    color: #181818;
+}
+
+#pickup-package-modal .modal-btn:hover {
+    background: #D3BD9B !important;
+    color: #181818;
+}
+
+/* Complete Delivery Modal - Same styling as logout modal */
+#complete-delivery-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.18);
+    z-index: 9998;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+#complete-delivery-modal-overlay.show {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+#complete-delivery-modal.modal {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.25);
+    align-items: center;
+    justify-content: center;
+}
+
+#complete-delivery-modal.modal.active {
+    display: flex;
+}
+
+#complete-delivery-modal .modal-content {
+    background: #fff;
+    padding: 32px 28px 24px 28px;
+    border-radius: 2px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.13);
+    min-width: 320px;
+    max-width: 90vw;
+    text-align: center;
+    font-family: 'Goudy Old Style', 'Goudy', serif;
+}
+
+#complete-delivery-modal .modal-title {
+    font-size: 1.25rem;
+    font-family: 'Playfair Display',serif;
+    margin-bottom: 18px;
+    color: #181818;
+}
+
+#complete-delivery-modal .modal-actions {
+    display: flex;
+    gap: 18px;
+    justify-content: center;
+}
+
+#complete-delivery-modal .modal-btn {
+    border: none;
+    border-radius: 2px;
+    padding: 8px 24px;
+    font-size: 1rem;
+    cursor: pointer;
+    font-family: 'Goudy Old Style', 'Goudy', serif;
+}
+
+#complete-delivery-modal #confirm-complete-delivery {
+    background: #181818;
+    color: #fff;
+}
+
+#complete-delivery-modal #cancel-complete-delivery {
+    background: #e0d7c6;
+    color: #181818;
+}
+
+#complete-delivery-modal .modal-btn:hover {
+    background: #D3BD9B !important;
+    color: #181818;
+}

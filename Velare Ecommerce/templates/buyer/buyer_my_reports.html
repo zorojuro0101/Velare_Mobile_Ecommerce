@@ -1,0 +1,212 @@
+{% extends "buyer/buyer_base.html" %}
+
+{% block title %}My Reports - Velare{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="fas fa-list"></i> My Reports</h2>
+        <a href="{{ url_for('buyer_report_user.report_user_page') }}" class="btn btn-danger">
+            <i class="fas fa-plus"></i> New Report
+        </a>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            {% if reports %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Report ID</th>
+                            <th>Reported User</th>
+                            <th>Category</th>
+                            <th>Status</th>
+                            <th>Date Submitted</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for report in reports %}
+                        <tr>
+                            <td><strong>#{{ report.report_id }}</strong></td>
+                            <td>
+                                <span class="badge bg-warning">{{ report.reported_user_type }}</span><br>
+                                <small>{{ report.reported_user_name }}</small>
+                            </td>
+                            <td>
+                                <span class="badge bg-secondary">{{ report.report_category }}</span>
+                            </td>
+                            <td>
+                                {% if report.status == 'pending' %}
+                                    <span class="badge bg-warning">Pending</span>
+                                {% elif report.status == 'under_review' %}
+                                    <span class="badge bg-primary">Under Review</span>
+                                {% elif report.status == 'resolved' %}
+                                    <span class="badge bg-success">Resolved</span>
+                                {% elif report.status == 'dismissed' %}
+                                    <span class="badge bg-secondary">Dismissed</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ report.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                            <td>
+                                <button class="btn btn-sm btn-info" onclick="viewReportDetail({{ report.report_id }})">
+                                    <i class="fas fa-eye"></i> View
+                                </button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="text-center py-5">
+                <i class="fas fa-inbox fa-4x text-muted mb-3"></i>
+                <h5 class="text-muted">Walang reports pa</h5>
+                <p class="text-muted">Mag-submit ng report kung may problema sa seller o rider</p>
+                <a href="{{ url_for('buyer_report_user.report_user_page') }}" class="btn btn-danger">
+                    <i class="fas fa-plus"></i> Submit First Report
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Report Detail Modal -->
+<div class="modal fade" id="reportDetailModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Report Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="reportDetailContent">
+                <!-- Content loaded via JS -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function viewReportDetail(reportId) {
+    const report = {{ reports|tojson }}.find(r => r.report_id === reportId);
+    
+    let html = `
+        <div class="report-details">
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <h6>Reported User</h6>
+                    <p><span class="badge bg-warning">${report.reported_user_type}</span></p>
+                    <p><strong>${report.reported_user_name}</strong></p>
+                </div>
+                <div class="col-md-6">
+                    <h6>Status</h6>
+                    <p>
+                        ${report.status === 'pending' ? '<span class="badge bg-warning">Pending</span>' : ''}
+                        ${report.status === 'under_review' ? '<span class="badge bg-primary">Under Review</span>' : ''}
+                        ${report.status === 'resolved' ? '<span class="badge bg-success">Resolved</span>' : ''}
+                        ${report.status === 'dismissed' ? '<span class="badge bg-secondary">Dismissed</span>' : ''}
+                    </p>
+                </div>
+            </div>
+            <hr>
+            <div class="mb-3">
+                <h6>Category</h6>
+                <p><span class="badge bg-secondary">${report.report_category}</span></p>
+            </div>
+            <div class="mb-3">
+                <h6>Reason</h6>
+                <div class="alert alert-light">${report.report_reason}</div>
+            </div>
+            ${report.evidence_image ? `
+            <div class="mb-3">
+                <h6>Evidence</h6>
+                <img src="/${report.evidence_image}" class="img-fluid" style="max-height: 300px;">
+            </div>
+            ` : ''}
+            ${report.admin_notes ? `
+            <div class="mb-3">
+                <h6>Admin Notes</h6>
+                <div class="alert alert-info">${report.admin_notes}</div>
+            </div>
+            ` : ''}
+            <div class="text-muted small">
+                <p><strong>Submitted:</strong> ${report.created_at}</p>
+            </div>
+        </div>
+    `;
+    
+    document.getElementById('reportDetailContent').innerHTML = html;
+    new bootstrap.Modal(document.getElementById('reportDetailModal')).show();
+}
+</script>
+
+<style>
+/* Goudy font for all text */
+body, .card, h2, h5, h6, p, .table, .btn, .badge, .alert {
+    font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif !important;
+}
+
+.card {
+    border: none;
+    border-radius: 10px;
+}
+
+/* Table styling similar to seller */
+.table-responsive {
+    overflow-x: auto;
+    margin-top: 20px;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif !important;
+}
+
+.table thead {
+    background: #f5f5f5;
+}
+
+.table th {
+    padding: 14px 16px;
+    text-align: left;
+    font-family: 'Playfair Display', serif !important;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #181818;
+    border: none;
+}
+
+.table td {
+    padding: 14px 16px;
+    border-bottom: 1px solid #f0f0f0;
+    font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif !important;
+    font-size: 0.95rem;
+}
+
+.table tbody tr:hover {
+    background: #fafafa;
+}
+
+.table tbody tr {
+    border-bottom: 1px solid #f0f0f0;
+}
+
+/* Bold report ID */
+.table td strong {
+    font-weight: 700;
+    color: #d3bd9b;
+}
+
+/* Button styling */
+.btn {
+    font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif !important;
+}
+
+h2 {
+    font-family: 'Playfair Display', serif !important;
+}
+</style>
+{% endblock %}

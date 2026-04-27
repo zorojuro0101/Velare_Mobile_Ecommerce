@@ -1,0 +1,713 @@
+from flask import Blueprint, render_template, request, jsonify, session, abort, redirect, url_for
+import sys
+import os
+
+# Add the parent directory to the path to import db_config
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from database.db_config import get_db_connection, close_db_connection
+from .notification_helper import create_stock_notification
+
+cart_bp = Blueprint('cart', __name__)
+
+@cart_bp.route('/cart')
+def cart():
+    # Check if user is logged in
+    if 'user_id' not in session or not session.get('logged_in'):
+        return redirect(url_for('auth.login', next=request.path))
+    
+    connection = get_db_connection()
+    if not connection:
+        abort(500, description="Database connection failed")
+    
+    try:
+        cursor = connection.cursor(dictionary=True)
+        
+        # Get buyer_id from user_id
+        cursor.execute("SELECT buyer_id FROM buyers WHERE user_id = %s", (session['user_id'],))
+        buyer = cursor.fetchone()
+        
+        if not buyer:
+            return render_template('cart.html', shop_groups=[])
+        
+        buyer_id = buyer['buyer_id']
+        
+        # Fetch all cart items with product details, shop info, size, and check if favorited
+        # Only show active products (is_active = 1)
+        query = """
+            SELECT DISTINCT
+                c.cart_id,
+                c.product_id,
+                c.quantity,
+                c.variant_id,
+                p.product_name,
+                p.materials,
+                p.price,
+                p.is_active,
+                pv.stock_quantity,
+                p.seller_id,
+                s.shop_name,
+                s.shop_logo,
+                (SELECT image_url FROM product_images WHERE product_id = p.product_id AND is_primary = 1 LIMIT 1) as primary_image,
+                pv.size,
+                pv.color,
+                CASE WHEN EXISTS(SELECT 1 FROM favorites WHERE product_id = c.product_id AND buyer_id = %s) THEN 1 ELSE 0 END as is_favorite
+            FROM cart c
+            JOIN products p ON c.product_id = p.product_id
+            JOIN sellers s ON p.seller_id = s.seller_id
+            LEFT JOIN product_variants pv ON c.variant_id = pv.variant_id
+            WHERE c.buyer_id = %s AND p.is_active = 1
+            ORDER BY c.added_at DESC
+        """
+        cursor.execute(query, (buyer_id, buyer_id))
+        cart_items = cursor.fetchall()
+        
+        # Group items by shop
+        from collections import defaultdict
+        shops = defaultdict(list)
+        for item in cart_items:
+            shop_key = item['seller_id']
+            shops[shop_key].append(item)
+        
+        # Convert to list of shop groups
+        shop_groups = []
+        for seller_id, items in shops.items():
+            shop_groups.append({
+                'seller_id': seller_id,
+                'shop_name': items[0]['shop_name'],
+                'shop_logo': items[0]['shop_logo'],
+                'shop_items': items
+            })
+        
+        return render_template('cart.html', shop_groups=shop_groups)
+    
+    except Exception as e:
+        import traceback
+        print(f"Error fetching cart items: {e}")
+        print(traceback.format_exc())
+        abort(500, description=f"Error fetching cart items: {str(e)}")
+    
+    finally:
+        close_db_connection(connection, cursor)
+
+@cart_bp.route('/add_to_cart', methods=['POST'])
+def add_to_cart():
+    try:
+        # Check if user is logged in
+        if 'user_id' not in session or not session.get('logged_in'):
+            return jsonify({'success': False, 'message': 'Please login to add items to cart'}), 401
+        
+        data = request.get_json()
+        product_id = data.get('product_id')
+        quantity = data.get('quantity', 1)
+        variant_id = data.get('variant_id')  # Get variant_id for size/color
+        selected_color = data.get('color')  # Get selected color from color buttons
+        
+        print(f"\n{'='*80}")
+        print(f"[ADD_TO_CART] Request received from user_id: {session.get('user_id')}")
+        print(f"[ADD_TO_CART] Data received: product_id={product_id}, quantity={quantity}, variant_id={variant_id}, color={selected_color}")
+        print(f"{'='*80}\n")
+        
+        if not product_id:
+            return jsonify({'success': False, 'message': 'Product ID is required'}), 400
+        
+        if quantity < 1:
+            return jsonify({'success': False, 'message': 'Quantity must be at least 1'}), 400
+        
+        connection = get_db_connection()
+        if not connection:
+            print("Database connection failed")
+            return jsonify({'success': False, 'message': 'Database connection failed'}), 500
+        
+        try:
+            cursor = connection.cursor(dictionary=True)
+            
+            # Get buyer_id from user_id
+            cursor.execute("SELECT buyer_id FROM buyers WHERE user_id = %s", (session['user_id'],))
+            buyer = cursor.fetchone()
+            
+            if not buyer:
+                return jsonify({'success': False, 'message': 'Buyer account not found'}), 404
+            
+            buyer_id = buyer['buyer_id']
+            print(f"[ADD_TO_CART] Buyer ID: {buyer_id}")
+            
+            # Logic to determine the correct variant_id
+            # The variant_id from the client might only represent the selected size.
+            # We need to find the definitive variant that matches both size and color.
+            if variant_id and selected_color:
+                try:
+                    # First, get the size from the variant_id sent by the client
+                    cursor.execute("SELECT size FROM product_variants WHERE variant_id = %s", (variant_id,))
+                    size_result = cursor.fetchone()
+                    
+                    if size_result:
+                        selected_size = size_result['size']
+                        
+                        # Now, find the variant that matches the product, size, AND color
+                        cursor.execute(
+                            "SELECT variant_id FROM product_variants WHERE product_id = %s AND size = %s AND color = %s",
+                            (product_id, selected_size, selected_color)
+                        )
+                        final_variant = cursor.fetchone()
+                        
+                        if final_variant:
+                            variant_id = final_variant['variant_id']
+                            print(f"[ADD_TO_CART] Found matching variant: variant_id={variant_id} for size={selected_size}, color={selected_color}")
+                        else:
+                            # This case means there's no variant for the selected size/color combo, which is an error
+                            print(f"[ADD_TO_CART] ERROR: No variant found for size={selected_size}, color={selected_color}")
+                            return jsonify({'success': False, 'message': 'Selected color and size combination is not available.'}), 400
+                except Exception as e:
+                    # Handle potential errors during variant lookup
+                    print(f"Error looking up variant: {e}")
+                    return jsonify({'success': False, 'message': 'Error finding product variant.'}), 500
+            
+            # Check if product exists
+            cursor.execute(
+                "SELECT product_id FROM products WHERE product_id = %s AND is_active = 1",
+                (product_id,)
+            )
+            product = cursor.fetchone()
+            
+            if not product:
+                return jsonify({'success': False, 'message': 'Product not found or unavailable'}), 404
+            
+            # Check stock from variant if variant_id is provided
+            if variant_id:
+                cursor.execute(
+                    "SELECT stock_quantity FROM product_variants WHERE variant_id = %s",
+                    (variant_id,)
+                )
+                variant = cursor.fetchone()
+                
+                if not variant:
+                    return jsonify({'success': False, 'message': 'Product variant not found'}), 404
+                
+                if variant['stock_quantity'] <= 0:
+                    return jsonify({'success': False, 'message': 'This product is out of stock'}), 400
+                
+                if variant['stock_quantity'] < quantity:
+                    return jsonify({'success': False, 'message': f'Only {variant["stock_quantity"]} items available in stock'}), 400
+                
+                available_stock = variant['stock_quantity']
+                
+                # Check current quantity in cart for this variant
+                cursor.execute(
+                    "SELECT quantity FROM cart WHERE buyer_id = %s AND product_id = %s AND variant_id = %s",
+                    (buyer_id, product_id, variant_id)
+                )
+                current_cart_item = cursor.fetchone()
+                current_quantity = current_cart_item['quantity'] if current_cart_item else 0
+                
+                # Check if already at maximum stock in cart
+                if current_quantity >= available_stock:
+                    return jsonify({
+                        'success': False, 
+                        'message': 'Already in maximum stocks in cart'
+                    }), 400
+                
+                # Check if adding new quantity would exceed stock
+                if current_quantity + quantity > available_stock:
+                    return jsonify({
+                        'success': False, 
+                        'message': f'Cannot add {quantity} more items. Only {available_stock - current_quantity} items can be added to reach maximum stock.'
+                    }), 400
+            else:
+                return jsonify({'success': False, 'message': 'Product variant is required'}), 400
+            
+            # Use INSERT ... ON DUPLICATE KEY UPDATE to prevent race conditions
+            # This atomically handles both insert and update in a single query
+            print(f"[ADD_TO_CART] Executing INSERT with: buyer_id={buyer_id}, product_id={product_id}, quantity={quantity}, variant_id={variant_id}")
+            
+            if variant_id:
+                cursor.execute("""
+                    INSERT INTO cart (buyer_id, product_id, quantity, variant_id)
+                    VALUES (%s, %s, %s, %s)
+                    ON DUPLICATE KEY UPDATE 
+                        quantity = quantity + VALUES(quantity),
+                        cart_id = LAST_INSERT_ID(cart_id)
+                """, (buyer_id, product_id, quantity, variant_id))
+            else:
+                cursor.execute("""
+                    INSERT INTO cart (buyer_id, product_id, quantity, variant_id)
+                    VALUES (%s, %s, %s, NULL)
+                    ON DUPLICATE KEY UPDATE 
+                        quantity = quantity + VALUES(quantity),
+                        cart_id = LAST_INSERT_ID(cart_id)
+                """, (buyer_id, product_id, quantity))
+            
+            connection.commit()
+            cart_id = cursor.lastrowid
+            print(f"[ADD_TO_CART] Cart operation completed. cart_id={cart_id}, rows_affected={cursor.rowcount}")
+            
+            # Verify the final quantity doesn't exceed stock
+            cursor.execute(
+                "SELECT quantity FROM cart WHERE cart_id = %s",
+                (cart_id,)
+            )
+            final_cart = cursor.fetchone()
+            
+            if final_cart and final_cart['quantity'] > available_stock:
+                # Rollback to previous quantity
+                cursor.execute(
+                    "UPDATE cart SET quantity = %s WHERE cart_id = %s",
+                    (available_stock, cart_id)
+                )
+                connection.commit()
+                return jsonify({
+                    'success': False, 
+                    'message': f'Cannot add more. Only {available_stock} items available. Cart updated to maximum available.',
+                    'cart_id': cart_id
+                }), 400
+            
+            print(f"[ADD_TO_CART] SUCCESS: Item added/updated in cart. cart_id={cart_id}")
+            print(f"{'='*80}\n")
+            return jsonify({'success': True, 'message': 'Added to cart successfully', 'cart_id': cart_id})
+        
+        except Exception as e:
+            connection.rollback()
+            print(f"Database error: {e}")
+            import traceback
+            print(traceback.format_exc())
+            return jsonify({'success': False, 'message': f'Database error: {str(e)}'}), 500
+        
+        finally:
+            close_db_connection(connection, cursor)
+    
+    except Exception as e:
+        print(f"Unexpected error: {e}")
+        import traceback
+        print(traceback.format_exc())
+        return jsonify({'success': False, 'message': f'Unexpected error: {str(e)}'}), 500
+
+@cart_bp.route('/buy_now_cart', methods=['POST'])
+def buy_now_cart():
+    """Add to cart for Buy Now - doesn't increase quantity if already exists"""
+    try:
+        # Check if user is logged in
+        if 'user_id' not in session or not session.get('logged_in'):
+            return jsonify({'success': False, 'message': 'Please login to continue'}), 401
+        
+        data = request.get_json()
+        product_id = data.get('product_id')
+        variant_id = data.get('variant_id')
+        selected_color = data.get('color')
+        quantity = data.get('quantity', 1)
+        
+        print(f"\n{'='*80}")
+        print(f"[BUY_NOW_CART] Request received from user_id: {session.get('user_id')}")
+        print(f"[BUY_NOW_CART] Data: product_id={product_id}, variant_id={variant_id}, color={selected_color}, quantity={quantity}")
+        print(f"{'='*80}\n")
+        
+        if not product_id:
+            return jsonify({'success': False, 'message': 'Product ID is required'}), 400
+        
+        if quantity < 1:
+            return jsonify({'success': False, 'message': 'Quantity must be at least 1'}), 400
+        
+        connection = get_db_connection()
+        if not connection:
+            return jsonify({'success': False, 'message': 'Database connection failed'}), 500
+        
+        try:
+            cursor = connection.cursor(dictionary=True)
+            
+            # Get buyer_id
+            cursor.execute("SELECT buyer_id FROM buyers WHERE user_id = %s", (session['user_id'],))
+            buyer = cursor.fetchone()
+            
+            if not buyer:
+                return jsonify({'success': False, 'message': 'Buyer account not found'}), 404
+            
+            buyer_id = buyer['buyer_id']
+            
+            # Logic to determine the correct variant_id (same as add_to_cart)
+            if variant_id and selected_color:
+                try:
+                    cursor.execute("SELECT size FROM product_variants WHERE variant_id = %s", (variant_id,))
+                    size_result = cursor.fetchone()
+                    
+                    if size_result:
+                        selected_size = size_result['size']
+                        cursor.execute(
+                            "SELECT variant_id FROM product_variants WHERE product_id = %s AND size = %s AND color = %s",
+                            (product_id, selected_size, selected_color)
+                        )
+                        final_variant = cursor.fetchone()
+                        
+                        if final_variant:
+                            variant_id = final_variant['variant_id']
+                            print(f"[BUY_NOW_CART] Found matching variant: variant_id={variant_id}")
+                        else:
+                            return jsonify({'success': False, 'message': 'Selected color and size combination is not available.'}), 400
+                except Exception as e:
+                    print(f"Error looking up variant: {e}")
+                    return jsonify({'success': False, 'message': 'Error finding product variant.'}), 500
+            
+            # Check if product exists
+            cursor.execute(
+                "SELECT product_id FROM products WHERE product_id = %s AND is_active = 1",
+                (product_id,)
+            )
+            product = cursor.fetchone()
+            
+            if not product:
+                return jsonify({'success': False, 'message': 'Product not found or unavailable'}), 404
+            
+            # Check stock from variant if variant_id is provided
+            if variant_id:
+                cursor.execute(
+                    "SELECT stock_quantity FROM product_variants WHERE variant_id = %s",
+                    (variant_id,)
+                )
+                variant = cursor.fetchone()
+                
+                if not variant:
+                    return jsonify({'success': False, 'message': 'Product variant not found'}), 404
+                
+                if variant['stock_quantity'] < quantity:
+                    return jsonify({'success': False, 'message': f'Only {variant["stock_quantity"]} items available in stock'}), 400
+            else:
+                return jsonify({'success': False, 'message': 'Product variant is required'}), 400
+            
+            # Check if item already exists in cart
+            if variant_id:
+                cursor.execute("""
+                    SELECT cart_id FROM cart 
+                    WHERE buyer_id = %s AND product_id = %s AND variant_id = %s
+                """, (buyer_id, product_id, variant_id))
+            else:
+                cursor.execute("""
+                    SELECT cart_id FROM cart 
+                    WHERE buyer_id = %s AND product_id = %s AND variant_id IS NULL
+                """, (buyer_id, product_id))
+            
+            existing_cart = cursor.fetchone()
+            
+            if existing_cart:
+                # Item already exists, update quantity to the new quantity (not add)
+                cart_id = existing_cart['cart_id']
+                cursor.execute("""
+                    UPDATE cart SET quantity = %s WHERE cart_id = %s
+                """, (quantity, cart_id))
+                connection.commit()
+                print(f"[BUY_NOW_CART] Item already in cart. Updated quantity to {quantity}. cart_id={cart_id}")
+            else:
+                # Item doesn't exist, create new cart entry with specified quantity
+                if variant_id:
+                    cursor.execute("""
+                        INSERT INTO cart (buyer_id, product_id, quantity, variant_id)
+                        VALUES (%s, %s, %s, %s)
+                    """, (buyer_id, product_id, quantity, variant_id))
+                else:
+                    cursor.execute("""
+                        INSERT INTO cart (buyer_id, product_id, quantity, variant_id)
+                        VALUES (%s, %s, %s, NULL)
+                    """, (buyer_id, product_id, quantity))
+                
+                connection.commit()
+                cart_id = cursor.lastrowid
+                print(f"[BUY_NOW_CART] New cart item created with quantity={quantity}. cart_id={cart_id}")
+            
+            print(f"[BUY_NOW_CART] SUCCESS: cart_id={cart_id}")
+            print(f"{'='*80}\n")
+            return jsonify({'success': True, 'message': 'Ready for checkout', 'cart_id': cart_id})
+        
+        except Exception as e:
+            connection.rollback()
+            print(f"Database error: {e}")
+            import traceback
+            print(traceback.format_exc())
+            return jsonify({'success': False, 'message': f'Database error: {str(e)}'}), 500
+        
+        finally:
+            close_db_connection(connection, cursor)
+    
+    except Exception as e:
+        print(f"Unexpected error: {e}")
+        import traceback
+        print(traceback.format_exc())
+        return jsonify({'success': False, 'message': f'Unexpected error: {str(e)}'}), 500
+
+@cart_bp.route('/remove_from_cart', methods=['POST'])
+def remove_from_cart():
+    try:
+        # Check if user is logged in
+        if 'user_id' not in session or not session.get('logged_in'):
+            return jsonify({'success': False, 'message': 'Not logged in'}), 401
+        
+        data = request.get_json()
+        cart_id = data.get('cart_id')
+        
+        if not cart_id:
+            return jsonify({'success': False, 'message': 'Cart ID is required'}), 400
+        
+        connection = get_db_connection()
+        if not connection:
+            print("Database connection failed")
+            return jsonify({'success': False, 'message': 'Database connection failed'}), 500
+        
+        try:
+            cursor = connection.cursor(dictionary=True)
+            
+            # Get buyer_id from user_id
+            cursor.execute("SELECT buyer_id FROM buyers WHERE user_id = %s", (session['user_id'],))
+            buyer = cursor.fetchone()
+            
+            if not buyer:
+                return jsonify({'success': False, 'message': 'Buyer account not found'}), 404
+            
+            buyer_id = buyer['buyer_id']
+            
+            # Verify the cart item belongs to this buyer before deleting
+            cursor.execute(
+                "SELECT cart_id FROM cart WHERE cart_id = %s AND buyer_id = %s",
+                (cart_id, buyer_id)
+            )
+            cart_item = cursor.fetchone()
+            
+            if not cart_item:
+                return jsonify({'success': False, 'message': 'Cart item not found'}), 404
+            
+            # Delete from cart
+            cursor.execute("DELETE FROM cart WHERE cart_id = %s", (cart_id,))
+            connection.commit()
+            
+            return jsonify({'success': True, 'message': 'Removed from cart successfully'})
+        
+        except Exception as e:
+            connection.rollback()
+            print(f"Database error: {e}")
+            import traceback
+            print(traceback.format_exc())
+            return jsonify({'success': False, 'message': f'Database error: {str(e)}'}), 500
+        
+        finally:
+            close_db_connection(connection, cursor)
+    
+    except Exception as e:
+        print(f"Unexpected error: {e}")
+        import traceback
+        print(traceback.format_exc())
+        return jsonify({'success': False, 'message': f'Unexpected error: {str(e)}'}), 500
+
+@cart_bp.route('/update_cart_quantity', methods=['POST'])
+def update_cart_quantity():
+    try:
+        # Check if user is logged in
+        if 'user_id' not in session or not session.get('logged_in'):
+            return jsonify({'success': False, 'message': 'Not logged in'}), 401
+        
+        data = request.get_json()
+        cart_id = data.get('cart_id')
+        quantity = data.get('quantity')
+        
+        if not cart_id or quantity is None:
+            return jsonify({'success': False, 'message': 'Cart ID and quantity are required'}), 400
+        
+        if quantity < 1:
+            return jsonify({'success': False, 'message': 'Quantity must be at least 1'}), 400
+        
+        connection = get_db_connection()
+        if not connection:
+            print("Database connection failed")
+            return jsonify({'success': False, 'message': 'Database connection failed'}), 500
+        
+        try:
+            cursor = connection.cursor(dictionary=True)
+            
+            # Get buyer_id from user_id
+            cursor.execute("SELECT buyer_id FROM buyers WHERE user_id = %s", (session['user_id'],))
+            buyer = cursor.fetchone()
+            
+            if not buyer:
+                return jsonify({'success': False, 'message': 'Buyer account not found'}), 404
+            
+            buyer_id = buyer['buyer_id']
+            
+            # Get cart item and verify ownership
+            cursor.execute(
+                "SELECT c.cart_id, c.product_id, c.variant_id FROM cart c WHERE c.cart_id = %s AND c.buyer_id = %s",
+                (cart_id, buyer_id)
+            )
+            cart_item = cursor.fetchone()
+            
+            if not cart_item:
+                return jsonify({'success': False, 'message': 'Cart item not found'}), 404
+            
+            # Check stock availability from variant
+            if cart_item['variant_id']:
+                cursor.execute(
+                    "SELECT stock_quantity FROM product_variants WHERE variant_id = %s",
+                    (cart_item['variant_id'],)
+                )
+                variant = cursor.fetchone()
+                
+                if not variant:
+                    return jsonify({'success': False, 'message': 'Product variant not found'}), 404
+                
+                if quantity > variant['stock_quantity']:
+                    return jsonify({'success': False, 'message': f'Only {variant["stock_quantity"]} items available in stock'}), 400
+            else:
+                return jsonify({'success': False, 'message': 'Product variant is required'}), 400
+            
+            # Update quantity
+            cursor.execute(
+                "UPDATE cart SET quantity = %s WHERE cart_id = %s",
+                (quantity, cart_id)
+            )
+            connection.commit()
+            
+            return jsonify({'success': True, 'message': 'Quantity updated successfully'})
+        
+        except Exception as e:
+            connection.rollback()
+            print(f"Database error: {e}")
+            import traceback
+            print(traceback.format_exc())
+            return jsonify({'success': False, 'message': f'Database error: {str(e)}'}), 500
+        
+        finally:
+            close_db_connection(connection, cursor)
+    
+    except Exception as e:
+        print(f"Unexpected error: {e}")
+        import traceback
+        print(traceback.format_exc())
+        return jsonify({'success': False, 'message': f'Unexpected error: {str(e)}'}), 500
+
+@cart_bp.route('/get_cart_count', methods=['GET'])
+def get_cart_count():
+    try:
+        # If user is not logged in, return 0
+        if 'user_id' not in session or not session.get('logged_in'):
+            return jsonify({'success': True, 'count': 0})
+        
+        connection = get_db_connection()
+        if not connection:
+            return jsonify({'success': False, 'message': 'Database connection failed'}), 500
+        
+        try:
+            cursor = connection.cursor(dictionary=True)
+            
+            # Get buyer_id from user_id
+            cursor.execute("SELECT buyer_id FROM buyers WHERE user_id = %s", (session['user_id'],))
+            buyer = cursor.fetchone()
+            
+            if not buyer:
+                return jsonify({'success': True, 'count': 0})
+            
+            buyer_id = buyer['buyer_id']
+            
+            # Get total count of items in cart
+            cursor.execute("SELECT COUNT(*) as count FROM cart WHERE buyer_id = %s", (buyer_id,))
+            result = cursor.fetchone()
+            
+            count = result['count'] if result else 0
+            
+            return jsonify({'success': True, 'count': count})
+        
+        except Exception as e:
+            print(f"Database error: {e}")
+            import traceback
+            print(traceback.format_exc())
+            return jsonify({'success': False, 'message': f'Database error: {str(e)}'}), 500
+        
+        finally:
+            close_db_connection(connection, cursor)
+    
+    except Exception as e:
+        print(f"Unexpected error: {e}")
+        import traceback
+        print(traceback.format_exc())
+        return jsonify({'success': False, 'message': f'Unexpected error: {str(e)}'}), 500
+
+@cart_bp.route('/check_cart_stock_status', methods=['POST'])
+def check_cart_stock_status():
+    """Check if any cart items have changed stock status (low on stock/out of stock)"""
+    try:
+        if 'user_id' not in session or not session.get('logged_in'):
+            return jsonify({'success': False, 'message': 'Please login'}), 401
+        
+        user_id = session.get('user_id')
+        data = request.get_json()
+        cart_items = data.get('cart_items', [])  # List of {cart_id, variant_id, current_stock, product_id, product_name}
+        
+        if not cart_items:
+            return jsonify({'success': True, 'changes': []})
+        
+        connection = get_db_connection()
+        if not connection:
+            return jsonify({'success': False, 'message': 'Database connection failed'}), 500
+        
+        try:
+            cursor = connection.cursor(dictionary=True)
+            changes = []
+            
+            for item in cart_items:
+                variant_id = item.get('variant_id')
+                current_stock = item.get('current_stock')
+                cart_id = item.get('cart_id')
+                product_id = item.get('product_id')
+                product_name = item.get('product_name')
+                
+                if not variant_id:
+                    continue
+                
+                # Get current stock from database
+                cursor.execute(
+                    "SELECT stock_quantity FROM product_variants WHERE variant_id = %s",
+                    (variant_id,)
+                )
+                variant = cursor.fetchone()
+                
+                if not variant:
+                    continue
+                
+                new_stock = variant['stock_quantity']
+                
+                # Check if stock status has changed
+                old_status = 'normal'
+                new_status = 'normal'
+                
+                if current_stock <= 0:
+                    old_status = 'out_of_stock'
+                elif current_stock <= 5:
+                    old_status = 'low_on_stock'
+                
+                if new_stock <= 0:
+                    new_status = 'out_of_stock'
+                elif new_stock <= 5:
+                    new_status = 'low_on_stock'
+                
+                # If status changed, record it and create notification
+                if old_status != new_status:
+                    changes.append({
+                        'cart_id': cart_id,
+                        'variant_id': variant_id,
+                        'old_stock': current_stock,
+                        'new_stock': new_stock,
+                        'old_status': old_status,
+                        'new_status': new_status
+                    })
+                    
+                    # Create notification for the buyer
+                    if product_name and product_id:
+                        create_stock_notification(user_id, product_name, product_id, new_status, new_stock)
+            
+            return jsonify({'success': True, 'changes': changes})
+        
+        except Exception as e:
+            print(f"Database error: {e}")
+            import traceback
+            print(traceback.format_exc())
+            return jsonify({'success': False, 'message': f'Database error: {str(e)}'}), 500
+        
+        finally:
+            close_db_connection(connection, cursor)
+    
+    except Exception as e:
+        print(f"Unexpected error: {e}")
+        import traceback
+        print(traceback.format_exc())
+        return jsonify({'success': False, 'message': f'Unexpected error: {str(e)}'}), 500

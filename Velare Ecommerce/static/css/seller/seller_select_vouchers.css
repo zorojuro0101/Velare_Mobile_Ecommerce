@@ -1,0 +1,542 @@
+/* Seller Select Vouchers Page - Based on Seller Messages Layout */
+
+/* Increase base font size for seller pages */
+body {
+	font-size: calc(1rem + 0.2rem);
+}
+
+/* Ensure consistent body styling */
+html, body {
+	height: 100%;
+	overflow-x: hidden;
+	max-width: 100vw;
+}
+
+/* Active state for main tabs - Steady sidebar like rider */
+.main-tab.active {
+	color: #D3BD9B !important;
+	font-weight: 700 !important;
+	text-shadow: 0 1px 4px rgba(211,189,155,0.3), 0 0.5px 0 #fffbe8 !important;
+}
+
+/* Override main tab styles */
+.main-tab {
+	color: #181818 !important;
+	text-shadow: none !important;
+	font-weight: 400 !important;
+}
+
+/* Hover state for non-active tabs - Steady sidebar like rider */
+.main-tab:hover:not(.active) {
+	color: #D3BD9B !important;
+	text-shadow: 0 1px 4px rgba(211,189,155,0.3), 0 0.5px 0 #fffbe8 !important;
+}
+
+/* Clickable Profile Name Styling */
+.profile-name-placeholder.clickable-profile {
+	cursor: pointer;
+	text-decoration: none;
+	color: inherit;
+	position: relative;
+	padding-bottom: 2px;
+	transition: color 0.2s, text-shadow 0.2s;
+}
+
+.profile-name-placeholder.clickable-profile::after {
+	content: '';
+	display: block;
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	height: 2px;
+	background: linear-gradient(90deg, #D3BD9B 0%, #bfa14a 100%);
+	transform: scaleX(0);
+	transform-origin: left;
+	transition: transform 0.28s cubic-bezier(.4,0,.2,1);
+}
+
+.profile-name-placeholder.clickable-profile:hover {
+	color: #bfa14a !important;
+	text-shadow: 0 3px 12px #bfa14a66, 0 1px 0 #fffbe8 !important;
+}
+
+.profile-name-placeholder.clickable-profile:hover::after {
+	background: linear-gradient(90deg, #bfa14a 0%, #D3BD9B 100%);
+	height: 3px;
+	transform: scaleX(1);
+}
+
+/* Vouchers Main Content - Uses same class as messages for consistency */
+.messages-main-content {
+	background: #ffffff;
+	border-radius: 0px;
+	box-shadow: 0 8px 32px rgba(44, 34, 54, 0.08);
+	border: 1px solid #d0b996;
+	margin: 0;
+	margin-left: -450px;
+	margin-top: -24px;
+	width: calc(100% - 50px);
+	max-width: none;
+	height: 80vh;
+	overflow: hidden;
+	padding-right: 20px;
+	padding-left: 0px;
+}
+
+/* Vouchers Content Wrapper - to add padding inside */
+.vouchers-content-wrapper {
+	height: 100%;
+	overflow-y: auto;
+	overflow-x: hidden;
+	padding: 32px 0px 32px 32px;
+}
+
+/* Hide scrollbar for content wrapper */
+.vouchers-content-wrapper::-webkit-scrollbar {
+	width: 0px;
+	background: transparent;
+}
+
+.vouchers-content-wrapper::-webkit-scrollbar-thumb {
+	background: transparent;
+}
+
+/* Hide scrollbar but keep functionality */
+.messages-main-content::-webkit-scrollbar {
+	width: 0px;
+	background: transparent;
+}
+
+.messages-main-content::-webkit-scrollbar-thumb {
+	background: transparent;
+}
+
+.product-approvals-title {
+	font-family: 'Playfair Display', serif;
+	font-size: 2rem;
+	font-weight: 700;
+	color: #181818;
+	margin: 0 0 10px 0;
+}
+
+.product-approvals-divider {
+	border: none;
+	height: 2px;
+	background: linear-gradient(90deg, #D3BD9B 0%, #bfa14a 50%, transparent 100%);
+	margin-bottom: 30px;
+}
+
+.product-approvals-content {
+	display: flex;
+	flex-direction: column;
+	gap: 24px;
+}
+
+/* Vouchers Section */
+.vouchers-section {
+	margin-bottom: 32px;
+}
+
+.section-subtitle {
+	font-family: 'Playfair Display', serif;
+	font-size: 1.4rem;
+	font-weight: 600;
+	color: #181818;
+	margin: 0 0 8px 0;
+}
+
+.section-description {
+	font-family: 'Goudy Old Style', 'Goudy', serif;
+	font-size: 0.9rem;
+	color: #666;
+	margin: 0 0 20px 0;
+	line-height: 1.5;
+}
+
+/* Vouchers Grid */
+.approval-cards-container {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+	gap: 24px;
+	width: 100%;
+}
+
+/* Voucher Card Styling */
+.voucher-card {
+	display: flex;
+	flex-direction: column;
+	background: #ffffff;
+	border: 1.5px solid #e0d7c6;
+	border-radius: 8px;
+	padding: 20px;
+	box-shadow: 0 2px 8px rgba(44,34,54,0.06);
+	transition: all 0.3s ease;
+	position: relative;
+	overflow: hidden;
+}
+
+.voucher-card:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 6px 16px rgba(44,34,54,0.12);
+	border-color: #bf9f4a;
+}
+
+.voucher-card::before {
+	content: '';
+	position: absolute;
+	left: 0;
+	top: 0;
+	height: 100%;
+	width: 4px;
+	background: linear-gradient(180deg, #bf9f4a 0%, #D3BD9B 100%);
+}
+
+.voucher-card.selected {
+	border-left: 4px solid #059669;
+	background: #f0fdf4;
+}
+
+.voucher-card.selected::before {
+	background: linear-gradient(180deg, #059669 0%, #10b981 100%);
+}
+
+.voucher-card.already-selected {
+	opacity: 0.6;
+	background: #f9fafb;
+}
+
+/* Voucher Card Components */
+.voucher-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: flex-start;
+	margin-bottom: 12px;
+	gap: 12px;
+}
+
+.voucher-code {
+	font-family: 'Goudy Old Style', 'Goudy', serif;
+	font-size: 1.1rem;
+	font-weight: 700;
+	color: #181818;
+	letter-spacing: 1px;
+}
+
+.voucher-type-badge {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	padding: 4px 12px;
+	border-radius: 20px;
+	font-family: 'Goudy Old Style', 'Goudy', serif;
+	font-size: 0.75rem;
+	font-weight: 600;
+	white-space: nowrap;
+}
+
+.voucher-type-badge.free-shipping {
+	background: #dcfce7;
+	color: #166534;
+	border: 1px solid #86efac;
+}
+
+.voucher-type-badge.discount {
+	background: #dbeafe;
+	color: #1e40af;
+	border: 1px solid #93c5fd;
+}
+
+.voucher-name {
+	font-family: 'Playfair Display', serif;
+	font-size: 1rem;
+	font-weight: 500;
+	color: #181818;
+	margin-bottom: 16px;
+	line-height: 1.4;
+}
+
+.voucher-dates {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	margin-bottom: 16px;
+}
+
+.voucher-date {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	font-family: 'Goudy Old Style', 'Goudy', serif;
+	font-size: 0.85rem;
+	color: #666;
+}
+
+.voucher-date i {
+	color: #bf9f4a;
+	font-size: 0.9rem;
+}
+
+.voucher-actions {
+	margin-top: auto;
+	padding-top: 16px;
+	border-top: 1px solid #e0d7c6;
+	display: flex;
+	justify-content: flex-end;
+}
+
+/* Action Buttons */
+.select-voucher-btn {
+	background: #059669;
+	color: #fff;
+	border: none;
+	padding: 8px 16px;
+	border-radius: 4px;
+	font-family: 'Goudy Old Style', 'Goudy', serif;
+	font-size: 0.85rem;
+	font-weight: 600;
+	cursor: pointer;
+	transition: all 0.3s ease;
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+}
+
+.select-voucher-btn:hover {
+	background: #047857;
+	transform: translateY(-1px);
+	box-shadow: 0 2px 8px rgba(5, 150, 105, 0.3);
+}
+
+.remove-voucher-btn {
+	background: #dc2626;
+	color: #fff;
+	border: none;
+	padding: 8px 16px;
+	border-radius: 4px;
+	font-family: 'Goudy Old Style', 'Goudy', serif;
+	font-size: 0.85rem;
+	font-weight: 600;
+	cursor: pointer;
+	transition: all 0.3s ease;
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+}
+
+.remove-voucher-btn:hover {
+	background: #b91c1c;
+	transform: translateY(-1px);
+	box-shadow: 0 2px 8px rgba(220, 38, 38, 0.3);
+}
+
+.voucher-selected-btn {
+	background: #6b7280;
+	color: #fff;
+	border: none;
+	padding: 8px 16px;
+	border-radius: 4px;
+	font-family: 'Goudy Old Style', 'Goudy', serif;
+	font-size: 0.85rem;
+	font-weight: 600;
+	cursor: not-allowed;
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	opacity: 0.7;
+}
+
+/* No Vouchers State */
+.no-vouchers {
+	text-align: center;
+	padding: 60px 20px;
+	color: #666;
+	grid-column: 1 / -1;
+}
+
+.no-vouchers i {
+	font-size: 3rem;
+	color: #ccc;
+	margin-bottom: 16px;
+	display: block;
+}
+
+.no-vouchers p {
+	font-family: 'Goudy Old Style', 'Goudy', serif;
+	font-size: 1rem;
+	margin: 0;
+}
+
+/* Select Voucher Modal - Same styling as logout modal */
+#select-voucher-modal-overlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	background: rgba(0,0,0,0.18);
+	z-index: 9998;
+	opacity: 0;
+	pointer-events: none;
+	transition: opacity 0.25s;
+	backdrop-filter: blur(4px);
+	-webkit-backdrop-filter: blur(4px);
+}
+
+#select-voucher-modal-overlay.show {
+	opacity: 1;
+	pointer-events: auto;
+}
+
+#select-voucher-modal.modal {
+	display: none;
+	position: fixed;
+	z-index: 9999;
+	left: 0;
+	top: 0;
+	width: 100vw;
+	height: 100vh;
+	align-items: center;
+	justify-content: center;
+}
+
+#select-voucher-modal .modal-content {
+	background: #fff;
+	padding: 32px 28px 24px 28px;
+	border-radius: 2px;
+	box-shadow: 0 4px 24px rgba(0,0,0,0.13);
+	min-width: 320px;
+	max-width: 90vw;
+	text-align: center;
+}
+
+#select-voucher-modal .modal-title {
+	font-size: 1.25rem;
+	font-family: 'Playfair Display',serif;
+	margin-bottom: 12px;
+	color: #181818;
+}
+
+#select-voucher-modal .modal-message {
+	font-size: 0.95rem;
+	font-family: 'Goudy Old Style', 'Goudy', serif;
+	margin-bottom: 18px;
+	color: #555;
+	line-height: 1.5;
+}
+
+#select-voucher-modal .modal-actions {
+	display: flex;
+	gap: 18px;
+	justify-content: center;
+}
+
+#select-voucher-modal .modal-btn {
+	border: none;
+	border-radius: 2px;
+	padding: 8px 24px;
+	font-size: 1rem;
+	cursor: pointer;
+}
+
+#select-voucher-modal #confirm-select-voucher {
+	background: #181818;
+	color: #fff;
+}
+
+#select-voucher-modal #cancel-select-voucher {
+	background: #e0d7c6;
+	color: #181818;
+}
+
+#select-voucher-modal .modal-btn:hover {
+	background: #D3BD9B !important;
+	color: #181818;
+}
+
+/* Remove Voucher Modal - Same styling as logout modal */
+#remove-voucher-modal-overlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	background: rgba(0,0,0,0.18);
+	z-index: 9998;
+	opacity: 0;
+	pointer-events: none;
+	transition: opacity 0.25s;
+	backdrop-filter: blur(4px);
+	-webkit-backdrop-filter: blur(4px);
+}
+
+#remove-voucher-modal-overlay.show {
+	opacity: 1;
+	pointer-events: auto;
+}
+
+#remove-voucher-modal.modal {
+	display: none;
+	position: fixed;
+	z-index: 9999;
+	left: 0;
+	top: 0;
+	width: 100vw;
+	height: 100vh;
+	align-items: center;
+	justify-content: center;
+}
+
+#remove-voucher-modal .modal-content {
+	background: #fff;
+	padding: 32px 28px 24px 28px;
+	border-radius: 2px;
+	box-shadow: 0 4px 24px rgba(0,0,0,0.13);
+	min-width: 320px;
+	max-width: 90vw;
+	text-align: center;
+}
+
+#remove-voucher-modal .modal-title {
+	font-size: 1.25rem;
+	font-family: 'Playfair Display',serif;
+	margin-bottom: 12px;
+	color: #181818;
+}
+
+#remove-voucher-modal .modal-message {
+	font-size: 0.95rem;
+	font-family: 'Goudy Old Style', 'Goudy', serif;
+	margin-bottom: 18px;
+	color: #555;
+	line-height: 1.5;
+}
+
+#remove-voucher-modal .modal-actions {
+	display: flex;
+	gap: 18px;
+	justify-content: center;
+}
+
+#remove-voucher-modal .modal-btn {
+	border: none;
+	border-radius: 2px;
+	padding: 8px 24px;
+	font-size: 1rem;
+	cursor: pointer;
+}
+
+#remove-voucher-modal #confirm-remove-voucher {
+	background: #181818;
+	color: #fff;
+}
+
+#remove-voucher-modal #cancel-remove-voucher {
+	background: #e0d7c6;
+	color: #181818;
+}
+
+#remove-voucher-modal .modal-btn:hover {
+	background: #D3BD9B !important;
+	color: #181818;
+}

@@ -1,0 +1,260 @@
+.dashboard-main-content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 32px;
+    margin-top: 10px;
+    width: 100%;
+}
+.orders-section {
+    margin: 0;
+    padding-left: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+}
+.orders-title {
+    font-size: 24px;
+    font-weight: bold;
+    color: #181818;
+    margin-bottom: 18px;
+    text-align: left;
+    font-family: 'Cinzel', serif;
+    margin-right: 0;
+}
+.orders-card-box {
+    background: #fff;
+    border: 1.5px solid #e0d7c6;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(44,34,54,0.07);
+    padding: 18px 24px 14px 24px;
+    min-width: 700px;
+    max-width: 900px;
+    margin-right: 0;
+}
+.orders-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: #fff;
+    box-shadow: none;
+    font-family: 'Playfair Display', serif;
+    table-layout: fixed;
+}
+.orders-table th, .orders-table td {
+    text-align: center;
+    vertical-align: middle;
+    padding: 16px 8px;
+    font-size: 15px;
+    font-weight: 400;
+    border-bottom: 1px solid #ececec;
+}
+.orders-table th {
+    background: #f5f5f5;
+    font-weight: 700;
+    color: #222;
+    font-size: 16px;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid #e0d7c6;
+}
+.orders-table tbody tr:hover {
+    background: #faf9f7;
+}
+.orders-th-number, .orders-td-number {
+    width: 5%;
+}
+.orders-th-item, .orders-td-item {
+    width: 16%;
+}
+.orders-th-name, .orders-td-name {
+    width: 23%;
+    word-break: break-word;
+}
+.orders-th-date, .orders-td-date {
+    width: 18%;
+}
+.orders-th-status, .orders-td-status {
+    width: 18%;
+}
+.orders-th-buyer, .orders-td-buyer {
+    width: 20%;
+    word-break: break-all;
+}
+.order-product-pic {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 8px;
+    display: block;
+    margin: 0 auto;
+    box-shadow: 0 1px 4px rgba(44,34,54,0.07);
+}
+.order-item-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+}
+.order-buyer-pic {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 2px 8px rgba(44,34,54,0.13);
+    margin-bottom: 6px;
+    margin-left: 2px;
+}
+.order-product-pic {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 8px;
+    display: block;
+    margin: 0 auto;
+    box-shadow: 0 1px 4px rgba(44,34,54,0.07);
+}
+.order-product-name, .order-date, .order-status, .order-buyer {
+    font-size: 15px;
+    text-align: center;
+    vertical-align: middle;
+}
+.order-status-cards {
+    display: flex;
+    flex-direction: row;
+    gap: 22px;
+    margin-left: 0;
+    align-items: flex-start;
+}
+.order-status-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+    border: 1.5px solid #e0d7c6;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(44,34,54,0.07);
+    padding: 18px 24px 14px 24px;
+    min-width: 120px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: box-shadow 0.18s, border 0.18s, background 0.18s;
+}
+.order-status-card:hover {
+    background: #f8f6f2;
+    border-color: #bfa14a;
+    box-shadow: 0 4px 16px rgba(191,161,74,0.10);
+}
+.order-status-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.08rem;
+    color: #181818;
+    font-weight: 600;
+    margin-bottom: 8px;
+    text-align: center;
+}
+.order-status-number {
+    font-family: 'Cinzel', serif;
+    font-size: 1.45rem;
+    color: #bfa14a;
+    font-weight: 700;
+    background: #f8f6f2;
+    border-radius: 50%;
+    min-width: 36px;
+    min-height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    box-shadow: 0 1px 4px rgba(44,34,54,0.07);
+}
+.seller-tabs {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 24px; /* You can modify this value for the gap */
+}
+.seller-tab-link {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.08rem;
+    color: #181818;
+    text-decoration: none;
+    padding: 6px 0 6px 0;
+    border-radius: 2px;
+    transition: background 0.18s, color 0.18s;
+    width: fit-content;
+}
+.seller-tab-link:hover {
+    background: #f3e9c7;
+    color: #bfa14a;
+}
+.profile-vertical-line {
+    width: 1.8px;
+    height: 700px;
+    background: #e0ded8;
+    margin-left: 18px;
+    border-radius: 1px;
+}
+.profile-section {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    margin-top: 32px;
+    gap: 32px;
+    margin-left: 50px;
+}
+.profile-pic-container {
+    display: flex;
+    align-items: flex-start;
+}
+
+.profile-pic {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #e0d7c6;
+    background: #f8f6f2;
+    box-shadow: 0 2px 8px rgba(44,34,54,0.10);
+    margin-top: 0;
+}
+
+.seller-name {
+    font-size: 1.45rem;
+    font-family: 'Playfair Display', serif;
+    color: #181818;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-align: left;
+    margin-top: 15px;
+}
+
+.header-container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    position: relative;
+    padding-left: 0;
+}
+.header {
+    text-align: left;
+    padding: 10px 0 8px 0;
+    font-size: 2.3rem;
+    font-weight: 700;
+    letter-spacing: 3px;
+    color: #181818;
+    margin-bottom: 10px;
+    margin-left: 50px;
+    font-family: 'Cinzel', serif;
+    text-decoration: none !important;
+    border-bottom: none !important;
+}
+.divider {
+    width: 95%;
+    margin: 0 auto 18px auto;
+    border: none;
+    border-top: 1.6px solid rgba(44, 34, 54, 0.13);
+}
+
+

@@ -1,0 +1,529 @@
+/* Edit Product Specific Styles - Centered Layout Without Sidebar */
+
+/* Centered main container */
+.main-content-container.centered {
+	display: flex;
+	justify-content: center;
+	align-items: flex-start;
+	padding: 40px 20px;
+	min-height: calc(100vh - 120px);
+}
+
+.main-content-container.centered .account-card-container {
+	width: 100%;
+	max-width: none;
+	margin-bottom: 200px;
+	margin-top: -40px;
+}
+
+
+/* Edit Product Main Content */
+.account-card-bg {
+	background: #ffffff;
+	border-radius: 0px;
+	padding: 32px;
+	box-shadow: 0 8px 32px rgba(44, 34, 54, 0.08);
+	border: 1px solid rgba(211, 189, 155, 0.15);
+	margin: 0;
+	width: 100%;
+	min-width: 1200px;
+	height: auto;
+	min-height: 600px;
+	overflow-y: auto;
+	overflow-x: visible;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	position: relative;
+	z-index: 1;
+}
+
+.profile-section-title {
+	font-family: 'Playfair Display', serif;
+	font-size: 2.2rem;
+	font-weight: 600;
+	color: #2c2236;
+	margin: 0 0 16px 0;
+	letter-spacing: -0.02em;
+}
+
+.profile-section-divider {
+	width: 100%;
+	height: 2px;
+	background: linear-gradient(90deg, rgba(211,189,155,0.3) 0%, rgba(44,34,54,0.1) 100%);
+	border: none;
+	margin: 0 0 32px 0;
+	border-radius: 2px;
+}
+
+.profile-content-row {
+	display: flex;
+	flex-direction: row;
+	align-items: flex-start;
+	width: 100%;
+	gap: 32px;
+	flex: 1;
+	min-height: 0;
+}
+
+.add-product-form {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+	min-width: 500px;
+	max-width: 600px;
+	padding-right: 20px;
+}
+
+.add-product-form .form-group {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	gap: 16px;
+	width: 100%;
+	margin-bottom: 20px;
+}
+
+.add-product-form .form-group:last-child {
+	margin-bottom: 0;
+}
+
+.add-product-form label {
+	min-width: 110px;
+	width: 130px;
+	text-align: right;
+	margin-bottom: 0;
+	margin-right: 8px;
+	display: inline-block;
+	font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+	font-size: 0.95em;
+	font-weight: 600;
+	color: #181818;
+	flex-shrink: 0;
+}
+
+.add-product-form input[type="text"],
+.add-product-form input[type="number"],
+.add-product-form select {
+	flex: 1;
+	border: none;
+	border-bottom: 2px solid #bbb;
+	padding: 8px 4px 6px 0;
+	font-size: 1.1em;
+	outline: none;
+	background: transparent;
+	margin-bottom: 0;
+	transition: border-color 0.2s;
+	width: 100%;
+	box-sizing: border-box;
+	font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+	font-weight: 700;
+	color: #181818;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.add-product-form input[type="text"]:focus,
+.add-product-form input[type="number"]:focus,
+.add-product-form select:focus {
+	border-bottom: 2.5px solid #d3bd9b;
+}
+
+.add-product-form input::placeholder {
+	color: #bbb;
+	opacity: 1;
+	font-size: 0.95em;
+	font-family: inherit;
+}
+
+.add-product-form input:focus::placeholder {
+	color: transparent;
+}
+
+.form-actions {
+	display: flex;
+	justify-content: flex-start;
+	gap: 16px;
+	margin-top: 24px;
+}
+
+.btn {
+	padding: 12px 28px;
+	border: none;
+	border-radius: 0;
+	font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+	font-size: 1.05em;
+	font-weight: normal;
+	cursor: pointer;
+	letter-spacing: 1px;
+	transition: background 0.2s;
+	min-width: 140px;
+}
+
+.btn-primary {
+	background: linear-gradient(135deg, #D3BD9B 0%, #c4a882 100%);
+	color: #ffffff;
+	min-width: 140px;
+}
+
+.btn-primary:hover {
+	background: linear-gradient(135deg, #c4a882 0%, #b8996f 100%);
+	transform: translateY(-1px);
+	box-shadow: 0 4px 12px rgba(211, 189, 155, 0.4);
+}
+
+.btn-secondary {
+	background: transparent;
+	color: #181818;
+	border: 2px solid #bbb;
+	min-width: 110px;
+}
+
+.btn-secondary:hover {
+	background: #f5f5f5;
+	border-color: #d3bd9b;
+}
+
+.profile-vertical-divider {
+	width: 1.5px;
+	background: #e0d7c6;
+	min-height: 400px;
+	align-self: stretch;
+	border-radius: 2px;
+}
+
+.profile-image-section {
+	flex: 0 0 400px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: flex-start;
+	gap: 16px;
+	padding: 0 16px;
+	margin-right: 0;
+	text-align: center;
+}
+
+.product-image-preview-container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 20px;
+	width: 100%;
+	text-align: center;
+	margin-top: 0px;
+}
+
+.product-image-preview {
+	position: relative;
+	width: 250px;
+	height: 250px;
+	border-radius: 2px;
+	overflow: hidden;
+	border: 3px solid #D3BD9B;
+	background: #e0d7c6;
+	cursor: pointer;
+	transition: all 0.3s ease;
+}
+
+.product-image-preview:hover {
+	border-color: #181818;
+	transform: translateY(-5px);
+	box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+}
+
+.product-image-preview img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.upload-placeholder {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: #f5f5f5;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 10px;
+	color: #999;
+	transition: all 0.3s ease;
+}
+
+.upload-placeholder i {
+	font-size: 80px;
+}
+
+.upload-placeholder span {
+	font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+	font-size: 20px;
+	font-weight: 600;
+}
+
+.product-image-preview:hover .upload-placeholder {
+	background: #e8e8e8;
+	color: #666;
+}
+
+.upload-overlay {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(0, 0, 0, 0.6);
+	display: none;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 10px;
+	opacity: 0;
+	transition: opacity 0.3s ease;
+	color: white;
+}
+
+.product-image-preview:hover .upload-overlay {
+	opacity: 1;
+}
+
+.product-image-preview.has-image .upload-overlay {
+	display: flex;
+}
+
+.upload-overlay i {
+	font-size: 40px;
+}
+
+.upload-overlay span {
+	font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+	font-size: 16px;
+	font-weight: 600;
+}
+
+.upload-hint {
+	font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+	font-size: 0.8rem;
+	color: #6d6552;
+	text-align: center;
+	margin-top: 8px;
+}
+
+.product-images-grid {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+	max-width: 200px;
+	justify-content: center;
+}
+
+.product-images-grid img {
+	width: 35px;
+	height: 35px;
+	object-fit: cover;
+	border-radius: 4px;
+	border: 1px solid rgba(211, 189, 155, 0.3);
+}
+
+.description-group {
+	margin-top: 24px;
+	width: 100%;
+}
+
+.description-group label {
+	display: block;
+	font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+	font-size: 0.95em;
+	font-weight: 600;
+	color: #181818;
+	margin-bottom: 8px;
+	text-align: left !important;
+}
+
+.description-group .profile-textarea {
+	width: 100%;
+	min-height: 120px;
+	padding: 12px;
+	border: 2px solid #bbb;
+	border-radius: 4px;
+	font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+	font-size: 0.9em;
+	color: #181818;
+	resize: vertical;
+	transition: border-color 0.2s;
+	box-sizing: border-box;
+}
+
+.description-group .profile-textarea:focus {
+	outline: none;
+	border-color: #d3bd9b;
+}
+
+.description-group .profile-textarea::placeholder {
+	color: #bbb;
+	font-style: italic;
+}
+
+/* Hide Scrollbar for Edit Product Main Content */
+.account-card-bg::-webkit-scrollbar {
+	width: 0px;
+	background: transparent;
+}
+
+.account-card-bg {
+	scrollbar-width: none; /* Firefox */
+	-ms-overflow-style: none; /* Internet Explorer 10+ */
+}
+
+/* Description Modal Styles - Matching Logout Modal Design */
+#edit-description-modal-overlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	background: rgba(0,0,0,0.18);
+	z-index: 9998;
+	opacity: 0;
+	pointer-events: none;
+	transition: opacity 0.25s;
+	backdrop-filter: blur(4px);
+	-webkit-backdrop-filter: blur(4px);
+}
+
+#edit-description-modal-overlay.show {
+	opacity: 1;
+	pointer-events: auto;
+}
+
+#edit-description-modal.modal {
+	display: none;
+	position: fixed;
+	z-index: 9999;
+	left: 0;
+	top: 0;
+	width: 100vw;
+	height: 100vh;
+	background: rgba(0,0,0,0.25);
+	align-items: center;
+	justify-content: center;
+}
+
+#edit-description-modal.modal.active {
+	display: flex;
+}
+
+#edit-description-modal .modal-content {
+	background: #fff;
+	padding: 32px 28px 24px 28px;
+	border-radius: 2px;
+	box-shadow: 0 4px 24px rgba(0,0,0,0.13);
+	min-width: 400px;
+	max-width: 90vw;
+	text-align: center;
+}
+
+#edit-description-modal .modal-title {
+	font-size: 1.25rem;
+	font-family: 'Playfair Display',serif;
+	margin-bottom: 18px;
+	color: #181818;
+}
+
+#edit-description-modal .modal-actions {
+	display: flex;
+	gap: 18px;
+	justify-content: center;
+}
+
+#edit-description-modal .modal-btn {
+	border: none;
+	border-radius: 2px;
+	padding: 8px 24px;
+	font-size: 1rem;
+	cursor: pointer;
+	font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+}
+
+#edit-description-modal #edit-save-description {
+	background: #181818;
+	color: #fff;
+}
+
+#edit-description-modal #edit-cancel-description {
+	background: #e0d7c6;
+	color: #181818;
+}
+
+#edit-description-modal .modal-btn:hover {
+	background: #D3BD9B !important;
+	color: #181818;
+}
+
+/* Checkbox group for sustainable development goals - horizontal layout like gender buttons */
+.checkbox-group {
+	display: flex;
+	flex-direction: row;
+	gap: 12px;
+	flex: 1;
+	max-width: 300px;
+	margin-top: 2px;
+	margin-bottom: 2px;
+}
+
+.checkbox-label {
+	padding: 7px 4px !important;
+	border: none;
+	border-bottom: 2px solid #bbb;
+	border-radius: 0;
+	background: transparent;
+	color: #222;
+	font-weight: 400;
+	font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif;
+	cursor: pointer;
+	transition: color 0.18s, border-color 0.18s, background 0.18s;
+	font-size: 1em;
+	display: inline-block;
+	position: relative;
+	width: 110px !important;
+	text-align: center !important;
+}
+
+.checkbox-label input[type="checkbox"] {
+	display: none;
+}
+
+.checkbox-label:has(input[type="checkbox"]:checked) {
+	color: #d3bd9b;
+	border-bottom: 2.5px solid #d3bd9b;
+	background: transparent;
+}
+
+.checkbox-label:hover {
+	color: #bfa14a;
+	border-bottom: 2.5px solid #bfa14a;
+	background: transparent;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+	.main-content-container.centered {
+		padding: 20px 10px;
+		min-height: calc(100vh - 100px);
+	}
+	
+	.main-content-container.centered .account-card-container {
+		max-width: 100%;
+	}
+	
+	.account-card-bg {
+		padding: 24px;
+		border-radius: 4px;
+	}
+}

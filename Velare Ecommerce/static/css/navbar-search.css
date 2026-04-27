@@ -1,0 +1,68 @@
+/* navbar-search.css - Standalone search styles for navigation bar */
+
+/* Search icon wrapper */
+.search-icon-wrapper {
+    position: relative;
+    cursor: pointer;
+}
+
+/* Search form - initially hidden */
+.search-form-animated {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
+    width: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: width 0.3s ease, opacity 0.3s ease;
+    pointer-events: none;
+}
+
+/* Search form when active */
+.search-form-animated.active {
+    width: 250px;
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* Search input field */
+.search-input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #bf9f4a;
+    border-radius: 4px;
+    font-family: 'Playfair Display', serif;
+    font-size: 0.9rem;
+    background-color: #fff;
+    color: #181818;
+    outline: none;
+    transition: border-color 0.2s ease;
+}
+
+.search-input:focus {
+    border-color: #181818;
+}
+
+.search-input::placeholder {
+    color: #999;
+    font-style: italic;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .search-form-animated.active {
+        width: 200px;
+    }
+}
+
+@media (max-width: 480px) {
+    .search-form-animated.active {
+        width: 150px;
+    }
+    
+    .search-input {
+        font-size: 0.85rem;
+        padding: 6px 10px;
+    }
+}

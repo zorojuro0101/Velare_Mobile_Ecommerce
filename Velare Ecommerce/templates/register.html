@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Register</title>
+	<link rel="icon" type="image/png" href="{{ url_for('static', filename='images/Velare Logo Tab 1.png') }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/register.css') }}">
+	<script src="{{ url_for('static', filename='js/register.js') }}" defer></script>
+	<script src="{{ url_for('static', filename='js/register_address.js') }}" defer></script>
+	<script src="{{ url_for('static', filename='js/register_rider_id.js') }}" defer></script>
+	<!-- Bootstrap Icons CDN -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+<body>
+	<div class="container">
+		<div class="left" id="imageSection">
+			<!-- Dynamic product images will be loaded here -->
+			<div class="loading-placeholder" style="display: flex; align-items: center; justify-content: center; height: 100%; color: #999;">
+				<i class="bi bi-hourglass-split" style="font-size: 48px;"></i>
+			</div>
+		</div>
+		<div class="right">
+			<div class="register-header">
+				<a href="{{ url_for('index.index') }}" class="brand-logo" style="text-decoration: none; cursor: pointer;">
+					<img src="{{ url_for('static', filename='images/velarelogo.png') }}" alt="Brand Logo">
+				</a>
+				<h2 class="register-title">Register</h2>
+
+                <div class="welcome-message" id="welcomeMessage">
+                <div class="welcome-title">Welcome</div>
+				<div class="welcome-sub" id="registerWelcomeSub">Shop your favorite products with ease.</div>
+            </div>
+				<div class="register-tab-nav">
+					<button class="register-tab active" type="button">Buyer</button>
+					<button class="register-tab" type="button">Seller</button>
+					<button class="register-tab" type="button">Rider</button>
+				</div>
+				<div class="register-tab-underline-bg">
+					<div class="register-tab-underline"></div>
+				</div>
+			
+				<div class="register-tabs-content-wrapper">
+					<!-- Buyer Form -->
+					<div class="register-tab-content" id="buyer-form" style="display: block;">
+						<form class="register-form" autocomplete="off">
+							<!-- Dummy hidden fields to trick browser autofill -->
+							<input type="text" name="fakeusernameremembered" style="display:none" autocomplete="off">
+							<input type="password" name="fakepasswordremembered" style="display:none" autocomplete="off">
+							<!-- Hidden fields for address data -->
+							<input type="hidden" name="buyer_phone_number" id="buyer_phone_number_hidden">
+							<input type="hidden" name="buyer_region" id="buyer_region_hidden">
+							<input type="hidden" name="buyer_province" id="buyer_province_hidden">
+							<input type="hidden" name="buyer_city" id="buyer_city_hidden">
+							<input type="hidden" name="buyer_barangay" id="buyer_barangay_hidden">
+							<input type="hidden" name="buyer_street" id="buyer_street_hidden">
+							<input type="hidden" name="buyer_house_number" id="buyer_house_number_hidden">
+							<input type="hidden" name="buyer_postal_code" id="buyer_postal_code_hidden">
+							<div class="name-row">
+								<input type="text" name="buyer_first_name" class="minimal-input" placeholder="First Name" required>
+								<input type="text" name="buyer_last_name" class="minimal-input" placeholder="Last Name" required>
+							</div>
+							<input type="email" name="buyer_email" class="minimal-input" placeholder="Email" required autocomplete="nope">
+							<input type="text" id="buyer_address_field" name="buyer_address_field" class="minimal-input" readonly placeholder="Select Region, Province, City, Barangay" required style="cursor:pointer;">
+							<div class="password-input-wrapper">
+								<input type="password" id="buyer_password" name="buyer_password" class="minimal-input" placeholder="Password" required autocomplete="new-password">
+								<button type="button" class="password-toggle" data-target="buyer_password" aria-pressed="false"><i class="bi bi-eye-slash"></i></button>
+							</div>
+                            <div class="password-guidelines">
+                                <ul class="password-guidelines-list">
+                                    <li data-requirement="length">6+ characters</li>
+                                    <li data-requirement="uppercase">1 uppercase</li>
+                                    <li data-requirement="lowercase">1 lowercase</li>
+                                    <li data-requirement="number">1 number</li>
+                                </ul>
+                            </div>
+							<div style="display: flex; gap: 10px; align-items: flex-start; margin-top: -20px; margin-bottom: 24px;">
+								<div style="flex: 1; display: flex; flex-direction: column; justify-content: flex-start; align-items: stretch;">
+									<label for="buyer_id_type_container" style="margin-bottom: 4px;">ID Type & File</label>
+									<div style="position: relative; height: 40px; min-height: 40px; width: 100%;">
+										<div id="buyer_id_type_container" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; width: 100%; height: 40px; display: flex; align-items: center; justify-content: stretch; flex: 1; margin: 0; cursor: pointer; background: #f5f5f5; border: none;">
+											<select name="buyer_id_type" id="buyer_id_type" required style="width: 100%; padding: 0 32px 0 10px; border: none; border-radius: 4px; font-size: 14px; height: 40px; box-sizing: border-box; background: #f5f5f5 url('data:image/svg+xml;utf8,<svg fill=\'%23666\' height=\'16\' viewBox=\'0 0 20 20\' width=\'16\' xmlns=\'http://www.w3.org/2000/svg\'><path d=\'M5.516 7.548a.625.625 0 0 1 .884-.032L10 11.02l3.6-3.504a.625.625 0 1 1 .868.9l-4.04 3.936a.625.625 0 0 1-.868 0l-4.04-3.936a.625.625 0 0 1-.032-.868z\'/></svg>') no-repeat right 10px center; appearance: none;">
+												<option value="">Select ID Type</option>
+												<option value="passport">Passport</option>
+												<option value="driver_license">Driver's License</option>
+												<option value="national_id">National ID</option>
+												<option value="sss">SSS</option>
+												<option value="umid">UMID</option>
+												<option value="other">Other</option>
+											</select>
+										</div>
+										<div id="buyer_id_file_container" style="display: none; position: absolute; top: 0; left: 0; right: 0; bottom: 0; width: 100%; height: 40px; display: flex; align-items: center; justify-content: stretch;">
+											<div style="display: flex; align-items: center; height: 100%; width: 100%; border: none; border-radius: 4px; padding: 0 10px; background: #f5f5f5;">
+												<button type="button" id="buyerIdBackBtn" style="background: #f5f5f5; border: none; cursor: pointer; font-size: 18px; color: #666; padding: 0; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; margin-right: 8px; flex-shrink: 0;" title="Back to ID Type">
+													<i class="bi bi-arrow-left"></i>
+												</button>
+												<label for="buyer_id_upload" class="custom-file-label" id="buyerFileLabel" style="flex: 1; margin: 0; cursor: pointer; background: #f5f5f5; border: none;">Choose File</label>
+												<span class="custom-file-filename" id="buyerFileName"></span>
+												<input type="file" name="buyer_id_upload" id="buyer_id_upload" accept="image/*,.pdf" required style="display: none;">
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<button type="submit" class="register-btn">Register as Buyer</button>
+                            <div class="register-link">
+                                Already have an account?&nbsp;<a href="{{ url_for('auth.login') }}" id="showLogin">Login</a>
+                            </div>
+						</form>
+					</div>
+
+					<!-- Seller Form -->
+					<div class="register-tab-content" id="seller-form" style="display: none;">
+						<form class="register-form" autocomplete="off">
+							<!-- Dummy hidden fields to trick browser autofill -->
+							<input type="text" name="fakeusernameremembered" style="display:none" autocomplete="off">
+							<input type="password" name="fakepasswordremembered" style="display:none" autocomplete="off">
+							<!-- Hidden fields for address data -->
+							<input type="hidden" name="seller_phone_number" id="seller_phone_number_hidden">
+							<input type="hidden" name="seller_region" id="seller_region_hidden">
+							<input type="hidden" name="seller_province" id="seller_province_hidden">
+							<input type="hidden" name="seller_city" id="seller_city_hidden">
+							<input type="hidden" name="seller_barangay" id="seller_barangay_hidden">
+							<input type="hidden" name="seller_street" id="seller_street_hidden">
+							<input type="hidden" name="seller_house_number" id="seller_house_number_hidden">
+							<input type="hidden" name="seller_postal_code" id="seller_postal_code_hidden">
+							<div class="name-row">
+								<input type="text" name="seller_first_name" class="minimal-input" placeholder="First Name" required>
+								<input type="text" name="seller_last_name" class="minimal-input" placeholder="Last Name" required>
+							</div>
+							<input type="email" name="seller_email" class="minimal-input" placeholder="Email" required autocomplete="nope">
+							<input type="text" id="seller_address_field" name="seller_address_field" class="minimal-input" readonly placeholder="Select Region, Province, City, Barangay" required style="cursor:pointer;">
+							<div class="password-input-wrapper">
+								<input type="password" id="seller_password" name="seller_password" class="minimal-input" placeholder="Password" required autocomplete="new-password">
+								<button type="button" class="password-toggle" data-target="seller_password" aria-pressed="false"><i class="bi bi-eye-slash"></i></button>
+							</div>
+                            <div class="password-guidelines">
+                                <ul class="password-guidelines-list">
+                                    <li data-requirement="length">6+ characters</li>
+                                    <li data-requirement="uppercase">1 uppercase</li>
+                                    <li data-requirement="lowercase">1 lowercase</li>
+                                    <li data-requirement="number">1 number</li>
+                                </ul>
+                            </div>
+							<div style="display: flex; gap: 10px; align-items: flex-start; margin-top: -20px; margin-bottom: 24px;">
+							<div style="flex: 1; display: flex; flex-direction: column; justify-content: flex-start; align-items: stretch;">
+								<label for="seller_id_type_container" style="margin-bottom: 4px;">ID Type & File</label>
+								<div style="position: relative; height: 40px; min-height: 40px; width: 100%;">
+									<div id="seller_id_type_container" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; width: 100%; height: 40px; display: flex; align-items: center; justify-content: stretch; flex: 1; margin: 0; cursor: pointer; background: #f5f5f5; border: none;">
+										<select name="seller_id_type" id="seller_id_type" required style="width: 100%; padding: 0 32px 0 10px; border: none; border-radius: 4px; font-size: 14px; height: 40px; box-sizing: border-box; background: #f5f5f5 url('data:image/svg+xml;utf8,<svg fill=\'%23666\' height=\'16\' viewBox=\'0 0 20 20\' width=\'16\' xmlns=\'http://www.w3.org/2000/svg\'><path d=\'M5.516 7.548a.625.625 0 0 1 .884-.032L10 11.02l3.6-3.504a.625.625 0 1 1 .868.9l-4.04 3.936a.625.625 0 0 1-.868 0l-4.04-3.936a.625.625 0 0 1-.032-.868z\'/></svg>') no-repeat right 10px center; appearance: none;">
+											<option value="">Select ID Type</option>
+											<option value="passport">Passport</option>
+											<option value="driver_license">Driver's License</option>
+											<option value="national_id">National ID</option>
+											<option value="sss">SSS</option>
+											<option value="umid">UMID</option>
+											<option value="other">Other</option>
+										</select>
+									</div>
+									<div id="seller_id_file_container" style="display: none; position: absolute; top: 0; left: 0; right: 0; bottom: 0; width: 100%; height: 40px; display: flex; align-items: center; justify-content: stretch;">
+										<div style="display: flex; align-items: center; height: 100%; border: none; border-radius: 4px; padding: 0 10px; background: #f5f5f5;">
+											<button type="button" id="sellerIdBackBtn" style="background: #f5f5f5; border: none; cursor: pointer; font-size: 18px; color: #666; padding: 0; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; margin-right: 8px; flex-shrink: 0;" title="Back to ID Type">
+												<i class="bi bi-arrow-left"></i>
+											</button>
+											<label for="seller_id_upload" class="custom-file-label" id="sellerFileLabel" style="flex: 1; margin: 0; cursor: pointer; background: #f5f5f5; border: none;">Choose File</label>
+											<span class="custom-file-filename" id="sellerFileName"></span>
+											<input type="file" name="seller_id_upload" id="seller_id_upload" accept="image/*,.pdf" required style="display: none;">
+										</div>
+									</div>
+								</div>
+							</div>
+							<div style="flex: 1; display: flex; flex-direction: column; justify-content: flex-start; align-items: stretch;">
+								<label for="seller_business_permit_upload" style="margin-bottom: 4px;">Business Permit</label>
+								<div style="position: relative; height: 40px; min-height: 40px; width: 100%;">
+									<div style="display: flex; align-items: center; height: 100%; border: none; border-radius: 4px; padding: 0 10px; background: #f5f5f5;">
+										<label for="seller_business_permit_upload" class="custom-file-label" id="sellerBusinessPermitLabel" style="flex: 1; margin: 0; cursor: pointer; background: #f5f5f5; border: none;">Choose File</label>
+										<span class="custom-file-filename" id="sellerBusinessPermitFileName"></span>
+										<input type="file" name="seller_business_permit_upload" id="seller_business_permit_upload" accept="image/*,.pdf" required style="display: none;">
+									</div>
+								</div>
+							</div>
+						</div>
+							<button type="submit" class="register-btn">Register as Seller</button>
+		                            <div class="register-link">
+		                                Already have an account?&nbsp;<a href="{{ url_for('auth.login') }}" id="showLogin">Login</a>
+		                            </div>
+						</form>
+					</div>
+
+					<!-- Rider Form -->
+					<div class="register-tab-content" id="rider-form" style="display: none;">
+						<form class="register-form" autocomplete="off">
+							<!-- Dummy hidden fields to trick browser autofill -->
+							<input type="text" name="fakeusernameremembered" style="display:none" autocomplete="off">
+							<input type="password" name="fakepasswordremembered" style="display:none" autocomplete="off">
+							<!-- Hidden fields for address data -->
+							<input type="hidden" name="rider_phone_number" id="rider_phone_number_hidden">
+							<input type="hidden" name="rider_region" id="rider_region_hidden">
+							<input type="hidden" name="rider_province" id="rider_province_hidden">
+							<input type="hidden" name="rider_city" id="rider_city_hidden">
+							<input type="hidden" name="rider_barangay" id="rider_barangay_hidden">
+							<input type="hidden" name="rider_street" id="rider_street_hidden">
+							<input type="hidden" name="rider_house_number" id="rider_house_number_hidden">
+							<input type="hidden" name="rider_postal_code" id="rider_postal_code_hidden">
+							<div class="name-row">
+								<input type="text" name="rider_first_name" class="minimal-input" placeholder="First Name" required>
+								<input type="text" name="rider_last_name" class="minimal-input" placeholder="Last Name" required>
+							</div>
+							<input type="email" name="rider_email" class="minimal-input" placeholder="Email" required autocomplete="nope">
+							<input type="hidden" name="rider_id_type" value="driver_license">
+							<input type="text" id="rider_address_field" name="rider_address_field" class="minimal-input" readonly placeholder="Select Region, Province, City, Barangay" required style="cursor:pointer;">
+							<div class="password-input-wrapper">
+								<input type="password" id="rider_password" name="rider_password" class="minimal-input" placeholder="Password" required autocomplete="new-password">
+								<button type="button" class="password-toggle" data-target="rider_password" aria-pressed="false"><i class="bi bi-eye-slash"></i></button>
+							</div>
+                            <div class="password-guidelines">
+                                <ul class="password-guidelines-list">
+                                    <li data-requirement="length">6+ characters</li>
+                                    <li data-requirement="uppercase">1 uppercase</li>
+                                    <li data-requirement="lowercase">1 lowercase</li>
+                                    <li data-requirement="number">1 number</li>
+                                </ul>
+                            </div>
+							<div style="display: flex; gap: 10px; align-items: flex-start; margin-top: -20px; margin-bottom: 24px;">
+								<div style="flex: 1; display: flex; flex-direction: column; justify-content: flex-start; align-items: stretch; min-width: 0;">
+									<label for="rider_id_modal_btn" style="margin-bottom: 4px;">ID Documents</label>
+									<button type="button" id="rider_id_modal_btn" style="width: 100%; padding: 0 10px; border: none; border-radius: 4px; font-size: 16px; height: 40px; box-sizing: border-box; background: #f5f5f5; cursor: pointer; text-align: left; color: #666; transition: all 0.2s ease; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: block; min-width: 0; flex-shrink: 0; position: relative; z-index: 1;">Upload files</button>
+								</div>
+								<div style="flex: 1; display: flex; flex-direction: column; justify-content: flex-start; align-items: stretch; min-width: 0;">
+									<label for="rider_plate_modal_btn" style="margin-bottom: 4px;">Vehicle & Plate</label>
+									<button type="button" id="rider_plate_modal_btn" style="width: 100%; padding: 0 10px; border: none; border-radius: 4px; font-size: 16px; height: 40px; box-sizing: border-box; background: #f5f5f5; cursor: pointer; text-align: left; color: #666; transition: all 0.2s ease; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: block; min-width: 0; flex-shrink: 0; position: relative; z-index: 1;">Insert Details</button>
+								</div>
+							</div>
+							<button type="submit" class="register-btn">Register as Rider</button>
+							<div class="register-link">
+							    Already have an account?&nbsp;<a href="{{ url_for('auth.login') }}" id="showLogin">Login</a>
+							</div>
+							
+						<!-- Rider ID Documents Modal -->
+	<div id="riderIdDocumentsModal" class="address-tabs-dropdown" style="display:none; position:fixed; width: 520px;">
+		<div class="address-tab-content" id="riderIdDocumentsContent" style="display: flex; flex-direction: row; gap: 40px; align-items: flex-start; justify-content: center; padding: 24px;">
+			<div style="display: flex; flex-direction: column; align-items: center; gap: 12px; flex: 1;">
+				<label style="display: block; font-weight: 500; text-align: center; font-size: 15px; min-height: 32px; display: flex; align-items: center; justify-content: center;">Official Receipt / Certificate of Registration (ORCR)</label>
+				<div id="riderOrcrContainer" style="position: relative; width: 150px; height: 150px; border-radius: 2px; overflow: hidden; border: 2px solid #d3bd9b; background: #e0d7c6; cursor: pointer; transition: all 0.3s ease;">
+					<div class="upload-placeholder" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #f5f5f5; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; color: #999; transition: all 0.3s ease;">
+						<i class="bi bi-camera" style="font-size: 32px;"></i>
+						<span style="font-size: 12px; text-align: center;">Upload ORCR</span>
+					</div>
+					<img id="riderOrcrPreview" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; display: none;">
+				</div>
+				<input type="file" name="rider_orcr_upload" id="rider_orcr_upload" accept="image/*,.pdf" style="display: none;">
+			</div>
+			<div style="display: flex; flex-direction: column; align-items: center; gap: 12px; flex: 1;">
+				<label style="display: block; font-weight: 500; text-align: center; font-size: 15px; min-height: 32px; display: flex; align-items: center; justify-content: center;">Driver License</label>
+				<div id="riderDriverLicenseContainer" style="position: relative; width: 150px; height: 150px; border-radius: 2px; overflow: hidden; border: 2px solid #d3bd9b; background: #e0d7c6; cursor: pointer; transition: all 0.3s ease;">
+					<div class="upload-placeholder" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #f5f5f5; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; color: #999; transition: all 0.3s ease;">
+						<i class="bi bi-camera" style="font-size: 32px;"></i>
+						<span style="font-size: 12px; text-align: center;">Upload License</span>
+					</div>
+					<img id="riderDriverLicensePreview" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; display: none;">
+				</div>
+				<input type="file" name="rider_driver_license_upload" id="rider_driver_license_upload" accept="image/*,.pdf" style="display: none;">
+			</div>
+		</div>
+		<div class="modal-actions" style="margin-top:18px;">
+			<button type="button" id="cancelRiderIdDocumentsBtn" class="modal-btn">Cancel</button>
+			<button type="button" id="confirmRiderIdDocumentsBtn" class="modal-btn" disabled>Confirm</button>
+		</div>
+	</div>
+
+	<!-- Rider Vehicle & Plate Modal -->
+	<div id="riderVehiclePlateModal" class="address-tabs-dropdown" style="display:none; position:fixed;">
+		<div class="address-tab-content" id="riderVehiclePlateContent">
+			<label>Vehicle Type</label>
+			<select id="rider_vehicle_type_select" style="width: 100%; padding: 0 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; height: 40px; box-sizing: border-box; background: #fff; margin-bottom: 16px;" required>
+				<option value="">Select Vehicle Type</option>
+				<option value="motorcycle">Motorcycle</option>
+				<option value="tricycle">Tricycle</option>
+				<option value="car">Car</option>
+				<option value="van">Van</option>
+				<option value="truck">Truck</option>
+			</select>
+			<label>Plate Number (Max 10 characters, excluding spaces)</label>
+			<input type="text" id="rider_plate_input" placeholder="e.g., ABC1234" style="width: 100%; padding: 0 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; height: 40px; box-sizing: border-box; background: #fff;" maxlength="10" required>
+			<div style="font-size: 12px; color: #999; margin-top: 4px;">Characters: <span id="plateCharCount">0</span>/10</div>
+		</div>
+		<div class="modal-actions" style="margin-top:18px;">
+			<button type="button" id="cancelRiderVehiclePlateBtn" class="modal-btn">Cancel</button>
+			<button type="button" id="confirmRiderVehiclePlateBtn" class="modal-btn" disabled>Confirm</button>
+		</div>
+	</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Address Tabs Dropdown for Buyer -->
+	<div id="buyerAddressTabsDropdown" class="address-tabs-dropdown" style="display:none; position:absolute;">
+		<div class="address-tabs">
+			<button type="button" class="address-tab active" data-tab="region">Region</button>
+			<button type="button" class="address-tab" data-tab="province" disabled>Province</button>
+			<button type="button" class="address-tab" data-tab="city" disabled>City</button>
+			<button type="button" class="address-tab" data-tab="barangay" disabled>Barangay</button>
+			<button type="button" class="address-tab" data-tab="other" disabled>Other Info</button>
+		</div>
+		<div class="address-tabs-underline-bg">
+			<div class="address-tabs-underline" id="buyerAddressTabsUnderline"></div>
+		</div>
+		<div class="address-tab-content" id="buyerRegionTabContent">
+			<label>Select Region</label>
+			<select id="buyerTabRegionSelect">
+				<option value="">Select Region</option>
+			</select>
+		</div>
+		<div class="address-tab-content" id="buyerProvinceTabContent" style="display:none;">
+			<label>Select Province</label>
+			<select id="buyerTabProvinceSelect">
+				<option value="">Select Province</option>
+			</select>
+		</div>
+		<div class="address-tab-content" id="buyerCityTabContent" style="display:none;">
+			<label>Select City/Municipality</label>
+			<select id="buyerTabCitySelect">
+				<option value="">Select City/Municipality</option>
+			</select>
+		</div>
+		<div class="address-tab-content" id="buyerBarangayTabContent" style="display:none;">
+			<label>Select Barangay</label>
+			<select id="buyerTabBarangaySelect">
+				<option value="">Select Barangay</option>
+			</select>
+		</div>
+		<div class="address-tab-content" id="buyerOtherTabContent" style="display:none;">
+			<label>Phone Number</label>
+			<input type="text" id="buyerTabPhoneInput" placeholder="09XXXXXXXXX (11 digits)" maxlength="11" pattern="\d{11}" required>
+			<label style="margin-top: 12px;">Street Name</label>
+			<input type="text" id="buyerTabStreetInput" placeholder="Enter street name" required>
+			<label style="margin-top: 12px;">House Number</label>
+			<input type="text" id="buyerTabHouseInput" placeholder="Enter house number" required>
+			<label style="margin-top: 12px;">Postal Code</label>
+			<input type="text" id="buyerTabPostalInput" placeholder="Postal code" readonly>
+		</div>
+		<div class="modal-actions" style="margin-top:18px;">
+			<button type="button" id="cancelBuyerAddressTabsBtn" class="modal-btn">Cancel</button>
+			<button type="button" id="confirmBuyerAddressTabsBtn" class="modal-btn" disabled>Confirm</button>
+		</div>
+	</div>
+
+	<!-- Address Tabs Dropdown for Seller -->
+	<div id="sellerAddressTabsDropdown" class="address-tabs-dropdown" style="display:none; position:absolute;">
+		<div class="address-tabs">
+			<button type="button" class="address-tab active" data-tab="region">Region</button>
+			<button type="button" class="address-tab" data-tab="province" disabled>Province</button>
+			<button type="button" class="address-tab" data-tab="city" disabled>City</button>
+			<button type="button" class="address-tab" data-tab="barangay" disabled>Barangay</button>
+			<button type="button" class="address-tab" data-tab="other" disabled>Other Info</button>
+		</div>
+		<div class="address-tabs-underline-bg">
+			<div class="address-tabs-underline" id="sellerAddressTabsUnderline"></div>
+		</div>
+		<div class="address-tab-content" id="sellerRegionTabContent">
+			<label>Select Region</label>
+			<select id="sellerTabRegionSelect">
+				<option value="">Select Region</option>
+			</select>
+		</div>
+		<div class="address-tab-content" id="sellerProvinceTabContent" style="display:none;">
+			<label>Select Province</label>
+			<select id="sellerTabProvinceSelect">
+				<option value="">Select Province</option>
+			</select>
+		</div>
+		<div class="address-tab-content" id="sellerCityTabContent" style="display:none;">
+			<label>Select City/Municipality</label>
+			<select id="sellerTabCitySelect">
+				<option value="">Select City/Municipality</option>
+			</select>
+		</div>
+		<div class="address-tab-content" id="sellerBarangayTabContent" style="display:none;">
+			<label>Select Barangay</label>
+			<select id="sellerTabBarangaySelect">
+				<option value="">Select Barangay</option>
+			</select>
+		</div>
+		<div class="address-tab-content" id="sellerOtherTabContent" style="display:none;">
+			<label>Phone Number</label>
+			<input type="text" id="sellerTabPhoneInput" placeholder="09XXXXXXXXX (11 digits)" maxlength="11" pattern="\d{11}" required>
+			<label style="margin-top: 12px;">Street Name</label>
+			<input type="text" id="sellerTabStreetInput" placeholder="Enter street name" required>
+			<label style="margin-top: 12px;">House Number</label>
+			<input type="text" id="sellerTabHouseInput" placeholder="Enter house number" required>
+			<label style="margin-top: 12px;">Postal Code</label>
+			<input type="text" id="sellerTabPostalInput" placeholder="Postal code" readonly>
+		</div>
+		<div class="modal-actions" style="margin-top:18px;">
+			<button type="button" id="cancelSellerAddressTabsBtn" class="modal-btn">Cancel</button>
+			<button type="button" id="confirmSellerAddressTabsBtn" class="modal-btn" disabled>Confirm</button>
+		</div>
+	</div>
+
+	<!-- Address Tabs Dropdown for Rider -->
+	<div id="riderAddressTabsDropdown" class="address-tabs-dropdown" style="display:none; position:absolute;">
+		<div class="address-tabs">
+			<button type="button" class="address-tab active" data-tab="region">Region</button>
+			<button type="button" class="address-tab" data-tab="province" disabled>Province</button>
+			<button type="button" class="address-tab" data-tab="city" disabled>City</button>
+			<button type="button" class="address-tab" data-tab="barangay" disabled>Barangay</button>
+			<button type="button" class="address-tab" data-tab="other" disabled>Other Info</button>
+		</div>
+		<div class="address-tabs-underline-bg">
+			<div class="address-tabs-underline" id="riderAddressTabsUnderline"></div>
+		</div>
+		<div class="address-tab-content" id="riderRegionTabContent">
+			<label>Select Region</label>
+			<select id="riderTabRegionSelect">
+				<option value="">Select Region</option>
+			</select>
+		</div>
+		<div class="address-tab-content" id="riderProvinceTabContent" style="display:none;">
+			<label>Select Province</label>
+			<select id="riderTabProvinceSelect">
+				<option value="">Select Province</option>
+			</select>
+		</div>
+		<div class="address-tab-content" id="riderCityTabContent" style="display:none;">
+			<label>Select City/Municipality</label>
+			<select id="riderTabCitySelect">
+				<option value="">Select City/Municipality</option>
+			</select>
+		</div>
+		<div class="address-tab-content" id="riderBarangayTabContent" style="display:none;">
+			<label>Select Barangay</label>
+			<select id="riderTabBarangaySelect">
+				<option value="">Select Barangay</option>
+			</select>
+		</div>
+		<div class="address-tab-content" id="riderOtherTabContent" style="display:none;">
+			<label>Phone Number</label>
+			<input type="text" id="riderTabPhoneInput" placeholder="09XXXXXXXXX (11 digits)" maxlength="11" pattern="\d{11}" required>
+			<label style="margin-top: 12px;">Street Name</label>
+			<input type="text" id="riderTabStreetInput" placeholder="Enter street name" required>
+			<label style="margin-top: 12px;">House Number</label>
+			<input type="text" id="riderTabHouseInput" placeholder="Enter house number" required>
+			<label style="margin-top: 12px;">Postal Code</label>
+			<input type="text" id="riderTabPostalInput" placeholder="Postal code" readonly>
+		</div>
+		<div class="modal-actions" style="margin-top:18px;">
+			<button type="button" id="cancelRiderAddressTabsBtn" class="modal-btn">Cancel</button>
+			<button type="button" id="confirmRiderAddressTabsBtn" class="modal-btn" disabled>Confirm</button>
+		</div>
+	</div>
+</body>
+</html>

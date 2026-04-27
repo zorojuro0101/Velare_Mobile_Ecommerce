@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/Velare Logo Tab 1.png') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- Bootstrap Icons CDN -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="image-section" id="imageSection">
+            <!-- Dynamic product images will be loaded here -->
+            <div class="loading-placeholder" style="display: flex; align-items: center; justify-content: center; height: 100%; color: #999;">
+                <i class="bi bi-hourglass-split" style="font-size: 48px;"></i>
+            </div>
+        </div>
+        <div class="form-section">
+
+            <div class="tab-nav">
+                <div class="tab-group">
+                    <a href="{{ url_for('index.index') }}" class="brand-logo" style="text-decoration: none; cursor: pointer;">
+                        <img src="../static/images/velarelogo.png" alt="Brand Logo">
+                    </a>
+                    <h2 class="signin-title">Sign In</h2>
+                    
+                </div>
+            </div>
+            <div class="welcome-message" id="welcomeMessage">
+                <div class="welcome-title">Welcome</div>
+                <div class="welcome-sub">Sign in with your email and password.</div>
+            </div>
+            <div class="register-message" id="registerMessage" style="display:none;">
+                <div class="register-desc">Create an account and benefit from a more personal shopping experience, and quicker online checkout.</div>
+            </div>
+            <form class="sign-in-form" id="signInForm">
+                <!-- Dummy hidden fields to trick browser autofill -->
+                <input type="text" name="fakeusernameremembered" style="display:none" autocomplete="off">
+                <input type="password" name="fakepasswordremembered" style="display:none" autocomplete="off">
+                <input type="email" id="email" name="email" class="minimal-input" required autocomplete="nope" placeholder="Email">
+                <div class="password-input-wrapper">
+                    <input type="password" id="password" name="password" class="minimal-input" required autocomplete="new-password" placeholder="Password">
+                    <button type="button" class="password-toggle" data-target="password" aria-pressed="false"><i class="bi bi-eye-slash"></i></button>
+                </div>
+
+                <a href="{{ url_for('auth.forgot_password') }}" class="forgot-password">Forgot Password?</a>
+
+
+                <div class="disclaimer">
+                    By signing in, I agree to the Privacy Policy and Legal Statement.
+                </div>
+
+                <button type="submit" class="sign-in-btn">Sign in</button>
+
+                <div class="register-link">
+                    Don't have an account? <a href="{{ url_for('auth.register') }}" id="showRegister">Register</a>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='js/login.js') }}"></script>
+</body>
+</html>

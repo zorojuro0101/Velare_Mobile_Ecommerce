@@ -1,0 +1,221 @@
+{% extends "seller/seller_base.html" %}
+
+{% block title %}Report User - Velare{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2><i class="fas fa-flag"></i> Report User</h2>
+                <a href="{{ url_for('seller_report_user.my_reports') }}" class="btn btn-outline-secondary">
+                    <i class="fas fa-list"></i> My Reports
+                </a>
+            </div>
+
+            <div class="card shadow-sm">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="mb-0">Mag-report ng Buyer o Rider</h5>
+                </div>
+                <div class="card-body">
+                    <form id="reportForm" enctype="multipart/form-data">
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Sino ang gusto mong i-report?</label>
+                            <select class="form-select form-select-lg" id="reportedType" name="reported_type" required>
+                                <option value="">-- Pumili --</option>
+                                <option value="buyer">Buyer</option>
+                                <option value="rider">Rider</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-4" id="orderSelectDiv" style="display:none;">
+                            <label class="form-label fw-bold">Piliin ang Order (optional):</label>
+                            <select class="form-select" id="orderSelect" name="order_id">
+                                <option value="">-- Walang specific order --</option>
+                                {% for order in orders %}
+                                <option value="{{ order.order_id }}" 
+                                        data-buyer-id="{{ order.buyer_id }}"
+                                        data-rider-id="{{ order.rider_id or '' }}"
+                                        data-delivery-id="{{ order.delivery_id or '' }}">
+                                    Order #{{ order.order_number }} - {{ order.buyer_name }}
+                                    {% if order.rider_name %} (Rider: {{ order.rider_name }}){% endif %}
+                                </option>
+                                {% endfor %}
+                            </select>
+                            <small class="text-muted">Piliin kung may kaugnayan sa specific order</small>
+                        </div>
+
+                        <input type="hidden" id="reportedId" name="reported_id">
+                        <input type="hidden" id="deliveryId" name="delivery_id">
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Kategorya ng Report:</label>
+                            <select class="form-select" name="category" required>
+                                <option value="">-- Pumili ng kategorya --</option>
+                                <option value="fraud">Fraud/Scam</option>
+                                <option value="harassment">Harassment</option>
+                                <option value="poor_service">Poor Service</option>
+                                <option value="rude_behavior">Rude Behavior</option>
+                                <option value="late_delivery">Late Delivery</option>
+                                <option value="fake_product">Fake Product Claim</option>
+                                <option value="other">Iba pa</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Dahilan ng Report:</label>
+                            <textarea class="form-control" name="reason" rows="5" required 
+                                      placeholder="Ipaliwanag nang detalyado ang problema o reklamo..."></textarea>
+                            <small class="text-muted">Magbigay ng kompletong detalye para mas mabilis ang aksyon</small>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Evidence (optional):</label>
+                            <input type="file" class="form-control" name="evidence" accept="image/*" id="evidenceFile">
+                            <small class="text-muted">Upload screenshot, chat messages, o larawan bilang ebidensya (PNG, JPG, JPEG)</small>
+                            <div id="imagePreview" class="mt-2"></div>
+                        </div>
+
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-triangle"></i> 
+                            <strong>Paalala:</strong> Ang false reporting ay maaaring magresulta sa suspension ng account.
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-danger btn-lg">
+                                <i class="fas fa-paper-plane"></i> Submit Report
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Preview uploaded image
+document.getElementById('evidenceFile').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    const preview = document.getElementById('imagePreview');
+    
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            preview.innerHTML = `<img src="${e.target.result}" class="img-thumbnail" style="max-height: 200px;">`;
+        };
+        reader.readAsDataURL(file);
+    } else {
+        preview.innerHTML = '';
+    }
+});
+
+document.getElementById('reportedType').addEventListener('change', function() {
+    const orderDiv = document.getElementById('orderSelectDiv');
+    if (this.value) {
+        orderDiv.style.display = 'block';
+    } else {
+        orderDiv.style.display = 'none';
+    }
+});
+
+document.getElementById('orderSelect').addEventListener('change', function() {
+    const selectedOption = this.options[this.selectedIndex];
+    const reportedType = document.getElementById('reportedType').value;
+    
+    if (reportedType === 'buyer') {
+        document.getElementById('reportedId').value = selectedOption.dataset.buyerId;
+    } else if (reportedType === 'rider') {
+        document.getElementById('reportedId').value = selectedOption.dataset.riderId;
+        document.getElementById('deliveryId').value = selectedOption.dataset.deliveryId;
+    }
+});
+
+document.getElementById('reportForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const submitBtn = this.querySelector('button[type="submit"]');
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+    
+    const formData = new FormData(this);
+    
+    fetch('{{ url_for("seller_report_user.submit_report") }}', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Report submitted successfully!');
+            window.location.href = '{{ url_for("seller_report_user.my_reports") }}';
+        } else {
+            alert('Error: ' + data.message);
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Submit Report';
+        }
+    })
+    .catch(error => {
+        alert('Error submitting report');
+        console.error(error);
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Submit Report';
+    });
+});
+</script>
+
+<style>
+/* Goudy font for all text except card-header and submit button */
+body, .card, .form-label, .form-select, .form-control, textarea, .alert, small, h2, 
+select, input, option, label, p, span, div {
+    font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif !important;
+}
+
+.card {
+    border: none;
+    border-radius: 10px;
+}
+.card-header {
+    border-radius: 10px 10px 0 0 !important;
+}
+.card-header h5 {
+    font-family: 'Playfair Display', serif !important;
+}
+button[type="submit"], .btn-danger.btn-lg {
+    font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif !important;
+}
+.btn-outline-secondary {
+    font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif !important;
+}
+.form-select, .form-control {
+    border-radius: 8px;
+}
+.btn-lg {
+    padding: 12px;
+    font-size: 1.1rem;
+}
+
+/* Bold labels */
+.form-label.fw-bold {
+    font-weight: 1000 !important;
+    color: #000000 !important;
+}
+
+/* Form controls alignment */
+.form-control, .form-select {
+    width: 100% !important;
+    box-sizing: border-box !important;
+    margin: 0 !important;
+}
+
+/* Report form specific styles */
+.report-form-group select,
+.report-form-group textarea,
+.report-form-group input,
+#reportedType,
+#reportCategory,
+#reportReason {
+    font-family: 'Goudy Bookletter 1911', 'Goudy Old Style', serif !important;
+}
+</style>
+{% endblock %}

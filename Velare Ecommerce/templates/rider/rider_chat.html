@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat - Velare Rider</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/Velare Logo Tab 1.png') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/rider/rider_chat.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/logout-modal.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <img src="{{ url_for('static', filename='images/velarelogo.png') }}" alt="Velare Logo">
+                <h2>Veláre</h2>
+            </div>
+            
+            <!-- Rider Profile Section -->
+            <a href="{{ url_for('rider_profile.rider_profile') }}" class="sidebar-profile-link">
+                <div class="sidebar-profile" id="sidebarProfile">
+                    <div class="sidebar-profile-img" id="sidebarProfileImgContainer">
+                        <img src="{{ url_for('static', filename=rider.profile_image) if rider and rider.profile_image else '' }}" alt="Rider Profile" id="sidebarProfileImg" {% if not rider or not rider.profile_image %}style="display:none;"{% endif %}>
+                        <div class="profile-initial" id="sidebarProfileInitial" {% if rider and rider.profile_image %}style="display:none;"{% endif %}>{{ rider.first_name[0].upper() if rider and rider.first_name else 'R' }}</div>
+                    </div>
+                    <div class="sidebar-profile-info">
+                        <h3 class="sidebar-profile-name" id="sidebarProfileName">{{ rider.first_name + ' ' + rider.last_name if rider else 'Rider Name' }}</h3>
+                        <p class="sidebar-profile-role">Delivery Rider</p>
+                    </div>
+                </div>
+            </a>
+            
+            <nav class="nav-menu">
+                <a href="{{ url_for('rider_dashboard.rider_dashboard') }}" class="nav-item" data-tab="dashboard">
+                    <i class="bi bi-speedometer2 icon"></i>
+                    <span>Dashboard</span>
+                </a>
+                <div class="nav-item-group">
+                    <a href="#" class="nav-item" data-tab="delivery-management" id="deliveryManagementToggle">
+                        <i class="bi bi-box-seam icon"></i>
+                        <span>Delivery Management</span>
+                        <i class="bi bi-chevron-down dropdown-arrow"></i>
+                    </a>
+                    <div class="nav-submenu" id="deliverySubmenu">
+                        <a href="{{ url_for('rider_pickup.rider_pickup') }}" class="nav-subitem" data-tab="list-pickup">
+                            <i class="bi bi-clipboard-check icon"></i>
+                            <span>List for Pickup</span>
+                        </a>
+                        <a href="{{ url_for('rider_activeDelivery.rider_activeDelivery') }}" class="nav-subitem" data-tab="active-delivery">
+                            <i class="bi bi-truck icon"></i>
+                            <span>List for Active Delivery</span>
+                        </a>
+                    </div>
+                </div>
+                <a href="{{ url_for('rider_earnings.rider_earnings') }}" class="nav-item" data-tab="earnings">
+                    <i class="bi bi-cash-coin icon"></i>
+                    <span>Earnings</span>
+                </a>
+                <a href="{{ url_for('rider_chat.rider_chat') }}" class="nav-item active" data-tab="chat">
+                    <i class="bi bi-chat-dots icon"></i>
+                    <span>Chat</span>
+                </a>
+                <a href="{{ url_for('rider_report_user.report_user_page') }}" class="nav-item" data-tab="report-user">
+                    <i class="bi bi-flag icon"></i>
+                    <span>Report User</span>
+                </a>
+                <a href="#" class="nav-item" data-tab="logout" id="logout-link" data-logout-url="{{ url_for('auth.login') }}">
+                    <i class="bi bi-box-arrow-right icon"></i>
+                    <span>Logout</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Chat Container -->
+            <div class="chat-container">
+                <!-- Chat Sidebar (Conversations List) -->
+                <div class="chat-sidebar">
+                    <div class="chat-sidebar-header">
+                        <h2>Chats</h2>
+                        <div class="chat-header-actions">
+                            <button class="icon-btn" title="New Message">
+                                <i class="bi bi-pencil-square"></i>
+                            </button>
+                            <button class="icon-btn" title="Settings">
+                                <i class="bi bi-gear"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Search Bar -->
+                    <div class="chat-search">
+                        <i class="bi bi-search"></i>
+                        <input type="text" placeholder="Search conversations" id="searchInput">
+                    </div>
+
+                    <!-- Conversations List -->
+                    <div class="conversations-list" id="conversationsList">
+                        <!-- Conversations will be loaded here -->
+                        <div class="empty-conversations">
+                            <i class="bi bi-chat-dots"></i>
+                            <p>No active deliveries</p>
+                            <p class="empty-subtitle">Accept deliveries to start chatting with buyers</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chat Main Area -->
+                <div class="chat-main">
+                    <!-- Chat Header -->
+                    <div class="chat-header" id="chatHeader" style="display: none;">
+                        <div class="chat-header-left">
+                            <div class="contact-avatar">
+                                <img src="{{ url_for('static', filename='images/default-avatar.png') }}" alt="Contact" id="contactAvatar">
+                            </div>
+                            <div class="contact-info">
+                                <h3 id="contactName">Select a conversation</h3>
+                                <p id="contactStatus">Active now</p>
+                            </div>
+                        </div>
+                        <!-- Removed call/video/more icons -->
+                    </div>
+
+                    <!-- Messages Area -->
+                    <div class="messages-area" id="messagesArea">
+                        <div class="empty-chat">
+                            <i class="bi bi-chat-text"></i>
+                            <h3>Select a conversation</h3>
+                            <p>Choose a delivery from the list to start messaging with the buyer</p>
+                        </div>
+                    </div>
+
+                    <!-- Message Input -->
+                    <div class="message-input-container" id="messageInputContainer" style="display: none;">
+                        <div class="message-input-wrapper">
+                            <input type="text" placeholder="Type a message..." id="messageInput" autocomplete="off">
+                        </div>
+                        <button class="send-btn" id="sendBtn">
+                            <i class="bi bi-send-fill"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Logout Modal -->
+    <div id="logout-modal-overlay"></div>
+    <div id="logout-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-title">Do you want to Logout?</div>
+            <div class="modal-actions">
+                <button id="confirm-logout" class="modal-btn">Logout</button>
+                <button id="cancel-logout" class="modal-btn">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/rider/rider_chat.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/logout-modal.js') }}"></script>
+</body>
+</html>

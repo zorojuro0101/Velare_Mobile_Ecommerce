@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Veláre - Manage Vouchers</title>
+	<link rel="icon" type="image/png" href="{{ url_for('static', filename='images/Velare Logo Tab 1.png') }}">
+	<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@100;300;400;700&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Goodie&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/accounts/myAccount_profile.css') }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/admin/admin_vouchers.css') }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/logout-modal.css') }}">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+<body>
+	<div class="header-container">
+		<span class="header"><a href="{{ url_for('admin_dashboard.admin_dashboard') }}" style="color: inherit; text-decoration: none;">Veláre</a></span>
+	</div>
+	<hr class="divider">
+
+	<div class="main-content-container">
+		<div class="account-left-nav">
+			<div class="account-profile-header">
+				<div class="profile-img-placeholder">
+					<img src="{{ url_for('static', filename='images/Velare Logo Tab 1.png') }}" alt="Velare Logo" style="width: 100%; height: 100%; object-fit: contain;">
+				</div>
+				<span class="profile-name-placeholder">Admin</span>
+			</div>
+			<div class="account-nav-divider"></div>
+			<div class="account-nav-list">
+				<a href="{{ url_for('admin_dashboard.admin_dashboard') }}" class="main-tab" style="text-decoration: none; color: inherit;">
+					<i class="bi bi-speedometer2" style="font-size:1.2em; vertical-align:middle; margin-right:10px;"></i>
+					<span class="main-tab-label">Dashboard</span>
+				</a>
+				<a href="{{ url_for('admin_users_sellers.admin_users_sellers') }}" class="main-tab" style="text-decoration: none; color: inherit;">
+					<i class="bi bi-shop" style="font-size:1.2em; vertical-align:middle; margin-right:10px;"></i>
+					<span class="main-tab-label">Manage Sellers</span>
+				</a>
+				<a href="{{ url_for('admin_users_riders.admin_users_riders') }}" class="main-tab" style="text-decoration: none; color: inherit;">
+					<i class="bi bi-bicycle" style="font-size:1.2em; vertical-align:middle; margin-right:10px;"></i>
+					<span class="main-tab-label">Manage Riders</span>
+				</a>
+				<a href="{{ url_for('admin_users_buyers.admin_users_buyers') }}" class="main-tab" style="text-decoration: none; color: inherit;">
+					<i class="bi bi-people" style="font-size:1.2em; vertical-align:middle; margin-right:10px;"></i>
+					<span class="main-tab-label">Manage Buyers</span>
+				</a>
+				<a href="{{ url_for('admin_sales_reports.admin_sales_reports') }}" class="main-tab" style="text-decoration: none; color: inherit;">
+					<i class="bi bi-cash-stack" style="font-size:1.2em; vertical-align:middle; margin-right:10px;"></i>
+					<span class="main-tab-label">Sales & Commissions</span>
+				</a>
+				<a href="{{ url_for('admin_vouchers.admin_vouchers') }}" class="main-tab active" style="text-decoration: none; color: inherit;">
+					<i class="bi bi-ticket-perforated" style="font-size:1.2em; vertical-align:middle; margin-right:10px;"></i>
+					<span class="main-tab-label">Manage Vouchers</span>
+				</a>
+				<a href="{{ url_for('admin_user_reports.user_reports') }}" class="main-tab" style="text-decoration: none; color: inherit;">
+					<i class="bi bi-flag" style="font-size:1.2em; vertical-align:middle; margin-right:10px;"></i>
+					<span class="main-tab-label">User Reports</span>
+				</a>
+				<div class="main-tab" id="logout-link" data-logout-url="{{ url_for('auth.login') }}">
+					<i class="bi bi-box-arrow-right" style="font-size:1.2em; vertical-align:middle; margin-right:10px;"></i>
+					<span class="main-tab-label">Logout</span>
+				</div>
+			</div>
+			<div class="sidebar-vertical-line"></div>
+		</div>
+
+		<div class="account-card-container">
+			<div class="product-approvals-main-content">
+				<h2 class="product-approvals-title">Manage Vouchers</h2>
+				<hr class="product-approvals-divider">
+
+				<div class="product-approvals-content">
+					<!-- Controls Section -->
+					<div class="approvals-controls">
+						<div class="search-filter-section">
+							<!-- Empty for now, can add search later -->
+						</div>
+						<button id="createVoucherBtn" class="create-voucher-btn">
+							<i class="bi bi-plus-circle"></i> Create New Voucher
+						</button>
+					</div>
+
+					<!-- Vouchers Grid -->
+					<div class="approval-cards-container" id="vouchersGrid">
+					{% if vouchers %}
+						{% for voucher in vouchers %}
+						<div class="voucher-card" data-voucher-id="{{ voucher.voucher_id }}">
+							<div class="voucher-header">
+								<div class="voucher-code">{{ voucher.voucher_name }}</div>
+								<div class="voucher-type-badge {% if voucher.voucher_type == 'free_shipping' %}free-shipping{% else %}discount{% endif %}">
+									{% if voucher.voucher_type == 'free_shipping' %}
+										<i class="bi bi-truck"></i> Free Shipping
+									{% else %}
+										<i class="bi bi-percent"></i> {{ voucher.discount_percent }}% Discount
+									{% endif %}
+								</div>
+							</div>
+							<div class="voucher-dates">
+								<div class="voucher-date">
+									<i class="bi bi-calendar-check"></i>
+									<span>Start: {{ voucher.start_date.strftime('%b %d, %Y') }}</span>
+								</div>
+								<div class="voucher-date">
+									<i class="bi bi-calendar-x"></i>
+									<span>End: {{ voucher.end_date.strftime('%b %d, %Y') }}</span>
+								</div>
+							</div>
+							<div class="voucher-actions">
+								<button class="delete-voucher-btn" data-voucher-id="{{ voucher.voucher_id }}" data-voucher-code="{{ voucher.voucher_code }}">
+									<i class="bi bi-trash"></i> Delete
+								</button>
+							</div>
+						</div>
+						{% endfor %}
+					{% else %}
+						<div class="no-vouchers">
+							<i class="bi bi-ticket-perforated" style="font-size: 3rem; color: #ccc; margin-bottom: 16px;"></i>
+							<p>No vouchers created yet. Click "Create New Voucher" to get started.</p>
+						</div>
+					{% endif %}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Create Voucher Modal -->
+	<div id="createVoucherModal" class="modal-overlay" style="display: none;">
+		<div class="modal-content voucher-modal">
+			<div class="modal-header">
+				<h3>Create New Voucher</h3>
+				<button class="modal-close" id="closeModalBtn">&times;</button>
+			</div>
+			<form id="createVoucherForm">
+				<div class="form-group">
+					<label for="voucherType">Voucher Type *</label>
+					<select id="voucherType" name="voucher_type" required>
+						<option value="">Select Type</option>
+						<option value="shipping">Shipping</option>
+						<option value="discount">Discount</option>
+					</select>
+				</div>
+
+				<div class="form-group">
+					<label for="voucherPercent">Percentage *</label>
+					<input type="number" id="voucherPercent" name="voucher_percent" min="1" max="100" required placeholder="e.g., 100">
+				</div>
+
+				<div class="form-row">
+					<div class="form-group">
+						<label for="startDate">Start Date *</label>
+						<input type="date" id="startDate" name="start_date" required>
+					</div>
+
+					<div class="form-group">
+						<label for="endDate">End Date *</label>
+						<input type="date" id="endDate" name="end_date" required>
+					</div>
+				</div>
+
+				<div class="form-actions">
+					<button type="button" class="btn-cancel" id="cancelBtn">Cancel</button>
+					<button type="submit" class="btn-submit">Create Voucher</button>
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<!-- Delete Voucher Modal -->
+	<div id="delete-voucher-modal-overlay"></div>
+	<div id="delete-voucher-modal" class="modal">
+		<div class="modal-content">
+			<div class="modal-title">Delete Voucher?</div>
+			<div class="modal-message">
+				Are you sure you want to delete voucher "<span id="delete-voucher-code"></span>"?
+			</div>
+			<div class="modal-actions">
+				<button id="confirm-delete-voucher" class="modal-btn">Delete</button>
+				<button id="cancel-delete-voucher" class="modal-btn">Cancel</button>
+			</div>
+		</div>
+	</div>
+
+	<!-- Logout Modal -->
+	<div id="logout-modal-overlay"></div>
+	<div id="logout-modal" class="modal">
+		<div class="modal-content">
+			<div class="modal-title">Do you want to Logout?</div>
+			<div class="modal-actions">
+				<button id="confirm-logout" class="modal-btn">Logout</button>
+				<button id="cancel-logout" class="modal-btn">Cancel</button>
+			</div>
+		</div>
+	</div>
+
+	<script defer src="{{ url_for('static', filename='js/logout-modal.js') }}"></script>
+	<script defer src="{{ url_for('static', filename='js/admin/admin-vouchers.js') }}"></script>
+</body>
+</html>
