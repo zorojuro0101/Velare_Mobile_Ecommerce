@@ -15,13 +15,22 @@ class BuyerHome extends StatefulWidget {
 
 class _BuyerHomeState extends State<BuyerHome> {
   int _currentIndex = 0;
+  VoidCallback? _resetToAllProducts;
 
-  final List<Widget> _screens = [
-    const BrowseProductsScreen(),
-    const FavoritesScreen(),
-    const OrderHistoryScreen(),
-    const ProfileScreen(),
-  ];
+  late final List<Widget> _screens;
+
+  @override
+  void initState() {
+    super.initState();
+    _screens = [
+      BrowseProductsScreen(
+        onResetCallback: (callback) => _resetToAllProducts = callback,
+      ),
+      const FavoritesScreen(),
+      const OrderHistoryScreen(),
+      const ProfileScreen(),
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -88,7 +97,13 @@ class _BuyerHomeState extends State<BuyerHome> {
         body: _screens[_currentIndex],
         bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
-        onTap: (index) => setState(() => _currentIndex = index),
+        onTap: (index) {
+          // Always reset to "All Products" when Home is tapped
+          if (index == 0) {
+            _resetToAllProducts?.call();
+          }
+          setState(() => _currentIndex = index);
+        },
         type: BottomNavigationBarType.fixed,
         selectedItemColor: const Color(0xFFD4AF37),
         unselectedItemColor: Colors.grey,
