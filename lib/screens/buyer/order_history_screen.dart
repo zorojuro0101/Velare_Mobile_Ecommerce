@@ -91,9 +91,14 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> with TickerProv
       if (_selectedFilter == 'cancelled') {
         return order.orderStatus == 'cancelled';
       }
-      // For other filters, check delivery status (or order status if delivery status is null)
-      final status = order.deliveryStatus ?? order.orderStatus;
-      return status == _selectedFilter;
+      
+      // For pending, show orders with status 'pending' or 'preparing'
+      if (_selectedFilter == 'pending') {
+        return order.orderStatus == 'pending' || order.orderStatus == 'preparing';
+      }
+      
+      // For other filters, check delivery status
+      return order.deliveryStatus == _selectedFilter;
     }).toList();
   }
 

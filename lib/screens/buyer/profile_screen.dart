@@ -18,6 +18,7 @@ import 'vouchers_screen.dart';
 import 'my_reports_screen.dart';
 import 'cart_screen.dart';
 import 'chat_list_screen.dart';
+import 'about_us_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -393,6 +394,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (_) => const MyReportsScreen()),
+                );
+              },
+            ),
+            _MenuItem(
+              icon: Icons.info_outline,
+              title: 'About Us',
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const AboutUsScreen()),
                 );
               },
             ),
