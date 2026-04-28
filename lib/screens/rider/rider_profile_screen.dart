@@ -456,6 +456,9 @@ class _RiderProfileScreenState extends State<RiderProfileScreen> {
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.red,
               foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(5),
+              ),
             ),
             onPressed: () async {
               await AuthService().logout();
@@ -555,6 +558,9 @@ class _RiderProfileScreenState extends State<RiderProfileScreen> {
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.black,
               foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(5),
+              ),
             ),
             onPressed: () async {
               final firstName = firstNameController.text.trim();
@@ -677,6 +683,9 @@ class _RiderProfileScreenState extends State<RiderProfileScreen> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.black,
                 foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(5),
+                ),
               ),
               onPressed: () async {
                 final plateNumber = plateNumberController.text.trim();
