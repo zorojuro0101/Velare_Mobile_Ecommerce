@@ -6,6 +6,7 @@ import 'services/auth_service.dart';
 import 'screens/buyer/browse_products_screen.dart';
 import 'screens/buyer/buyer_home.dart';
 import 'screens/rider/rider_home.dart';
+import 'screens/splash_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -42,7 +43,9 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      home: const AppInitializer(),
+      home: const SplashScreen(
+        nextScreen: AppInitializer(),
+      ),
       debugShowCheckedModeBanner: false,
     );
   }
