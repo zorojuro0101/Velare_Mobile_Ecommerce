@@ -1,8 +1,11 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:image_picker/image_picker.dart';
 import '../../services/auth_service.dart';
 import '../../utils/snackbar_helper.dart';
+import '../../utils/image_helper.dart';
 import '../auth/login_screen.dart';
 import 'verification_documents_screen.dart';
 
@@ -17,9 +20,11 @@ class RiderProfileScreen extends StatefulWidget {
 
 class _RiderProfileScreenState extends State<RiderProfileScreen> {
   final _supabase = Supabase.instance.client;
+  final _imagePicker = ImagePicker();
   Map<String, dynamic>? _riderData;
   Map<String, dynamic>? _stats;
   bool _isLoading = true;
+  bool _isUploadingImage = false;
 
   @override
   void initState() {
@@ -129,6 +134,11 @@ class _RiderProfileScreenState extends State<RiderProfileScreen> {
     final profileImage = _riderData?['profile_image'];
     final initial = firstName.isNotEmpty ? firstName[0].toUpperCase() : 'R';
 
+    // Get full image URL if profile_image exists
+    final imageUrl = profileImage != null && profileImage.isNotEmpty
+        ? ImageHelper.getImageUrl(profileImage)
+        : null;
+
     return Container(
       padding: const EdgeInsets.all(24),
       color: Colors.white,
@@ -143,10 +153,17 @@ class _RiderProfileScreenState extends State<RiderProfileScreen> {
                   shape: BoxShape.circle,
                   color: Colors.grey[300],
                 ),
-                child: profileImage != null
+                child: _isUploadingImage
+                    ? const Center(
+                        child: CircularProgressIndicator(
+                          color: Colors.black,
+                          strokeWidth: 2,
+                        ),
+                      )
+                    : imageUrl != null
                     ? ClipOval(
                         child: Image.network(
-                          profileImage,
+                          imageUrl,
                           fit: BoxFit.cover,
                           errorBuilder: (context, error, stackTrace) {
                             return Center(
@@ -173,31 +190,26 @@ class _RiderProfileScreenState extends State<RiderProfileScreen> {
                         ),
                       ),
               ),
-              Positioned(
-                bottom: 0,
-                right: 0,
-                child: GestureDetector(
-                  onTap: () {
-                    // TODO: Implement image picker
-                    SnackBarHelper.showInfo(
-                      context,
-                      'Image upload coming soon!',
-                    );
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.all(6),
-                    decoration: const BoxDecoration(
-                      color: Colors.black,
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(
-                      Icons.camera_alt,
-                      color: Colors.white,
-                      size: 18,
+              if (!_isUploadingImage)
+                Positioned(
+                  bottom: 0,
+                  right: 0,
+                  child: GestureDetector(
+                    onTap: _showImageSourceDialog,
+                    child: Container(
+                      padding: const EdgeInsets.all(6),
+                      decoration: const BoxDecoration(
+                        color: Colors.black,
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Icons.camera_alt,
+                        color: Colors.white,
+                        size: 18,
+                      ),
                     ),
                   ),
                 ),
-              ),
             ],
           ),
           const SizedBox(height: 16),
@@ -731,5 +743,108 @@ class _RiderProfileScreenState extends State<RiderProfileScreen> {
         ),
       ),
     );
+  }
+
+  void _showImageSourceDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(
+          'Choose Image Source',
+          style: GoogleFonts.goudyBookletter1911(fontWeight: FontWeight.w600),
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.camera_alt, color: Colors.black),
+              title: Text('Camera', style: GoogleFonts.goudyBookletter1911()),
+              onTap: () {
+                Navigator.pop(context);
+                _pickAndUploadImage(ImageSource.camera);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.photo_library, color: Colors.black),
+              title: Text('Gallery', style: GoogleFonts.goudyBookletter1911()),
+              onTap: () {
+                Navigator.pop(context);
+                _pickAndUploadImage(ImageSource.gallery);
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> _pickAndUploadImage(ImageSource source) async {
+    try {
+      // Pick image
+      final XFile? pickedFile = await _imagePicker.pickImage(
+        source: source,
+        maxWidth: 800,
+        maxHeight: 800,
+        imageQuality: 85,
+      );
+
+      if (pickedFile == null) return;
+
+      setState(() => _isUploadingImage = true);
+
+      final userId = AuthService().currentUserId;
+      if (userId == null) throw Exception('User not logged in');
+
+      // Get rider_id
+      final riderData = await _supabase
+          .from('riders')
+          .select('rider_id')
+          .eq('user_id', userId)
+          .single();
+
+      final riderId = riderData['rider_id'];
+
+      // Create unique filename
+      final timestamp = DateTime.now().millisecondsSinceEpoch;
+      final extension = pickedFile.path.split('.').last;
+      final fileName = 'rider_${riderId}_$timestamp.$extension';
+      final filePath = 'riders/profiles/$fileName';
+
+      // Upload to Supabase Storage
+      final file = File(pickedFile.path);
+      await _supabase.storage
+          .from('images')
+          .upload(
+            filePath,
+            file,
+            fileOptions: const FileOptions(cacheControl: '3600', upsert: true),
+          );
+
+      // Update database with new image path
+      await _supabase
+          .from('riders')
+          .update({'profile_image': filePath})
+          .eq('user_id', userId);
+
+      // Reload profile
+      await _loadRiderProfile();
+
+      if (mounted) {
+        setState(() => _isUploadingImage = false);
+        SnackBarHelper.showSuccess(
+          context,
+          'Profile image updated successfully!',
+        );
+      }
+    } catch (e) {
+      print('Error uploading image: $e');
+      if (mounted) {
+        setState(() => _isUploadingImage = false);
+        SnackBarHelper.showError(
+          context,
+          'Failed to upload image: ${e.toString()}',
+        );
+      }
+    }
   }
 }
