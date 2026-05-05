@@ -13,22 +13,30 @@ class ImageHelper {
     }
 
     final supabase = Supabase.instance.client;
-    
+
     // Remove leading slash if present
     String path = imagePath;
     if (path.startsWith('/')) {
       path = path.substring(1);
     }
-    
-    // The path should already be in format: static/uploads/products/filename.jpg
-    // If it's just a filename, prepend the path
-    if (!path.contains('/')) {
+
+    // Determine which bucket to use based on path
+    String bucket = 'Images'; // Default bucket for products
+
+    // If path starts with 'riders/', use 'images' bucket (lowercase)
+    if (path.startsWith('riders/')) {
+      bucket = 'images';
+    }
+    // If it's just a filename, prepend the path for products
+    else if (!path.contains('/')) {
       path = 'static/uploads/products/$path';
     }
-    
-    // Construct the public URL using 'Images' bucket
-    final url = supabase.storage.from('Images').getPublicUrl(path);
-    print('ImageHelper - Constructed URL from path: $imagePath -> $url');
+
+    // Construct the public URL
+    final url = supabase.storage.from(bucket).getPublicUrl(path);
+    print(
+      'ImageHelper - Constructed URL from path: $imagePath -> $url (bucket: $bucket)',
+    );
     return url;
   }
 }
