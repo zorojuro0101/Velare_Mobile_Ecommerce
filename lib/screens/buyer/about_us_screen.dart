@@ -15,22 +15,25 @@ class AboutUsScreen extends StatefulWidget {
 class _AboutUsScreenState extends State<AboutUsScreen> with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
-  
+
   // Video controllers
   VideoPlayerController? _heroVideoController;
   VideoPlayerController? _promiseVideoController;
-  
+
   // Image carousel indices for fade transitions
   int _section1ImageIndex = 0;
   int _section4ImageIndex = 0;
   int _section5ImageIndex = 0;
   int _section6ImageIndex = 0;
-  
+
   // Timers for image transitions
   Timer? _section1Timer;
   Timer? _section4Timer;
   Timer? _section5Timer;
   Timer? _section6Timer;
+
+  // Section 2 animation triggers
+  bool _section2Visible = false;
   
   // Section 1 images
   final List<String> _section1Images = [
@@ -321,7 +324,7 @@ class _AboutUsScreenState extends State<AboutUsScreen> with SingleTickerProvider
   Widget _buildSection1() {
     return Container(
       padding: const EdgeInsets.all(24),
-      margin: const EdgeInsets.only(bottom: 40),
+      margin: const EdgeInsets.only(bottom: 250),
       child: Column(
         children: [
           // Image with fade transition (fixed height and width with proper aspect ratio)
@@ -395,67 +398,109 @@ class _AboutUsScreenState extends State<AboutUsScreen> with SingleTickerProvider
   }
 
   Widget _buildSection2() {
-    return Container(
-      padding: const EdgeInsets.all(24),
-      margin: const EdgeInsets.only(bottom: 40),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildAnimatedText(
-            'Our Story:',
-            delay: 0,
-            style: GoogleFonts.playfairDisplay(
-              fontSize: 32,
-              fontWeight: FontWeight.bold,
+    return VisibilityDetector(
+      key: const Key('section2_trigger'),
+      onVisibilityChanged: (info) {
+        if (info.visibleFraction > 0.3 && !_section2Visible) {
+          setState(() {
+            _section2Visible = true;
+          });
+        }
+      },
+      child: Container(
+        padding: const EdgeInsets.all(32),
+        margin: const EdgeInsets.only(bottom: 6),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.05),
+              blurRadius: 15,
+              offset: const Offset(0, 4),
             ),
-            alignment: Alignment.centerLeft,
-          ),
-          const SizedBox(height: 16),
-          _buildAnimatedText(
-            'Born from Elegance',
-            delay: 200,
-            style: GoogleFonts.cormorantGaramond(
-              fontSize: 28,
-              color: const Color(0xFFBF9F4A),
-              fontWeight: FontWeight.bold,
-              height: 1.4,
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildAnimatedText(
+              'Our Story:',
+              delay: 0,
+              style: GoogleFonts.playfairDisplay(
+                fontSize: 72,
+                fontWeight: FontWeight.bold,
+                letterSpacing: -1.5,
+                height: 1.1,
+              ),
+              alignment: Alignment.centerLeft,
             ),
-            alignment: Alignment.centerLeft,
-          ),
-          const SizedBox(height: 8),
-          _buildAnimatedText(
-            'Guided by Conscience',
-            delay: 400,
-            style: GoogleFonts.cormorantGaramond(
-              fontSize: 28,
-              color: const Color(0xFFBF9F4A),
-              fontWeight: FontWeight.bold,
-              height: 1.4,
+            const SizedBox(height: 24),
+            Row(
+              children: [
+                _buildAnimatedText(
+                  'Born from ',
+                  delay: 0,
+                  style: GoogleFonts.cormorantGaramond(
+                    fontSize: 40,
+                    color: const Color(0xFFBF9F4A),
+                    fontWeight: FontWeight.bold,
+                    height: 1.1,
+                  ),
+                  alignment: Alignment.centerLeft,
+                ),
+                _buildAnimatedText(
+                  'Elegance',
+                  delay: _section2Visible ? 5000 : 999999,
+                  style: GoogleFonts.cormorantGaramond(
+                    fontSize: 40,
+                    color: const Color(0xFFBF9F4A),
+                    fontWeight: FontWeight.bold,
+                    height: 1.1,
+                  ),
+                  alignment: Alignment.centerLeft,
+                ),
+              ],
             ),
-            alignment: Alignment.centerLeft,
-          ),
-          const SizedBox(height: 24),
-          _buildAnimatedText(
-            'Founded on the belief that fashion should embody both artistry and responsibility, Velare was created to celebrate women — their strength, creativity, and grace.',
-            delay: 600,
-            style: GoogleFonts.goudyBookletter1911(
-              fontSize: 15,
-              height: 1.6,
-              color: Colors.grey[800],
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                _buildAnimatedText(
+                  'Guided by ',
+                  delay: 0,
+                  style: GoogleFonts.cormorantGaramond(
+                    fontSize: 40,
+                    color: const Color(0xFFBF9F4A),
+                    fontWeight: FontWeight.bold,
+                    height: 1.1,
+                  ),
+                  alignment: Alignment.centerLeft,
+                ),
+                _buildAnimatedText(
+                  'Conscience',
+                  delay: _section2Visible ? 10000 : 999999,
+                  style: GoogleFonts.cormorantGaramond(
+                    fontSize: 40,
+                    color: const Color(0xFFBF9F4A),
+                    fontWeight: FontWeight.bold,
+                    height: 1.1,
+                  ),
+                  alignment: Alignment.centerLeft,
+                ),
+              ],
             ),
-            alignment: Alignment.centerLeft,
-          ),
-        ],
+            const SizedBox(height: 40),
+            _buildAnimatedText(
+              'Founded on the belief that fashion should embody both artistry and responsibility, Velare was created to celebrate women — their strength, creativity, and grace.',
+              delay: 0,
+              style: GoogleFonts.goudyBookletter1911(
+                fontSize: 18,
+                height: 1.6,
+                color: Colors.grey[800],
+              ),
+              alignment: Alignment.centerLeft,
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -466,6 +511,7 @@ class _AboutUsScreenState extends State<AboutUsScreen> with SingleTickerProvider
       margin: const EdgeInsets.only(bottom: 40),
       child: Column(
         children: [
+          const SizedBox(height: 80), // Increased gap at the top
           _buildAnimatedText(
             'We embrace sustainability not as a trend, but as a principle. From our in-house production led by women artisans to our use of biodegradable materials, every collection reflects our commitment to beauty that uplifts, respects, and endures.',
             delay: 0,
@@ -640,7 +686,7 @@ class _AboutUsScreenState extends State<AboutUsScreen> with SingleTickerProvider
   Widget _buildSection5() {
     return Container(
       padding: const EdgeInsets.all(24),
-      margin: const EdgeInsets.only(bottom: 40),
+      margin: const EdgeInsets.only(bottom: 250),
       child: Column(
         children: [
           // Image with text overlay - reduced height to match smallest video
@@ -723,7 +769,7 @@ class _AboutUsScreenState extends State<AboutUsScreen> with SingleTickerProvider
   Widget _buildSection6() {
     return Container(
       padding: const EdgeInsets.all(24),
-      margin: const EdgeInsets.only(bottom: 40),
+      margin: const EdgeInsets.only(bottom: 250),
       decoration: BoxDecoration(
         color: Colors.white,
         boxShadow: [
@@ -805,7 +851,7 @@ class _AboutUsScreenState extends State<AboutUsScreen> with SingleTickerProvider
   Widget _buildSection7() {
     return Container(
       padding: const EdgeInsets.all(24),
-      margin: const EdgeInsets.only(bottom: 40),
+      margin: const EdgeInsets.only(bottom: 250),
       child: Column(
         children: [
           _buildAnimatedText(
@@ -846,7 +892,7 @@ class _AboutUsScreenState extends State<AboutUsScreen> with SingleTickerProvider
   Widget _buildSection8() {
     return Container(
       padding: const EdgeInsets.all(24),
-      margin: const EdgeInsets.only(bottom: 40),
+      margin: const EdgeInsets.only(bottom: 250),
       decoration: BoxDecoration(
         color: Colors.white,
         boxShadow: [

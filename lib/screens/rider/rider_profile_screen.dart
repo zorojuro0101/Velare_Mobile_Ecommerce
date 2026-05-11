@@ -810,10 +810,10 @@ class _RiderProfileScreenState extends State<RiderProfileScreen> {
       final fileName = 'rider_${riderId}_$timestamp.$extension';
       final filePath = 'static/uploads/profiles/$fileName';
 
-      // Upload to Supabase Storage (bucket: images)
+      // Upload to Supabase Storage (bucket: Images)
       final file = File(pickedFile.path);
       await _supabase.storage
-          .from('images')
+          .from('Images')
           .upload(
             filePath,
             file,

@@ -7,6 +7,7 @@ import 'dart:convert';
 import '../../models/cart_model.dart';
 import '../../services/order_service.dart';
 import '../../services/auth_service.dart';
+import '../../services/shipping_service.dart';
 import '../../utils/image_helper.dart';
 import '../../utils/snackbar_helper.dart';
 import '../../widgets/address_selector_modal.dart';
@@ -40,9 +41,14 @@ class _CheckoutScreenState extends State<CheckoutScreen> with SingleTickerProvid
   bool _isLoading = false;
   bool _isLoadingAddresses = true;
   bool _isLoadingVouchers = true;
+  bool _isLoadingShipping = false;
   int _currentImageIndex = 0;
   late AnimationController _fadeController;
   late Animation<double> _fadeAnimation;
+
+  // Shipping state
+  final ShippingService _shippingService = ShippingService();
+  List<ShopShippingResult> _shopShippingResults = [];
 
   @override
   void initState() {
@@ -263,38 +269,30 @@ class _CheckoutScreenState extends State<CheckoutScreen> with SingleTickerProvid
     return discount;
   }
 
-  // Calculate shipping fee based on number of unique shops
+  /// Raw total of all shops' shipping fees (no voucher applied).
   double _calculateShippingFee() {
-    // Get unique shop names/IDs
-    final uniqueShops = widget.items.map((item) => item.shopName).toSet();
-    // ₱49 per shop
-    return uniqueShops.length * 49.0;
+    if (_shopShippingResults.isEmpty) {
+      // Fallback: ₱49 flat per shop while computing
+      final uniqueShops = widget.items.map((item) => item.shopName).toSet();
+      return uniqueShops.length * 49.0;
+    }
+    return _shopShippingResults.fold(0.0, (sum, r) => sum + r.fee);
   }
 
-  // Calculate total shipping fee (considering free shipping voucher for specific seller)
+  /// Total shipping fee after applying a free-shipping voucher (if any).
   double _getTotalShippingFee() {
-    // Check if free shipping voucher is selected
     if (_selectedVoucher != null) {
       final voucherData = _selectedVoucher!['vouchers'];
       final voucherType = voucherData['voucher_type'];
-      final voucherSellerId = _selectedVoucher!['seller_id'];
-      
+      final voucherSellerId = _selectedVoucher!['seller_id']?.toString();
+
       if (voucherType == 'free_shipping') {
-        // Count unique shops, excluding the one with free shipping
-        final uniqueShops = <String>{};
-        for (var item in widget.items) {
-          final itemSellerId = int.tryParse(item.sellerId);
-          // Only count shops that are NOT covered by the free shipping voucher
-          if (itemSellerId != voucherSellerId) {
-            uniqueShops.add(item.shopName);
-          }
-        }
-        // ₱49 per shop (excluding the free shipping shop)
-        return uniqueShops.length * 49.0;
+        return _shippingService.totalFee(
+          _shopShippingResults,
+          excludeSellerId: voucherSellerId,
+        );
       }
     }
-    
-    // No free shipping voucher, calculate normal shipping fee
     return _calculateShippingFee();
   }
 
@@ -339,11 +337,48 @@ class _CheckoutScreenState extends State<CheckoutScreen> with SingleTickerProvid
           }
           _isLoadingAddresses = false;
         });
+        // Compute shipping after address is loaded
+        if (_selectedAddress != null) {
+          _computeShippingFees();
+        }
       } else {
         setState(() => _isLoadingAddresses = false);
       }
     } catch (e) {
       setState(() => _isLoadingAddresses = false);
+    }
+  }
+
+  /// Computes per-shop shipping fees based on the selected buyer address.
+  Future<void> _computeShippingFees() async {
+    if (_selectedAddress == null) return;
+
+    setState(() => _isLoadingShipping = true);
+
+    final buyerAddress = {
+      'city': (_selectedAddress!['city'] ?? '').toString(),
+      'province': (_selectedAddress!['province'] ?? '').toString(),
+      'region': (_selectedAddress!['region'] ?? '').toString(),
+    };
+
+    // Build cart items list for ShippingService
+    final cartItems = widget.items
+        .map((item) => {
+              'seller_id': item.sellerId,
+              'shop_name': item.shopName,
+            })
+        .toList();
+
+    final results = await _shippingService.calculateShippingPerShop(
+      buyerAddress: buyerAddress,
+      cartItems: cartItems,
+    );
+
+    if (mounted) {
+      setState(() {
+        _shopShippingResults = results;
+        _isLoadingShipping = false;
+      });
     }
   }
 
@@ -364,6 +399,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> with SingleTickerProvid
     setState(() {
       _selectedAddress = address;
     });
+    _computeShippingFees();
   }
 
   String _getFullAddressDisplay(Map<String, dynamic> address) {
@@ -1289,6 +1325,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> with SingleTickerProvid
           }),
           const Divider(),
           const SizedBox(height: 8),
+          // Subtotal
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -1302,68 +1339,150 @@ class _CheckoutScreenState extends State<CheckoutScreen> with SingleTickerProvid
               ),
             ],
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 12),
+          // Shipping Fee section header
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                children: [
-                  Text(
-                    'Shipping Fee',
-                    style: GoogleFonts.goudyBookletter1911(fontSize: 14),
-                  ),
-                  const SizedBox(width: 4),
-                  Text(
-                    '(${widget.items.map((item) => item.shopName).toSet().length} ${widget.items.map((item) => item.shopName).toSet().length > 1 ? 'shops' : 'shop'})',
-                    style: GoogleFonts.goudyBookletter1911(
-                      fontSize: 11,
-                      color: Colors.grey[600],
-                    ),
-                  ),
-                ],
-              ),
               Text(
-                '₱${_calculateShippingFee().toStringAsFixed(2)}',
-                style: GoogleFonts.playfairDisplay(
+                'Shipping Fee',
+                style: GoogleFonts.goudyBookletter1911(
                   fontSize: 14,
-                  decoration: _selectedVoucher != null && _selectedVoucher!['vouchers']['voucher_type'] == 'free_shipping'
-                      ? TextDecoration.lineThrough
-                      : null,
-                  color: _selectedVoucher != null && _selectedVoucher!['vouchers']['voucher_type'] == 'free_shipping'
-                      ? Colors.grey[600]
-                      : null,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
+              if (_isLoadingShipping)
+                const SizedBox(
+                  height: 14,
+                  width: 14,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                )
+              else
+                Text(
+                  '₱${_calculateShippingFee().toStringAsFixed(2)}',
+                  style: GoogleFonts.playfairDisplay(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    decoration: _selectedVoucher != null &&
+                            _selectedVoucher!['vouchers']['voucher_type'] ==
+                                'free_shipping'
+                        ? TextDecoration.lineThrough
+                        : null,
+                    color: _selectedVoucher != null &&
+                            _selectedVoucher!['vouchers']['voucher_type'] ==
+                                'free_shipping'
+                        ? Colors.grey[400]
+                        : null,
+                  ),
+                ),
             ],
           ),
-          if (_selectedVoucher != null && _selectedVoucher!['vouchers']['voucher_type'] == 'free_shipping') ...[
-            const SizedBox(height: 8),
+          // Per-shop shipping breakdown
+          if (!_isLoadingShipping && _shopShippingResults.isNotEmpty) ...[
+            const SizedBox(height: 6),
+            ..._shopShippingResults.map((result) {
+              final isFreeForThisShop = _selectedVoucher != null &&
+                  _selectedVoucher!['vouchers']['voucher_type'] ==
+                      'free_shipping' &&
+                  _selectedVoucher!['seller_id']?.toString() ==
+                      result.sellerId;
+              return Padding(
+                padding: const EdgeInsets.only(left: 12, bottom: 4),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.store_outlined,
+                          size: 12,
+                          color: Colors.grey[500],
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          result.shopName,
+                          style: GoogleFonts.goudyBookletter1911(
+                            fontSize: 12,
+                            color: Colors.grey[600],
+                          ),
+                        ),
+                        const SizedBox(width: 6),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 5, vertical: 1),
+                          decoration: BoxDecoration(
+                            color: Colors.grey[100],
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                          child: Text(
+                            result.tierLabel,
+                            style: GoogleFonts.goudyBookletter1911(
+                              fontSize: 9,
+                              color: Colors.grey[600],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    isFreeForThisShop
+                        ? Text(
+                            'FREE',
+                            style: GoogleFonts.goudyBookletter1911(
+                              fontSize: 12,
+                              color: Colors.green[700],
+                              fontWeight: FontWeight.w600,
+                            ),
+                          )
+                        : Text(
+                            '₱${result.fee.toStringAsFixed(2)}',
+                            style: GoogleFonts.goudyBookletter1911(
+                              fontSize: 12,
+                              color: Colors.grey[600],
+                            ),
+                          ),
+                  ],
+                ),
+              );
+            }),
+          ],
+          // Free shipping discount row
+          if (_selectedVoucher != null &&
+              _selectedVoucher!['vouchers']['voucher_type'] ==
+                  'free_shipping') ...[
+            const SizedBox(height: 4),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
                   'Free Shipping Discount',
-                  style: GoogleFonts.goudyBookletter1911(fontSize: 14, color: Colors.green[700]),
+                  style: GoogleFonts.goudyBookletter1911(
+                      fontSize: 13, color: Colors.green[700]),
                 ),
                 Text(
                   '-₱${(_calculateShippingFee() - _getTotalShippingFee()).toStringAsFixed(2)}',
-                  style: GoogleFonts.playfairDisplay(fontSize: 14, color: Colors.green[700]),
+                  style: GoogleFonts.playfairDisplay(
+                      fontSize: 13, color: Colors.green[700]),
                 ),
               ],
             ),
           ],
-          if (_selectedVoucher != null && _selectedVoucher!['vouchers']['voucher_type'] != 'free_shipping') ...[
+          // Regular discount row
+          if (_selectedVoucher != null &&
+              _selectedVoucher!['vouchers']['voucher_type'] !=
+                  'free_shipping') ...[
             const SizedBox(height: 8),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
                   'Discount',
-                  style: GoogleFonts.goudyBookletter1911(fontSize: 14, color: Colors.green[700]),
+                  style: GoogleFonts.goudyBookletter1911(
+                      fontSize: 14, color: Colors.green[700]),
                 ),
                 Text(
                   '-₱${_calculateDiscount().toStringAsFixed(2)}',
-                  style: GoogleFonts.playfairDisplay(fontSize: 14, color: Colors.green[700]),
+                  style: GoogleFonts.playfairDisplay(
+                      fontSize: 14, color: Colors.green[700]),
                 ),
               ],
             ),
@@ -1380,14 +1499,22 @@ class _CheckoutScreenState extends State<CheckoutScreen> with SingleTickerProvid
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              Text(
-                '₱${(widget.totalAmount + _getTotalShippingFee() - _calculateDiscount()).toStringAsFixed(2)}',
-                style: GoogleFonts.playfairDisplay(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                ),
-              ),
+              _isLoadingShipping
+                  ? Text(
+                      'Calculating...',
+                      style: GoogleFonts.goudyBookletter1911(
+                        fontSize: 14,
+                        color: Colors.grey[500],
+                      ),
+                    )
+                  : Text(
+                      '₱${(widget.totalAmount + _getTotalShippingFee() - _calculateDiscount()).toStringAsFixed(2)}',
+                      style: GoogleFonts.playfairDisplay(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                    ),
             ],
           ),
         ],
@@ -1420,18 +1547,26 @@ class _CheckoutScreenState extends State<CheckoutScreen> with SingleTickerProvid
                     'Total Payment',
                     style: GoogleFonts.goudyBookletter1911(fontSize: 12, color: Colors.grey[600]),
                   ),
-                  Text(
-                    '₱${(widget.totalAmount + _getTotalShippingFee() - _calculateDiscount()).toStringAsFixed(2)}',
-                    style: GoogleFonts.playfairDisplay(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                  _isLoadingShipping
+                      ? Text(
+                          'Calculating...',
+                          style: GoogleFonts.goudyBookletter1911(
+                            fontSize: 14,
+                            color: Colors.grey[500],
+                          ),
+                        )
+                      : Text(
+                          '₱${(widget.totalAmount + _getTotalShippingFee() - _calculateDiscount()).toStringAsFixed(2)}',
+                          style: GoogleFonts.playfairDisplay(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                 ],
               ),
             ),
             ElevatedButton(
-              onPressed: _isLoading ? null : _placeOrder,
+              onPressed: (_isLoading || _isLoadingShipping) ? null : _placeOrder,
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.black,
                 foregroundColor: Colors.white,

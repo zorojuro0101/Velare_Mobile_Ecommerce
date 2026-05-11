@@ -21,18 +21,10 @@ class ImageHelper {
     }
 
     // Determine which bucket to use based on path
-    String bucket = 'Images'; // Default bucket for products
+    String bucket = 'Images'; // Use 'Images' bucket (capital I) for all
 
-    // If path starts with 'static/uploads/profiles/', use 'images' bucket (lowercase)
-    if (path.startsWith('static/uploads/profiles/')) {
-      bucket = 'images';
-    }
-    // If path starts with 'riders/', use 'images' bucket (lowercase)
-    else if (path.startsWith('riders/')) {
-      bucket = 'images';
-    }
     // If it's just a filename, prepend the path for products
-    else if (!path.contains('/')) {
+    if (!path.contains('/')) {
       path = 'static/uploads/products/$path';
     }
 
