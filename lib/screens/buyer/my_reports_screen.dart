@@ -433,6 +433,10 @@ class _MyReportsScreenState extends State<MyReportsScreen> {
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
+                  if (report.adminNotes != null && report.adminNotes!.isNotEmpty) ...[
+                    const SizedBox(height: 6),
+                    _buildDetailRow('Admin Notes:', report.adminNotes!),
+                  ],
                   const SizedBox(height: 6),
                   Text(
                     _formatDate(report.createdAt),

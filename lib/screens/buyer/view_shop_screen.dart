@@ -135,8 +135,8 @@ class _ViewShopScreenState extends State<ViewShopScreen> with SingleTickerProvid
       print('Products response: $productsResponse');
       
       int reviewCount = 0;
-      if (productsResponse != null && (productsResponse as List).isNotEmpty) {
-        final productIds = (productsResponse as List).map((p) => p['product_id']).toList();
+      if (productsResponse.isNotEmpty) {
+        final productIds = productsResponse.map((p) => p['product_id']).toList();
         print('Product IDs: $productIds');
         
         // Count reviews for all these products
@@ -145,7 +145,7 @@ class _ViewShopScreenState extends State<ViewShopScreen> with SingleTickerProvid
             .select('review_id')
             .inFilter('product_id', productIds);
         
-        reviewCount = (reviewResponse as List).length;
+        reviewCount = reviewResponse.length;
         print('Review count from product_reviews: $reviewCount');
       } else {
         print('No products found for this seller');

@@ -277,46 +277,6 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> with TickerProv
       ),
     );
   }
-
-  Widget _buildFilterChips() {
-    final filters = [
-      {'label': 'Pending Shipment', 'value': 'pending'},
-      {'label': 'In Transit', 'value': 'in_transit'},
-      {'label': 'Delivered', 'value': 'delivered'},
-    ];
-
-    return Container(
-      height: 60,
-      color: Colors.white,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-        itemCount: filters.length,
-        itemBuilder: (context, index) {
-          final filter = filters[index];
-          final isSelected = _selectedFilter == filter['value'];
-          return Padding(
-            padding: const EdgeInsets.only(right: 8),
-            child: FilterChip(
-              label: Text(filter['label']!),
-              selected: isSelected,
-              onSelected: (selected) {
-                setState(() => _selectedFilter = filter['value']!);
-              },
-              backgroundColor: Colors.grey[100],
-              selectedColor: Colors.black,
-              labelStyle: GoogleFonts.goudyBookletter1911(
-                color: isSelected ? Colors.white : Colors.black,
-                fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
-              ),
-              checkmarkColor: Colors.white,
-            ),
-          );
-        },
-      ),
-    );
-  }
-
   Widget _buildEmptyState() {
     return Center(
       child: Column(
