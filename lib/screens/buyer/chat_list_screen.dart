@@ -8,6 +8,8 @@ import '../../utils/image_helper.dart';
 import '../../utils/snackbar_helper.dart';
 import 'chat_conversation_screen.dart';
 
+import '../../utils/app_colors.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 class ChatListScreen extends StatefulWidget {
   const ChatListScreen({super.key});
 
@@ -174,11 +176,11 @@ class _ChatListScreenState extends State<ChatListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: AppColors.scaffoldBackground(context),
       appBar: AppBar(
         title: Text('Messages', style: GoogleFonts.playfairDisplay(fontWeight: FontWeight.bold)),
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
+        backgroundColor: AppColors.surface(context),
+        foregroundColor: AppColors.onSurface(context),
         elevation: 0,
       ),
       body: Column(
@@ -192,21 +194,21 @@ class _ChatListScreenState extends State<ChatListScreen> {
 
   Widget _buildSearchBar() {
     return Padding(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16.w),
       child: TextField(
         controller: _searchController,
         onChanged: _filterConversations,
         decoration: InputDecoration(
           hintText: 'Search conversations...',
-          hintStyle: GoogleFonts.goudyBookletter1911(color: Colors.grey[400]),
+          hintStyle: GoogleFonts.goudyBookletter1911(color: AppColors.textFaint(context)),
           prefixIcon: const Icon(Icons.search, color: Colors.grey),
           filled: true,
-          fillColor: Colors.grey[100],
+          fillColor: AppColors.surfaceVariant(context),
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(12.r),
             borderSide: BorderSide.none,
           ),
-          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
         ),
       ),
     );
@@ -214,14 +216,14 @@ class _ChatListScreenState extends State<ChatListScreen> {
 
   Widget _buildConversationList() {
     if (_conversationsFuture == null) {
-      return const Center(child: CircularProgressIndicator(color: Colors.black));
+      return Center(child: CircularProgressIndicator(color: AppColors.onSurface(context)));
     }
 
     return FutureBuilder<List<ChatConversation>>(
       future: _conversationsFuture,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator(color: Colors.black));
+          return Center(child: CircularProgressIndicator(color: AppColors.onSurface(context)));
         }
         if (snapshot.hasError) {
           return Center(
@@ -240,19 +242,19 @@ class _ChatListScreenState extends State<ChatListScreen> {
         return RefreshIndicator(
           onRefresh: () async => _loadConversations(),
           child: ListView(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+            padding: EdgeInsets.symmetric(horizontal: 16.w),
             children: [
               // Show existing conversations
               if (hasConversations) ...[
                 if (isSearchActive)
                   Padding(
-                    padding: const EdgeInsets.only(bottom: 12),
+                    padding: EdgeInsets.only(bottom: 12.h),
                     child: Text(
                       'Conversations',
                       style: GoogleFonts.goudyBookletter1911(
-                        fontSize: 14,
+                        fontSize: 14.sp,
                         fontWeight: FontWeight.w600,
-                        color: Colors.grey[700],
+                        color: AppColors.textBody(context),
                       ),
                     ),
                   ),
@@ -262,13 +264,13 @@ class _ChatListScreenState extends State<ChatListScreen> {
               // Show search results for sellers
               if (isSearchActive && hasSearchResults) ...[
                 Padding(
-                  padding: const EdgeInsets.only(top: 16, bottom: 12),
+                  padding: EdgeInsets.only(top: 16.h, bottom: 12.h),
                   child: Text(
                     'Sellers',
                     style: GoogleFonts.goudyBookletter1911(
-                      fontSize: 14,
+                      fontSize: 14.sp,
                       fontWeight: FontWeight.w600,
-                      color: Colors.grey[700],
+                      color: AppColors.textBody(context),
                     ),
                   ),
                 ),
@@ -277,9 +279,9 @@ class _ChatListScreenState extends State<ChatListScreen> {
 
               // Show loading indicator
               if (_isSearching)
-                const Padding(
-                  padding: EdgeInsets.all(20),
-                  child: Center(child: CircularProgressIndicator(color: Colors.black)),
+                Padding(
+                  padding: EdgeInsets.all(20.w),
+                  child: Center(child: CircularProgressIndicator(color: AppColors.onSurface(context))),
                 ),
             ],
           ),
@@ -293,18 +295,18 @@ class _ChatListScreenState extends State<ChatListScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.chat_bubble_outline, size: 80, color: Colors.grey[400]),
-          const SizedBox(height: 16),
+          Icon(Icons.chat_bubble_outline, size: 80.r, color: AppColors.textFaint(context)),
+          SizedBox(height: 16.h),
           Text(
             _searchController.text.isEmpty ? 'No conversations yet' : 'No results found',
-            style: GoogleFonts.goudyBookletter1911(fontSize: 18, color: Colors.grey[600]),
+            style: GoogleFonts.goudyBookletter1911(fontSize: 18.sp, color: AppColors.textMuted(context)),
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: 8.h),
           Text(
             _searchController.text.isEmpty 
                 ? 'Start chatting with sellers'
                 : 'Try a different search term',
-            style: GoogleFonts.goudyBookletter1911(fontSize: 14, color: Colors.grey[500]),
+            style: GoogleFonts.goudyBookletter1911(fontSize: 14.sp, color: AppColors.textFaint(context)),
           ),
         ],
       ),
@@ -354,22 +356,22 @@ class _ChatListScreenState extends State<ChatListScreen> {
         ).then((_) => _loadConversations());
       },
       child: Container(
-        margin: const EdgeInsets.only(bottom: 12),
-        padding: const EdgeInsets.all(16),
+        margin: EdgeInsets.only(bottom: 12.h),
+        padding: EdgeInsets.all(16.w),
         decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
+          color: AppColors.surface(context),
+          borderRadius: BorderRadius.circular(12.r),
           border: conversation.unreadCount > 0
-              ? Border.all(color: Colors.black, width: 1.5)
+              ? Border.all(color: AppColors.onSurface(context), width: 1.5)
               : null,
         ),
         child: Row(
           children: [
             Container(
-              width: 50,
-              height: 50,
+              width: 50.w,
+              height: 50.h,
               decoration: BoxDecoration(
-                color: Colors.grey[300],
+                color: AppColors.border(context),
                 shape: BoxShape.circle,
               ),
               child: conversation.shopLogo != null && conversation.shopLogo!.isNotEmpty
@@ -377,19 +379,19 @@ class _ChatListScreenState extends State<ChatListScreen> {
                       child: CachedNetworkImage(
                         imageUrl: ImageHelper.getImageUrl(conversation.shopLogo!),
                         fit: BoxFit.cover,
-                        placeholder: (context, url) => Icon(Icons.store, color: Colors.grey[600]),
+                        placeholder: (context, url) => Icon(Icons.store, color: AppColors.textMuted(context)),
                         errorWidget: (context, url, error) => Icon(
                           conversation.sellerUserType == 'rider' ? Icons.delivery_dining : Icons.store,
-                          color: Colors.grey[600],
+                          color: AppColors.textMuted(context),
                         ),
                       ),
                     )
                   : Icon(
                       conversation.sellerUserType == 'rider' ? Icons.delivery_dining : Icons.store,
-                      color: Colors.grey[600],
+                      color: AppColors.textMuted(context),
                     ),
             ),
-            const SizedBox(width: 12),
+            SizedBox(width: 12.w),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -400,7 +402,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
                         child: Text(
                           displayName,
                           style: GoogleFonts.goudyBookletter1911(
-                            fontSize: 15,
+                            fontSize: 15.sp,
                             fontWeight: conversation.unreadCount > 0
                                 ? FontWeight.w600
                                 : FontWeight.w500,
@@ -412,23 +414,23 @@ class _ChatListScreenState extends State<ChatListScreen> {
                       Text(
                         _formatTime(conversation.lastMessageAt),
                         style: GoogleFonts.goudyBookletter1911(
-                          fontSize: 12,
-                          color: Colors.grey[600],
+                          fontSize: 12.sp,
+                          color: AppColors.textMuted(context),
                         ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 4),
+                  SizedBox(height: 4.h),
                   Row(
                     children: [
                       Expanded(
                         child: Text(
                           conversation.lastMessage ?? 'No messages yet',
                           style: GoogleFonts.goudyBookletter1911(
-                            fontSize: 13,
+                            fontSize: 13.sp,
                             color: conversation.unreadCount > 0
-                                ? Colors.black87
-                                : Colors.grey[600],
+                                ? AppColors.onSurfaceStrong(context)
+                                : AppColors.textMuted(context),
                             fontWeight: conversation.unreadCount > 0
                                 ? FontWeight.w500
                                 : FontWeight.normal,
@@ -439,20 +441,20 @@ class _ChatListScreenState extends State<ChatListScreen> {
                       ),
                       if (conversation.unreadCount > 0)
                         Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 8,
-                            vertical: 2,
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 8.w,
+                            vertical: 2.h,
                           ),
                           decoration: BoxDecoration(
-                            color: Colors.black,
-                            borderRadius: BorderRadius.circular(10),
+                            color: AppColors.onSurface(context),
+                            borderRadius: BorderRadius.circular(10.r),
                           ),
                           child: Text(
                             '${conversation.unreadCount}',
                             style: GoogleFonts.playfairDisplay(
-                              fontSize: 12,
+                              fontSize: 12.sp,
                               fontWeight: FontWeight.bold,
-                              color: Colors.white,
+                              color: AppColors.surface(context),
                             ),
                           ),
                         ),
@@ -514,8 +516,8 @@ class _ChatListScreenState extends State<ChatListScreen> {
           showDialog(
             context: context,
             barrierDismissible: false,
-            builder: (context) => const Center(
-              child: CircularProgressIndicator(color: Colors.white),
+            builder: (context) => Center(
+              child: CircularProgressIndicator(color: AppColors.surface(context)),
             ),
           );
         }
@@ -582,29 +584,29 @@ class _ChatListScreenState extends State<ChatListScreen> {
         }
       },
       child: Container(
-        margin: const EdgeInsets.only(bottom: 12),
-        padding: const EdgeInsets.all(16),
+        margin: EdgeInsets.only(bottom: 12.h),
+        padding: EdgeInsets.all(16.w),
         decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: Colors.grey[200]!),
+          color: AppColors.surface(context),
+          borderRadius: BorderRadius.circular(12.r),
+          border: Border.all(color: AppColors.surfaceVariant2(context)),
         ),
         child: Row(
           children: [
             Container(
-              width: 50,
-              height: 50,
+              width: 50.w,
+              height: 50.h,
               decoration: BoxDecoration(
-                color: Colors.grey[300],
+                color: AppColors.border(context),
                 shape: BoxShape.circle,
               ),
               child: Icon(
                 Icons.store,
-                size: 24,
-                color: Colors.grey[600],
+                size: 24.r,
+                color: AppColors.textMuted(context),
               ),
             ),
-            const SizedBox(width: 12),
+            SizedBox(width: 12.w),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -612,18 +614,18 @@ class _ChatListScreenState extends State<ChatListScreen> {
                   Text(
                     shopName,
                     style: GoogleFonts.goudyBookletter1911(
-                      fontSize: 15,
+                      fontSize: 15.sp,
                       fontWeight: FontWeight.w500,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(height: 4),
+                  SizedBox(height: 4.h),
                   Text(
                     email,
                     style: GoogleFonts.goudyBookletter1911(
-                      fontSize: 12,
-                      color: Colors.grey[600],
+                      fontSize: 12.sp,
+                      color: AppColors.textMuted(context),
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -631,7 +633,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
                 ],
               ),
             ),
-            Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey[400]),
+            Icon(Icons.arrow_forward_ios, size: 16.r, color: AppColors.textFaint(context)),
           ],
         ),
       ),

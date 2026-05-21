@@ -9,6 +9,8 @@ import '../../utils/image_helper.dart';
 import '../../utils/snackbar_helper.dart';
 import 'product_detail_screen.dart';
 
+import '../../utils/app_colors.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 class OrderDetailScreen extends StatefulWidget {
   final int orderId;
 
@@ -95,18 +97,18 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: AppColors.scaffoldBackground(context),
       appBar: AppBar(
         title: Text('Order Details', style: GoogleFonts.playfairDisplay(fontWeight: FontWeight.bold)),
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
+        backgroundColor: AppColors.surface(context),
+        foregroundColor: AppColors.onSurface(context),
         elevation: 0,
       ),
       body: FutureBuilder<Order>(
         future: _orderFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator(color: Colors.black));
+            return Center(child: CircularProgressIndicator(color: AppColors.onSurface(context)));
           }
           if (snapshot.hasError) {
             return Center(
@@ -134,7 +136,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                     order.orderStatus == 'in_transit' && 
                     !order.orderReceived) 
                   _buildOrderReceivedButton(order),
-                const SizedBox(height: 20),
+                SizedBox(height: 20.h),
               ],
             ),
           );
@@ -162,51 +164,51 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
     print('========================');
     
     return Container(
-      margin: const EdgeInsets.all(16),
-      padding: const EdgeInsets.all(20),
+      margin: EdgeInsets.all(16.w),
+      padding: EdgeInsets.all(20.w),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
+        color: AppColors.surface(context),
+        borderRadius: BorderRadius.circular(12.r),
       ),
       child: Column(
         children: [
           Text(
             order.orderNumber,
             style: GoogleFonts.playfairDisplay(
-              fontSize: 18,
+              fontSize: 18.sp,
               fontWeight: FontWeight.bold,
             ),
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: 8.h),
           Text(
             'Placed order at: ${_formatDate(order.createdAt)}',
             style: GoogleFonts.goudyBookletter1911(
-              fontSize: 13,
-              color: Colors.grey[600],
+              fontSize: 13.sp,
+              color: AppColors.textMuted(context),
             ),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
           if (isCancelled)
             // Show cancelled status instead of progress bar
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
               decoration: BoxDecoration(
                 color: const Color(0xFFDC3545).withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(8.r),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(
+                  Icon(
                     Icons.cancel,
                     color: Color(0xFFDC3545),
-                    size: 20,
+                    size: 20.r,
                   ),
-                  const SizedBox(width: 8),
+                  SizedBox(width: 8.w),
                   Text(
                     'Order Cancelled',
                     style: GoogleFonts.goudyBookletter1911(
-                      fontSize: 15,
+                      fontSize: 15.sp,
                       fontWeight: FontWeight.w600,
                       color: const Color(0xFFDC3545),
                     ),
@@ -217,24 +219,24 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
           else if (isDelivered)
             // Show delivered status when buyer confirmed
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
               decoration: BoxDecoration(
                 color: const Color(0xFF28A745).withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(8.r),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(
+                  Icon(
                     Icons.check_circle,
                     color: Color(0xFF28A745),
-                    size: 20,
+                    size: 20.r,
                   ),
-                  const SizedBox(width: 8),
+                  SizedBox(width: 8.w),
                   Text(
                     'Order Delivered',
                     style: GoogleFonts.goudyBookletter1911(
-                      fontSize: 15,
+                      fontSize: 15.sp,
                       fontWeight: FontWeight.w600,
                       color: const Color(0xFF28A745),
                     ),
@@ -247,26 +249,26 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
             Column(
               children: [
                 _buildStatusTimeline(order.deliveryStatus),
-                const SizedBox(height: 12),
+                SizedBox(height: 12.h),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
                   decoration: BoxDecoration(
                     color: const Color(0xFFD4AF37).withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(8.r),
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Icon(
+                      Icon(
                         Icons.info_outline,
                         color: Color(0xFFD4AF37),
-                        size: 20,
+                        size: 20.r,
                       ),
-                      const SizedBox(width: 8),
+                      SizedBox(width: 8.w),
                       Text(
                         'Waiting for your confirmation',
                         style: GoogleFonts.goudyBookletter1911(
-                          fontSize: 13,
+                          fontSize: 13.sp,
                           fontWeight: FontWeight.w600,
                           color: const Color(0xFFD4AF37),
                         ),
@@ -295,7 +297,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
     final currentIndex = statuses.indexOf(currentStatus);
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8),
+      padding: EdgeInsets.symmetric(horizontal: 8.w),
       child: Column(
         children: [
           // Row for circles and lines
@@ -310,7 +312,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                     // Left line (or invisible spacer for first item)
                     Expanded(
                       child: Container(
-                        height: 2,
+                        height: 2.h,
                         color: index > 0 && index <= currentIndex 
                             ? _getStatusColor(statuses[index - 1])
                             : Colors.transparent,
@@ -318,22 +320,22 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                     ),
                     // Circle
                     Container(
-                      width: 32,
-                      height: 32,
+                      width: 32.w,
+                      height: 32.h,
                       decoration: BoxDecoration(
-                        color: isActive ? _getStatusColor(statuses[index]) : Colors.grey[300],
+                        color: isActive ? _getStatusColor(statuses[index]) : AppColors.border(context),
                         shape: BoxShape.circle,
                       ),
                       child: Icon(
                         Icons.check,
-                        size: 18,
-                        color: isActive ? Colors.white : Colors.grey[500],
+                        size: 18.r,
+                        color: isActive ? AppColors.surface(context) : AppColors.textFaint(context),
                       ),
                     ),
                     // Right line (or invisible spacer for last item)
                     Expanded(
                       child: Container(
-                        height: 2,
+                        height: 2.h,
                         color: !isLast && index < currentIndex 
                             ? _getStatusColor(statuses[index])
                             : Colors.transparent,
@@ -344,7 +346,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
               );
             }),
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: 8.h),
           // Row for labels - perfectly aligned below circles
           Row(
             children: List.generate(statuses.length, (index) {
@@ -354,9 +356,9 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                 child: Text(
                   _getStatusLabel(statuses[index]),
                   style: GoogleFonts.goudyBookletter1911(
-                    fontSize: 7,
+                    fontSize: 7.sp,
                     fontWeight: isActive ? FontWeight.w600 : FontWeight.normal,
-                    color: isActive ? _getStatusColor(statuses[index]) : Colors.grey[500],
+                    color: isActive ? _getStatusColor(statuses[index]) : AppColors.textFaint(context),
                     height: 1.1,
                   ),
                   textAlign: TextAlign.center,
@@ -390,11 +392,11 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
   
   Widget _buildRiderInfo(Order order) {
     return Container(
-      margin: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-      padding: const EdgeInsets.all(16),
+      margin: EdgeInsets.fromLTRB(16.w, 0.h, 16.w, 16.h),
+      padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
+        color: AppColors.surface(context),
+        borderRadius: BorderRadius.circular(12.r),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -402,11 +404,11 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
           Text(
             'Rider Information',
             style: GoogleFonts.goudyBookletter1911(
-              fontSize: 16,
+              fontSize: 16.sp,
               fontWeight: FontWeight.w600,
             ),
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12.h),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -417,17 +419,17 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                     Text(
                       order.riderName ?? 'N/A',
                       style: GoogleFonts.goudyBookletter1911(
-                        fontSize: 15,
+                        fontSize: 15.sp,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
                     if (order.riderContact != null) ...[
-                      const SizedBox(height: 4),
+                      SizedBox(height: 4.h),
                       Text(
                         order.riderContact!,
                         style: GoogleFonts.playfairDisplay(
-                          fontSize: 13,
-                          color: Colors.grey[600],
+                          fontSize: 13.sp,
+                          color: AppColors.textMuted(context),
                         ),
                       ),
                     ],
@@ -436,23 +438,23 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
               ),
               if (order.riderContact != null)
                 SizedBox(
-                  height: 36,
+                  height: 36.h,
                   child: OutlinedButton(
                     onPressed: () => _contactRider(order.riderContact!),
                     style: OutlinedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      side: const BorderSide(color: Colors.black, width: 1),
-                      backgroundColor: Colors.white,
+                      padding: EdgeInsets.symmetric(horizontal: 16.w),
+                      side: BorderSide(color: AppColors.onSurface(context), width: 1),
+                      backgroundColor: AppColors.surface(context),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(6),
+                        borderRadius: BorderRadius.circular(6.r),
                       ),
                     ),
                     child: Text(
                       'Contact',
                       style: GoogleFonts.goudyBookletter1911(
-                        fontSize: 13,
+                        fontSize: 13.sp,
                         fontWeight: FontWeight.w600,
-                        color: Colors.black,
+                        color: AppColors.onSurface(context),
                       ),
                     ),
                   ),
@@ -485,11 +487,11 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
 
   Widget _buildDeliveryInfo(Order order) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16),
-      padding: const EdgeInsets.all(16),
+      margin: EdgeInsets.symmetric(horizontal: 16.w),
+      padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
+        color: AppColors.surface(context),
+        borderRadius: BorderRadius.circular(12.r),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -497,19 +499,19 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
           Text(
             'Delivery Information',
             style: GoogleFonts.goudyBookletter1911(
-              fontSize: 16,
+              fontSize: 16.sp,
               fontWeight: FontWeight.w600,
             ),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
           if (order.recipientName != null)
             _buildInfoRow(Icons.person, 'Recipient', order.recipientName!),
           if (order.phoneNumber != null) ...[
-            const SizedBox(height: 12),
+            SizedBox(height: 12.h),
             _buildInfoRow(Icons.phone, 'Phone', order.phoneNumber!),
           ],
           if (order.fullAddress != null) ...[
-            const SizedBox(height: 12),
+            SizedBox(height: 12.h),
             _buildInfoRow(Icons.location_on, 'Address', order.fullAddress!),
           ],
         ],
@@ -521,8 +523,8 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(icon, size: 20, color: Colors.grey[600]),
-        const SizedBox(width: 12),
+        Icon(icon, size: 20.r, color: AppColors.textMuted(context)),
+        SizedBox(width: 12.w),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -530,14 +532,14 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
               Text(
                 label,
                 style: GoogleFonts.goudyBookletter1911(
-                  fontSize: 12,
-                  color: Colors.grey[600],
+                  fontSize: 12.sp,
+                  color: AppColors.textMuted(context),
                 ),
               ),
               Text(
                 value,
                 style: GoogleFonts.goudyBookletter1911(
-                  fontSize: 14,
+                  fontSize: 14.sp,
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -558,11 +560,11 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
     final showBuyAgain = isCancelled || isDelivered;
 
     return Container(
-      margin: const EdgeInsets.all(16),
-      padding: const EdgeInsets.all(16),
+      margin: EdgeInsets.all(16.w),
+      padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
+        color: AppColors.surface(context),
+        borderRadius: BorderRadius.circular(12.r),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -570,11 +572,11 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
           Text(
             'Order Items',
             style: GoogleFonts.goudyBookletter1911(
-              fontSize: 16,
+              fontSize: 16.sp,
               fontWeight: FontWeight.w600,
             ),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
           ...order.items!.map((item) => _buildOrderItem(item, isCancelled: showBuyAgain)),
         ],
       ),
@@ -583,35 +585,35 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
 
   Widget _buildOrderItem(OrderItem item, {bool isCancelled = false}) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
+      padding: EdgeInsets.only(bottom: 12.h),
       child: Row(
         children: [
           Container(
-            width: 60,
-            height: 60,
+            width: 60.w,
+            height: 60.h,
             decoration: BoxDecoration(
               color: const Color(0xFFD3BD9B),
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(8.r),
             ),
             child: item.primaryImage != null && item.primaryImage!.isNotEmpty
                 ? ClipRRect(
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(8.r),
                     child: CachedNetworkImage(
                       imageUrl: ImageHelper.getImageUrl(item.primaryImage!),
                       fit: BoxFit.cover,
-                      placeholder: (context, url) => const Center(
-                        child: Icon(Icons.shopping_bag, color: Colors.white),
+                      placeholder: (context, url) => Center(
+                        child: Icon(Icons.shopping_bag, color: AppColors.surface(context)),
                       ),
-                      errorWidget: (context, url, error) => const Center(
-                        child: Icon(Icons.shopping_bag, color: Colors.white),
+                      errorWidget: (context, url, error) => Center(
+                        child: Icon(Icons.shopping_bag, color: AppColors.surface(context)),
                       ),
                     ),
                   )
-                : const Center(
-                    child: Icon(Icons.shopping_bag, color: Colors.white),
+                : Center(
+                    child: Icon(Icons.shopping_bag, color: AppColors.surface(context)),
                   ),
           ),
-          const SizedBox(width: 12),
+          SizedBox(width: 12.w),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -619,13 +621,13 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                 Text(
                   item.productName,
                   style: GoogleFonts.goudyBookletter1911(
-                    fontSize: 14,
+                    fontSize: 14.sp,
                     fontWeight: FontWeight.w500,
                   ),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
-                const SizedBox(height: 4),
+                SizedBox(height: 4.h),
                 if (item.variantColor != null || item.variantSize != null)
                   Text(
                     [
@@ -633,23 +635,23 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                       if (item.variantSize != null) item.variantSize,
                     ].join(' • '),
                     style: GoogleFonts.goudyBookletter1911(
-                      fontSize: 11,
-                      color: Colors.grey[600],
+                      fontSize: 11.sp,
+                      color: AppColors.textMuted(context),
                     ),
                   ),
-                const SizedBox(height: 4),
+                SizedBox(height: 4.h),
                 Text(
                   'x${item.quantity}',
                   style: GoogleFonts.playfairDisplay(
-                    fontSize: 12,
+                    fontSize: 12.sp,
                     fontWeight: FontWeight.w600,
-                    color: Colors.grey[600],
+                    color: AppColors.textMuted(context),
                   ),
                 ),
                 if (isCancelled) ...[
-                  const SizedBox(height: 8),
+                  SizedBox(height: 8.h),
                   SizedBox(
-                    height: 32,
+                    height: 32.h,
                     child: OutlinedButton(
                       onPressed: () {
                         Navigator.push(
@@ -660,19 +662,19 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                         );
                       },
                       style: OutlinedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(horizontal: 12),
-                        side: const BorderSide(color: Colors.black, width: 1),
-                        backgroundColor: Colors.white,
+                        padding: EdgeInsets.symmetric(horizontal: 12.w),
+                        side: BorderSide(color: AppColors.onSurface(context), width: 1),
+                        backgroundColor: AppColors.surface(context),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(6),
+                          borderRadius: BorderRadius.circular(6.r),
                         ),
                       ),
                       child: Text(
                         'Buy Again',
                         style: GoogleFonts.goudyBookletter1911(
-                          fontSize: 12,
+                          fontSize: 12.sp,
                           fontWeight: FontWeight.w600,
-                          color: Colors.black,
+                          color: AppColors.onSurface(context),
                         ),
                       ),
                     ),
@@ -684,7 +686,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
           Text(
             '₱${item.subtotal.toStringAsFixed(2)}',
             style: GoogleFonts.playfairDisplay(
-              fontSize: 14,
+              fontSize: 14.sp,
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -695,44 +697,44 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
 
   Widget _buildPriceSummary(Order order) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16),
-      padding: const EdgeInsets.all(16),
+      margin: EdgeInsets.symmetric(horizontal: 16.w),
+      padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
+        color: AppColors.surface(context),
+        borderRadius: BorderRadius.circular(12.r),
       ),
       child: Column(
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('Subtotal', style: GoogleFonts.goudyBookletter1911(fontSize: 14)),
+              Text('Subtotal', style: GoogleFonts.goudyBookletter1911(fontSize: 14.sp)),
               Text(
                 '₱${order.subtotal.toStringAsFixed(2)}',
-                style: GoogleFonts.playfairDisplay(fontSize: 14, fontWeight: FontWeight.w600),
+                style: GoogleFonts.playfairDisplay(fontSize: 14.sp, fontWeight: FontWeight.w600),
               ),
             ],
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: 8.h),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('Shipping Fee', style: GoogleFonts.goudyBookletter1911(fontSize: 14)),
+              Text('Shipping Fee', style: GoogleFonts.goudyBookletter1911(fontSize: 14.sp)),
               Text(
                 '₱${order.shippingFee.toStringAsFixed(2)}',
-                style: GoogleFonts.playfairDisplay(fontSize: 14, fontWeight: FontWeight.w600),
+                style: GoogleFonts.playfairDisplay(fontSize: 14.sp, fontWeight: FontWeight.w600),
               ),
             ],
           ),
           if (order.discountAmount > 0) ...[
-            const SizedBox(height: 8),
+            SizedBox(height: 8.h),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('Discount', style: GoogleFonts.goudyBookletter1911(fontSize: 14, color: Colors.green[700])),
+                Text('Discount', style: GoogleFonts.goudyBookletter1911(fontSize: 14.sp, color: Colors.green[700])),
                 Text(
                   '-₱${order.discountAmount.toStringAsFixed(2)}',
-                  style: GoogleFonts.playfairDisplay(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.green[700]),
+                  style: GoogleFonts.playfairDisplay(fontSize: 14.sp, fontWeight: FontWeight.w600, color: Colors.green[700]),
                 ),
               ],
             ),
@@ -744,14 +746,14 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
               Text(
                 'Total',
                 style: GoogleFonts.goudyBookletter1911(
-                  fontSize: 16,
+                  fontSize: 16.sp,
                   fontWeight: FontWeight.bold,
                 ),
               ),
               Text(
                 '₱${order.totalAmount.toStringAsFixed(2)}',
                 style: GoogleFonts.playfairDisplay(
-                  fontSize: 18,
+                  fontSize: 18.sp,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -764,21 +766,21 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
 
   Widget _buildCancelButton(Order order) {
     return Container(
-      margin: const EdgeInsets.all(16),
+      margin: EdgeInsets.all(16.w),
       width: double.infinity,
       child: OutlinedButton(
         onPressed: () => _cancelOrder(order),
         style: OutlinedButton.styleFrom(
-          padding: const EdgeInsets.symmetric(vertical: 16),
+          padding: EdgeInsets.symmetric(vertical: 16.h),
           side: const BorderSide(color: Colors.red),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(8.r),
           ),
         ),
         child: Text(
           'Cancel Order',
           style: GoogleFonts.goudyBookletter1911(
-            fontSize: 16,
+            fontSize: 16.sp,
             fontWeight: FontWeight.w600,
             color: Colors.red,
           ),
@@ -789,22 +791,22 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
 
   Widget _buildOrderReceivedButton(Order order) {
     return Container(
-      margin: const EdgeInsets.all(16),
+      margin: EdgeInsets.all(16.w),
       width: double.infinity,
       child: ElevatedButton(
         onPressed: () => _markOrderReceived(order),
         style: ElevatedButton.styleFrom(
-          padding: const EdgeInsets.symmetric(vertical: 16),
+          padding: EdgeInsets.symmetric(vertical: 16.h),
           backgroundColor: const Color(0xFFD4AF37),
-          foregroundColor: Colors.white,
+          foregroundColor: AppColors.surface(context),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(8.r),
           ),
         ),
         child: Text(
           'Order Received',
           style: GoogleFonts.goudyBookletter1911(
-            fontSize: 16,
+            fontSize: 16.sp,
             fontWeight: FontWeight.w600,
           ),
         ),
@@ -816,7 +818,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
     final confirm = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.r)),
         title: Text('Confirm Order Received', style: GoogleFonts.goudyBookletter1911(fontWeight: FontWeight.w600)),
         content: Text(
           'Have you received your order in good condition?',
@@ -826,7 +828,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
           TextButton(
             onPressed: () => Navigator.pop(context, false),
             style: TextButton.styleFrom(
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.r)),
             ),
             child: Text('Not Yet', style: GoogleFonts.goudyBookletter1911()),
           ),
@@ -834,7 +836,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
             onPressed: () => Navigator.pop(context, true),
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFFD4AF37),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.r)),
             ),
             child: Text('Yes, Received', style: GoogleFonts.goudyBookletter1911()),
           ),

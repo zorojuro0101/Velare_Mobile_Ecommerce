@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -14,6 +15,8 @@ import '../../utils/snackbar_helper.dart';
 import 'product_detail_screen.dart';
 import 'chat_conversation_screen.dart';
 
+import '../../utils/app_colors.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 class ViewShopScreen extends StatefulWidget {
   final String sellerId;
   final String shopName;
@@ -252,15 +255,15 @@ class _ViewShopScreenState extends State<ViewShopScreen> with SingleTickerProvid
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: AppColors.scaffoldBackground(context),
       body: CustomScrollView(
         slivers: [
           _buildAppBar(),
           SliverToBoxAdapter(child: _buildShopHeader()),
           SliverToBoxAdapter(child: _buildTabs()),
           _isLoading
-              ? const SliverFillRemaining(
-                  child: Center(child: CircularProgressIndicator(color: Colors.black)),
+              ? SliverFillRemaining(
+                  child: Center(child: CircularProgressIndicator(color: AppColors.onSurface(context))),
                 )
               : _buildTabContent(),
         ],
@@ -270,8 +273,8 @@ class _ViewShopScreenState extends State<ViewShopScreen> with SingleTickerProvid
 
   Widget _buildAppBar() {
     return SliverAppBar(
-      backgroundColor: Colors.white,
-      foregroundColor: Colors.black,
+      backgroundColor: AppColors.surface(context),
+      foregroundColor: AppColors.onSurface(context),
       elevation: 0,
       pinned: true,
       title: Text(
@@ -281,12 +284,12 @@ class _ViewShopScreenState extends State<ViewShopScreen> with SingleTickerProvid
       actions: [
         IconButton(
           onPressed: _showReportModal,
-          icon: const Icon(Icons.report_outlined, size: 22),
+          icon: Icon(Icons.report_outlined, size: 22.r),
           style: IconButton.styleFrom(
-            foregroundColor: Colors.black,
+            foregroundColor: AppColors.onSurface(context),
           ),
         ),
-        const SizedBox(width: 8),
+        SizedBox(width: 8.w),
       ],
     );
   }
@@ -403,9 +406,9 @@ class _ViewShopScreenState extends State<ViewShopScreen> with SingleTickerProvid
       barrierDismissible: false,
       builder: (dialogContext) => StatefulBuilder(
         builder: (context, setState) => AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-          contentPadding: const EdgeInsets.all(24),
-          insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.r)),
+          contentPadding: EdgeInsets.all(24.w),
+          insetPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 24.h),
           title: Text(
             'Report Seller',
             style: GoogleFonts.playfairDisplay(fontWeight: FontWeight.bold),
@@ -419,21 +422,21 @@ class _ViewShopScreenState extends State<ViewShopScreen> with SingleTickerProvid
                 children: [
                 if (errorMessage != null) ...[
                   Container(
-                    padding: const EdgeInsets.all(12),
+                    padding: EdgeInsets.all(12.w),
                     decoration: BoxDecoration(
                       color: Colors.red[50],
                       border: Border.all(color: Colors.red),
-                      borderRadius: BorderRadius.circular(5),
+                      borderRadius: BorderRadius.circular(5.r),
                     ),
                     child: Row(
                       children: [
-                        const Icon(Icons.error_outline, color: Colors.red, size: 20),
-                        const SizedBox(width: 8),
+                        Icon(Icons.error_outline, color: Colors.red, size: 20.r),
+                        SizedBox(width: 8.w),
                         Expanded(
                           child: Text(
                             errorMessage!,
                             style: GoogleFonts.goudyBookletter1911(
-                              fontSize: 13,
+                              fontSize: 13.sp,
                               color: Colors.red[900],
                             ),
                           ),
@@ -441,48 +444,48 @@ class _ViewShopScreenState extends State<ViewShopScreen> with SingleTickerProvid
                       ],
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16.h),
                 ],
                 Text(
                   'Shop: ${widget.shopName}',
                   style: GoogleFonts.goudyBookletter1911(
-                    fontSize: 14,
+                    fontSize: 14.sp,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                const SizedBox(height: 16),
+                SizedBox(height: 16.h),
                 Text(
                   'Category',
                   style: GoogleFonts.goudyBookletter1911(
-                    fontSize: 13,
+                    fontSize: 13.sp,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                const SizedBox(height: 8),
+                SizedBox(height: 8.h),
                 DropdownButtonFormField<String>(
                   value: selectedCategory,
                   isExpanded: true,
                   menuMaxHeight: 300,
                   decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    contentPadding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5),
-                      borderSide: const BorderSide(color: Colors.black),
+                      borderRadius: BorderRadius.circular(5.r),
+                      borderSide: BorderSide(color: AppColors.onSurface(context)),
                     ),
                     enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5),
-                      borderSide: const BorderSide(color: Colors.black),
+                      borderRadius: BorderRadius.circular(5.r),
+                      borderSide: BorderSide(color: AppColors.onSurface(context)),
                     ),
                     focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5),
-                      borderSide: const BorderSide(color: Colors.black, width: 2),
+                      borderRadius: BorderRadius.circular(5.r),
+                      borderSide: BorderSide(color: AppColors.onSurface(context), width: 2),
                     ),
                   ),
-                  hint: Text('Select category', style: GoogleFonts.goudyBookletter1911(fontSize: 13)),
+                  hint: Text('Select category', style: GoogleFonts.goudyBookletter1911(fontSize: 13.sp)),
                   items: categories.map((cat) {
                     return DropdownMenuItem<String>(
                       value: cat['value'],
-                      child: Text(cat['label']!, style: GoogleFonts.goudyBookletter1911(fontSize: 13)),
+                      child: Text(cat['label']!, style: GoogleFonts.goudyBookletter1911(fontSize: 13.sp)),
                     );
                   }).toList(),
                   onChanged: (value) {
@@ -493,36 +496,36 @@ class _ViewShopScreenState extends State<ViewShopScreen> with SingleTickerProvid
                     });
                   },
                 ),
-                const SizedBox(height: 16),
+                SizedBox(height: 16.h),
                 Text(
                   'Reason',
                   style: GoogleFonts.goudyBookletter1911(
-                    fontSize: 13,
+                    fontSize: 13.sp,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                const SizedBox(height: 8),
+                SizedBox(height: 8.h),
                 TextField(
                   controller: reasonController,
                   maxLines: 4,
                   decoration: InputDecoration(
                     hintText: 'Describe the issue...',
-                    hintStyle: GoogleFonts.goudyBookletter1911(fontSize: 13),
-                    contentPadding: const EdgeInsets.all(12),
+                    hintStyle: GoogleFonts.goudyBookletter1911(fontSize: 13.sp),
+                    contentPadding: EdgeInsets.all(12.w),
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5),
-                      borderSide: const BorderSide(color: Colors.black),
+                      borderRadius: BorderRadius.circular(5.r),
+                      borderSide: BorderSide(color: AppColors.onSurface(context)),
                     ),
                     enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5),
-                      borderSide: const BorderSide(color: Colors.black),
+                      borderRadius: BorderRadius.circular(5.r),
+                      borderSide: BorderSide(color: AppColors.onSurface(context)),
                     ),
                     focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5),
-                      borderSide: const BorderSide(color: Colors.black, width: 2),
+                      borderRadius: BorderRadius.circular(5.r),
+                      borderSide: BorderSide(color: AppColors.onSurface(context), width: 2),
                     ),
                   ),
-                  style: GoogleFonts.goudyBookletter1911(fontSize: 13),
+                  style: GoogleFonts.goudyBookletter1911(fontSize: 13.sp),
                   onChanged: (value) {
                     if (errorMessage != null) {
                       setState(() {
@@ -532,15 +535,15 @@ class _ViewShopScreenState extends State<ViewShopScreen> with SingleTickerProvid
                     }
                   },
                 ),
-                const SizedBox(height: 16),
+                SizedBox(height: 16.h),
                 Text(
                   'Evidence (Optional)',
                   style: GoogleFonts.goudyBookletter1911(
-                    fontSize: 13,
+                    fontSize: 13.sp,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                const SizedBox(height: 8),
+                SizedBox(height: 8.h),
                 GestureDetector(
                   onTap: () {
                     if (selectedImage != null) {
@@ -554,20 +557,20 @@ class _ViewShopScreenState extends State<ViewShopScreen> with SingleTickerProvid
                     }
                   },
                   child: Container(
-                    height: 120,
+                    height: 120.h,
                     decoration: BoxDecoration(
-                      color: Colors.grey[100],
+                      color: AppColors.surfaceVariant(context),
                       border: Border.all(
-                        color: selectedImage != null ? Colors.green : Colors.grey[300]!,
+                        color: selectedImage != null ? Colors.green : AppColors.border(context),
                         width: 1.5,
                       ),
-                      borderRadius: BorderRadius.circular(5),
+                      borderRadius: BorderRadius.circular(5.r),
                     ),
                     child: selectedImage != null
                         ? Stack(
                             children: [
                               ClipRRect(
-                                borderRadius: BorderRadius.circular(4),
+                                borderRadius: BorderRadius.circular(4.r),
                                 child: SizedBox(
                                   width: double.infinity,
                                   height: double.infinity,
@@ -581,7 +584,7 @@ class _ViewShopScreenState extends State<ViewShopScreen> with SingleTickerProvid
                                             fit: BoxFit.cover,
                                             errorBuilder: (context, error, stackTrace) {
                                               return Container(
-                                                color: Colors.grey[200],
+                                                color: AppColors.surfaceVariant2(context),
                                                 child: const Center(
                                                   child: Icon(Icons.error, color: Colors.red),
                                                 ),
@@ -590,7 +593,7 @@ class _ViewShopScreenState extends State<ViewShopScreen> with SingleTickerProvid
                                           );
                                         } else {
                                           return Container(
-                                            color: Colors.grey[200],
+                                            color: AppColors.surfaceVariant2(context),
                                             child: const Center(
                                               child: Icon(Icons.error, color: Colors.red),
                                             ),
@@ -598,11 +601,11 @@ class _ViewShopScreenState extends State<ViewShopScreen> with SingleTickerProvid
                                         }
                                       }
                                       return Container(
-                                        color: Colors.grey[200],
-                                        child: const Center(
+                                        color: AppColors.surfaceVariant2(context),
+                                        child: Center(
                                           child: SizedBox(
-                                            width: 20,
-                                            height: 20,
+                                            width: 20.w,
+                                            height: 20.h,
                                             child: CircularProgressIndicator(strokeWidth: 2),
                                           ),
                                         ),
@@ -615,35 +618,35 @@ class _ViewShopScreenState extends State<ViewShopScreen> with SingleTickerProvid
                                 top: 8,
                                 right: 8,
                                 child: Container(
-                                  padding: const EdgeInsets.all(4),
+                                  padding: EdgeInsets.all(4.w),
                                   decoration: const BoxDecoration(
                                     color: Colors.red,
                                     shape: BoxShape.circle,
                                   ),
-                                  child: const Icon(
+                                  child: Icon(
                                     Icons.close,
-                                    color: Colors.white,
-                                    size: 16,
+                                    color: AppColors.surface(context),
+                                    size: 16.r,
                                   ),
                                 ),
                               ),
                             ],
                           )
-                        : const Center(
+                        : Center(
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Icon(
                                   Icons.add_photo_alternate_outlined,
                                   color: Colors.grey,
-                                  size: 40,
+                                  size: 40.r,
                                 ),
-                                SizedBox(height: 8),
+                                SizedBox(height: 8.h),
                                 Text(
                                   'Upload Evidence',
                                   style: TextStyle(
                                     color: Colors.grey,
-                                    fontSize: 13,
+                                    fontSize: 13.sp,
                                   ),
                                 ),
                               ],
@@ -659,9 +662,9 @@ class _ViewShopScreenState extends State<ViewShopScreen> with SingleTickerProvid
             TextButton(
               onPressed: isSubmitting ? null : () => Navigator.pop(dialogContext),
               style: TextButton.styleFrom(
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.r)),
               ),
-              child: Text('Cancel', style: GoogleFonts.goudyBookletter1911(color: Colors.black)),
+              child: Text('Cancel', style: GoogleFonts.goudyBookletter1911(color: AppColors.onSurface(context))),
             ),
             ElevatedButton(
               onPressed: isSubmitting ? null : () async {
@@ -737,15 +740,15 @@ class _ViewShopScreenState extends State<ViewShopScreen> with SingleTickerProvid
                 }
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.black,
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                backgroundColor: AppColors.onSurface(context),
+                foregroundColor: AppColors.surface(context),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.r)),
               ),
               child: isSubmitting
-                  ? const SizedBox(
-                      width: 16,
-                      height: 16,
-                      child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                  ? SizedBox(
+                      width: 16.w,
+                      height: 16.h,
+                      child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.surface(context)),
                     )
                   : Text('Submit Report', style: GoogleFonts.goudyBookletter1911()),
             ),
@@ -767,16 +770,16 @@ class _ViewShopScreenState extends State<ViewShopScreen> with SingleTickerProvid
     print('Shop rating: $_shopRating, Review count: $_reviewCount');
 
     return Container(
-      padding: const EdgeInsets.all(24),
-      color: Colors.white,
+      padding: EdgeInsets.all(24.w),
+      color: AppColors.surface(context),
       child: Column(
         children: [
           Container(
-            width: 80,
-            height: 80,
+            width: 80.w,
+            height: 80.h,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              border: Border.all(color: Colors.grey[300]!, width: 2),
+              border: Border.all(color: AppColors.border(context), width: 2),
             ),
             child: ClipOval(
               child: _shopLogo != null && _shopLogo!.isNotEmpty
@@ -786,14 +789,14 @@ class _ViewShopScreenState extends State<ViewShopScreen> with SingleTickerProvid
                         if (imageUrl.isEmpty) {
                           return Container(
                             color: const Color(0xFFD3BD9B),
-                            child: const Icon(Icons.store, size: 40, color: Colors.white),
+                            child: Icon(Icons.store, size: 40.r, color: AppColors.alwaysWhite),
                           );
                         }
                         return CachedNetworkImage(
                           imageUrl: imageUrl,
                           fit: BoxFit.cover,
                           placeholder: (context, url) => Container(
-                            color: Colors.grey[200],
+                            color: AppColors.surfaceVariant2(context),
                             child: const Center(
                               child: CircularProgressIndicator(strokeWidth: 2),
                             ),
@@ -802,7 +805,7 @@ class _ViewShopScreenState extends State<ViewShopScreen> with SingleTickerProvid
                             print('Error loading shop logo: $error');
                             return Container(
                               color: const Color(0xFFD3BD9B),
-                              child: const Icon(Icons.store, size: 40, color: Colors.white),
+                              child: Icon(Icons.store, size: 40.r, color: AppColors.alwaysWhite),
                             );
                           },
                         );
@@ -810,30 +813,30 @@ class _ViewShopScreenState extends State<ViewShopScreen> with SingleTickerProvid
                     )
                   : Container(
                       color: const Color(0xFFD3BD9B),
-                      child: const Icon(Icons.store, size: 40, color: Colors.white),
+                      child: Icon(Icons.store, size: 40.r, color: AppColors.alwaysWhite),
                     ),
             ),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
           Text(
             widget.shopName,
             style: GoogleFonts.playfairDisplay(
-              fontSize: 24,
+              fontSize: 24.sp,
               fontWeight: FontWeight.bold,
             ),
           ),
           if (_shopDescription != null && _shopDescription!.isNotEmpty) ...[
-            const SizedBox(height: 8),
+            SizedBox(height: 8.h),
             Text(
               _shopDescription!,
               style: GoogleFonts.goudyBookletter1911(
-                fontSize: 14,
-                color: Colors.grey[600],
+                fontSize: 14.sp,
+                color: AppColors.textMuted(context),
               ),
               textAlign: TextAlign.center,
             ),
           ],
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
           // Shop stats with dividers (no outer border)
           IntrinsicHeight(
             child: Row(
@@ -845,23 +848,23 @@ class _ViewShopScreenState extends State<ViewShopScreen> with SingleTickerProvid
                   label: 'PRODUCTS',
                 ),
                 Container(
-                  width: 1,
-                  height: 40,
-                  margin: const EdgeInsets.symmetric(horizontal: 16),
-                  color: Colors.grey[300],
+                  width: 1.w,
+                  height: 40.h,
+                  margin: EdgeInsets.symmetric(horizontal: 16.w),
+                  color: AppColors.border(context),
                 ),
                 // Rating
                 _buildStatItem(
                   value: _shopRating > 0 ? _shopRating.toStringAsFixed(1) : '0.0',
                   label: 'RATING',
                   icon: Icons.star,
-                  iconColor: _shopRating > 0 ? Colors.amber[700] : Colors.grey[400],
+                  iconColor: _shopRating > 0 ? Colors.amber[700] : AppColors.textFaint(context),
                 ),
                 Container(
-                  width: 1,
-                  height: 40,
-                  margin: const EdgeInsets.symmetric(horizontal: 16),
-                  color: Colors.grey[300],
+                  width: 1.w,
+                  height: 40.h,
+                  margin: EdgeInsets.symmetric(horizontal: 16.w),
+                  color: AppColors.border(context),
                 ),
                 // Reviews
                 _buildStatItem(
@@ -869,10 +872,10 @@ class _ViewShopScreenState extends State<ViewShopScreen> with SingleTickerProvid
                   label: 'REVIEWS',
                 ),
                 Container(
-                  width: 1,
-                  height: 40,
-                  margin: const EdgeInsets.symmetric(horizontal: 16),
-                  color: Colors.grey[300],
+                  width: 1.w,
+                  height: 40.h,
+                  margin: EdgeInsets.symmetric(horizontal: 16.w),
+                  color: AppColors.border(context),
                 ),
                 // Joined date
                 _buildStatItem(
@@ -882,19 +885,19 @@ class _ViewShopScreenState extends State<ViewShopScreen> with SingleTickerProvid
               ],
             ),
           ),
-          const SizedBox(height: 20),
+          SizedBox(height: 20.h),
           SizedBox(
-            width: 200,
+            width: 200.w,
             child: OutlinedButton.icon(
               onPressed: _chatWithSeller,
-              icon: const Icon(Icons.chat_bubble_outline, size: 18),
-              label: Text('Chat with Seller', style: GoogleFonts.goudyBookletter1911(fontSize: 14)),
+              icon: Icon(Icons.chat_bubble_outline, size: 18.r),
+              label: Text('Chat with Seller', style: GoogleFonts.goudyBookletter1911(fontSize: 14.sp)),
               style: OutlinedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 10),
-                side: const BorderSide(color: Colors.black, width: 1.5),
-                foregroundColor: Colors.black,
+                padding: EdgeInsets.symmetric(vertical: 10.h),
+                side: BorderSide(color: AppColors.onSurface(context), width: 1.5),
+                foregroundColor: AppColors.onSurface(context),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(4),
+                  borderRadius: BorderRadius.circular(4.r),
                 ),
               ),
             ),
@@ -927,18 +930,18 @@ class _ViewShopScreenState extends State<ViewShopScreen> with SingleTickerProvid
               ),
             ),
             if (icon != null) ...[
-              const SizedBox(width: 4),
-              Icon(icon, size: 16, color: iconColor ?? Colors.grey[600]),
+              SizedBox(width: 4.w),
+              Icon(icon, size: 16.r, color: iconColor ?? AppColors.textMuted(context)),
             ],
           ],
         ),
-        const SizedBox(height: 2),
+        SizedBox(height: 2.h),
         Text(
           label,
           style: GoogleFonts.goudyBookletter1911(
-            fontSize: 11,
-            color: Colors.grey[600],
-            letterSpacing: 0.5,
+            fontSize: 11.sp,
+            color: AppColors.textMuted(context),
+            letterSpacing: 0.5.sp,
           ),
         ),
       ],
@@ -947,40 +950,40 @@ class _ViewShopScreenState extends State<ViewShopScreen> with SingleTickerProvid
 
   Widget _buildTabs() {
     return Container(
-      color: Colors.white,
+      color: AppColors.surface(context),
       child: Column(
         children: [
           Container(
-            height: 1,
-            color: Colors.grey[200],
+            height: 1.h,
+            color: AppColors.surfaceVariant2(context),
           ),
           Row(
             children: [
               // Back button for category view
               if (_selectedTabIndex == 3 && _selectedCategory != null)
                 IconButton(
-                  icon: const Icon(Icons.arrow_back, size: 20),
+                  icon: Icon(Icons.arrow_back, size: 20.r),
                   onPressed: () {
                     setState(() {
                       _selectedCategory = null;
                     });
                   },
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  padding: EdgeInsets.symmetric(horizontal: 8.w),
                 ),
               Expanded(
                 child: TabBar(
                   controller: _tabController,
-                  labelColor: Colors.black,
-                  unselectedLabelColor: Colors.grey[600],
+                  labelColor: AppColors.onSurface(context),
+                  unselectedLabelColor: AppColors.textMuted(context),
                   labelStyle: GoogleFonts.goudyBookletter1911(
-                    fontSize: 15,
+                    fontSize: 15.sp,
                     fontWeight: FontWeight.w600,
                   ),
                   unselectedLabelStyle: GoogleFonts.goudyBookletter1911(
-                    fontSize: 15,
+                    fontSize: 15.sp,
                     fontWeight: FontWeight.normal,
                   ),
-                  indicatorColor: Colors.black,
+                  indicatorColor: AppColors.onSurface(context),
                   indicatorWeight: 2,
                   tabs: const [
                     Tab(text: 'All'),
@@ -996,17 +999,17 @@ class _ViewShopScreenState extends State<ViewShopScreen> with SingleTickerProvid
           if (_selectedTabIndex == 3 && _selectedCategory != null)
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
               decoration: BoxDecoration(
-                color: Colors.grey[100],
+                color: AppColors.surfaceVariant(context),
                 border: Border(
-                  top: BorderSide(color: Colors.grey[200]!),
+                  top: BorderSide(color: AppColors.surfaceVariant2(context)),
                 ),
               ),
               child: Text(
                 _selectedCategory!,
                 style: GoogleFonts.goudyBookletter1911(
-                  fontSize: 16,
+                  fontSize: 16.sp,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -1048,18 +1051,13 @@ class _ViewShopScreenState extends State<ViewShopScreen> with SingleTickerProvid
     }
 
     return SliverPadding(
-      padding: const EdgeInsets.all(16),
-      sliver: SliverGrid(
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          childAspectRatio: 0.65,
-          crossAxisSpacing: 12,
-          mainAxisSpacing: 12,
-        ),
-        delegate: SliverChildBuilderDelegate(
-          (context, index) => _buildProductCard(filteredProducts[index]),
-          childCount: filteredProducts.length,
-        ),
+      padding: EdgeInsets.all(16.w),
+      sliver: SliverMasonryGrid.count(
+        crossAxisCount: 2,
+        crossAxisSpacing: 12.w,
+        mainAxisSpacing: 12.h,
+        childCount: filteredProducts.length,
+        itemBuilder: (context, index) => _buildProductCard(filteredProducts[index]),
       ),
     );
   }
@@ -1071,11 +1069,11 @@ class _ViewShopScreenState extends State<ViewShopScreen> with SingleTickerProvid
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.category_outlined, size: 100, color: Colors.grey[400]),
-              const SizedBox(height: 16),
+              Icon(Icons.category_outlined, size: 100.r, color: AppColors.textFaint(context)),
+              SizedBox(height: 16.h),
               Text(
                 'No categories available',
-                style: GoogleFonts.goudyBookletter1911(fontSize: 18, color: Colors.grey[600]),
+                style: GoogleFonts.goudyBookletter1911(fontSize: 18.sp, color: AppColors.textMuted(context)),
               ),
             ],
           ),
@@ -1084,7 +1082,7 @@ class _ViewShopScreenState extends State<ViewShopScreen> with SingleTickerProvid
     }
 
     return SliverPadding(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16.w),
       sliver: SliverList(
         delegate: SliverChildBuilderDelegate(
           (context, index) {
@@ -1092,10 +1090,10 @@ class _ViewShopScreenState extends State<ViewShopScreen> with SingleTickerProvid
             final productCount = _products.where((p) => p.category == category).length;
             
             return Container(
-              margin: const EdgeInsets.only(bottom: 12),
+              margin: EdgeInsets.only(bottom: 12.h),
               decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12),
+                color: AppColors.surface(context),
+                borderRadius: BorderRadius.circular(12.r),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withValues(alpha: 0.05),
@@ -1105,22 +1103,22 @@ class _ViewShopScreenState extends State<ViewShopScreen> with SingleTickerProvid
                 ],
               ),
               child: ListTile(
-                contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                contentPadding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
                 title: Text(
                   category,
                   style: GoogleFonts.goudyBookletter1911(
-                    fontSize: 16,
+                    fontSize: 16.sp,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
                 subtitle: Text(
                   '$productCount ${productCount == 1 ? 'product' : 'products'}',
                   style: GoogleFonts.goudyBookletter1911(
-                    fontSize: 13,
-                    color: Colors.grey[600],
+                    fontSize: 13.sp,
+                    color: AppColors.textMuted(context),
                   ),
                 ),
-                trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                trailing: Icon(Icons.arrow_forward_ios, size: 16.r),
                 onTap: () {
                   setState(() {
                     _selectedCategory = category;
@@ -1141,11 +1139,11 @@ class _ViewShopScreenState extends State<ViewShopScreen> with SingleTickerProvid
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.inventory_2_outlined, size: 100, color: Colors.grey[400]),
-            const SizedBox(height: 16),
+            Icon(Icons.inventory_2_outlined, size: 100.r, color: AppColors.textFaint(context)),
+            SizedBox(height: 16.h),
             Text(
               'No products available',
-              style: GoogleFonts.goudyBookletter1911(fontSize: 18, color: Colors.grey[600]),
+              style: GoogleFonts.goudyBookletter1911(fontSize: 18.sp, color: AppColors.textMuted(context)),
             ),
           ],
         ),
@@ -1169,8 +1167,8 @@ class _ViewShopScreenState extends State<ViewShopScreen> with SingleTickerProvid
       },
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
+          color: AppColors.surface(context),
+          borderRadius: BorderRadius.circular(12.r),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: 0.05),
@@ -1183,7 +1181,7 @@ class _ViewShopScreenState extends State<ViewShopScreen> with SingleTickerProvid
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ClipRRect(
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+              borderRadius: BorderRadius.vertical(top: Radius.circular(12.r)),
               child: AspectRatio(
                 aspectRatio: 1,
                 child: imageUrl.isNotEmpty
@@ -1191,38 +1189,38 @@ class _ViewShopScreenState extends State<ViewShopScreen> with SingleTickerProvid
                         imageUrl: imageUrl,
                         fit: BoxFit.cover,
                         placeholder: (context, url) => Container(
-                          color: Colors.grey[200],
+                          color: AppColors.surfaceVariant2(context),
                           child: const Center(child: CircularProgressIndicator(strokeWidth: 2)),
                         ),
                         errorWidget: (context, url, error) => Container(
-                          color: Colors.grey[200],
-                          child: const Icon(Icons.image_not_supported, size: 40, color: Colors.grey),
+                          color: AppColors.surfaceVariant2(context),
+                          child: Icon(Icons.image_not_supported, size: 40.r, color: Colors.grey),
                         ),
                       )
                     : Container(
-                        color: Colors.grey[200],
-                        child: const Icon(Icons.image_not_supported, size: 40, color: Colors.grey),
+                        color: AppColors.surfaceVariant2(context),
+                        child: Icon(Icons.image_not_supported, size: 40.r, color: Colors.grey),
                       ),
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(12),
+              padding: EdgeInsets.all(12.w),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     product.productName,
-                    style: GoogleFonts.goudyBookletter1911(fontSize: 13, fontWeight: FontWeight.w500),
+                    style: GoogleFonts.goudyBookletter1911(fontSize: 13.sp, fontWeight: FontWeight.w500),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(height: 4),
+                  SizedBox(height: 4.h),
                   Text(
                     '₱${product.price.toStringAsFixed(2)}',
                     style: GoogleFonts.playfairDisplay(
-                      fontSize: 16,
+                      fontSize: 16.sp,
                       fontWeight: FontWeight.bold,
-                      color: Colors.black87,
+                      color: AppColors.onSurfaceStrong(context),
                     ),
                   ),
                 ],

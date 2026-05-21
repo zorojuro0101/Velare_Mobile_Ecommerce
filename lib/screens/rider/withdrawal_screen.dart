@@ -6,6 +6,8 @@ import '../../models/withdrawal_model.dart';
 import '../../utils/snackbar_helper.dart';
 import 'withdrawal_history_screen.dart';
 
+import '../../utils/app_colors.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 class WithdrawalScreen extends StatefulWidget {
   const WithdrawalScreen({super.key});
 
@@ -105,18 +107,18 @@ class _WithdrawalScreenState extends State<WithdrawalScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: AppColors.scaffoldBackground(context),
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.surface(context),
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          icon: Icon(Icons.arrow_back, color: AppColors.onSurface(context)),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
           'Withdraw Earnings',
           style: GoogleFonts.goudyBookletter1911(
-            color: Colors.black,
+            color: AppColors.onSurface(context),
             fontWeight: FontWeight.w600,
           ),
         ),
@@ -130,10 +132,10 @@ class _WithdrawalScreenState extends State<WithdrawalScreen> {
                 ),
               );
             },
-            icon: const Icon(Icons.history, size: 20),
+            icon: Icon(Icons.history, size: 20.r),
             label: Text(
               'History',
-              style: GoogleFonts.goudyBookletter1911(fontSize: 14),
+              style: GoogleFonts.goudyBookletter1911(fontSize: 14.sp),
             ),
           ),
         ],
@@ -144,12 +146,12 @@ class _WithdrawalScreenState extends State<WithdrawalScreen> {
               onRefresh: _loadBalance,
               child: SingleChildScrollView(
                 physics: const AlwaysScrollableScrollPhysics(),
-                padding: const EdgeInsets.all(16),
+                padding: EdgeInsets.all(16.w),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _buildBalanceCard(),
-                    const SizedBox(height: 24),
+                    SizedBox(height: 24.h),
                     _buildWithdrawalForm(),
                   ],
                 ),
@@ -163,14 +165,14 @@ class _WithdrawalScreenState extends State<WithdrawalScreen> {
     if (balance == null) return const SizedBox.shrink();
 
     return Container(
-      padding: const EdgeInsets.all(24),
+      padding: EdgeInsets.all(24.w),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
           colors: [Color(0xFF2E7D32), Color(0xFF4CAF50)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
-        borderRadius: BorderRadius.circular(5),
+        borderRadius: BorderRadius.circular(5.r),
         boxShadow: [
           BoxShadow(
             color: Colors.green.withValues(alpha: 0.3),
@@ -186,19 +188,19 @@ class _WithdrawalScreenState extends State<WithdrawalScreen> {
             'Available Balance',
             style: GoogleFonts.goudyBookletter1911(
               color: Colors.white70,
-              fontSize: 14,
+              fontSize: 14.sp,
             ),
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: 8.h),
           Text(
             '₱${balance.availableBalance.toStringAsFixed(2)}',
             style: GoogleFonts.goudyBookletter1911(
-              color: Colors.white,
-              fontSize: 36,
+              color: AppColors.surface(context),
+              fontSize: 36.sp,
               fontWeight: FontWeight.bold,
             ),
           ),
-          const SizedBox(height: 24),
+          SizedBox(height: 24.h),
           Row(
             children: [
               Expanded(
@@ -216,24 +218,24 @@ class _WithdrawalScreenState extends State<WithdrawalScreen> {
             ],
           ),
           if (balance.hasPending) ...[
-            const SizedBox(height: 12),
+            SizedBox(height: 12.h),
             Container(
-              padding: const EdgeInsets.all(12),
+              padding: EdgeInsets.all(12.w),
               decoration: BoxDecoration(
                 color: Colors.orange.withValues(alpha: 0.2),
-                borderRadius: BorderRadius.circular(5),
+                borderRadius: BorderRadius.circular(5.r),
                 border: Border.all(color: Colors.orange.shade300),
               ),
               child: Row(
                 children: [
-                  const Icon(Icons.pending, color: Colors.orange, size: 20),
-                  const SizedBox(width: 8),
+                  Icon(Icons.pending, color: Colors.orange, size: 20.r),
+                  SizedBox(width: 8.w),
                   Expanded(
                     child: Text(
                       'Pending: ₱${balance.pendingAmount.toStringAsFixed(2)}',
                       style: GoogleFonts.goudyBookletter1911(
-                        color: Colors.white,
-                        fontSize: 13,
+                        color: AppColors.surface(context),
+                        fontSize: 13.sp,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -255,15 +257,15 @@ class _WithdrawalScreenState extends State<WithdrawalScreen> {
           label,
           style: GoogleFonts.goudyBookletter1911(
             color: Colors.white70,
-            fontSize: 12,
+            fontSize: 12.sp,
           ),
         ),
-        const SizedBox(height: 4),
+        SizedBox(height: 4.h),
         Text(
           value,
           style: GoogleFonts.goudyBookletter1911(
-            color: Colors.white,
-            fontSize: 16,
+            color: AppColors.surface(context),
+            fontSize: 16.sp,
             fontWeight: FontWeight.w600,
           ),
         ),
@@ -276,10 +278,10 @@ class _WithdrawalScreenState extends State<WithdrawalScreen> {
     final hasPending = balance?.hasPending ?? false;
 
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: EdgeInsets.all(20.w),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(5),
+        color: AppColors.surface(context),
+        borderRadius: BorderRadius.circular(5.r),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.05),
@@ -294,11 +296,11 @@ class _WithdrawalScreenState extends State<WithdrawalScreen> {
           Text(
             'Request Withdrawal',
             style: GoogleFonts.goudyBookletter1911(
-              fontSize: 18,
+              fontSize: 18.sp,
               fontWeight: FontWeight.w600,
             ),
           ),
-          const SizedBox(height: 20),
+          SizedBox(height: 20.h),
           TextField(
             controller: _amountController,
             keyboardType: TextInputType.number,
@@ -308,24 +310,24 @@ class _WithdrawalScreenState extends State<WithdrawalScreen> {
               hintText: 'Minimum ₱100.00',
               prefixText: '₱ ',
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(5),
+                borderRadius: BorderRadius.circular(5.r),
               ),
               labelStyle: GoogleFonts.goudyBookletter1911(),
-              hintStyle: GoogleFonts.goudyBookletter1911(fontSize: 13),
+              hintStyle: GoogleFonts.goudyBookletter1911(fontSize: 13.sp),
             ),
             style: GoogleFonts.goudyBookletter1911(),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
           DropdownButtonFormField<String>(
             value: _selectedMethod,
             decoration: InputDecoration(
               labelText: 'Withdrawal Method',
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(5),
+                borderRadius: BorderRadius.circular(5.r),
               ),
               labelStyle: GoogleFonts.goudyBookletter1911(),
             ),
-            style: GoogleFonts.goudyBookletter1911(color: Colors.black),
+            style: GoogleFonts.goudyBookletter1911(color: AppColors.onSurface(context)),
             items: ['Cash', 'Bank Transfer', 'GCash']
                 .map(
                   (method) =>
@@ -340,7 +342,7 @@ class _WithdrawalScreenState extends State<WithdrawalScreen> {
                     }
                   },
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
           TextField(
             controller: _notesController,
             maxLines: 3,
@@ -349,31 +351,31 @@ class _WithdrawalScreenState extends State<WithdrawalScreen> {
               labelText: 'Notes (Optional)',
               hintText: 'Add any additional information...',
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(5),
+                borderRadius: BorderRadius.circular(5.r),
               ),
               labelStyle: GoogleFonts.goudyBookletter1911(),
-              hintStyle: GoogleFonts.goudyBookletter1911(fontSize: 13),
+              hintStyle: GoogleFonts.goudyBookletter1911(fontSize: 13.sp),
             ),
             style: GoogleFonts.goudyBookletter1911(),
           ),
-          const SizedBox(height: 24),
+          SizedBox(height: 24.h),
           if (hasPending)
             Container(
-              padding: const EdgeInsets.all(16),
+              padding: EdgeInsets.all(16.w),
               decoration: BoxDecoration(
                 color: Colors.orange.shade50,
-                borderRadius: BorderRadius.circular(5),
+                borderRadius: BorderRadius.circular(5.r),
                 border: Border.all(color: Colors.orange.shade200),
               ),
               child: Row(
                 children: [
                   Icon(Icons.info_outline, color: Colors.orange.shade700),
-                  const SizedBox(width: 12),
+                  SizedBox(width: 12.w),
                   Expanded(
                     child: Text(
                       'You have a pending withdrawal. Please wait for it to be processed.',
                       style: GoogleFonts.goudyBookletter1911(
-                        fontSize: 13,
+                        fontSize: 13.sp,
                         color: Colors.orange.shade900,
                       ),
                     ),
@@ -387,41 +389,41 @@ class _WithdrawalScreenState extends State<WithdrawalScreen> {
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.green,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  foregroundColor: AppColors.surface(context),
+                  padding: EdgeInsets.symmetric(vertical: 16.h),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(5),
+                    borderRadius: BorderRadius.circular(5.r),
                   ),
                 ),
                 onPressed: _isSubmitting ? null : _submitWithdrawal,
                 child: _isSubmitting
-                    ? const SizedBox(
-                        height: 20,
-                        width: 20,
+                    ? SizedBox(
+                        height: 20.h,
+                        width: 20.w,
                         child: CircularProgressIndicator(
                           strokeWidth: 2,
                           valueColor: AlwaysStoppedAnimation<Color>(
-                            Colors.white,
+                            AppColors.surface(context),
                           ),
                         ),
                       )
                     : Text(
                         'Submit Request',
                         style: GoogleFonts.goudyBookletter1911(
-                          fontSize: 16,
+                          fontSize: 16.sp,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
               ),
             ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12.h),
           Text(
             '• Minimum withdrawal: ₱100.00\n'
             '• Only one pending request at a time\n'
             '• Processing time: 1-3 business days',
             style: GoogleFonts.goudyBookletter1911(
-              fontSize: 12,
-              color: Colors.grey[600],
+              fontSize: 12.sp,
+              color: AppColors.textMuted(context),
               height: 1.5,
             ),
           ),

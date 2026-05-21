@@ -5,6 +5,8 @@ import '../services/chat_service.dart';
 import '../models/chat_model.dart';
 import '../screens/buyer/chat_conversation_screen.dart';
 
+import '../utils/app_colors.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 class FloatingChatButton extends StatefulWidget {
   const FloatingChatButton({super.key});
 
@@ -50,10 +52,10 @@ class _FloatingChatButtonState extends State<FloatingChatButton> {
       child: GestureDetector(
         onTap: _showChatModal,
         child: Container(
-          width: 56,
-          height: 56,
+          width: 56.w,
+          height: 56.h,
           decoration: BoxDecoration(
-            color: Colors.black,
+            color: AppColors.onSurface(context),
             shape: BoxShape.circle,
             boxShadow: [
               BoxShadow(
@@ -65,11 +67,11 @@ class _FloatingChatButtonState extends State<FloatingChatButton> {
           ),
           child: Stack(
             children: [
-              const Center(
+              Center(
                 child: Icon(
                   Icons.chat_bubble,
-                  color: Colors.white,
-                  size: 24,
+                  color: AppColors.surface(context),
+                  size: 24.r,
                 ),
               ),
               if (_unreadCount > 0)
@@ -77,7 +79,7 @@ class _FloatingChatButtonState extends State<FloatingChatButton> {
                   right: 8,
                   top: 8,
                   child: Container(
-                    padding: const EdgeInsets.all(4),
+                    padding: EdgeInsets.all(4.w),
                     decoration: const BoxDecoration(
                       color: Colors.red,
                       shape: BoxShape.circle,
@@ -89,8 +91,8 @@ class _FloatingChatButtonState extends State<FloatingChatButton> {
                     child: Text(
                       _unreadCount > 9 ? '9+' : '$_unreadCount',
                       style: GoogleFonts.playfairDisplay(
-                        color: Colors.white,
-                        fontSize: 10,
+                        color: AppColors.surface(context),
+                        fontSize: 10.sp,
                         fontWeight: FontWeight.bold,
                       ),
                       textAlign: TextAlign.center,
@@ -161,9 +163,9 @@ class _ChatModalState extends State<ChatModal> {
   Widget build(BuildContext context) {
     return Container(
       height: MediaQuery.of(context).size.height * 0.85,
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      decoration: BoxDecoration(
+        color: AppColors.surface(context),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
       ),
       child: Column(
         children: [
@@ -177,9 +179,9 @@ class _ChatModalState extends State<ChatModal> {
 
   Widget _buildHeader() {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: EdgeInsets.all(20.w),
       decoration: BoxDecoration(
-        border: Border(bottom: BorderSide(color: Colors.grey[300]!)),
+        border: Border(bottom: BorderSide(color: AppColors.border(context))),
       ),
       child: Row(
         children: [
@@ -187,7 +189,7 @@ class _ChatModalState extends State<ChatModal> {
             child: Text(
               'Messages',
               style: GoogleFonts.playfairDisplay(
-                fontSize: 24,
+                fontSize: 24.sp,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -203,21 +205,21 @@ class _ChatModalState extends State<ChatModal> {
 
   Widget _buildSearchBar() {
     return Padding(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16.w),
       child: TextField(
         controller: _searchController,
         onChanged: _filterConversations,
         decoration: InputDecoration(
           hintText: 'Search conversations...',
-          hintStyle: GoogleFonts.goudyBookletter1911(color: Colors.grey[400]),
+          hintStyle: GoogleFonts.goudyBookletter1911(color: AppColors.textFaint(context)),
           prefixIcon: const Icon(Icons.search, color: Colors.grey),
           filled: true,
-          fillColor: Colors.grey[100],
+          fillColor: AppColors.surfaceVariant(context),
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(12.r),
             borderSide: BorderSide.none,
           ),
-          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
         ),
       ),
     );
@@ -225,14 +227,14 @@ class _ChatModalState extends State<ChatModal> {
 
   Widget _buildConversationList() {
     if (_conversationsFuture == null) {
-      return const Center(child: CircularProgressIndicator(color: Colors.black));
+      return Center(child: CircularProgressIndicator(color: AppColors.onSurface(context)));
     }
 
     return FutureBuilder<List<ChatConversation>>(
       future: _conversationsFuture,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator(color: Colors.black));
+          return Center(child: CircularProgressIndicator(color: AppColors.onSurface(context)));
         }
         if (snapshot.hasError) {
           return Center(
@@ -244,7 +246,7 @@ class _ChatModalState extends State<ChatModal> {
         }
 
         return ListView.builder(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
+          padding: EdgeInsets.symmetric(horizontal: 16.w),
           itemCount: _filteredConversations.length,
           itemBuilder: (context, index) {
             return _buildConversationCard(_filteredConversations[index]);
@@ -259,18 +261,18 @@ class _ChatModalState extends State<ChatModal> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.chat_bubble_outline, size: 80, color: Colors.grey[400]),
-          const SizedBox(height: 16),
+          Icon(Icons.chat_bubble_outline, size: 80.r, color: AppColors.textFaint(context)),
+          SizedBox(height: 16.h),
           Text(
             _searchController.text.isEmpty ? 'No conversations yet' : 'No results found',
-            style: GoogleFonts.goudyBookletter1911(fontSize: 18, color: Colors.grey[600]),
+            style: GoogleFonts.goudyBookletter1911(fontSize: 18.sp, color: AppColors.textMuted(context)),
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: 8.h),
           Text(
             _searchController.text.isEmpty 
                 ? 'Start chatting with sellers'
                 : 'Try a different search term',
-            style: GoogleFonts.goudyBookletter1911(fontSize: 14, color: Colors.grey[500]),
+            style: GoogleFonts.goudyBookletter1911(fontSize: 14.sp, color: AppColors.textFaint(context)),
           ),
         ],
       ),
@@ -279,22 +281,22 @@ class _ChatModalState extends State<ChatModal> {
 
   Widget _buildConversationCard(ChatConversation conversation) {
     return Card(
-      margin: const EdgeInsets.only(bottom: 12),
+      margin: EdgeInsets.only(bottom: 12.h),
       elevation: 0,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-        side: BorderSide(color: Colors.grey[200]!),
+        borderRadius: BorderRadius.circular(12.r),
+        side: BorderSide(color: AppColors.surfaceVariant2(context)),
       ),
       child: ListTile(
-        contentPadding: const EdgeInsets.all(12),
+        contentPadding: EdgeInsets.all(12.w),
         leading: CircleAvatar(
-          radius: 28,
-          backgroundColor: Colors.grey[200],
+          radius: 28.r,
+          backgroundColor: AppColors.surfaceVariant2(context),
           backgroundImage: conversation.shopLogo != null
               ? CachedNetworkImageProvider(conversation.shopLogo!)
               : null,
           child: conversation.shopLogo == null
-              ? Icon(Icons.store, color: Colors.grey[600])
+              ? Icon(Icons.store, color: AppColors.textMuted(context))
               : null,
         ),
         title: Row(
@@ -304,7 +306,7 @@ class _ChatModalState extends State<ChatModal> {
                 conversation.shopName ?? 'Shop',
                 style: GoogleFonts.goudyBookletter1911(
                   fontWeight: FontWeight.w600,
-                  fontSize: 15,
+                  fontSize: 15.sp,
                 ),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
@@ -312,16 +314,16 @@ class _ChatModalState extends State<ChatModal> {
             ),
             if (conversation.unreadCount > 0)
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
                 decoration: BoxDecoration(
-                  color: Colors.black,
-                  borderRadius: BorderRadius.circular(10),
+                  color: AppColors.onSurface(context),
+                  borderRadius: BorderRadius.circular(10.r),
                 ),
                 child: Text(
                   '${conversation.unreadCount}',
                   style: GoogleFonts.goudyBookletter1911(
-                    color: Colors.white,
-                    fontSize: 11,
+                    color: AppColors.surface(context),
+                    fontSize: 11.sp,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -331,23 +333,23 @@ class _ChatModalState extends State<ChatModal> {
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 4),
+            SizedBox(height: 4.h),
             Text(
               conversation.lastMessage ?? 'No messages yet',
               style: GoogleFonts.goudyBookletter1911(
-                fontSize: 13,
-                color: conversation.unreadCount > 0 ? Colors.black87 : Colors.grey[600],
+                fontSize: 13.sp,
+                color: conversation.unreadCount > 0 ? AppColors.onSurfaceStrong(context) : AppColors.textMuted(context),
                 fontWeight: conversation.unreadCount > 0 ? FontWeight.w500 : FontWeight.normal,
               ),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),
-            const SizedBox(height: 4),
+            SizedBox(height: 4.h),
             Text(
               _formatTime(conversation.lastMessageAt),
               style: GoogleFonts.goudyBookletter1911(
-                fontSize: 11,
-                color: Colors.grey[500],
+                fontSize: 11.sp,
+                color: AppColors.textFaint(context),
               ),
             ),
           ],

@@ -5,6 +5,8 @@ import '../../services/auth_service.dart';
 import '../../utils/snackbar_helper.dart';
 import 'voucher_products_screen.dart';
 
+import '../../utils/app_colors.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 class VouchersScreen extends StatefulWidget {
   const VouchersScreen({super.key});
 
@@ -77,11 +79,11 @@ class _VouchersScreenState extends State<VouchersScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.surface(context),
       appBar: AppBar(
         title: Text('My Vouchers', style: GoogleFonts.playfairDisplay(fontWeight: FontWeight.bold)),
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
+        backgroundColor: AppColors.surface(context),
+        foregroundColor: AppColors.onSurface(context),
         elevation: 0,
       ),
       body: _isLoading
@@ -92,7 +94,7 @@ class _VouchersScreenState extends State<VouchersScreen> {
                   color: const Color(0xFFD4AF37),
                   onRefresh: _loadVouchers,
                   child: ListView.builder(
-                    padding: const EdgeInsets.all(16),
+                    padding: EdgeInsets.all(16.w),
                     itemCount: _vouchers.length,
                     itemBuilder: (context, index) {
                       return _buildVoucherCard(_vouchers[index]);
@@ -107,16 +109,16 @@ class _VouchersScreenState extends State<VouchersScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.confirmation_number_outlined, size: 80, color: Colors.grey[400]),
-          const SizedBox(height: 16),
+          Icon(Icons.confirmation_number_outlined, size: 80.r, color: AppColors.textFaint(context)),
+          SizedBox(height: 16.h),
           Text(
             'No vouchers available',
-            style: GoogleFonts.goudyBookletter1911(fontSize: 18, color: Colors.grey[600]),
+            style: GoogleFonts.goudyBookletter1911(fontSize: 18.sp, color: AppColors.textMuted(context)),
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: 8.h),
           Text(
             'Check back later for new vouchers',
-            style: GoogleFonts.goudyBookletter1911(fontSize: 14, color: Colors.grey[500]),
+            style: GoogleFonts.goudyBookletter1911(fontSize: 14.sp, color: AppColors.textFaint(context)),
           ),
         ],
       ),
@@ -146,11 +148,11 @@ class _VouchersScreenState extends State<VouchersScreen> {
         );
       },
       child: Container(
-        margin: const EdgeInsets.only(bottom: 12),
-        padding: const EdgeInsets.all(16),
+        margin: EdgeInsets.only(bottom: 12.h),
+        padding: EdgeInsets.all(16.w),
         decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
+          color: AppColors.surface(context),
+          borderRadius: BorderRadius.circular(12.r),
           border: Border.all(
             color: const Color(0xFFD4AF37),
             width: 2,
@@ -167,8 +169,8 @@ class _VouchersScreenState extends State<VouchersScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              width: 50,
-              height: 50,
+              width: 50.w,
+              height: 50.h,
               decoration: BoxDecoration(
                 color: const Color(0xFFD4AF37).withValues(alpha: 0.15),
                 shape: BoxShape.circle,
@@ -179,7 +181,7 @@ class _VouchersScreenState extends State<VouchersScreen> {
                 color: const Color(0xFFD4AF37),
               ),
             ),
-            const SizedBox(width: 12),
+            SizedBox(width: 12.w),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -190,9 +192,9 @@ class _VouchersScreenState extends State<VouchersScreen> {
                         child: Text(
                           voucherName,
                           style: GoogleFonts.playfairDisplay(
-                            fontSize: 16,
+                            fontSize: 16.sp,
                             fontWeight: FontWeight.bold,
-                            color: Colors.black,
+                            color: AppColors.onSurface(context),
                           ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -200,54 +202,54 @@ class _VouchersScreenState extends State<VouchersScreen> {
                       ),
                       if (timesRemaining > 1)
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
                           decoration: BoxDecoration(
                             color: const Color(0xFFD4AF37),
-                            borderRadius: BorderRadius.circular(12),
+                            borderRadius: BorderRadius.circular(12.r),
                           ),
                           child: Text(
                             '${timesRemaining}x',
                             style: GoogleFonts.playfairDisplay(
-                              fontSize: 11,
+                              fontSize: 11.sp,
                               fontWeight: FontWeight.bold,
-                              color: Colors.white,
+                              color: AppColors.surface(context),
                             ),
                           ),
                         ),
                     ],
                   ),
-                  const SizedBox(height: 4),
+                  SizedBox(height: 4.h),
                   Text(
                     '$discountPercent% OFF',
                     style: GoogleFonts.playfairDisplay(
-                      fontSize: 20,
+                      fontSize: 20.sp,
                       fontWeight: FontWeight.bold,
                       color: const Color(0xFFD4AF37),
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  SizedBox(height: 4.h),
                   Text(
                     voucherType == 'free_shipping'
                         ? 'Get free shipping on your order'
                         : 'Get $discountPercent% off on applicable products',
                     style: GoogleFonts.goudyBookletter1911(
-                      fontSize: 13,
-                      color: Colors.grey[700],
+                      fontSize: 13.sp,
+                      color: AppColors.textBody(context),
                     ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
                   if (endDate != null) ...[
-                    const SizedBox(height: 8),
+                    SizedBox(height: 8.h),
                     Row(
                       children: [
-                        Icon(Icons.access_time, size: 14, color: Colors.grey[500]),
-                        const SizedBox(width: 4),
+                        Icon(Icons.access_time, size: 14.r, color: AppColors.textFaint(context)),
+                        SizedBox(width: 4.w),
                         Text(
                           'Valid until ${_formatDate(endDate)}',
                           style: GoogleFonts.goudyBookletter1911(
-                            fontSize: 12,
-                            color: Colors.grey[500],
+                            fontSize: 12.sp,
+                            color: AppColors.textFaint(context),
                           ),
                         ),
                       ],
@@ -256,11 +258,11 @@ class _VouchersScreenState extends State<VouchersScreen> {
                 ],
               ),
             ),
-            const SizedBox(width: 8),
+            SizedBox(width: 8.w),
             Icon(
               Icons.arrow_forward_ios,
-              size: 16,
-              color: Colors.grey[400],
+              size: 16.r,
+              color: AppColors.textFaint(context),
             ),
           ],
         ),

@@ -3,6 +3,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import '../utils/app_colors.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 class AddressSelectorModal extends StatefulWidget {
   final String? initialRegion;
   final String? initialProvince;
@@ -468,16 +470,16 @@ class _AddressSelectorModalState extends State<AddressSelectorModal> {
   Widget build(BuildContext context) {
     return Container(
       height: MediaQuery.of(context).size.height * 0.85,
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      decoration: BoxDecoration(
+        color: AppColors.surface(context),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
       ),
       child: Column(
         children: [
           _buildHeader(),
           Expanded(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.all(24),
+              padding: EdgeInsets.all(24.w),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
@@ -491,7 +493,7 @@ class _AddressSelectorModalState extends State<AddressSelectorModal> {
                     },
                     isLoading: _isLoadingRegions,
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16.h),
                   _buildDropdown(
                     label: 'Province',
                     value: _selectedProvince,
@@ -504,7 +506,7 @@ class _AddressSelectorModalState extends State<AddressSelectorModal> {
                     enabled: _selectedRegion != null,
                     dropdownKey: GlobalKey(),
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16.h),
                   _buildDropdown(
                     label: 'City/Municipality',
                     value: _selectedCity,
@@ -517,7 +519,7 @@ class _AddressSelectorModalState extends State<AddressSelectorModal> {
                     enabled: _selectedProvince != null,
                     dropdownKey: GlobalKey(),
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16.h),
                   _buildDropdown(
                     label: 'Barangay',
                     value: _selectedBarangay,
@@ -530,23 +532,23 @@ class _AddressSelectorModalState extends State<AddressSelectorModal> {
                     enabled: _selectedCity != null,
                     dropdownKey: GlobalKey(),
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16.h),
                   _buildPostalCodeField(),
-                  const SizedBox(height: 24),
+                  SizedBox(height: 24.h),
                   ElevatedButton(
                     onPressed: _selectedBarangay != null ? _confirmSelection : null,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.black,
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      backgroundColor: AppColors.onSurface(context),
+                      foregroundColor: AppColors.surface(context),
+                      padding: EdgeInsets.symmetric(vertical: 16.h),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(8.r),
                       ),
                     ),
                     child: Text(
                       'Confirm Address',
                       style: GoogleFonts.goudyBookletter1911(
-                        fontSize: 16,
+                        fontSize: 16.sp,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -562,9 +564,9 @@ class _AddressSelectorModalState extends State<AddressSelectorModal> {
 
   Widget _buildHeader() {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: EdgeInsets.all(20.w),
       decoration: BoxDecoration(
-        border: Border(bottom: BorderSide(color: Colors.grey[300]!)),
+        border: Border(bottom: BorderSide(color: AppColors.border(context))),
       ),
       child: Row(
         children: [
@@ -572,7 +574,7 @@ class _AddressSelectorModalState extends State<AddressSelectorModal> {
             child: Text(
               'Select Address',
               style: GoogleFonts.goudyBookletter1911(
-                fontSize: 20,
+                fontSize: 20.sp,
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -628,26 +630,26 @@ class _AddressSelectorModalState extends State<AddressSelectorModal> {
         Text(
           label,
           style: GoogleFonts.goudyBookletter1911(
-            fontSize: 14,
+            fontSize: 14.sp,
             fontWeight: FontWeight.w500,
-            color: enabled ? Colors.black : Colors.grey,
+            color: enabled ? AppColors.onSurface(context) : Colors.grey,
           ),
         ),
-        const SizedBox(height: 8),
+        SizedBox(height: 8.h),
         Container(
           key: dropdownKey,
-          padding: const EdgeInsets.symmetric(horizontal: 16),
+          padding: EdgeInsets.symmetric(horizontal: 16.w),
           decoration: BoxDecoration(
-            color: enabled ? Colors.grey[100] : Colors.grey[200],
-            borderRadius: BorderRadius.circular(8),
+            color: enabled ? AppColors.surfaceVariant(context) : AppColors.surfaceVariant2(context),
+            borderRadius: BorderRadius.circular(8.r),
           ),
           child: isLoading
-              ? const Padding(
-                  padding: EdgeInsets.all(16),
+              ? Padding(
+                  padding: EdgeInsets.all(16.w),
                   child: Center(
                     child: SizedBox(
-                      height: 20,
-                      width: 20,
+                      height: 20.h,
+                      width: 20.w,
                       child: CircularProgressIndicator(strokeWidth: 2),
                     ),
                   ),
@@ -658,7 +660,7 @@ class _AddressSelectorModalState extends State<AddressSelectorModal> {
                     isExpanded: true,
                     hint: Text(
                       'Select $label',
-                      style: GoogleFonts.goudyBookletter1911(color: Colors.grey[600]),
+                      style: GoogleFonts.goudyBookletter1911(color: AppColors.textMuted(context)),
                     ),
                     items: items.map((item) {
                       return DropdownMenuItem<String>(
@@ -684,33 +686,33 @@ class _AddressSelectorModalState extends State<AddressSelectorModal> {
         Text(
           'Postal Code',
           style: GoogleFonts.goudyBookletter1911(
-            fontSize: 14,
+            fontSize: 14.sp,
             fontWeight: FontWeight.w500,
-            color: _selectedBarangay != null ? Colors.black : Colors.grey,
+            color: _selectedBarangay != null ? AppColors.onSurface(context) : Colors.grey,
           ),
         ),
-        const SizedBox(height: 8),
+        SizedBox(height: 8.h),
         Container(
           width: double.infinity,
-          padding: const EdgeInsets.all(16),
+          padding: EdgeInsets.all(16.w),
           decoration: BoxDecoration(
-            color: _selectedBarangay != null ? Colors.grey[100] : Colors.grey[200],
-            borderRadius: BorderRadius.circular(8),
+            color: _selectedBarangay != null ? AppColors.surfaceVariant(context) : AppColors.surfaceVariant2(context),
+            borderRadius: BorderRadius.circular(8.r),
           ),
           child: _isLoadingPostalCode
               ? Row(
                   children: [
-                    const SizedBox(
-                      height: 16,
-                      width: 16,
+                    SizedBox(
+                      height: 16.h,
+                      width: 16.w,
                       child: CircularProgressIndicator(strokeWidth: 2),
                     ),
-                    const SizedBox(width: 12),
+                    SizedBox(width: 12.w),
                     Text(
                       'Fetching postal code...',
                       style: GoogleFonts.goudyBookletter1911(
-                        color: Colors.grey[600],
-                        fontSize: 14,
+                        color: AppColors.textMuted(context),
+                        fontSize: 14.sp,
                       ),
                     ),
                   ],
@@ -719,12 +721,12 @@ class _AddressSelectorModalState extends State<AddressSelectorModal> {
                   _postalCode ?? 'Auto-filled',
                   style: _postalCode != null
                       ? GoogleFonts.playfairDisplay(
-                          color: Colors.black,
-                          fontSize: 16,
+                          color: AppColors.onSurface(context),
+                          fontSize: 16.sp,
                           fontWeight: FontWeight.w500,
                         )
                       : GoogleFonts.goudyBookletter1911(
-                          color: Colors.grey[600],
+                          color: AppColors.textMuted(context),
                         ),
                 ),
         ),

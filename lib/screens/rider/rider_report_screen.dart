@@ -9,6 +9,8 @@ import '../../services/auth_service.dart';
 import '../../utils/image_helper.dart';
 import '../../utils/snackbar_helper.dart';
 
+import '../../utils/app_colors.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 class RiderReportScreen extends StatefulWidget {
   const RiderReportScreen({super.key});
 
@@ -266,33 +268,33 @@ class _RiderReportScreenState extends State<RiderReportScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.surface(context),
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.surface(context),
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          icon: Icon(Icons.arrow_back, color: AppColors.onSurface(context)),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
           'Report User',
           style: GoogleFonts.goudyBookletter1911(
-            color: Colors.black,
-            fontSize: 20,
+            color: AppColors.onSurface(context),
+            fontSize: 20.sp,
             fontWeight: FontWeight.w600,
           ),
         ),
         bottom: TabBar(
           controller: _tabController,
-          labelColor: Colors.black,
-          unselectedLabelColor: Colors.grey[600],
-          indicatorColor: Colors.black,
+          labelColor: AppColors.onSurface(context),
+          unselectedLabelColor: AppColors.textMuted(context),
+          indicatorColor: AppColors.onSurface(context),
           labelStyle: GoogleFonts.goudyBookletter1911(
-            fontSize: 16,
+            fontSize: 16.sp,
             fontWeight: FontWeight.w600,
           ),
           unselectedLabelStyle: GoogleFonts.goudyBookletter1911(
-            fontSize: 16,
+            fontSize: 16.sp,
             fontWeight: FontWeight.normal,
           ),
           tabs: const [
@@ -310,25 +312,25 @@ class _RiderReportScreenState extends State<RiderReportScreen>
 
   Widget _buildSubmitReportTab() {
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16.w),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // User Type Selection
           _buildSectionTitle('Report User Type'),
-          const SizedBox(height: 8),
+          SizedBox(height: 8.h),
           DropdownButtonFormField<String>(
             value: _selectedUserType,
             decoration: InputDecoration(
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(5),
+                borderRadius: BorderRadius.circular(5.r),
               ),
               hintText: 'Select user type',
               hintStyle: GoogleFonts.goudyBookletter1911(
-                color: Colors.grey[500],
+                color: AppColors.textFaint(context),
               ),
             ),
-            style: GoogleFonts.goudyBookletter1911(color: Colors.black),
+            style: GoogleFonts.goudyBookletter1911(color: AppColors.onSurface(context)),
             items: [
               DropdownMenuItem(
                 value: 'buyer',
@@ -346,33 +348,33 @@ class _RiderReportScreenState extends State<RiderReportScreen>
               });
             },
           ),
-          const SizedBox(height: 24),
+          SizedBox(height: 24.h),
 
           // Delivery Selection (shown after user type selected)
           if (_selectedUserType != null) ...[
             _buildSectionTitle('Related Delivery (Optional)'),
-            const SizedBox(height: 8),
+            SizedBox(height: 8.h),
             _isLoadingDeliveries
                 ? const Center(child: CircularProgressIndicator())
                 : DropdownButtonFormField<DeliveryOption>(
                     value: _selectedDelivery,
                     decoration: InputDecoration(
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(5),
+                        borderRadius: BorderRadius.circular(5.r),
                       ),
                       hintText: 'No specific delivery',
                       hintStyle: GoogleFonts.goudyBookletter1911(
-                        color: Colors.grey[500],
+                        color: AppColors.textFaint(context),
                       ),
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 12,
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: 12.w,
+                        vertical: 12.h,
                       ),
                     ),
                     isExpanded: true,
                     style: GoogleFonts.goudyBookletter1911(
-                      color: Colors.black,
-                      fontSize: 13,
+                      color: AppColors.onSurface(context),
+                      fontSize: 13.sp,
                     ),
                     items: _deliveries.map((delivery) {
                       return DropdownMenuItem(
@@ -384,18 +386,18 @@ class _RiderReportScreenState extends State<RiderReportScreen>
                             Text(
                               'Delivery #${delivery.deliveryId} - ${delivery.orderNumber}',
                               style: GoogleFonts.goudyBookletter1911(
-                                fontSize: 13,
+                                fontSize: 13.sp,
                                 fontWeight: FontWeight.w600,
                               ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
-                            const SizedBox(height: 2),
+                            SizedBox(height: 2.h),
                             Text(
                               'Buyer: ${delivery.buyerName}',
                               style: GoogleFonts.goudyBookletter1911(
-                                fontSize: 11,
-                                color: Colors.grey[600],
+                                fontSize: 11.sp,
+                                color: AppColors.textMuted(context),
                               ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
@@ -403,8 +405,8 @@ class _RiderReportScreenState extends State<RiderReportScreen>
                             Text(
                               'Seller: ${delivery.sellerName}',
                               style: GoogleFonts.goudyBookletter1911(
-                                fontSize: 11,
-                                color: Colors.grey[600],
+                                fontSize: 11.sp,
+                                color: AppColors.textMuted(context),
                               ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
@@ -418,8 +420,8 @@ class _RiderReportScreenState extends State<RiderReportScreen>
                         return Text(
                           'Delivery #${delivery.deliveryId} - ${delivery.orderNumber}',
                           style: GoogleFonts.goudyBookletter1911(
-                            fontSize: 13,
-                            color: Colors.black,
+                            fontSize: 13.sp,
+                            color: AppColors.onSurface(context),
                           ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -430,32 +432,32 @@ class _RiderReportScreenState extends State<RiderReportScreen>
                       setState(() => _selectedDelivery = value);
                     },
                   ),
-            const SizedBox(height: 4),
+            SizedBox(height: 4.h),
             Text(
               'Piliin kung may kaugnayan sa specific delivery',
               style: GoogleFonts.goudyBookletter1911(
-                fontSize: 12,
-                color: Colors.grey[600],
+                fontSize: 12.sp,
+                color: AppColors.textMuted(context),
               ),
             ),
-            const SizedBox(height: 24),
+            SizedBox(height: 24.h),
           ],
 
           // Category Selection
           _buildSectionTitle('Report Category'),
-          const SizedBox(height: 8),
+          SizedBox(height: 8.h),
           DropdownButtonFormField<ReportCategory>(
             value: _selectedCategory,
             decoration: InputDecoration(
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(5),
+                borderRadius: BorderRadius.circular(5.r),
               ),
               hintText: 'Select category',
               hintStyle: GoogleFonts.goudyBookletter1911(
-                color: Colors.grey[500],
+                color: AppColors.textFaint(context),
               ),
             ),
-            style: GoogleFonts.goudyBookletter1911(color: Colors.black),
+            style: GoogleFonts.goudyBookletter1911(color: AppColors.onSurface(context)),
             items: ReportCategory.values.map((category) {
               return DropdownMenuItem(
                 value: category,
@@ -469,35 +471,35 @@ class _RiderReportScreenState extends State<RiderReportScreen>
               setState(() => _selectedCategory = value);
             },
           ),
-          const SizedBox(height: 24),
+          SizedBox(height: 24.h),
 
           // Reason Text Area
           _buildSectionTitle('Report Reason'),
-          const SizedBox(height: 8),
+          SizedBox(height: 8.h),
           TextField(
             controller: _reasonController,
             maxLines: 5,
-            style: GoogleFonts.goudyBookletter1911(color: Colors.black),
+            style: GoogleFonts.goudyBookletter1911(color: AppColors.onSurface(context)),
             decoration: InputDecoration(
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(5),
+                borderRadius: BorderRadius.circular(5.r),
               ),
               hintText: 'Describe the issue in detail...',
               hintStyle: GoogleFonts.goudyBookletter1911(
-                color: Colors.grey[500],
+                color: AppColors.textFaint(context),
               ),
             ),
           ),
-          const SizedBox(height: 24),
+          SizedBox(height: 24.h),
 
           // Evidence Upload
           _buildSectionTitle('Evidence (optional):'),
-          const SizedBox(height: 8),
+          SizedBox(height: 8.h),
           if (_evidenceImage != null) ...[
             Stack(
               children: [
                 ClipRRect(
-                  borderRadius: BorderRadius.circular(5),
+                  borderRadius: BorderRadius.circular(5.r),
                   child: Image.file(
                     _evidenceImage!,
                     height: 200,
@@ -509,18 +511,18 @@ class _RiderReportScreenState extends State<RiderReportScreen>
                   top: 8,
                   right: 8,
                   child: IconButton(
-                    icon: const Icon(Icons.close, color: Colors.white),
+                    icon: Icon(Icons.close, color: AppColors.surface(context)),
                     onPressed: () {
                       setState(() => _evidenceImage = null);
                     },
                     style: IconButton.styleFrom(
-                      backgroundColor: Colors.black54,
+                      backgroundColor: AppColors.onSurfaceMedium(context),
                     ),
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 8),
+            SizedBox(height: 8.h),
           ],
           ElevatedButton.icon(
             onPressed: _pickImage,
@@ -531,38 +533,38 @@ class _RiderReportScreenState extends State<RiderReportScreen>
             ),
             style: ElevatedButton.styleFrom(
               minimumSize: const Size(double.infinity, 48),
-              backgroundColor: Colors.grey[200],
-              foregroundColor: Colors.black,
+              backgroundColor: AppColors.surfaceVariant2(context),
+              foregroundColor: AppColors.onSurface(context),
             ),
           ),
-          const SizedBox(height: 4),
+          SizedBox(height: 4.h),
           Text(
             'Upload screenshot or image as evidence (JPG or PNG only)',
             style: GoogleFonts.goudyBookletter1911(
-              fontSize: 12,
-              color: Colors.grey[600],
+              fontSize: 12.sp,
+              color: AppColors.textMuted(context),
             ),
           ),
-          const SizedBox(height: 24),
+          SizedBox(height: 24.h),
 
           // Warning
           Container(
-            padding: const EdgeInsets.all(12),
+            padding: EdgeInsets.all(12.w),
             decoration: BoxDecoration(
               color: Colors.orange[50],
               border: Border.all(color: Colors.orange),
-              borderRadius: BorderRadius.circular(5),
+              borderRadius: BorderRadius.circular(5.r),
             ),
             child: Row(
               children: [
                 const Icon(Icons.warning, color: Colors.orange),
-                const SizedBox(width: 12),
+                SizedBox(width: 12.w),
                 Expanded(
                   child: RichText(
                     text: TextSpan(
                       style: GoogleFonts.goudyBookletter1911(
-                        fontSize: 13,
-                        color: Colors.black,
+                        fontSize: 13.sp,
+                        color: AppColors.onSurface(context),
                       ),
                       children: const [
                         TextSpan(
@@ -580,7 +582,7 @@ class _RiderReportScreenState extends State<RiderReportScreen>
               ],
             ),
           ),
-          const SizedBox(height: 24),
+          SizedBox(height: 24.h),
 
           // Submit Button
           ElevatedButton(
@@ -589,15 +591,15 @@ class _RiderReportScreenState extends State<RiderReportScreen>
               backgroundColor: Colors.red,
               minimumSize: const Size(double.infinity, 56),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(5),
+                borderRadius: BorderRadius.circular(5.r),
               ),
             ),
             child: _isSubmitting
-                ? const SizedBox(
-                    height: 24,
-                    width: 24,
+                ? SizedBox(
+                    height: 24.h,
+                    width: 24.w,
                     child: CircularProgressIndicator(
-                      color: Colors.white,
+                      color: AppColors.surface(context),
                       strokeWidth: 2,
                     ),
                   )
@@ -605,11 +607,11 @@ class _RiderReportScreenState extends State<RiderReportScreen>
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const Icon(Icons.send),
-                      const SizedBox(width: 8),
+                      SizedBox(width: 8.w),
                       Text(
                         'Submit Report',
                         style: GoogleFonts.goudyBookletter1911(
-                          fontSize: 18,
+                          fontSize: 18.sp,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -631,13 +633,13 @@ class _RiderReportScreenState extends State<RiderReportScreen>
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.inbox, size: 64, color: Colors.grey[400]),
-            const SizedBox(height: 16),
+            Icon(Icons.inbox, size: 64.r, color: AppColors.textFaint(context)),
+            SizedBox(height: 16.h),
             Text(
               'No reports submitted yet',
               style: GoogleFonts.goudyBookletter1911(
-                fontSize: 16,
-                color: Colors.grey[600],
+                fontSize: 16.sp,
+                color: AppColors.textMuted(context),
               ),
             ),
           ],
@@ -648,7 +650,7 @@ class _RiderReportScreenState extends State<RiderReportScreen>
     return RefreshIndicator(
       onRefresh: _loadReports,
       child: ListView.builder(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(16.w),
         itemCount: _reports.length,
         itemBuilder: (context, index) {
           return _buildReportCard(_reports[index]);
@@ -659,14 +661,14 @@ class _RiderReportScreenState extends State<RiderReportScreen>
 
   Widget _buildReportCard(Report report) {
     return Card(
-      margin: const EdgeInsets.only(bottom: 12),
+      margin: EdgeInsets.only(bottom: 12.h),
       elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.r)),
       child: InkWell(
         onTap: () => _showReportDetails(report),
-        borderRadius: BorderRadius.circular(5),
+        borderRadius: BorderRadius.circular(5.r),
         child: Padding(
-          padding: const EdgeInsets.all(16),
+          padding: EdgeInsets.all(16.w),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -676,42 +678,42 @@ class _RiderReportScreenState extends State<RiderReportScreen>
                   Text(
                     'Report #${report.reportId}',
                     style: GoogleFonts.goudyBookletter1911(
-                      fontSize: 16,
+                      fontSize: 16.sp,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
                   _buildStatusBadge(report.statusEnum ?? ReportStatus.pending),
                 ],
               ),
-              const SizedBox(height: 8),
+              SizedBox(height: 8.h),
               Row(
                 children: [
                   _buildUserTypeBadge(report.reportedUserType),
-                  const SizedBox(width: 8),
+                  SizedBox(width: 8.w),
                   Expanded(
                     child: Text(
                       report.reportedUserName ?? 'Unknown User',
-                      style: GoogleFonts.goudyBookletter1911(fontSize: 14),
+                      style: GoogleFonts.goudyBookletter1911(fontSize: 14.sp),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
                 ],
               ),
-              const SizedBox(height: 8),
+              SizedBox(height: 8.h),
               Text(
                 report.categoryEnum?.label ?? report.reportCategory,
                 style: GoogleFonts.goudyBookletter1911(
-                  fontSize: 13,
-                  color: Colors.grey[700],
+                  fontSize: 13.sp,
+                  color: AppColors.textBody(context),
                 ),
               ),
-              const SizedBox(height: 4),
+              SizedBox(height: 4.h),
               Text(
                 _formatDate(report.createdAt),
                 style: GoogleFonts.goudyBookletter1911(
-                  fontSize: 12,
-                  color: Colors.grey[600],
+                  fontSize: 12.sp,
+                  color: AppColors.textMuted(context),
                 ),
               ),
             ],
@@ -739,15 +741,15 @@ class _RiderReportScreenState extends State<RiderReportScreen>
     }
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
       decoration: BoxDecoration(
         color: color.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(5),
+        borderRadius: BorderRadius.circular(5.r),
       ),
       child: Text(
         status.label,
         style: GoogleFonts.goudyBookletter1911(
-          fontSize: 12,
+          fontSize: 12.sp,
           fontWeight: FontWeight.w600,
           color: color,
         ),
@@ -769,15 +771,15 @@ class _RiderReportScreenState extends State<RiderReportScreen>
     }
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
       decoration: BoxDecoration(
         color: color.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(5),
+        borderRadius: BorderRadius.circular(5.r),
       ),
       child: Text(
         userType.toUpperCase(),
         style: GoogleFonts.goudyBookletter1911(
-          fontSize: 10,
+          fontSize: 10.sp,
           fontWeight: FontWeight.w600,
           color: color,
         ),
@@ -809,45 +811,45 @@ class _RiderReportScreenState extends State<RiderReportScreen>
                 'Category',
                 report.categoryEnum?.label ?? report.reportCategory,
               ),
-              const SizedBox(height: 12),
+              SizedBox(height: 12.h),
               Text(
                 'Reason:',
                 style: GoogleFonts.goudyBookletter1911(
                   fontWeight: FontWeight.w600,
                 ),
               ),
-              const SizedBox(height: 4),
+              SizedBox(height: 4.h),
               Container(
-                padding: const EdgeInsets.all(12),
+                padding: EdgeInsets.all(12.w),
                 decoration: BoxDecoration(
-                  color: Colors.grey[100],
-                  borderRadius: BorderRadius.circular(5),
+                  color: AppColors.surfaceVariant(context),
+                  borderRadius: BorderRadius.circular(5.r),
                 ),
                 child: Text(
                   report.reportReason,
-                  style: GoogleFonts.goudyBookletter1911(fontSize: 14),
+                  style: GoogleFonts.goudyBookletter1911(fontSize: 14.sp),
                 ),
               ),
               if (report.evidenceImage != null &&
                   report.evidenceImage!.isNotEmpty) ...[
-                const SizedBox(height: 12),
+                SizedBox(height: 12.h),
                 Text(
                   'Evidence:',
                   style: GoogleFonts.goudyBookletter1911(
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                const SizedBox(height: 4),
+                SizedBox(height: 4.h),
                 ClipRRect(
-                  borderRadius: BorderRadius.circular(5),
+                  borderRadius: BorderRadius.circular(5.r),
                   child: Image.network(
                     _getImageUrl(report.evidenceImage!),
                     fit: BoxFit.cover,
                     loadingBuilder: (context, child, loadingProgress) {
                       if (loadingProgress == null) return child;
                       return Container(
-                        height: 200,
-                        color: Colors.grey[200],
+                        height: 200.h,
+                        color: AppColors.surfaceVariant2(context),
                         child: Center(
                           child: CircularProgressIndicator(
                             value: loadingProgress.expectedTotalBytes != null
@@ -864,22 +866,22 @@ class _RiderReportScreenState extends State<RiderReportScreen>
                       print('Original path: ${report.evidenceImage}');
                       print('Converted URL: $imageUrl');
                       return Container(
-                        height: 100,
-                        padding: const EdgeInsets.all(16),
-                        color: Colors.grey[200],
+                        height: 100.h,
+                        padding: EdgeInsets.all(16.w),
+                        color: AppColors.surfaceVariant2(context),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const Icon(
+                            Icon(
                               Icons.broken_image,
                               color: Colors.grey,
-                              size: 32,
+                              size: 32.r,
                             ),
-                            const SizedBox(height: 8),
+                            SizedBox(height: 8.h),
                             Text(
                               'Failed to load image',
                               style: GoogleFonts.goudyBookletter1911(
-                                fontSize: 12,
+                                fontSize: 12.sp,
                                 color: Colors.grey,
                               ),
                             ),
@@ -892,27 +894,27 @@ class _RiderReportScreenState extends State<RiderReportScreen>
               ],
               if (report.adminNotes != null &&
                   report.adminNotes!.isNotEmpty) ...[
-                const SizedBox(height: 12),
+                SizedBox(height: 12.h),
                 Text(
                   'Admin Notes:',
                   style: GoogleFonts.goudyBookletter1911(
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                const SizedBox(height: 4),
+                SizedBox(height: 4.h),
                 Container(
-                  padding: const EdgeInsets.all(12),
+                  padding: EdgeInsets.all(12.w),
                   decoration: BoxDecoration(
                     color: Colors.blue[50],
-                    borderRadius: BorderRadius.circular(5),
+                    borderRadius: BorderRadius.circular(5.r),
                   ),
                   child: Text(
                     report.adminNotes!,
-                    style: GoogleFonts.goudyBookletter1911(fontSize: 14),
+                    style: GoogleFonts.goudyBookletter1911(fontSize: 14.sp),
                   ),
                 ),
               ],
-              const SizedBox(height: 12),
+              SizedBox(height: 12.h),
               _buildDetailRow('Submitted', _formatDate(report.createdAt)),
             ],
           ),
@@ -929,24 +931,24 @@ class _RiderReportScreenState extends State<RiderReportScreen>
 
   Widget _buildDetailRow(String label, String? value) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
+      padding: EdgeInsets.only(bottom: 8.h),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(
-            width: 120,
+            width: 120.w,
             child: Text(
               '$label:',
               style: GoogleFonts.goudyBookletter1911(
                 fontWeight: FontWeight.w600,
-                fontSize: 13,
+                fontSize: 13.sp,
               ),
             ),
           ),
           Expanded(
             child: Text(
               value ?? 'N/A',
-              style: GoogleFonts.goudyBookletter1911(fontSize: 13),
+              style: GoogleFonts.goudyBookletter1911(fontSize: 13.sp),
             ),
           ),
         ],
@@ -958,9 +960,9 @@ class _RiderReportScreenState extends State<RiderReportScreen>
     return Text(
       title,
       style: GoogleFonts.goudyBookletter1911(
-        fontSize: 16,
+        fontSize: 16.sp,
         fontWeight: FontWeight.w600,
-        color: Colors.black,
+        color: AppColors.onSurface(context),
       ),
     );
   }

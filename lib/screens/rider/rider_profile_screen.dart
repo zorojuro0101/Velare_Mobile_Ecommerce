@@ -9,6 +9,8 @@ import '../../utils/image_helper.dart';
 import '../auth/login_screen.dart';
 import 'verification_documents_screen.dart';
 
+import '../../utils/app_colors.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 class RiderProfileScreen extends StatefulWidget {
   final bool hideScaffold;
 
@@ -87,7 +89,7 @@ class _RiderProfileScreenState extends State<RiderProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final content = _isLoading
-        ? const Center(child: CircularProgressIndicator(color: Colors.black))
+        ? Center(child: CircularProgressIndicator(color: AppColors.onSurface(context)))
         : RefreshIndicator(
             onRefresh: _loadRiderProfile,
             child: SingleChildScrollView(
@@ -95,9 +97,9 @@ class _RiderProfileScreenState extends State<RiderProfileScreen> {
               child: Column(
                 children: [
                   _buildProfileHeader(),
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16.h),
                   _buildStatsSection(),
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16.h),
                   _buildMenuSection(),
                 ],
               ),
@@ -109,15 +111,15 @@ class _RiderProfileScreenState extends State<RiderProfileScreen> {
     }
 
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: AppColors.scaffoldBackground(context),
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.surface(context),
         elevation: 0,
         automaticallyImplyLeading: false,
         title: Text(
           'Profile',
           style: GoogleFonts.goudyBookletter1911(
-            color: Colors.black,
+            color: AppColors.onSurface(context),
             fontWeight: FontWeight.w600,
           ),
         ),
@@ -140,23 +142,23 @@ class _RiderProfileScreenState extends State<RiderProfileScreen> {
         : null;
 
     return Container(
-      padding: const EdgeInsets.all(24),
-      color: Colors.white,
+      padding: EdgeInsets.all(24.w),
+      color: AppColors.surface(context),
       child: Column(
         children: [
           Stack(
             children: [
               Container(
-                width: 100,
-                height: 100,
+                width: 100.w,
+                height: 100.h,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: Colors.grey[300],
+                  color: AppColors.border(context),
                 ),
                 child: _isUploadingImage
-                    ? const Center(
+                    ? Center(
                         child: CircularProgressIndicator(
-                          color: Colors.black,
+                          color: AppColors.onSurface(context),
                           strokeWidth: 2,
                         ),
                       )
@@ -170,9 +172,9 @@ class _RiderProfileScreenState extends State<RiderProfileScreen> {
                               child: Text(
                                 initial,
                                 style: GoogleFonts.goudyBookletter1911(
-                                  fontSize: 40,
+                                  fontSize: 40.sp,
                                   fontWeight: FontWeight.bold,
-                                  color: Colors.grey[600],
+                                  color: AppColors.textMuted(context),
                                 ),
                               ),
                             );
@@ -183,9 +185,9 @@ class _RiderProfileScreenState extends State<RiderProfileScreen> {
                         child: Text(
                           initial,
                           style: GoogleFonts.goudyBookletter1911(
-                            fontSize: 40,
+                            fontSize: 40.sp,
                             fontWeight: FontWeight.bold,
-                            color: Colors.grey[600],
+                            color: AppColors.textMuted(context),
                           ),
                         ),
                       ),
@@ -197,56 +199,56 @@ class _RiderProfileScreenState extends State<RiderProfileScreen> {
                   child: GestureDetector(
                     onTap: _showImageSourceDialog,
                     child: Container(
-                      padding: const EdgeInsets.all(6),
-                      decoration: const BoxDecoration(
-                        color: Colors.black,
+                      padding: EdgeInsets.all(6.w),
+                      decoration: BoxDecoration(
+                        color: AppColors.onSurface(context),
                         shape: BoxShape.circle,
                       ),
-                      child: const Icon(
+                      child: Icon(
                         Icons.camera_alt,
-                        color: Colors.white,
-                        size: 18,
+                        color: AppColors.surface(context),
+                        size: 18.r,
                       ),
                     ),
                   ),
                 ),
             ],
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
           Text(
             firstName.isNotEmpty && lastName.isNotEmpty
                 ? '$firstName $lastName'
                 : email,
             style: GoogleFonts.goudyBookletter1911(
-              fontSize: 20,
+              fontSize: 20.sp,
               fontWeight: FontWeight.bold,
             ),
           ),
-          const SizedBox(height: 4),
+          SizedBox(height: 4.h),
           Text(
             email,
             style: GoogleFonts.goudyBookletter1911(
-              fontSize: 13,
-              color: Colors.grey[600],
+              fontSize: 13.sp,
+              color: AppColors.textMuted(context),
             ),
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: 8.h),
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
             decoration: BoxDecoration(
               color: Colors.green.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(5),
+              borderRadius: BorderRadius.circular(5.r),
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(Icons.verified, color: Colors.green, size: 16),
-                const SizedBox(width: 4),
+                Icon(Icons.verified, color: Colors.green, size: 16.r),
+                SizedBox(width: 4.w),
                 Text(
                   'Verified Rider',
                   style: GoogleFonts.goudyBookletter1911(
                     color: Colors.green,
-                    fontSize: 12,
+                    fontSize: 12.sp,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -264,11 +266,11 @@ class _RiderProfileScreenState extends State<RiderProfileScreen> {
     final thisMonth = _stats?['this_month'] ?? 0;
 
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16),
-      padding: const EdgeInsets.all(20),
+      margin: EdgeInsets.symmetric(horizontal: 16.w),
+      padding: EdgeInsets.all(20.w),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(5),
+        color: AppColors.surface(context),
+        borderRadius: BorderRadius.circular(5.r),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.05),
@@ -285,9 +287,9 @@ class _RiderProfileScreenState extends State<RiderProfileScreen> {
             totalDeliveries.toString(),
             Icons.local_shipping,
           ),
-          Container(width: 1, height: 50, color: Colors.grey[300]),
+          Container(width: 1.w, height: 50.h, color: AppColors.border(context)),
           _buildStatItem('Rating', rating.toStringAsFixed(1), Icons.star),
-          Container(width: 1, height: 50, color: Colors.grey[300]),
+          Container(width: 1.w, height: 50.h, color: AppColors.border(context)),
           _buildStatItem(
             'This Month',
             thisMonth.toString(),
@@ -301,20 +303,20 @@ class _RiderProfileScreenState extends State<RiderProfileScreen> {
   Widget _buildStatItem(String label, String value, IconData icon) {
     return Column(
       children: [
-        Icon(icon, color: Colors.black, size: 24),
-        const SizedBox(height: 8),
+        Icon(icon, color: AppColors.onSurface(context), size: 24.r),
+        SizedBox(height: 8.h),
         Text(
           value,
           style: GoogleFonts.goudyBookletter1911(
-            fontSize: 18,
+            fontSize: 18.sp,
             fontWeight: FontWeight.bold,
           ),
         ),
         Text(
           label,
           style: GoogleFonts.goudyBookletter1911(
-            fontSize: 11,
-            color: Colors.grey[600],
+            fontSize: 11.sp,
+            color: AppColors.textMuted(context),
           ),
         ),
       ],
@@ -323,10 +325,10 @@ class _RiderProfileScreenState extends State<RiderProfileScreen> {
 
   Widget _buildMenuSection() {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16),
+      margin: EdgeInsets.symmetric(horizontal: 16.w),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(5),
+        color: AppColors.surface(context),
+        borderRadius: BorderRadius.circular(5.r),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.05),
@@ -389,24 +391,24 @@ class _RiderProfileScreenState extends State<RiderProfileScreen> {
       child: InkWell(
         onTap: onTap,
         child: Padding(
-          padding: const EdgeInsets.all(16),
+          padding: EdgeInsets.all(16.w),
           child: Row(
             children: [
               Container(
-                padding: const EdgeInsets.all(10),
+                padding: EdgeInsets.all(10.w),
                 decoration: BoxDecoration(
                   color: isDestructive
                       ? Colors.red.withValues(alpha: 0.1)
-                      : Colors.grey[100],
-                  borderRadius: BorderRadius.circular(5),
+                      : AppColors.surfaceVariant(context),
+                  borderRadius: BorderRadius.circular(5.r),
                 ),
                 child: Icon(
                   icon,
-                  color: isDestructive ? Colors.red : Colors.black,
-                  size: 22,
+                  color: isDestructive ? Colors.red : AppColors.onSurface(context),
+                  size: 22.r,
                 ),
               ),
-              const SizedBox(width: 16),
+              SizedBox(width: 16.w),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -414,22 +416,22 @@ class _RiderProfileScreenState extends State<RiderProfileScreen> {
                     Text(
                       title,
                       style: GoogleFonts.goudyBookletter1911(
-                        fontSize: 15,
+                        fontSize: 15.sp,
                         fontWeight: FontWeight.w500,
-                        color: isDestructive ? Colors.red : Colors.black,
+                        color: isDestructive ? Colors.red : AppColors.onSurface(context),
                       ),
                     ),
                     Text(
                       subtitle,
                       style: GoogleFonts.goudyBookletter1911(
-                        fontSize: 12,
-                        color: Colors.grey[600],
+                        fontSize: 12.sp,
+                        color: AppColors.textMuted(context),
                       ),
                     ),
                   ],
                 ),
               ),
-              Icon(Icons.chevron_right, color: Colors.grey[400]),
+              Icon(Icons.chevron_right, color: AppColors.textFaint(context)),
             ],
           ),
         ),
@@ -439,8 +441,8 @@ class _RiderProfileScreenState extends State<RiderProfileScreen> {
 
   Widget _buildDivider() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Divider(height: 1, color: Colors.grey[200]),
+      padding: EdgeInsets.symmetric(horizontal: 16.w),
+      child: Divider(height: 1, color: AppColors.surfaceVariant2(context)),
     );
   }
 
@@ -467,9 +469,9 @@ class _RiderProfileScreenState extends State<RiderProfileScreen> {
           ElevatedButton(
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.red,
-              foregroundColor: Colors.white,
+              foregroundColor: AppColors.surface(context),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(5),
+                borderRadius: BorderRadius.circular(5.r),
               ),
             ),
             onPressed: () async {
@@ -521,25 +523,25 @@ class _RiderProfileScreenState extends State<RiderProfileScreen> {
                 decoration: InputDecoration(
                   labelText: 'First Name',
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(5),
+                    borderRadius: BorderRadius.circular(5.r),
                   ),
                   labelStyle: GoogleFonts.goudyBookletter1911(),
                 ),
                 style: GoogleFonts.goudyBookletter1911(),
               ),
-              const SizedBox(height: 16),
+              SizedBox(height: 16.h),
               TextField(
                 controller: lastNameController,
                 decoration: InputDecoration(
                   labelText: 'Last Name',
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(5),
+                    borderRadius: BorderRadius.circular(5.r),
                   ),
                   labelStyle: GoogleFonts.goudyBookletter1911(),
                 ),
                 style: GoogleFonts.goudyBookletter1911(),
               ),
-              const SizedBox(height: 16),
+              SizedBox(height: 16.h),
               TextField(
                 controller: phoneController,
                 keyboardType: TextInputType.phone,
@@ -548,7 +550,7 @@ class _RiderProfileScreenState extends State<RiderProfileScreen> {
                   labelText: 'Phone Number',
                   hintText: '09XXXXXXXXX',
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(5),
+                    borderRadius: BorderRadius.circular(5.r),
                   ),
                   labelStyle: GoogleFonts.goudyBookletter1911(),
                   counterText: '',
@@ -568,10 +570,10 @@ class _RiderProfileScreenState extends State<RiderProfileScreen> {
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.black,
-              foregroundColor: Colors.white,
+              backgroundColor: AppColors.onSurface(context),
+              foregroundColor: AppColors.surface(context),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(5),
+                borderRadius: BorderRadius.circular(5.r),
               ),
             ),
             onPressed: () async {
@@ -649,11 +651,11 @@ class _RiderProfileScreenState extends State<RiderProfileScreen> {
                   decoration: InputDecoration(
                     labelText: 'Vehicle Type',
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5),
+                      borderRadius: BorderRadius.circular(5.r),
                     ),
                     labelStyle: GoogleFonts.goudyBookletter1911(),
                   ),
-                  style: GoogleFonts.goudyBookletter1911(color: Colors.black),
+                  style: GoogleFonts.goudyBookletter1911(color: AppColors.onSurface(context)),
                   items: ['Motorcycle', 'Bicycle', 'Tricycle', 'Car', 'Van']
                       .map(
                         (type) =>
@@ -666,14 +668,14 @@ class _RiderProfileScreenState extends State<RiderProfileScreen> {
                     }
                   },
                 ),
-                const SizedBox(height: 16),
+                SizedBox(height: 16.h),
                 TextField(
                   controller: plateNumberController,
                   decoration: InputDecoration(
                     labelText: 'Plate Number',
                     hintText: 'ABC 1234',
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5),
+                      borderRadius: BorderRadius.circular(5.r),
                     ),
                     labelStyle: GoogleFonts.goudyBookletter1911(),
                   ),
@@ -693,10 +695,10 @@ class _RiderProfileScreenState extends State<RiderProfileScreen> {
             ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.black,
-                foregroundColor: Colors.white,
+                backgroundColor: AppColors.onSurface(context),
+                foregroundColor: AppColors.surface(context),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(5),
+                  borderRadius: BorderRadius.circular(5.r),
                 ),
               ),
               onPressed: () async {
@@ -757,7 +759,7 @@ class _RiderProfileScreenState extends State<RiderProfileScreen> {
           mainAxisSize: MainAxisSize.min,
           children: [
             ListTile(
-              leading: const Icon(Icons.camera_alt, color: Colors.black),
+              leading: Icon(Icons.camera_alt, color: AppColors.onSurface(context)),
               title: Text('Camera', style: GoogleFonts.goudyBookletter1911()),
               onTap: () {
                 Navigator.pop(context);
@@ -765,7 +767,7 @@ class _RiderProfileScreenState extends State<RiderProfileScreen> {
               },
             ),
             ListTile(
-              leading: const Icon(Icons.photo_library, color: Colors.black),
+              leading: Icon(Icons.photo_library, color: AppColors.onSurface(context)),
               title: Text('Gallery', style: GoogleFonts.goudyBookletter1911()),
               onTap: () {
                 Navigator.pop(context);

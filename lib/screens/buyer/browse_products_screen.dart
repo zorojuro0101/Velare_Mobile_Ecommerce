@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'dart:async';
@@ -19,6 +20,8 @@ import 'notifications_screen.dart';
 import 'chat_list_screen.dart';
 import '../auth/login_screen.dart';
 
+import '../../utils/app_colors.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 class BrowseProductsScreen extends StatefulWidget {
   final String? category;
   final bool isGuestMode;
@@ -228,8 +231,8 @@ class _BrowseProductsScreenState extends State<BrowseProductsScreen> {
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.black,
-              foregroundColor: Colors.white,
+              backgroundColor: AppColors.onSurface(context),
+              foregroundColor: AppColors.surface(context),
             ),
             onPressed: () {
               Navigator.pop(context);
@@ -259,7 +262,7 @@ class _BrowseProductsScreenState extends State<BrowseProductsScreen> {
             barrierDismissible: false,
             builder: (context) => AlertDialog(
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(5),
+                borderRadius: BorderRadius.circular(5.r),
               ),
               title: Text(
                 'Quit App',
@@ -277,7 +280,7 @@ class _BrowseProductsScreenState extends State<BrowseProductsScreen> {
                   child: Text(
                     'Cancel',
                     style: GoogleFonts.goudyBookletter1911(
-                      color: Colors.grey[700],
+                      color: AppColors.textBody(context),
                     ),
                   ),
                 ),
@@ -302,7 +305,7 @@ class _BrowseProductsScreenState extends State<BrowseProductsScreen> {
         // If not guest mode, do nothing (handled by BuyerHome)
       },
       child: Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.surface(context),
       body: SafeArea(
         child: Column(
           children: [
@@ -327,11 +330,11 @@ class _BrowseProductsScreenState extends State<BrowseProductsScreen> {
                     // 3. Category Title
                     SliverToBoxAdapter(
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
                         child: Text(
                           _selectedCategory == 'All' ? 'All Products' : _selectedCategory,
                           style: GoogleFonts.playfairDisplay(
-                            fontSize: 24,
+                            fontSize: 24.sp,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -352,14 +355,14 @@ class _BrowseProductsScreenState extends State<BrowseProductsScreen> {
 
   Widget _buildHeader() {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16.w),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
             'Velare',
             style: GoogleFonts.playfairDisplay(
-              fontSize: 28,
+              fontSize: 28.sp,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -368,9 +371,9 @@ class _BrowseProductsScreenState extends State<BrowseProductsScreen> {
               if (widget.isGuestMode)
                 Container(
                   decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(5),
-                    border: Border.all(color: Colors.black, width: 1.5),
+                    color: AppColors.surface(context),
+                    borderRadius: BorderRadius.circular(5.r),
+                    border: Border.all(color: AppColors.onSurface(context), width: 1.5),
                   ),
                   child: TextButton.icon(
                     onPressed: () {
@@ -380,17 +383,17 @@ class _BrowseProductsScreenState extends State<BrowseProductsScreen> {
                       );
                     },
                     style: TextButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
                       minimumSize: Size.zero,
                       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     ),
-                    icon: const Icon(Icons.person_outline, color: Colors.black, size: 16),
+                    icon: Icon(Icons.person_outline, color: AppColors.onSurface(context), size: 16.r),
                     label: Text(
                       'Login',
                       style: GoogleFonts.goudyBookletter1911(
-                        color: Colors.black,
+                        color: AppColors.onSurface(context),
                         fontWeight: FontWeight.w600,
-                        fontSize: 13,
+                        fontSize: 13.sp,
                       ),
                     ),
                   ),
@@ -407,7 +410,7 @@ class _BrowseProductsScreenState extends State<BrowseProductsScreen> {
                     _loadCounts();
                   },
                 ),
-                const SizedBox(width: 8),
+                SizedBox(width: 8.w),
                 IconBadge(
                   icon: Icons.shopping_cart_outlined,
                   count: _cartCount,
@@ -419,7 +422,7 @@ class _BrowseProductsScreenState extends State<BrowseProductsScreen> {
                     _loadCounts();
                   },
                 ),
-                const SizedBox(width: 8),
+                SizedBox(width: 8.w),
                 NotificationDot(
                   icon: Icons.chat_bubble_outline,
                   showDot: _unreadChatCount > 0,
@@ -441,7 +444,7 @@ class _BrowseProductsScreenState extends State<BrowseProductsScreen> {
 
   Widget _buildSearchBar() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
       child: TextField(
         controller: _searchController,
         decoration: InputDecoration(
@@ -449,19 +452,19 @@ class _BrowseProductsScreenState extends State<BrowseProductsScreen> {
           hintStyle: GoogleFonts.goudyBookletter1911(color: Colors.grey),
           prefixIcon: const Icon(Icons.search),
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(color: Colors.grey[300]!),
+            borderRadius: BorderRadius.circular(12.r),
+            borderSide: BorderSide(color: AppColors.border(context)),
           ),
           enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(color: Colors.grey[300]!),
+            borderRadius: BorderRadius.circular(12.r),
+            borderSide: BorderSide(color: AppColors.border(context)),
           ),
           focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: const BorderSide(color: Colors.black),
+            borderRadius: BorderRadius.circular(12.r),
+            borderSide: BorderSide(color: AppColors.onSurface(context)),
           ),
           filled: true,
-          fillColor: Colors.grey[50],
+          fillColor: AppColors.scaffoldBackground(context),
         ),
         style: GoogleFonts.goudyBookletter1911(),
         onSubmitted: (value) {
@@ -495,8 +498,8 @@ class _BrowseProductsScreenState extends State<BrowseProductsScreen> {
     final infiniteCategories = [...categories, ...categories, ...categories];
 
     return Container(
-      height: 300, // Increased carousel container height
-      margin: const EdgeInsets.symmetric(vertical: 16),
+      height: 300.h, // Increased carousel container height
+      margin: EdgeInsets.symmetric(vertical: 16.h),
       child: NotificationListener<ScrollNotification>(
         onNotification: (notification) {
           if (notification is ScrollStartNotification) {
@@ -519,7 +522,7 @@ class _BrowseProductsScreenState extends State<BrowseProductsScreen> {
         child: ListView.builder(
           controller: _carouselController,
           scrollDirection: Axis.horizontal,
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20), // Added vertical padding
+          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 20.h), // Added vertical padding
           itemCount: infiniteCategories.length,
           itemBuilder: (context, index) {
             final category = infiniteCategories[index];
@@ -532,10 +535,10 @@ class _BrowseProductsScreenState extends State<BrowseProductsScreen> {
                 });
               },
               child: Container(
-                width: 165, // Increased card width
-                margin: const EdgeInsets.only(right: 12),
+                width: 165.w, // Increased card width
+                margin: EdgeInsets.only(right: 12.w),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(12.r),
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black.withValues(alpha: 0.1),
@@ -545,7 +548,7 @@ class _BrowseProductsScreenState extends State<BrowseProductsScreen> {
                   ],
                 ),
                 child: ClipRRect(
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(12.r),
                   child: Stack(
                     fit: StackFit.expand,
                     children: [
@@ -557,7 +560,7 @@ class _BrowseProductsScreenState extends State<BrowseProductsScreen> {
                           child: Center(
                             child: Icon(
                               Icons.category,
-                              size: 40,
+                              size: 40.r,
                               color: Colors.white.withValues(alpha: 0.7),
                             ),
                           ),
@@ -582,8 +585,8 @@ class _BrowseProductsScreenState extends State<BrowseProductsScreen> {
                         child: Text(
                           category['name']!,
                           style: GoogleFonts.playfairDisplay(
-                            color: Colors.white,
-                            fontSize: 14,
+                            color: AppColors.alwaysWhite,
+                            fontSize: 14.sp,
                             fontWeight: FontWeight.bold,
                           ),
                           textAlign: TextAlign.center,
@@ -662,10 +665,10 @@ class _BrowseProductsScreenState extends State<BrowseProductsScreen> {
           });
         },
         child: Container(
-          margin: const EdgeInsets.all(16),
-          height: 200,
+          margin: EdgeInsets.all(16.w),
+          height: 200.h,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(5),
+            borderRadius: BorderRadius.circular(5.r),
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withValues(alpha: 0.1),
@@ -675,7 +678,7 @@ class _BrowseProductsScreenState extends State<BrowseProductsScreen> {
             ],
           ),
           child: ClipRRect(
-            borderRadius: BorderRadius.circular(5),
+            borderRadius: BorderRadius.circular(5.r),
             child: Stack(
               fit: StackFit.expand,
               children: [
@@ -683,12 +686,12 @@ class _BrowseProductsScreenState extends State<BrowseProductsScreen> {
                   imageUrl: ImageHelper.getImageUrl(currentProduct.primaryImage ?? ''),
                   fit: BoxFit.cover,
                   placeholder: (context, url) => Container(
-                    color: Colors.grey[200],
+                    color: AppColors.surfaceVariant2(context),
                     child: const Center(child: CircularProgressIndicator()),
                   ),
                   errorWidget: (context, url, error) => Container(
-                    color: Colors.grey[200],
-                    child: const Icon(Icons.error, size: 50),
+                    color: AppColors.surfaceVariant2(context),
+                    child: Icon(Icons.error, size: 50.r),
                   ),
                 ),
                 Container(
@@ -708,10 +711,10 @@ class _BrowseProductsScreenState extends State<BrowseProductsScreen> {
                   top: 12,
                   right: 12,
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
                     decoration: BoxDecoration(
                       color: badgeColor,
-                      borderRadius: BorderRadius.circular(5),
+                      borderRadius: BorderRadius.circular(5.r),
                       boxShadow: [
                         BoxShadow(
                           color: Colors.black.withValues(alpha: 0.2),
@@ -723,15 +726,15 @@ class _BrowseProductsScreenState extends State<BrowseProductsScreen> {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(badgeIcon, color: Colors.white, size: 16),
-                        const SizedBox(width: 4),
+                        Icon(badgeIcon, color: AppColors.alwaysWhite, size: 16.r),
+                        SizedBox(width: 4.w),
                         Text(
                           badgeText,
                           style: GoogleFonts.playfairDisplay(
-                            color: Colors.white,
-                            fontSize: 12,
+                            color: AppColors.alwaysWhite,
+                            fontSize: 12.sp,
                             fontWeight: FontWeight.bold,
-                            letterSpacing: 0.5,
+                            letterSpacing: 0.5.sp,
                             shadows: [
                               Shadow(
                                 color: Colors.black.withValues(alpha: 0.5),
@@ -755,8 +758,8 @@ class _BrowseProductsScreenState extends State<BrowseProductsScreen> {
                       Text(
                         currentProduct.productName,
                         style: GoogleFonts.playfairDisplay(
-                          color: Colors.white,
-                          fontSize: 24,
+                          color: AppColors.alwaysWhite,
+                          fontSize: 24.sp,
                           fontWeight: FontWeight.bold,
                           shadows: [
                             Shadow(
@@ -769,12 +772,12 @@ class _BrowseProductsScreenState extends State<BrowseProductsScreen> {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
-                      const SizedBox(height: 4),
+                      SizedBox(height: 4.h),
                       Text(
                         '₱${currentProduct.price.toStringAsFixed(2)}',
                         style: GoogleFonts.playfairDisplay(
-                          color: Colors.white,
-                          fontSize: 20,
+                          color: AppColors.alwaysWhite,
+                          fontSize: 20.sp,
                           fontWeight: FontWeight.w600,
                           shadows: [
                             Shadow(
@@ -801,8 +804,8 @@ class _BrowseProductsScreenState extends State<BrowseProductsScreen> {
       future: _productsFuture,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const SliverFillRemaining(
-            child: Center(child: CircularProgressIndicator(color: Colors.black)),
+          return SliverFillRemaining(
+            child: Center(child: CircularProgressIndicator(color: AppColors.onSurface(context))),
           );
         }
         if (snapshot.hasError) {
@@ -822,18 +825,13 @@ class _BrowseProductsScreenState extends State<BrowseProductsScreen> {
 
         final products = snapshot.data!;
         return SliverPadding(
-          padding: const EdgeInsets.all(16),
-          sliver: SliverGrid(
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              childAspectRatio: 0.65,
-              crossAxisSpacing: 16,
-              mainAxisSpacing: 16,
-            ),
-            delegate: SliverChildBuilderDelegate(
-              (context, index) => _buildProductCard(products[index]),
-              childCount: products.length,
-            ),
+          padding: EdgeInsets.all(16.w),
+          sliver: SliverMasonryGrid.count(
+            crossAxisCount: 2,
+            crossAxisSpacing: 16.w,
+            mainAxisSpacing: 16.h,
+            childCount: products.length,
+            itemBuilder: (context, index) => _buildProductCard(products[index]),
           ),
         );
       },
@@ -877,8 +875,8 @@ class _BrowseProductsScreenState extends State<BrowseProductsScreen> {
       },
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
+          color: AppColors.surface(context),
+          borderRadius: BorderRadius.circular(12.r),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.05),
@@ -889,13 +887,14 @@ class _BrowseProductsScreenState extends State<BrowseProductsScreen> {
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Expanded(
-              flex: 3,
+            AspectRatio(
+              aspectRatio: 1,
               child: Stack(
                 children: [
                   ClipRRect(
-                    borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+                    borderRadius: BorderRadius.vertical(top: Radius.circular(12.r)),
                     child: product.primaryImage != null && product.primaryImage!.isNotEmpty
                         ? CachedNetworkImage(
                             imageUrl: ImageHelper.getImageUrl(product.primaryImage!),
@@ -903,22 +902,22 @@ class _BrowseProductsScreenState extends State<BrowseProductsScreen> {
                             height: double.infinity,
                             fit: BoxFit.cover,
                             placeholder: (context, url) => Container(
-                              color: Colors.grey[200],
+                              color: AppColors.surfaceVariant2(context),
                               child: const Center(child: CircularProgressIndicator()),
                             ),
                             errorWidget: (context, url, error) => Container(
-                              color: Colors.grey[100],
+                              color: AppColors.surfaceVariant(context),
                               child: Center(
-                                child: Icon(Icons.image_outlined, size: 50, color: Colors.grey[400]),
+                                child: Icon(Icons.image_outlined, size: 50.r, color: AppColors.textFaint(context)),
                               ),
                             ),
                           )
                         : Container(
                             width: double.infinity,
                             height: double.infinity,
-                            color: Colors.grey[100],
+                            color: AppColors.surfaceVariant(context),
                             child: Center(
-                              child: Icon(Icons.image_outlined, size: 50, color: Colors.grey[400]),
+                              child: Icon(Icons.image_outlined, size: 50.r, color: AppColors.textFaint(context)),
                             ),
                           ),
                   ),
@@ -929,9 +928,9 @@ class _BrowseProductsScreenState extends State<BrowseProductsScreen> {
                       child: GestureDetector(
                         onTap: () => _toggleFavorite(product.id),
                         child: Container(
-                          padding: const EdgeInsets.all(6),
+                          padding: EdgeInsets.all(6.w),
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: AppColors.surface(context),
                             shape: BoxShape.circle,
                             boxShadow: [
                               BoxShadow(
@@ -943,7 +942,7 @@ class _BrowseProductsScreenState extends State<BrowseProductsScreen> {
                           child: Icon(
                             isFavorite ? Icons.favorite : Icons.favorite_border,
                             color: isFavorite ? const Color(0xFFFFD700) : Colors.grey,
-                            size: 20,
+                            size: 20.r,
                           ),
                         ),
                       ),
@@ -951,44 +950,41 @@ class _BrowseProductsScreenState extends State<BrowseProductsScreen> {
                 ],
               ),
             ),
-            Expanded(
-              flex: 1,
-              child: Padding(
-                padding: const EdgeInsets.all(8),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      product.productName,
-                      style: GoogleFonts.goudyBookletter1911(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w600,
-                        height: 1.2,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
+            Padding(
+              padding: EdgeInsets.all(8.w),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    product.productName,
+                    style: GoogleFonts.goudyBookletter1911(
+                      fontSize: 13.sp,
+                      fontWeight: FontWeight.w600,
+                      height: 1.2,
                     ),
-                    const SizedBox(height: 4),
-                    Text(
-                      _longPressedProductId == product.id && product.materials != null
-                          ? product.materials!
-                          : '₱${product.price.toStringAsFixed(2)}',
-                      style: _longPressedProductId == product.id && product.materials != null
-                          ? GoogleFonts.goudyBookletter1911(
-                              fontSize: 13,
-                              color: Colors.grey[600],
-                              fontStyle: FontStyle.italic,
-                            )
-                          : GoogleFonts.playfairDisplay(
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                            ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ],
-                ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  SizedBox(height: 4.h),
+                  Text(
+                    _longPressedProductId == product.id && product.materials != null
+                        ? product.materials!
+                        : '₱${product.price.toStringAsFixed(2)}',
+                    style: _longPressedProductId == product.id && product.materials != null
+                        ? GoogleFonts.goudyBookletter1911(
+                            fontSize: 13.sp,
+                            color: AppColors.textMuted(context),
+                            fontStyle: FontStyle.italic,
+                          )
+                        : GoogleFonts.playfairDisplay(
+                            fontSize: 15.sp,
+                            fontWeight: FontWeight.bold,
+                          ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
               ),
             ),
           ],

@@ -7,6 +7,7 @@ import '../../services/auth_service.dart';
 import '../../services/cart_service.dart';
 import '../../services/chat_service.dart';
 import '../../services/notification_service.dart';
+import '../../services/theme_service.dart';
 import '../../utils/image_helper.dart';
 import '../../utils/snackbar_helper.dart';
 import '../../widgets/icon_badge.dart';
@@ -20,6 +21,8 @@ import 'cart_screen.dart';
 import 'chat_list_screen.dart';
 import 'about_us_screen.dart';
 
+import '../../utils/app_colors.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
 
@@ -165,11 +168,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: AppColors.scaffoldBackground(context),
       appBar: AppBar(
         title: Text('Profile', style: GoogleFonts.playfairDisplay(fontWeight: FontWeight.bold)),
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
+        backgroundColor: AppColors.surface(context),
+        foregroundColor: AppColors.onSurface(context),
         elevation: 0,
         actions: [
           NotificationDot(
@@ -202,7 +205,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ).then((_) => _loadCounts());
             },
           ),
-          const SizedBox(width: 8),
+          SizedBox(width: 8.w),
         ],
       ),
       body: SafeArea(
@@ -220,11 +223,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Widget _buildHeader() {
     return Container(
-      margin: const EdgeInsets.all(16),
-      padding: const EdgeInsets.all(20),
+      margin: EdgeInsets.all(16.w),
+      padding: EdgeInsets.all(20.w),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
+        color: AppColors.surface(context),
+        borderRadius: BorderRadius.circular(12.r),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.05),
@@ -237,8 +240,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
         children: [
           // Profile picture on the left
           Container(
-            width: 80,
-            height: 80,
+            width: 80.w,
+            height: 80.h,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               border: Border.all(
@@ -259,21 +262,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       imageUrl: ImageHelper.getImageUrl(_profilePicture!),
                       fit: BoxFit.cover,
                       placeholder: (context, url) => Container(
-                        color: Colors.grey[200],
-                        child: Icon(Icons.person, size: 40, color: Colors.grey[400]),
+                        color: AppColors.surfaceVariant2(context),
+                        child: Icon(Icons.person, size: 40.r, color: AppColors.textFaint(context)),
                       ),
                       errorWidget: (context, url, error) => Container(
-                        color: Colors.grey[200],
-                        child: Icon(Icons.person, size: 40, color: Colors.grey[400]),
+                        color: AppColors.surfaceVariant2(context),
+                        child: Icon(Icons.person, size: 40.r, color: AppColors.textFaint(context)),
                       ),
                     )
                   : Container(
-                      color: Colors.grey[200],
-                      child: Icon(Icons.person, size: 40, color: Colors.grey[400]),
+                      color: AppColors.surfaceVariant2(context),
+                      child: Icon(Icons.person, size: 40.r, color: AppColors.textFaint(context)),
                     ),
             ),
           ),
-          const SizedBox(width: 16),
+          SizedBox(width: 16.w),
           // Name and email in the middle
           Expanded(
             child: Column(
@@ -285,19 +288,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ? '${_firstName ?? ''} ${_lastName ?? ''}'.trim()
                       : _userEmail ?? 'User',
                   style: GoogleFonts.playfairDisplay(
-                    fontSize: 18,
+                    fontSize: 18.sp,
                     fontWeight: FontWeight.bold,
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
                 if (_userEmail != null) ...[
-                  const SizedBox(height: 4),
+                  SizedBox(height: 4.h),
                   Text(
                     _userEmail!,
                     style: GoogleFonts.goudyBookletter1911(
-                      fontSize: 13,
-                      color: Colors.grey[600],
+                      fontSize: 13.sp,
+                      color: AppColors.textMuted(context),
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -306,23 +309,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ],
             ),
           ),
-          const SizedBox(width: 12),
+          SizedBox(width: 12.w),
           // Button on the right
           OutlinedButton(
             onPressed: _showProfileModal,
             style: OutlinedButton.styleFrom(
-              foregroundColor: Colors.black,
-              side: const BorderSide(color: Colors.black, width: 1),
+              foregroundColor: AppColors.onSurface(context),
+              side: BorderSide(color: AppColors.onSurface(context), width: 1),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(6),
+                borderRadius: BorderRadius.circular(6.r),
               ),
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
               minimumSize: const Size(0, 36),
             ),
             child: Text(
               'View Details',
               style: GoogleFonts.goudyBookletter1911(
-                fontSize: 11,
+                fontSize: 11.sp,
                 fontWeight: FontWeight.w600,
                 height: 1.2,
               ),
@@ -337,7 +340,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget _buildMenuSection() {
     return Column(
       children: [
-        const SizedBox(height: 16),
+        SizedBox(height: 16.h),
         _buildMenuGroup(
           title: 'Orders',
           items: [
@@ -353,7 +356,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
           ],
         ),
-        const SizedBox(height: 16),
+        SizedBox(height: 16.h),
         _buildMenuGroup(
           title: 'Account',
           items: [
@@ -409,7 +412,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
           ],
         ),
-        const SizedBox(height: 16),
+        SizedBox(height: 16.h),
+        _buildAppearanceGroup(),
+        SizedBox(height: 16.h),
         _buildMenuGroup(
           items: [
             _MenuItem(
@@ -420,30 +425,93 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
           ],
         ),
-        const SizedBox(height: 24),
+        SizedBox(height: 24.h),
       ],
+    );
+  }
+
+  /// Appearance section with the dark mode toggle.
+  Widget _buildAppearanceGroup() {
+    final themeService = ThemeService();
+    return AnimatedBuilder(
+      animation: themeService,
+      builder: (context, _) {
+        return Container(
+          margin: EdgeInsets.symmetric(horizontal: 16.w),
+          decoration: BoxDecoration(
+            color: AppColors.surface(context),
+            borderRadius: BorderRadius.circular(12.r),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 8.h),
+                child: Text(
+                  'Appearance',
+                  style: GoogleFonts.goudyBookletter1911(
+                    fontSize: 12.sp,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textMuted(context),
+                  ),
+                ),
+              ),
+              SwitchListTile(
+                value: themeService.isDarkMode,
+                onChanged: (value) {
+                  themeService.setDarkMode(value);
+                },
+                secondary: Icon(
+                  themeService.isDarkMode
+                      ? Icons.dark_mode_outlined
+                      : Icons.light_mode_outlined,
+                  color: AppColors.onSurface(context),
+                ),
+                title: Text(
+                  'Dark Mode',
+                  style: GoogleFonts.goudyBookletter1911(
+                    fontSize: 15.sp,
+                    fontWeight: FontWeight.w500,
+                    color: AppColors.onSurface(context),
+                  ),
+                ),
+                subtitle: Text(
+                  themeService.isDarkMode ? 'On' : 'Off',
+                  style: GoogleFonts.goudyBookletter1911(
+                    fontSize: 12.sp,
+                    color: AppColors.textMuted(context),
+                  ),
+                ),
+                activeThumbColor: const Color(0xFFD4AF37),
+                contentPadding:
+                    EdgeInsets.symmetric(horizontal: 16.w, vertical: 4.h),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 
   Widget _buildMenuGroup({String? title, required List<_MenuItem> items}) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16),
+      margin: EdgeInsets.symmetric(horizontal: 16.w),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
+        color: AppColors.surface(context),
+        borderRadius: BorderRadius.circular(12.r),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (title != null) ...[
             Padding(
-              padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+              padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 8.h),
               child: Text(
                 title,
                 style: GoogleFonts.goudyBookletter1911(
-                  fontSize: 12,
+                  fontSize: 12.sp,
                   fontWeight: FontWeight.w600,
-                  color: Colors.grey[600],
+                  color: AppColors.textMuted(context),
                 ),
               ),
             ),
@@ -467,20 +535,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return ListTile(
       leading: Icon(
         item.icon,
-        color: item.isDestructive ? Colors.red : Colors.black,
+        color: item.isDestructive ? Colors.red : AppColors.onSurface(context),
       ),
       title: Text(
         item.title,
         style: GoogleFonts.goudyBookletter1911(
-          fontSize: 15,
+          fontSize: 15.sp,
           fontWeight: FontWeight.w500,
-          color: item.isDestructive ? Colors.red : Colors.black,
+          color: item.isDestructive ? Colors.red : AppColors.onSurface(context),
         ),
       ),
       trailing: Icon(
         Icons.arrow_forward_ios,
-        size: 16,
-        color: item.isDestructive ? Colors.red : Colors.grey[400],
+        size: 16.r,
+        color: item.isDestructive ? Colors.red : AppColors.textFaint(context),
       ),
       onTap: item.onTap,
     );
@@ -623,16 +691,16 @@ class _ProfileInfoModalState extends State<_ProfileInfoModal> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      decoration: BoxDecoration(
+        color: AppColors.surface(context),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
       ),
       padding: EdgeInsets.only(
         bottom: MediaQuery.of(context).viewInsets.bottom,
       ),
       child: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24),
+          padding: EdgeInsets.all(24.w),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -643,7 +711,7 @@ class _ProfileInfoModalState extends State<_ProfileInfoModal> {
                   Text(
                     'Profile Information',
                     style: GoogleFonts.playfairDisplay(
-                      fontSize: 20,
+                      fontSize: 20.sp,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -653,25 +721,25 @@ class _ProfileInfoModalState extends State<_ProfileInfoModal> {
                       child: Text(
                         'Edit',
                         style: GoogleFonts.goudyBookletter1911(
-                          fontSize: 14,
+                          fontSize: 14.sp,
                           fontWeight: FontWeight.w600,
-                          color: Colors.black,
+                          color: AppColors.onSurface(context),
                         ),
                       ),
                     ),
                 ],
               ),
-              const SizedBox(height: 24),
+              SizedBox(height: 24.h),
               Center(
                 child: GestureDetector(
                   onTap: _isEditing ? _pickImage : null,
                   child: Stack(
                     children: [
                       Container(
-                        width: 100,
-                        height: 100,
+                        width: 100.w,
+                        height: 100.h,
                         decoration: BoxDecoration(
-                          color: Colors.grey[300],
+                          color: AppColors.border(context),
                           shape: BoxShape.circle,
                         ),
                         child: _newProfilePicture != null && _newProfilePicture!.isNotEmpty
@@ -679,41 +747,41 @@ class _ProfileInfoModalState extends State<_ProfileInfoModal> {
                                 child: CachedNetworkImage(
                                   imageUrl: ImageHelper.getImageUrl(_newProfilePicture!),
                                   fit: BoxFit.cover,
-                                  placeholder: (context, url) => Icon(Icons.person, size: 50, color: Colors.grey[600]),
-                                  errorWidget: (context, url, error) => Icon(Icons.person, size: 50, color: Colors.grey[600]),
+                                  placeholder: (context, url) => Icon(Icons.person, size: 50.r, color: AppColors.textMuted(context)),
+                                  errorWidget: (context, url, error) => Icon(Icons.person, size: 50.r, color: AppColors.textMuted(context)),
                                 ),
                               )
-                            : Icon(Icons.person, size: 50, color: Colors.grey[600]),
+                            : Icon(Icons.person, size: 50.r, color: AppColors.textMuted(context)),
                       ),
                       if (_isEditing)
                         Positioned(
                           bottom: 0,
                           right: 0,
                           child: Container(
-                            padding: const EdgeInsets.all(6),
-                            decoration: const BoxDecoration(
-                              color: Colors.black,
+                            padding: EdgeInsets.all(6.w),
+                            decoration: BoxDecoration(
+                              color: AppColors.onSurface(context),
                               shape: BoxShape.circle,
                             ),
-                            child: const Icon(Icons.camera_alt, size: 16, color: Colors.white),
+                            child: Icon(Icons.camera_alt, size: 16.r, color: AppColors.surface(context)),
                           ),
                         ),
                     ],
                   ),
                 ),
               ),
-              const SizedBox(height: 24),
+              SizedBox(height: 24.h),
               _buildInfoField('First Name', _firstNameController, _isEditing),
-              const SizedBox(height: 16),
+              SizedBox(height: 16.h),
               _buildInfoField('Last Name', _lastNameController, _isEditing),
-              const SizedBox(height: 16),
+              SizedBox(height: 16.h),
               _buildInfoField('Email', TextEditingController(text: widget.userEmail ?? 'Not set'), false),
-              const SizedBox(height: 16),
+              SizedBox(height: 16.h),
               _buildInfoField('Phone Number', _phoneController, _isEditing),
-              const SizedBox(height: 16),
+              SizedBox(height: 16.h),
               _buildGenderField(),
               if (_isEditing) ...[
-                const SizedBox(height: 24),
+                SizedBox(height: 24.h),
                 Row(
                   children: [
                     Expanded(
@@ -731,46 +799,46 @@ class _ProfileInfoModalState extends State<_ProfileInfoModal> {
                         style: OutlinedButton.styleFrom(
                           side: const BorderSide(color: Colors.grey),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(5),
+                            borderRadius: BorderRadius.circular(5.r),
                           ),
-                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          padding: EdgeInsets.symmetric(vertical: 12.h),
                         ),
                         child: Text(
                           'Cancel',
                           style: GoogleFonts.goudyBookletter1911(
-                            fontSize: 14,
+                            fontSize: 14.sp,
                             fontWeight: FontWeight.w500,
-                            color: Colors.grey[700],
+                            color: AppColors.textBody(context),
                           ),
                         ),
                       ),
                     ),
-                    const SizedBox(width: 12),
+                    SizedBox(width: 12.w),
                     Expanded(
                       child: ElevatedButton(
                         onPressed: _isSaving ? null : _saveChanges,
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.black,
+                          backgroundColor: AppColors.onSurface(context),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(5),
+                            borderRadius: BorderRadius.circular(5.r),
                           ),
-                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          padding: EdgeInsets.symmetric(vertical: 12.h),
                         ),
                         child: _isSaving
-                            ? const SizedBox(
-                                width: 16,
-                                height: 16,
+                            ? SizedBox(
+                                width: 16.w,
+                                height: 16.h,
                                 child: CircularProgressIndicator(
                                   strokeWidth: 2,
-                                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                  valueColor: AlwaysStoppedAnimation<Color>(AppColors.surface(context)),
                                 ),
                               )
                             : Text(
                                 'Save',
                                 style: GoogleFonts.goudyBookletter1911(
-                                  fontSize: 14,
+                                  fontSize: 14.sp,
                                   fontWeight: FontWeight.w500,
-                                  color: Colors.white,
+                                  color: AppColors.surface(context),
                                 ),
                               ),
                       ),
@@ -792,37 +860,37 @@ class _ProfileInfoModalState extends State<_ProfileInfoModal> {
         Text(
           label,
           style: GoogleFonts.goudyBookletter1911(
-            fontSize: 12,
+            fontSize: 12.sp,
             fontWeight: FontWeight.w600,
-            color: Colors.grey[600],
+            color: AppColors.textMuted(context),
           ),
         ),
-        const SizedBox(height: 8),
+        SizedBox(height: 8.h),
         TextField(
           controller: controller,
           enabled: enabled,
           readOnly: !enabled,
-          style: GoogleFonts.goudyBookletter1911(fontSize: 14),
+          style: GoogleFonts.goudyBookletter1911(fontSize: 14.sp),
           decoration: InputDecoration(
             filled: true,
-            fillColor: enabled ? Colors.grey[100] : Colors.grey[50],
+            fillColor: enabled ? AppColors.surfaceVariant(context) : AppColors.scaffoldBackground(context),
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(color: Colors.grey[300]!),
+              borderRadius: BorderRadius.circular(8.r),
+              borderSide: BorderSide(color: AppColors.border(context)),
             ),
             enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(color: Colors.grey[300]!),
+              borderRadius: BorderRadius.circular(8.r),
+              borderSide: BorderSide(color: AppColors.border(context)),
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(color: Colors.black),
+              borderRadius: BorderRadius.circular(8.r),
+              borderSide: BorderSide(color: AppColors.onSurface(context)),
             ),
             disabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(color: Colors.grey[200]!),
+              borderRadius: BorderRadius.circular(8.r),
+              borderSide: BorderSide(color: AppColors.surfaceVariant2(context)),
             ),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
           ),
         ),
       ],
@@ -836,18 +904,18 @@ class _ProfileInfoModalState extends State<_ProfileInfoModal> {
         Text(
           'Gender',
           style: GoogleFonts.goudyBookletter1911(
-            fontSize: 12,
+            fontSize: 12.sp,
             fontWeight: FontWeight.w600,
-            color: Colors.grey[600],
+            color: AppColors.textMuted(context),
           ),
         ),
-        const SizedBox(height: 8),
+        SizedBox(height: 8.h),
         Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
           decoration: BoxDecoration(
-            color: _isEditing ? Colors.grey[100] : Colors.grey[50],
-            borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: Colors.grey[300]!),
+            color: _isEditing ? AppColors.surfaceVariant(context) : AppColors.scaffoldBackground(context),
+            borderRadius: BorderRadius.circular(8.r),
+            border: Border.all(color: AppColors.border(context)),
           ),
           child: _isEditing
               ? DropdownButtonHideUnderline(
@@ -855,8 +923,8 @@ class _ProfileInfoModalState extends State<_ProfileInfoModal> {
                     value: _selectedGender,
                     isExpanded: true,
                     isDense: true,
-                    hint: Text('Select gender', style: GoogleFonts.goudyBookletter1911(fontSize: 14)),
-                    style: GoogleFonts.goudyBookletter1911(fontSize: 14, color: Colors.black),
+                    hint: Text('Select gender', style: GoogleFonts.goudyBookletter1911(fontSize: 14.sp)),
+                    style: GoogleFonts.goudyBookletter1911(fontSize: 14.sp, color: AppColors.onSurface(context)),
                     items: ['Male', 'Female', 'Other'].map((gender) {
                       return DropdownMenuItem(
                         value: gender,
@@ -869,8 +937,8 @@ class _ProfileInfoModalState extends State<_ProfileInfoModal> {
               : Text(
                   _selectedGender ?? 'Not set',
                   style: GoogleFonts.goudyBookletter1911(
-                    fontSize: 14,
-                    color: _selectedGender != null ? Colors.black : Colors.grey[500],
+                    fontSize: 14.sp,
+                    color: _selectedGender != null ? AppColors.onSurface(context) : AppColors.textFaint(context),
                   ),
                 ),
         ),

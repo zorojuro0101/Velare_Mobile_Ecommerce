@@ -6,6 +6,8 @@ import 'favorites_screen.dart';
 import 'order_history_screen.dart';
 import 'profile_screen.dart';
 
+import '../../utils/app_colors.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 class BuyerHome extends StatefulWidget {
   const BuyerHome({super.key});
 
@@ -53,7 +55,7 @@ class _BuyerHomeState extends State<BuyerHome> {
           barrierDismissible: false,
           builder: (context) => AlertDialog(
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(5),
+              borderRadius: BorderRadius.circular(5.r),
             ),
             title: Text(
               'Quit App',
@@ -71,7 +73,7 @@ class _BuyerHomeState extends State<BuyerHome> {
                 child: Text(
                   'Cancel',
                   style: GoogleFonts.goudyBookletter1911(
-                    color: Colors.grey[700],
+                    color: AppColors.textBody(context),
                   ),
                 ),
               ),
@@ -107,8 +109,8 @@ class _BuyerHomeState extends State<BuyerHome> {
         type: BottomNavigationBarType.fixed,
         selectedItemColor: const Color(0xFFD4AF37),
         unselectedItemColor: Colors.grey,
-        selectedLabelStyle: GoogleFonts.goudyBookletter1911(fontSize: 11, fontWeight: FontWeight.w600),
-        unselectedLabelStyle: GoogleFonts.goudyBookletter1911(fontSize: 11),
+        selectedLabelStyle: GoogleFonts.goudyBookletter1911(fontSize: 11.sp, fontWeight: FontWeight.w600),
+        unselectedLabelStyle: GoogleFonts.goudyBookletter1911(fontSize: 11.sp),
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home_outlined),

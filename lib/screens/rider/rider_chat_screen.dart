@@ -6,6 +6,8 @@ import '../../services/auth_service.dart';
 import '../../utils/snackbar_helper.dart';
 import 'package:intl/intl.dart';
 
+import '../../utils/app_colors.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 class RiderChatScreen extends StatefulWidget {
   final VoidCallback? onMessagesRead;
 
@@ -237,12 +239,12 @@ class _RiderChatScreenState extends State<RiderChatScreen>
 
   Widget _buildFullChatScreen() {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.surface(context),
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.surface(context),
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          icon: Icon(Icons.arrow_back, color: AppColors.onSurface(context)),
           onPressed: () {
             setState(() {
               _selectedConversation = null;
@@ -253,8 +255,8 @@ class _RiderChatScreenState extends State<RiderChatScreen>
         title: Row(
           children: [
             CircleAvatar(
-              radius: 18,
-              backgroundColor: Colors.grey[300],
+              radius: 18.r,
+              backgroundColor: AppColors.border(context),
               child:
                   _selectedConversation!['contact_avatar'] != null &&
                       _selectedConversation!['contact_avatar']
@@ -273,7 +275,7 @@ class _RiderChatScreenState extends State<RiderChatScreen>
                               (_selectedConversation!['contact_name'] ?? 'C')[0]
                                   .toUpperCase(),
                               style: GoogleFonts.goudyBookletter1911(
-                                color: Colors.grey[700],
+                                color: AppColors.textBody(context),
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -285,12 +287,12 @@ class _RiderChatScreenState extends State<RiderChatScreen>
                       (_selectedConversation!['contact_name'] ?? 'C')[0]
                           .toUpperCase(),
                       style: GoogleFonts.goudyBookletter1911(
-                        color: Colors.grey[700],
+                        color: AppColors.textBody(context),
                         fontWeight: FontWeight.bold,
                       ),
                     ),
             ),
-            const SizedBox(width: 12),
+            SizedBox(width: 12.w),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -298,16 +300,16 @@ class _RiderChatScreenState extends State<RiderChatScreen>
                   Text(
                     _selectedConversation!['contact_name'] ?? 'Unknown',
                     style: GoogleFonts.goudyBookletter1911(
-                      color: Colors.black,
-                      fontSize: 16,
+                      color: AppColors.onSurface(context),
+                      fontSize: 16.sp,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
                   Text(
                     _selectedConversation!['context_message'] ?? '',
                     style: GoogleFonts.goudyBookletter1911(
-                      color: Colors.grey[600],
-                      fontSize: 12,
+                      color: AppColors.textMuted(context),
+                      fontSize: 12.sp,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -331,61 +333,61 @@ class _RiderChatScreenState extends State<RiderChatScreen>
 
   Widget _buildConversationsList() {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.surface(context),
       body: Column(
         children: [
           // Header with search
           Container(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-            color: Colors.white,
+            padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 0.h),
+            color: AppColors.surface(context),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   'Chats',
                   style: GoogleFonts.playfairDisplay(
-                    fontSize: 28,
+                    fontSize: 28.sp,
                     fontWeight: FontWeight.bold,
-                    color: Colors.black,
+                    color: AppColors.onSurface(context),
                   ),
                 ),
-                const SizedBox(height: 12),
+                SizedBox(height: 12.h),
                 // Search Bar
                 Container(
                   decoration: BoxDecoration(
-                    color: Colors.grey[100],
-                    borderRadius: BorderRadius.circular(5),
+                    color: AppColors.surfaceVariant(context),
+                    borderRadius: BorderRadius.circular(5.r),
                   ),
                   child: TextField(
                     controller: _searchController,
-                    style: GoogleFonts.goudyBookletter1911(color: Colors.black),
+                    style: GoogleFonts.goudyBookletter1911(color: AppColors.onSurface(context)),
                     decoration: InputDecoration(
                       hintText: 'Search',
                       hintStyle: GoogleFonts.goudyBookletter1911(
-                        color: Colors.grey[500],
+                        color: AppColors.textFaint(context),
                       ),
-                      prefixIcon: Icon(Icons.search, color: Colors.grey[600]),
+                      prefixIcon: Icon(Icons.search, color: AppColors.textMuted(context)),
                       border: InputBorder.none,
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 12,
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: 16.w,
+                        vertical: 12.h,
                       ),
                     ),
                   ),
                 ),
-                const SizedBox(height: 12),
+                SizedBox(height: 12.h),
                 // Tabs
                 TabBar(
                   controller: _tabController,
-                  labelColor: Colors.black,
-                  unselectedLabelColor: Colors.grey[600],
-                  indicatorColor: Colors.black,
+                  labelColor: AppColors.onSurface(context),
+                  unselectedLabelColor: AppColors.textMuted(context),
+                  indicatorColor: AppColors.onSurface(context),
                   labelStyle: GoogleFonts.playfairDisplay(
-                    fontSize: 16,
+                    fontSize: 16.sp,
                     fontWeight: FontWeight.w600,
                   ),
                   unselectedLabelStyle: GoogleFonts.playfairDisplay(
-                    fontSize: 16,
+                    fontSize: 16.sp,
                     fontWeight: FontWeight.normal,
                   ),
                   tabs: const [
@@ -400,10 +402,10 @@ class _RiderChatScreenState extends State<RiderChatScreen>
           // Conversations List
           Expanded(
             child: Container(
-              color: Colors.white,
+              color: AppColors.surface(context),
               child: _isLoadingConversations
-                  ? const Center(
-                      child: CircularProgressIndicator(color: Colors.black),
+                  ? Center(
+                      child: CircularProgressIndicator(color: AppColors.onSurface(context)),
                     )
                   : TabBarView(
                       controller: _tabController,
@@ -413,7 +415,7 @@ class _RiderChatScreenState extends State<RiderChatScreen>
                             ? _buildEmptyConversations('buyers')
                             : RefreshIndicator(
                                 onRefresh: _loadConversations,
-                                color: Colors.black,
+                                color: AppColors.onSurface(context),
                                 child: ListView.builder(
                                   itemCount: _filteredBuyerConversations.length,
                                   itemBuilder: (context, index) {
@@ -429,7 +431,7 @@ class _RiderChatScreenState extends State<RiderChatScreen>
                             ? _buildEmptyConversations('sellers')
                             : RefreshIndicator(
                                 onRefresh: _loadConversations,
-                                color: Colors.black,
+                                color: AppColors.onSurface(context),
                                 child: ListView.builder(
                                   itemCount:
                                       _filteredSellerConversations.length,
@@ -453,26 +455,26 @@ class _RiderChatScreenState extends State<RiderChatScreen>
   Widget _buildEmptyConversations(String type) {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(32),
+        padding: EdgeInsets.all(32.w),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.chat_bubble_outline, size: 64, color: Colors.grey[400]),
-            const SizedBox(height: 16),
+            Icon(Icons.chat_bubble_outline, size: 64.r, color: AppColors.textFaint(context)),
+            SizedBox(height: 16.h),
             Text(
               'No $type yet',
               style: GoogleFonts.goudyBookletter1911(
-                fontSize: 18,
-                color: Colors.grey[600],
+                fontSize: 18.sp,
+                color: AppColors.textMuted(context),
                 fontWeight: FontWeight.w600,
               ),
             ),
-            const SizedBox(height: 8),
+            SizedBox(height: 8.h),
             Text(
               'Accept deliveries to start chatting',
               style: GoogleFonts.goudyBookletter1911(
-                fontSize: 14,
-                color: Colors.grey[500],
+                fontSize: 14.sp,
+                color: AppColors.textFaint(context),
               ),
               textAlign: TextAlign.center,
             ),
@@ -491,7 +493,7 @@ class _RiderChatScreenState extends State<RiderChatScreen>
     final contactAvatar = conversation['contact_avatar'];
 
     return Material(
-      color: Colors.white,
+      color: AppColors.surface(context),
       child: InkWell(
         onTap: () {
           setState(() {
@@ -500,19 +502,19 @@ class _RiderChatScreenState extends State<RiderChatScreen>
           _loadMessages();
         },
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: AppColors.surface(context),
             border: Border(
-              bottom: BorderSide(color: Colors.grey[200]!, width: 0.5),
+              bottom: BorderSide(color: AppColors.surfaceVariant2(context), width: 0.5),
             ),
           ),
           child: Row(
             children: [
               // Avatar
               CircleAvatar(
-                radius: 28,
-                backgroundColor: Colors.grey[300],
+                radius: 28.r,
+                backgroundColor: AppColors.border(context),
                 child:
                     contactAvatar != null && contactAvatar.toString().isNotEmpty
                     ? ClipOval(
@@ -529,9 +531,9 @@ class _RiderChatScreenState extends State<RiderChatScreen>
                                     ? contactName[0].toUpperCase()
                                     : 'C',
                                 style: GoogleFonts.goudyBookletter1911(
-                                  fontSize: 20,
+                                  fontSize: 20.sp,
                                   fontWeight: FontWeight.bold,
-                                  color: Colors.grey[700],
+                                  color: AppColors.textBody(context),
                                 ),
                               ),
                             );
@@ -543,14 +545,14 @@ class _RiderChatScreenState extends State<RiderChatScreen>
                             ? contactName[0].toUpperCase()
                             : 'C',
                         style: GoogleFonts.goudyBookletter1911(
-                          fontSize: 20,
+                          fontSize: 20.sp,
                           fontWeight: FontWeight.bold,
-                          color: Colors.grey[700],
+                          color: AppColors.textBody(context),
                         ),
                       ),
               ),
 
-              const SizedBox(width: 12),
+              SizedBox(width: 12.w),
 
               // Conversation Details
               Expanded(
@@ -564,9 +566,9 @@ class _RiderChatScreenState extends State<RiderChatScreen>
                           child: Text(
                             contactName,
                             style: GoogleFonts.goudyBookletter1911(
-                              fontSize: 16,
+                              fontSize: 16.sp,
                               fontWeight: FontWeight.w600,
-                              color: Colors.black,
+                              color: AppColors.onSurface(context),
                             ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
@@ -576,25 +578,25 @@ class _RiderChatScreenState extends State<RiderChatScreen>
                           Text(
                             time,
                             style: GoogleFonts.goudyBookletter1911(
-                              fontSize: 12,
+                              fontSize: 12.sp,
                               color: unreadCount > 0
-                                  ? Colors.black
-                                  : Colors.grey[600],
+                                  ? AppColors.onSurface(context)
+                                  : AppColors.textMuted(context),
                             ),
                           ),
                       ],
                     ),
-                    const SizedBox(height: 4),
+                    SizedBox(height: 4.h),
                     Row(
                       children: [
                         Expanded(
                           child: Text(
                             lastMessage,
                             style: GoogleFonts.goudyBookletter1911(
-                              fontSize: 14,
+                              fontSize: 14.sp,
                               color: unreadCount > 0
-                                  ? Colors.black
-                                  : Colors.grey[600],
+                                  ? AppColors.onSurface(context)
+                                  : AppColors.textMuted(context),
                               fontWeight: unreadCount > 0
                                   ? FontWeight.w500
                                   : FontWeight.normal,
@@ -604,11 +606,11 @@ class _RiderChatScreenState extends State<RiderChatScreen>
                           ),
                         ),
                         if (unreadCount > 0) ...[
-                          const SizedBox(width: 8),
+                          SizedBox(width: 8.w),
                           Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 6,
-                              vertical: 2,
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 6.w,
+                              vertical: 2.h,
                             ),
                             decoration: const BoxDecoration(
                               color: Color(0xFF0084FF),
@@ -622,8 +624,8 @@ class _RiderChatScreenState extends State<RiderChatScreen>
                               child: Text(
                                 unreadCount.toString(),
                                 style: GoogleFonts.goudyBookletter1911(
-                                  fontSize: 11,
-                                  color: Colors.white,
+                                  fontSize: 11.sp,
+                                  color: AppColors.surface(context),
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
@@ -632,12 +634,12 @@ class _RiderChatScreenState extends State<RiderChatScreen>
                         ],
                       ],
                     ),
-                    const SizedBox(height: 2),
+                    SizedBox(height: 2.h),
                     Text(
                       contextMessage,
                       style: GoogleFonts.goudyBookletter1911(
-                        fontSize: 12,
-                        color: Colors.grey[600],
+                        fontSize: 12.sp,
+                        color: AppColors.textMuted(context),
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -654,8 +656,8 @@ class _RiderChatScreenState extends State<RiderChatScreen>
 
   Widget _buildMessagesList() {
     if (_isLoadingMessages) {
-      return const Center(
-        child: CircularProgressIndicator(color: Colors.black),
+      return Center(
+        child: CircularProgressIndicator(color: AppColors.onSurface(context)),
       );
     }
 
@@ -664,21 +666,21 @@ class _RiderChatScreenState extends State<RiderChatScreen>
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.chat_outlined, size: 64, color: Colors.grey[400]),
-            const SizedBox(height: 16),
+            Icon(Icons.chat_outlined, size: 64.r, color: AppColors.textFaint(context)),
+            SizedBox(height: 16.h),
             Text(
               'No messages yet',
               style: GoogleFonts.goudyBookletter1911(
-                fontSize: 16,
-                color: Colors.grey[600],
+                fontSize: 16.sp,
+                color: AppColors.textMuted(context),
               ),
             ),
-            const SizedBox(height: 8),
+            SizedBox(height: 8.h),
             Text(
               'Start the conversation',
               style: GoogleFonts.goudyBookletter1911(
-                fontSize: 14,
-                color: Colors.grey[500],
+                fontSize: 14.sp,
+                color: AppColors.textFaint(context),
               ),
             ),
           ],
@@ -687,10 +689,10 @@ class _RiderChatScreenState extends State<RiderChatScreen>
     }
 
     return Container(
-      color: Colors.white,
+      color: AppColors.surface(context),
       child: ListView.builder(
         controller: _messagesScrollController,
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(16.w),
         itemCount: _messages.length,
         itemBuilder: (context, index) {
           final message = _messages[index];
@@ -711,7 +713,7 @@ class _RiderChatScreenState extends State<RiderChatScreen>
     required String time,
   }) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
+      padding: EdgeInsets.only(bottom: 8.h),
       child: Row(
         mainAxisAlignment: isSent
             ? MainAxisAlignment.end
@@ -720,11 +722,11 @@ class _RiderChatScreenState extends State<RiderChatScreen>
         children: [
           if (!isSent) ...[
             CircleAvatar(
-              radius: 12,
-              backgroundColor: Colors.grey[300],
-              child: Icon(Icons.person, size: 14, color: Colors.grey[600]),
+              radius: 12.r,
+              backgroundColor: AppColors.border(context),
+              child: Icon(Icons.person, size: 14.r, color: AppColors.textMuted(context)),
             ),
-            const SizedBox(width: 8),
+            SizedBox(width: 8.w),
           ],
           Flexible(
             child: Column(
@@ -736,15 +738,15 @@ class _RiderChatScreenState extends State<RiderChatScreen>
                   constraints: BoxConstraints(
                     maxWidth: MediaQuery.of(context).size.width * 0.7,
                   ),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 10,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 16.w,
+                    vertical: 10.h,
                   ),
                   decoration: BoxDecoration(
-                    color: isSent ? const Color(0xFF0084FF) : Colors.grey[200],
+                    color: isSent ? const Color(0xFF0084FF) : AppColors.surfaceVariant2(context),
                     borderRadius: BorderRadius.only(
-                      topLeft: const Radius.circular(5),
-                      topRight: const Radius.circular(5),
+                      topLeft: Radius.circular(5.r),
+                      topRight: Radius.circular(5.r),
                       bottomLeft: Radius.circular(isSent ? 5 : 2),
                       bottomRight: Radius.circular(isSent ? 2 : 5),
                     ),
@@ -752,28 +754,28 @@ class _RiderChatScreenState extends State<RiderChatScreen>
                   child: Text(
                     message,
                     style: GoogleFonts.goudyBookletter1911(
-                      fontSize: 15,
-                      color: isSent ? Colors.white : Colors.black87,
+                      fontSize: 15.sp,
+                      color: isSent ? AppColors.surface(context) : AppColors.onSurfaceStrong(context),
                       height: 1.3,
                     ),
                   ),
                 ),
-                const SizedBox(height: 4),
+                SizedBox(height: 4.h),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 4),
+                  padding: EdgeInsets.symmetric(horizontal: 4.w),
                   child: Text(
                     time,
                     style: GoogleFonts.goudyBookletter1911(
-                      fontSize: 11,
-                      color: Colors.grey[600],
+                      fontSize: 11.sp,
+                      color: AppColors.textMuted(context),
                     ),
                   ),
                 ),
               ],
             ),
           ),
-          if (isSent) const SizedBox(width: 12),
-          if (!isSent) const SizedBox(width: 40),
+          if (isSent) SizedBox(width: 12.w),
+          if (!isSent) SizedBox(width: 40.w),
         ],
       ),
     );
@@ -781,10 +783,10 @@ class _RiderChatScreenState extends State<RiderChatScreen>
 
   Widget _buildMessageInput() {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
       decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border(top: BorderSide(color: Colors.grey[200]!)),
+        color: AppColors.surface(context),
+        border: Border(top: BorderSide(color: AppColors.surfaceVariant2(context))),
       ),
       child: Row(
         children: [
@@ -792,26 +794,26 @@ class _RiderChatScreenState extends State<RiderChatScreen>
           Expanded(
             child: Container(
               decoration: BoxDecoration(
-                color: Colors.grey[100],
-                borderRadius: BorderRadius.circular(5),
+                color: AppColors.surfaceVariant(context),
+                borderRadius: BorderRadius.circular(5.r),
               ),
               child: TextField(
                 controller: _messageController,
                 enabled: !_isSendingMessage,
                 style: GoogleFonts.goudyBookletter1911(
-                  fontSize: 15,
-                  color: Colors.black,
+                  fontSize: 15.sp,
+                  color: AppColors.onSurface(context),
                 ),
                 decoration: InputDecoration(
                   hintText: 'Message',
                   hintStyle: GoogleFonts.goudyBookletter1911(
-                    color: Colors.grey[500],
-                    fontSize: 15,
+                    color: AppColors.textFaint(context),
+                    fontSize: 15.sp,
                   ),
                   border: InputBorder.none,
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 10,
+                  contentPadding: EdgeInsets.symmetric(
+                    horizontal: 16.w,
+                    vertical: 10.h,
                   ),
                 ),
                 maxLines: null,
@@ -819,29 +821,29 @@ class _RiderChatScreenState extends State<RiderChatScreen>
               ),
             ),
           ),
-          const SizedBox(width: 8),
+          SizedBox(width: 8.w),
           // Send button
           Container(
-            width: 36,
-            height: 36,
+            width: 36.w,
+            height: 36.h,
             decoration: BoxDecoration(
               color: _isSendingMessage
-                  ? Colors.grey[400]
+                  ? AppColors.textFaint(context)
                   : const Color(0xFF0084FF),
               shape: BoxShape.circle,
             ),
             child: IconButton(
               padding: EdgeInsets.zero,
               icon: _isSendingMessage
-                  ? const SizedBox(
-                      width: 18,
-                      height: 18,
+                  ? SizedBox(
+                      width: 18.w,
+                      height: 18.h,
                       child: CircularProgressIndicator(
-                        color: Colors.white,
+                        color: AppColors.surface(context),
                         strokeWidth: 2,
                       ),
                     )
-                  : const Icon(Icons.send, color: Colors.white, size: 18),
+                  : Icon(Icons.send, color: AppColors.surface(context), size: 18.r),
               onPressed: _isSendingMessage ? null : _sendMessage,
             ),
           ),

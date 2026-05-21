@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 /// Rider Module Color Palette
 /// Matches web implementation exactly
@@ -214,7 +215,7 @@ class RiderColors {
         borderRadius: BorderRadius.circular(borderRadius),
       ),
       padding:
-          padding ?? const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+          padding ?? EdgeInsets.symmetric(horizontal: 18.w, vertical: 10.h),
     ).copyWith(
       backgroundColor: WidgetStateProperty.resolveWith<Color>((
         Set<WidgetState> states,
@@ -274,7 +275,7 @@ class RiderColors {
   /// Get card decoration
   static BoxDecoration get cardDecoration => BoxDecoration(
     color: cardBackground,
-    borderRadius: BorderRadius.circular(2),
+    borderRadius: BorderRadius.circular(2.r),
     border: Border.all(color: lightBorder, width: 1),
     boxShadow: [
       BoxShadow(color: cardShadow, blurRadius: 32, offset: const Offset(0, 8)),

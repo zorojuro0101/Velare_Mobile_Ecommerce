@@ -3,6 +3,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'buyer_main_screen.dart';
 import 'order_history_screen.dart';
 
+import '../../utils/app_colors.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 class OrderSuccessScreen extends StatelessWidget {
   final String orderId;
 
@@ -11,72 +13,72 @@ class OrderSuccessScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.surface(context),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(24),
+          padding: EdgeInsets.all(24.w),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                width: 120,
-                height: 120,
+                width: 120.w,
+                height: 120.h,
                 decoration: BoxDecoration(
                   color: Colors.green[50],
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
                   Icons.check_circle,
-                  size: 80,
+                  size: 80.r,
                   color: Colors.green[600],
                 ),
               ),
-              const SizedBox(height: 32),
+              SizedBox(height: 32.h),
               Text(
                 'Order Placed Successfully!',
                 style: GoogleFonts.playfairDisplay(
-                  fontSize: 28,
+                  fontSize: 28.sp,
                   fontWeight: FontWeight.bold,
                 ),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 16),
+              SizedBox(height: 16.h),
               Text(
                 'Your order has been placed and is being processed.',
                 style: GoogleFonts.goudyBookletter1911(
-                  fontSize: 16,
-                  color: Colors.grey[600],
+                  fontSize: 16.sp,
+                  color: AppColors.textMuted(context),
                 ),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 24),
+              SizedBox(height: 24.h),
               Container(
-                padding: const EdgeInsets.all(16),
+                padding: EdgeInsets.all(16.w),
                 decoration: BoxDecoration(
-                  color: Colors.grey[100],
-                  borderRadius: BorderRadius.circular(12),
+                  color: AppColors.surfaceVariant(context),
+                  borderRadius: BorderRadius.circular(12.r),
                 ),
                 child: Column(
                   children: [
                     Text(
                       'Order ID',
                       style: GoogleFonts.goudyBookletter1911(
-                        fontSize: 14,
-                        color: Colors.grey[600],
+                        fontSize: 14.sp,
+                        color: AppColors.textMuted(context),
                       ),
                     ),
-                    const SizedBox(height: 4),
+                    SizedBox(height: 4.h),
                     Text(
                       orderId,
                       style: GoogleFonts.goudyBookletter1911(
-                        fontSize: 18,
+                        fontSize: 18.sp,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                   ],
                 ),
               ),
-              const SizedBox(height: 48),
+              SizedBox(height: 48.h),
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
@@ -88,23 +90,23 @@ class OrderSuccessScreen extends StatelessWidget {
                     );
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.black,
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    backgroundColor: AppColors.onSurface(context),
+                    foregroundColor: AppColors.surface(context),
+                    padding: EdgeInsets.symmetric(vertical: 16.h),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(8.r),
                     ),
                   ),
                   child: Text(
                     'View My Orders',
                     style: GoogleFonts.goudyBookletter1911(
-                      fontSize: 16,
+                      fontSize: 16.sp,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
                 ),
               ),
-              const SizedBox(height: 12),
+              SizedBox(height: 12.h),
               SizedBox(
                 width: double.infinity,
                 child: OutlinedButton(
@@ -116,18 +118,18 @@ class OrderSuccessScreen extends StatelessWidget {
                     );
                   },
                   style: OutlinedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    side: const BorderSide(color: Colors.black),
+                    padding: EdgeInsets.symmetric(vertical: 16.h),
+                    side: BorderSide(color: AppColors.onSurface(context)),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(8.r),
                     ),
                   ),
                   child: Text(
                     'Continue Shopping',
                     style: GoogleFonts.goudyBookletter1911(
-                      fontSize: 16,
+                      fontSize: 16.sp,
                       fontWeight: FontWeight.w600,
-                      color: Colors.black,
+                      color: AppColors.onSurface(context),
                     ),
                   ),
                 ),

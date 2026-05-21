@@ -5,6 +5,8 @@ import 'favorites_screen.dart';
 import 'order_history_screen.dart';
 import 'profile_screen.dart';
 
+import '../../utils/app_colors.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 class BuyerMainScreen extends StatefulWidget {
   const BuyerMainScreen({super.key});
 
@@ -43,14 +45,14 @@ class _BuyerMainScreenState extends State<BuyerMainScreen> {
           currentIndex: _currentIndex,
           onTap: (index) => setState(() => _currentIndex = index),
           type: BottomNavigationBarType.fixed,
-          backgroundColor: Colors.white,
-          selectedItemColor: Colors.black,
+          backgroundColor: AppColors.surface(context),
+          selectedItemColor: AppColors.onSurface(context),
           unselectedItemColor: Colors.grey,
           selectedLabelStyle: GoogleFonts.goudyBookletter1911(
-            fontSize: 12,
+            fontSize: 12.sp,
             fontWeight: FontWeight.w600,
           ),
-          unselectedLabelStyle: GoogleFonts.goudyBookletter1911(fontSize: 12),
+          unselectedLabelStyle: GoogleFonts.goudyBookletter1911(fontSize: 12.sp),
           items: const [
             BottomNavigationBarItem(
               icon: Icon(Icons.home_outlined),

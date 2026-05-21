@@ -5,6 +5,8 @@ import 'package:video_player/video_player.dart';
 import 'dart:async';
 import 'package:visibility_detector/visibility_detector.dart';
 
+import '../../utils/app_colors.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 class AboutUsScreen extends StatefulWidget {
   const AboutUsScreen({super.key});
 
@@ -212,17 +214,17 @@ class _AboutUsScreenState extends State<AboutUsScreen> with SingleTickerProvider
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFAFAFA),
+      backgroundColor: AppColors.scaffoldBackground(context),
       appBar: AppBar(
         title: Text(
           'About Us',
           style: GoogleFonts.playfairDisplay(
             fontWeight: FontWeight.bold,
-            fontSize: 22,
+            fontSize: 22.sp,
           ),
         ),
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
+        backgroundColor: AppColors.surface(context),
+        foregroundColor: AppColors.onSurface(context),
         elevation: 0,
       ),
       body: FadeTransition(
@@ -241,7 +243,7 @@ class _AboutUsScreenState extends State<AboutUsScreen> with SingleTickerProvider
               _buildSection7(),
               _buildSection8(),
               _buildSection9(),
-              const SizedBox(height: 40),
+              SizedBox(height: 40.h),
             ],
           ),
         ),
@@ -251,7 +253,7 @@ class _AboutUsScreenState extends State<AboutUsScreen> with SingleTickerProvider
 
   Widget _buildHeroSection() {
     return Container(
-      height: 300,
+      height: 300.h,
       width: double.infinity,
       decoration: const BoxDecoration(
         color: Color(0xFF2C2236),
@@ -298,17 +300,17 @@ class _AboutUsScreenState extends State<AboutUsScreen> with SingleTickerProvider
                 Text(
                   'About Us',
                   style: GoogleFonts.cinzel(
-                    fontSize: 42,
+                    fontSize: 36.sp,
                     fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                    letterSpacing: 3,
+                    color: AppColors.alwaysWhite,
+                    letterSpacing: 3.sp,
                   ),
                 ),
-                const SizedBox(height: 12),
+                SizedBox(height: 12.h),
                 Text(
                   'Where Elegance Meets Purpose',
                   style: GoogleFonts.cormorantGaramond(
-                    fontSize: 20,
+                    fontSize: 20.sp,
                     color: Colors.white.withValues(alpha: 0.95),
                     fontStyle: FontStyle.italic,
                   ),
@@ -323,20 +325,20 @@ class _AboutUsScreenState extends State<AboutUsScreen> with SingleTickerProvider
 
   Widget _buildSection1() {
     return Container(
-      padding: const EdgeInsets.all(24),
-      margin: const EdgeInsets.only(bottom: 250),
+      padding: EdgeInsets.all(24.w),
+      margin: EdgeInsets.only(bottom: 250.h),
       child: Column(
         children: [
           // Image with fade transition (fixed height and width with proper aspect ratio)
           Container(
-            height: 300,
+            height: 300.h,
             width: double.infinity,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
-              color: Colors.grey[200],
+              borderRadius: BorderRadius.circular(12.r),
+              color: AppColors.surfaceVariant2(context),
             ),
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(12.r),
               child: AnimatedSwitcher(
                 duration: const Duration(milliseconds: 1000),
                 child: Image.asset(
@@ -344,16 +346,16 @@ class _AboutUsScreenState extends State<AboutUsScreen> with SingleTickerProvider
                   key: ValueKey<int>(_section1ImageIndex),
                   fit: BoxFit.cover, // Cover ensures consistent size, crops if needed
                   width: double.infinity,
-                  height: 300,
+                  height: 300.h,
                   errorBuilder: (context, error, stackTrace) => Container(
-                    color: Colors.grey[300],
+                    color: AppColors.border(context),
                     child: const Icon(Icons.error),
                   ),
                 ),
               ),
             ),
           ),
-          const SizedBox(height: 32),
+          SizedBox(height: 32.h),
           // Velare Logo with visibility-based fade-in animation
           VisibilityDetector(
             key: const Key('velare_logo'),
@@ -372,22 +374,22 @@ class _AboutUsScreenState extends State<AboutUsScreen> with SingleTickerProvider
               },
               child: Image.asset(
                 'assets/images/velarelogo.png',
-                height: 80,
-                errorBuilder: (context, error, stackTrace) => const SizedBox(height: 80),
+                height: 80.h,
+                errorBuilder: (context, error, stackTrace) => SizedBox(height: 80.h),
               ),
             ),
           ),
-          const SizedBox(height: 24),
+          SizedBox(height: 24.h),
           _buildAnimatedText(
             'Velare is more than a label — it\'s a movement redefining what luxury stands for.',
             delay: 200,
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
           _buildAnimatedText(
             'We believe that true elegance is not only worn — it\'s lived.',
             delay: 400,
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
           _buildAnimatedText(
             'Crafted with intention, guided by conscience, and inspired by beauty that empowers women and sustains the world we share.',
             delay: 600,
@@ -408,10 +410,10 @@ class _AboutUsScreenState extends State<AboutUsScreen> with SingleTickerProvider
         }
       },
       child: Container(
-        padding: const EdgeInsets.all(32),
-        margin: const EdgeInsets.only(bottom: 6),
+        padding: EdgeInsets.all(32.w),
+        margin: EdgeInsets.only(bottom: 6.h),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: AppColors.surface(context),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: 0.05),
@@ -427,21 +429,21 @@ class _AboutUsScreenState extends State<AboutUsScreen> with SingleTickerProvider
               'Our Story:',
               delay: 0,
               style: GoogleFonts.playfairDisplay(
-                fontSize: 72,
+                fontSize: 56.sp,
                 fontWeight: FontWeight.bold,
-                letterSpacing: -1.5,
+                letterSpacing: -1.5.sp,
                 height: 1.1,
               ),
               alignment: Alignment.centerLeft,
             ),
-            const SizedBox(height: 24),
-            Row(
+            SizedBox(height: 24.h),
+            Wrap(
               children: [
                 _buildAnimatedText(
                   'Born from ',
                   delay: 0,
                   style: GoogleFonts.cormorantGaramond(
-                    fontSize: 40,
+                    fontSize: 32.sp,
                     color: const Color(0xFFBF9F4A),
                     fontWeight: FontWeight.bold,
                     height: 1.1,
@@ -452,7 +454,7 @@ class _AboutUsScreenState extends State<AboutUsScreen> with SingleTickerProvider
                   'Elegance',
                   delay: _section2Visible ? 5000 : 999999,
                   style: GoogleFonts.cormorantGaramond(
-                    fontSize: 40,
+                    fontSize: 32.sp,
                     color: const Color(0xFFBF9F4A),
                     fontWeight: FontWeight.bold,
                     height: 1.1,
@@ -461,14 +463,14 @@ class _AboutUsScreenState extends State<AboutUsScreen> with SingleTickerProvider
                 ),
               ],
             ),
-            const SizedBox(height: 8),
-            Row(
+            SizedBox(height: 8.h),
+            Wrap(
               children: [
                 _buildAnimatedText(
                   'Guided by ',
                   delay: 0,
                   style: GoogleFonts.cormorantGaramond(
-                    fontSize: 40,
+                    fontSize: 32.sp,
                     color: const Color(0xFFBF9F4A),
                     fontWeight: FontWeight.bold,
                     height: 1.1,
@@ -479,7 +481,7 @@ class _AboutUsScreenState extends State<AboutUsScreen> with SingleTickerProvider
                   'Conscience',
                   delay: _section2Visible ? 10000 : 999999,
                   style: GoogleFonts.cormorantGaramond(
-                    fontSize: 40,
+                    fontSize: 32.sp,
                     color: const Color(0xFFBF9F4A),
                     fontWeight: FontWeight.bold,
                     height: 1.1,
@@ -488,14 +490,14 @@ class _AboutUsScreenState extends State<AboutUsScreen> with SingleTickerProvider
                 ),
               ],
             ),
-            const SizedBox(height: 40),
+            SizedBox(height: 40.h),
             _buildAnimatedText(
               'Founded on the belief that fashion should embody both artistry and responsibility, Velare was created to celebrate women — their strength, creativity, and grace.',
               delay: 0,
               style: GoogleFonts.goudyBookletter1911(
-                fontSize: 18,
+                fontSize: 18.sp,
                 height: 1.6,
-                color: Colors.grey[800],
+                color: AppColors.textBodyStrong(context),
               ),
               alignment: Alignment.centerLeft,
             ),
@@ -507,31 +509,31 @@ class _AboutUsScreenState extends State<AboutUsScreen> with SingleTickerProvider
 
   Widget _buildSection3() {
     return Container(
-      padding: const EdgeInsets.all(24),
-      margin: const EdgeInsets.only(bottom: 40),
+      padding: EdgeInsets.all(24.w),
+      margin: EdgeInsets.only(bottom: 40.h),
       child: Column(
         children: [
-          const SizedBox(height: 80), // Increased gap at the top
+          SizedBox(height: 80.h), // Increased gap at the top
           _buildAnimatedText(
             'We embrace sustainability not as a trend, but as a principle. From our in-house production led by women artisans to our use of biodegradable materials, every collection reflects our commitment to beauty that uplifts, respects, and endures.',
             delay: 0,
             style: GoogleFonts.goudyBookletter1911(
-              fontSize: 15,
+              fontSize: 15.sp,
               height: 1.6,
-              color: Colors.grey[800],
+              color: AppColors.textBodyStrong(context),
             ),
           ),
-          const SizedBox(height: 20),
+          SizedBox(height: 20.h),
           _buildAnimatedText(
             'Our journey is shaped by the United Nations Sustainable Development Goals, particularly:',
             delay: 200,
             style: GoogleFonts.goudyBookletter1911(
-              fontSize: 14,
+              fontSize: 14.sp,
               height: 1.6,
-              color: Colors.grey[700],
+              color: AppColors.textBody(context),
             ),
           ),
-          const SizedBox(height: 24),
+          SizedBox(height: 24.h),
           _buildSDGGrid(),
         ],
       ),
@@ -576,8 +578,8 @@ class _AboutUsScreenState extends State<AboutUsScreen> with SingleTickerProvider
           itemBuilder: (context, index) {
             return Container(
               decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(8),
+                color: AppColors.surface(context),
+                borderRadius: BorderRadius.circular(8.r),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withValues(alpha: 0.1),
@@ -587,12 +589,12 @@ class _AboutUsScreenState extends State<AboutUsScreen> with SingleTickerProvider
                 ],
               ),
               child: ClipRRect(
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(8.r),
                 child: Image.asset(
                   sdgs[index],
                   fit: BoxFit.cover,
                   errorBuilder: (context, error, stackTrace) => Container(
-                    color: Colors.grey[200],
+                    color: AppColors.surfaceVariant2(context),
                     child: const Icon(Icons.eco, color: Color(0xFFBF9F4A)),
                   ),
                 ),
@@ -606,10 +608,10 @@ class _AboutUsScreenState extends State<AboutUsScreen> with SingleTickerProvider
 
   Widget _buildSection4() {
     return Container(
-      padding: const EdgeInsets.all(24),
-      margin: const EdgeInsets.only(bottom: 40),
+      padding: EdgeInsets.all(24.w),
+      margin: EdgeInsets.only(bottom: 40.h),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.surface(context),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.05),
@@ -622,10 +624,10 @@ class _AboutUsScreenState extends State<AboutUsScreen> with SingleTickerProvider
         children: [
           // Image with fade transition (no shadow)
           Container(
-            height: 250,
+            height: 250.h,
             width: double.infinity,
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(12.r),
               child: AnimatedSwitcher(
                 duration: const Duration(milliseconds: 1000),
                 child: Image.asset(
@@ -633,48 +635,48 @@ class _AboutUsScreenState extends State<AboutUsScreen> with SingleTickerProvider
                   key: ValueKey<int>(_section4ImageIndex),
                   fit: BoxFit.cover,
                   errorBuilder: (context, error, stackTrace) => Container(
-                    color: Colors.grey[300],
+                    color: AppColors.border(context),
                     child: const Icon(Icons.error),
                   ),
                 ),
               ),
             ),
           ),
-          const SizedBox(height: 24),
+          SizedBox(height: 24.h),
           _buildAnimatedText(
             'Empowering Women and Communities',
             delay: 0,
             style: GoogleFonts.playfairDisplay(
-              fontSize: 26,
+              fontSize: 26.sp,
               fontWeight: FontWeight.bold,
             ),
           ),
-          const SizedBox(height: 20),
+          SizedBox(height: 20.h),
           _buildAnimatedText(
             'Behind every creation lies a story of empowerment. Through our in-house production, Velare provides meaningful opportunities for women artisans — nurturing craftsmanship, leadership, and independence.',
             delay: 200,
             style: GoogleFonts.goudyBookletter1911(
-              fontSize: 15,
+              fontSize: 15.sp,
               height: 1.6,
-              color: Colors.grey[800],
+              color: AppColors.textBodyStrong(context),
             ),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
           _buildAnimatedText(
             'We take pride in the diversity of our community — from designers and tailors to local suppliers — each one contributing to a tapestry of culture, creativity, and collaboration. Every piece carries their touch, their story, their artistry.',
             delay: 400,
             style: GoogleFonts.goudyBookletter1911(
-              fontSize: 15,
+              fontSize: 15.sp,
               height: 1.6,
-              color: Colors.grey[800],
+              color: AppColors.textBodyStrong(context),
             ),
           ),
-          const SizedBox(height: 24),
+          SizedBox(height: 24.h),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               _buildSDGImageBadge('assets/images/sdg/SDG5.png'),
-              const SizedBox(width: 16),
+              SizedBox(width: 16.w),
               _buildSDGImageBadge('assets/images/sdg/SDG8.png'),
             ],
           ),
@@ -685,16 +687,16 @@ class _AboutUsScreenState extends State<AboutUsScreen> with SingleTickerProvider
 
   Widget _buildSection5() {
     return Container(
-      padding: const EdgeInsets.all(24),
-      margin: const EdgeInsets.only(bottom: 250),
+      padding: EdgeInsets.all(24.w),
+      margin: EdgeInsets.only(bottom: 250.h),
       child: Column(
         children: [
           // Image with text overlay - reduced height to match smallest video
           Container(
-            height: 200,
+            height: 200.h,
             width: double.infinity,
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(12.r),
               child: Stack(
                 children: [
                   // Changing background image
@@ -706,7 +708,7 @@ class _AboutUsScreenState extends State<AboutUsScreen> with SingleTickerProvider
                         key: ValueKey<int>(_section5ImageIndex),
                         fit: BoxFit.cover,
                         errorBuilder: (context, error, stackTrace) => Container(
-                          color: Colors.grey[300],
+                          color: AppColors.border(context),
                           child: const Icon(Icons.error),
                         ),
                       ),
@@ -730,7 +732,7 @@ class _AboutUsScreenState extends State<AboutUsScreen> with SingleTickerProvider
                   // Text content
                   Positioned.fill(
                     child: Padding(
-                      padding: const EdgeInsets.all(20),
+                      padding: EdgeInsets.all(20.w),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -738,17 +740,17 @@ class _AboutUsScreenState extends State<AboutUsScreen> with SingleTickerProvider
                             'Sustainability in Every Stitch',
                             delay: 0,
                             style: GoogleFonts.playfairDisplay(
-                              fontSize: 28,
+                              fontSize: 28.sp,
                               fontWeight: FontWeight.bold,
-                              color: Colors.white,
+                              color: AppColors.alwaysWhite,
                             ),
                           ),
-                          const SizedBox(height: 12),
+                          SizedBox(height: 12.h),
                           _buildAnimatedText(
                             'At Velare, we design with the Earth in mind.',
                             delay: 200,
                             style: GoogleFonts.cormorantGaramond(
-                              fontSize: 18,
+                              fontSize: 18.sp,
                               fontStyle: FontStyle.italic,
                               color: Colors.white.withValues(alpha: 0.95),
                             ),
@@ -768,10 +770,10 @@ class _AboutUsScreenState extends State<AboutUsScreen> with SingleTickerProvider
 
   Widget _buildSection6() {
     return Container(
-      padding: const EdgeInsets.all(24),
-      margin: const EdgeInsets.only(bottom: 250),
+      padding: EdgeInsets.all(24.w),
+      margin: EdgeInsets.only(bottom: 250.h),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.surface(context),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.05),
@@ -786,47 +788,47 @@ class _AboutUsScreenState extends State<AboutUsScreen> with SingleTickerProvider
             'Tradition Meets Innovation',
             delay: 0,
             style: GoogleFonts.playfairDisplay(
-              fontSize: 26,
+              fontSize: 26.sp,
               fontWeight: FontWeight.bold,
             ),
           ),
-          const SizedBox(height: 20),
+          SizedBox(height: 20.h),
           _buildAnimatedText(
             'We honor craftsmanship passed down through generations while embracing innovation that advances sustainability.',
             delay: 200,
             style: GoogleFonts.goudyBookletter1911(
-              fontSize: 15,
+              fontSize: 15.sp,
               height: 1.6,
-              color: Colors.grey[800],
+              color: AppColors.textBodyStrong(context),
             ),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
           _buildAnimatedText(
             'Guided by SDG 9: Industry, Innovation, and Infrastructure, we invest in modern methods and technologies that preserve both quality and planet.',
             delay: 400,
             style: GoogleFonts.goudyBookletter1911(
-              fontSize: 15,
+              fontSize: 15.sp,
               height: 1.6,
-              color: Colors.grey[800],
+              color: AppColors.textBodyStrong(context),
             ),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
           _buildAnimatedText(
             'The result — timeless pieces that embody modern luxury, without compromise.',
             delay: 600,
             style: GoogleFonts.goudyBookletter1911(
-              fontSize: 15,
+              fontSize: 15.sp,
               height: 1.6,
-              color: Colors.grey[800],
+              color: AppColors.textBodyStrong(context),
             ),
           ),
-          const SizedBox(height: 24),
+          SizedBox(height: 24.h),
           // Image with fade transition (no shadow)
           Container(
-            height: 250,
+            height: 250.h,
             width: double.infinity,
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(12.r),
               child: AnimatedSwitcher(
                 duration: const Duration(milliseconds: 1000),
                 child: Image.asset(
@@ -834,14 +836,14 @@ class _AboutUsScreenState extends State<AboutUsScreen> with SingleTickerProvider
                   key: ValueKey<int>(_section6ImageIndex),
                   fit: BoxFit.cover,
                   errorBuilder: (context, error, stackTrace) => Container(
-                    color: Colors.grey[300],
+                    color: AppColors.border(context),
                     child: const Icon(Icons.error),
                   ),
                 ),
               ),
             ),
           ),
-          const SizedBox(height: 24),
+          SizedBox(height: 24.h),
           _buildSDGImageBadge('assets/images/sdg/SDG9.png'),
         ],
       ),
@@ -850,39 +852,39 @@ class _AboutUsScreenState extends State<AboutUsScreen> with SingleTickerProvider
 
   Widget _buildSection7() {
     return Container(
-      padding: const EdgeInsets.all(24),
-      margin: const EdgeInsets.only(bottom: 250),
+      padding: EdgeInsets.all(24.w),
+      margin: EdgeInsets.only(bottom: 250.h),
       child: Column(
         children: [
           _buildAnimatedText(
             'Collaborating for Change',
             delay: 0,
             style: GoogleFonts.playfairDisplay(
-              fontSize: 26,
+              fontSize: 26.sp,
               fontWeight: FontWeight.bold,
             ),
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12.h),
           _buildAnimatedText(
             'Meaningful impact is never achieved alone.',
             delay: 200,
             style: GoogleFonts.cormorantGaramond(
-              fontSize: 18,
+              fontSize: 18.sp,
               fontStyle: FontStyle.italic,
-              color: Colors.grey[700],
+              color: AppColors.textBody(context),
             ),
           ),
-          const SizedBox(height: 20),
+          SizedBox(height: 20.h),
           _buildAnimatedText(
             'Through partnerships with local cooperatives, eco-design advocates, and community organizations, we advance SDG 17: Partnerships for the Goals — building a network that uplifts artisans and encourages responsible fashion practices. Together, we are redefining what luxury can mean: inclusive, conscious, and transformative.',
             delay: 400,
             style: GoogleFonts.goudyBookletter1911(
-              fontSize: 15,
+              fontSize: 15.sp,
               height: 1.6,
-              color: Colors.grey[800],
+              color: AppColors.textBodyStrong(context),
             ),
           ),
-          const SizedBox(height: 24),
+          SizedBox(height: 24.h),
           _buildSDGImageBadge('assets/images/sdg/SDG17.png'),
         ],
       ),
@@ -891,10 +893,10 @@ class _AboutUsScreenState extends State<AboutUsScreen> with SingleTickerProvider
 
   Widget _buildSection8() {
     return Container(
-      padding: const EdgeInsets.all(24),
-      margin: const EdgeInsets.only(bottom: 250),
+      padding: EdgeInsets.all(24.w),
+      margin: EdgeInsets.only(bottom: 250.h),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.surface(context),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.05),
@@ -909,11 +911,11 @@ class _AboutUsScreenState extends State<AboutUsScreen> with SingleTickerProvider
             'Our Partners',
             delay: 0,
             style: GoogleFonts.playfairDisplay(
-              fontSize: 26,
+              fontSize: 26.sp,
               fontWeight: FontWeight.bold,
             ),
           ),
-          const SizedBox(height: 24),
+          SizedBox(height: 24.h),
           // Top row - 2 videos side by side
           Row(
             children: [
@@ -924,7 +926,7 @@ class _AboutUsScreenState extends State<AboutUsScreen> with SingleTickerProvider
                   'assets/videos/partners/rags-to-riches.mp4',
                 ),
               ),
-              const SizedBox(width: 12),
+              SizedBox(width: 12.w),
               Expanded(
                 child: _buildPartnerVideoCard(
                   'Habi',
@@ -934,7 +936,7 @@ class _AboutUsScreenState extends State<AboutUsScreen> with SingleTickerProvider
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12.h),
           // Bottom - 1 wide video
           _buildPartnerVideoCard(
             'Spark',
@@ -950,9 +952,9 @@ class _AboutUsScreenState extends State<AboutUsScreen> with SingleTickerProvider
     return InkWell(
       onTap: () => _launchUrl(url),
       child: Container(
-        height: 160, // Reduced height to match smallest video
+        height: 160.h, // Reduced height to match smallest video
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(12.r),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: 0.2),
@@ -962,7 +964,7 @@ class _AboutUsScreenState extends State<AboutUsScreen> with SingleTickerProvider
           ],
         ),
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(12.r),
           child: Stack(
             children: [
               // Video background
@@ -990,9 +992,9 @@ class _AboutUsScreenState extends State<AboutUsScreen> with SingleTickerProvider
                   child: Text(
                     name,
                     style: GoogleFonts.playfairDisplay(
-                      fontSize: 24,
+                      fontSize: 24.sp,
                       fontWeight: FontWeight.bold,
-                      color: Colors.white,
+                      color: AppColors.alwaysWhite,
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -1010,7 +1012,7 @@ class _AboutUsScreenState extends State<AboutUsScreen> with SingleTickerProvider
       children: [
         // Video section with overlaid text
         Container(
-          height: 400,
+          height: 400.h,
           width: double.infinity,
           decoration: const BoxDecoration(
             color: Color(0xFF2C2236),
@@ -1075,25 +1077,25 @@ class _AboutUsScreenState extends State<AboutUsScreen> with SingleTickerProvider
               // Content - Only first part of text
               Positioned.fill(
                 child: Padding(
-                  padding: const EdgeInsets.all(24),
+                  padding: EdgeInsets.all(24.w),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
                         'Our Promise',
                         style: GoogleFonts.cinzel(
-                          fontSize: 32,
+                          fontSize: 32.sp,
                           fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                          letterSpacing: 1.5,
+                          color: AppColors.alwaysWhite,
+                          letterSpacing: 1.5.sp,
                         ),
                         textAlign: TextAlign.center,
                       ),
-                      const SizedBox(height: 16),
+                      SizedBox(height: 16.h),
                       Text(
                         'Velare stands for beauty that empowers, fashion that respects, and luxury that sustains.',
                         style: GoogleFonts.cormorantGaramond(
-                          fontSize: 18,
+                          fontSize: 18.sp,
                           color: Colors.white.withValues(alpha: 0.95),
                           fontStyle: FontStyle.italic,
                           height: 1.5,
@@ -1109,13 +1111,13 @@ class _AboutUsScreenState extends State<AboutUsScreen> with SingleTickerProvider
         ),
         // Text below the video
         Container(
-          padding: const EdgeInsets.all(24),
-          color: Colors.white,
+          padding: EdgeInsets.all(24.w),
+          color: AppColors.surface(context),
           child: Text(
             'We promise to continue our journey toward an elegant future — one that celebrates women, diversity, and the planet that inspires us. Because in every thread we weave, and in every life we touch, we believe fashion should always serve a greater purpose.',
             style: GoogleFonts.goudyBookletter1911(
-              fontSize: 15,
-              color: Colors.grey[800],
+              fontSize: 15.sp,
+              color: AppColors.textBodyStrong(context),
               height: 1.6,
             ),
             textAlign: TextAlign.center,
@@ -1142,10 +1144,10 @@ class _AboutUsScreenState extends State<AboutUsScreen> with SingleTickerProvider
           );
         },
         child: Container(
-          width: 80,
-          height: 80,
+          width: 80.w,
+          height: 80.h,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(8.r),
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withValues(alpha: 0.2),
@@ -1155,13 +1157,13 @@ class _AboutUsScreenState extends State<AboutUsScreen> with SingleTickerProvider
             ],
           ),
           child: ClipRRect(
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(8.r),
             child: Image.asset(
               imagePath,
               fit: BoxFit.cover,
               errorBuilder: (context, error, stackTrace) => Container(
                 color: const Color(0xFFBF9F4A),
-                child: const Icon(Icons.eco, color: Colors.white, size: 40),
+                child: Icon(Icons.eco, color: AppColors.alwaysWhite, size: 40.r),
               ),
             ),
           ),
@@ -1200,9 +1202,9 @@ class _AboutUsScreenState extends State<AboutUsScreen> with SingleTickerProvider
         child: Text(
           text,
           style: style ?? GoogleFonts.goudyBookletter1911(
-            fontSize: 15,
+            fontSize: 15.sp,
             height: 1.6,
-            color: Colors.grey[800],
+            color: AppColors.textBodyStrong(context),
           ),
           textAlign: alignment == Alignment.center ? TextAlign.center : TextAlign.left,
         ),
@@ -1308,7 +1310,7 @@ class _VideoBackgroundState extends State<_VideoBackground> {
           child: Icon(
             Icons.play_circle_outline,
             color: Colors.white.withValues(alpha: 0.3),
-            size: 60,
+            size: 60.r,
           ),
         ),
       );

@@ -4,6 +4,8 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../services/rider_service.dart';
 import '../../services/auth_service.dart';
 
+import '../../utils/app_colors.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 class DeliveryDetailScreen extends StatefulWidget {
   final dynamic order;
 
@@ -19,18 +21,18 @@ class _DeliveryDetailScreenState extends State<DeliveryDetailScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: AppColors.scaffoldBackground(context),
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.surface(context),
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          icon: Icon(Icons.arrow_back, color: AppColors.onSurface(context)),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
           'Delivery Details',
           style: GoogleFonts.goudyBookletter1911(
-            color: Colors.black,
+            color: AppColors.onSurface(context),
             fontWeight: FontWeight.w600,
           ),
         ),
@@ -57,11 +59,11 @@ class _DeliveryDetailScreenState extends State<DeliveryDetailScreen> {
     final orderNumber = orderData['order_number'] ?? widget.order['order_id'];
 
     return Container(
-      margin: const EdgeInsets.all(16),
-      padding: const EdgeInsets.all(20),
+      margin: EdgeInsets.all(16.w),
+      padding: EdgeInsets.all(20.w),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
+        color: AppColors.surface(context),
+        borderRadius: BorderRadius.circular(12.r),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.05),
@@ -79,44 +81,44 @@ class _DeliveryDetailScreenState extends State<DeliveryDetailScreen> {
               Text(
                 'Order #$orderNumber',
                 style: GoogleFonts.goudyBookletter1911(
-                  fontSize: 18,
+                  fontSize: 18.sp,
                   fontWeight: FontWeight.bold,
                 ),
               ),
               Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 6,
+                padding: EdgeInsets.symmetric(
+                  horizontal: 12.w,
+                  vertical: 6.h,
                 ),
                 decoration: BoxDecoration(
                   color: statusColor,
-                  borderRadius: BorderRadius.circular(6),
+                  borderRadius: BorderRadius.circular(6.r),
                 ),
                 child: Text(
                   status.toUpperCase().replaceAll('_', ' '),
                   style: GoogleFonts.goudyBookletter1911(
-                    color: Colors.white,
-                    fontSize: 11,
+                    color: AppColors.surface(context),
+                    fontSize: 11.sp,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12.h),
           Text(
             'Delivery ID: ${widget.order['delivery_id']}',
             style: GoogleFonts.goudyBookletter1911(
-              fontSize: 14,
-              color: Colors.grey[600],
+              fontSize: 14.sp,
+              color: AppColors.textMuted(context),
             ),
           ),
-          const SizedBox(height: 4),
+          SizedBox(height: 4.h),
           Text(
             'Created: ${_formatDate(widget.order['created_at'])}',
             style: GoogleFonts.goudyBookletter1911(
-              fontSize: 14,
-              color: Colors.grey[600],
+              fontSize: 14.sp,
+              color: AppColors.textMuted(context),
             ),
           ),
         ],
@@ -129,11 +131,11 @@ class _DeliveryDetailScreenState extends State<DeliveryDetailScreen> {
     final buyerId = orderData['buyer_id'] ?? 'N/A';
 
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16),
-      padding: const EdgeInsets.all(20),
+      margin: EdgeInsets.symmetric(horizontal: 16.w),
+      padding: EdgeInsets.all(20.w),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
+        color: AppColors.surface(context),
+        borderRadius: BorderRadius.circular(12.r),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.05),
@@ -148,19 +150,19 @@ class _DeliveryDetailScreenState extends State<DeliveryDetailScreen> {
           Text(
             'Order Information',
             style: GoogleFonts.goudyBookletter1911(
-              fontSize: 16,
+              fontSize: 16.sp,
               fontWeight: FontWeight.w600,
             ),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
           _buildInfoRow(Icons.person, 'Buyer ID', buyerId.toString()),
-          const SizedBox(height: 12),
+          SizedBox(height: 12.h),
           _buildInfoRow(
             Icons.shopping_bag,
             'Order Number',
             orderData['order_number'] ?? 'N/A',
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12.h),
           _buildInfoRow(
             Icons.info_outline,
             'Order Status',
@@ -176,11 +178,11 @@ class _DeliveryDetailScreenState extends State<DeliveryDetailScreen> {
     final deliveryAddress = widget.order['delivery_address'] ?? 'N/A';
 
     return Container(
-      margin: const EdgeInsets.all(16),
-      padding: const EdgeInsets.all(20),
+      margin: EdgeInsets.all(16.w),
+      padding: EdgeInsets.all(20.w),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
+        color: AppColors.surface(context),
+        borderRadius: BorderRadius.circular(12.r),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.05),
@@ -195,21 +197,21 @@ class _DeliveryDetailScreenState extends State<DeliveryDetailScreen> {
           Text(
             'Pickup Location',
             style: GoogleFonts.goudyBookletter1911(
-              fontSize: 16,
+              fontSize: 16.sp,
               fontWeight: FontWeight.w600,
             ),
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12.h),
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(Icons.store, color: Colors.blue[400], size: 24),
-              const SizedBox(width: 12),
+              Icon(Icons.store, color: Colors.blue[400], size: 24.r),
+              SizedBox(width: 12.w),
               Expanded(
                 child: Text(
                   pickupAddress,
                   style: GoogleFonts.goudyBookletter1911(
-                    fontSize: 14,
+                    fontSize: 14.sp,
                     height: 1.5,
                   ),
                 ),
@@ -223,31 +225,31 @@ class _DeliveryDetailScreenState extends State<DeliveryDetailScreen> {
               Text(
                 'Delivery Address',
                 style: GoogleFonts.goudyBookletter1911(
-                  fontSize: 16,
+                  fontSize: 16.sp,
                   fontWeight: FontWeight.w600,
                 ),
               ),
               TextButton.icon(
                 onPressed: () => _openMaps(deliveryAddress),
-                icon: const Icon(Icons.navigation, size: 18),
+                icon: Icon(Icons.navigation, size: 18.r),
                 label: Text(
                   'Navigate',
-                  style: GoogleFonts.goudyBookletter1911(fontSize: 13),
+                  style: GoogleFonts.goudyBookletter1911(fontSize: 13.sp),
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12.h),
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(Icons.location_on, color: Colors.red[400], size: 24),
-              const SizedBox(width: 12),
+              Icon(Icons.location_on, color: Colors.red[400], size: 24.r),
+              SizedBox(width: 12.w),
               Expanded(
                 child: Text(
                   deliveryAddress,
                   style: GoogleFonts.goudyBookletter1911(
-                    fontSize: 14,
+                    fontSize: 14.sp,
                     height: 1.5,
                   ),
                 ),
@@ -266,11 +268,11 @@ class _DeliveryDetailScreenState extends State<DeliveryDetailScreen> {
     final riderEarnings = widget.order['rider_earnings'] ?? 0;
 
     return Container(
-      margin: const EdgeInsets.all(16),
-      padding: const EdgeInsets.all(20),
+      margin: EdgeInsets.all(16.w),
+      padding: EdgeInsets.all(20.w),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
+        color: AppColors.surface(context),
+        borderRadius: BorderRadius.circular(12.r),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.05),
@@ -285,45 +287,45 @@ class _DeliveryDetailScreenState extends State<DeliveryDetailScreen> {
           Text(
             'Payment Information',
             style: GoogleFonts.goudyBookletter1911(
-              fontSize: 16,
+              fontSize: 16.sp,
               fontWeight: FontWeight.w600,
             ),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
                 'Order Total',
                 style: GoogleFonts.goudyBookletter1911(
-                  fontSize: 14,
-                  color: Colors.grey[600],
+                  fontSize: 14.sp,
+                  color: AppColors.textMuted(context),
                 ),
               ),
               Text(
                 '₱$totalAmount',
                 style: GoogleFonts.goudyBookletter1911(
-                  fontSize: 16,
+                  fontSize: 16.sp,
                   fontWeight: FontWeight.w500,
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: 8.h),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
                 'Delivery Fee',
                 style: GoogleFonts.goudyBookletter1911(
-                  fontSize: 14,
-                  color: Colors.grey[600],
+                  fontSize: 14.sp,
+                  color: AppColors.textMuted(context),
                 ),
               ),
               Text(
                 '₱$deliveryFee',
                 style: GoogleFonts.goudyBookletter1911(
-                  fontSize: 16,
+                  fontSize: 16.sp,
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -336,7 +338,7 @@ class _DeliveryDetailScreenState extends State<DeliveryDetailScreen> {
               Text(
                 'Your Earnings',
                 style: GoogleFonts.goudyBookletter1911(
-                  fontSize: 16,
+                  fontSize: 16.sp,
                   fontWeight: FontWeight.w600,
                   color: Colors.green[700],
                 ),
@@ -344,28 +346,28 @@ class _DeliveryDetailScreenState extends State<DeliveryDetailScreen> {
               Text(
                 '₱$riderEarnings',
                 style: GoogleFonts.goudyBookletter1911(
-                  fontSize: 20,
+                  fontSize: 20.sp,
                   fontWeight: FontWeight.bold,
                   color: Colors.green[700],
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12.h),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
                 'Payment Method',
                 style: GoogleFonts.goudyBookletter1911(
-                  fontSize: 14,
-                  color: Colors.grey[600],
+                  fontSize: 14.sp,
+                  color: AppColors.textMuted(context),
                 ),
               ),
               Text(
                 'Cash on Delivery',
                 style: GoogleFonts.goudyBookletter1911(
-                  fontSize: 14,
+                  fontSize: 14.sp,
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -379,8 +381,8 @@ class _DeliveryDetailScreenState extends State<DeliveryDetailScreen> {
   Widget _buildInfoRow(IconData icon, String label, String value) {
     return Row(
       children: [
-        Icon(icon, size: 20, color: Colors.grey[700]),
-        const SizedBox(width: 12),
+        Icon(icon, size: 20.r, color: AppColors.textBody(context)),
+        SizedBox(width: 12.w),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -388,14 +390,14 @@ class _DeliveryDetailScreenState extends State<DeliveryDetailScreen> {
               Text(
                 label,
                 style: GoogleFonts.goudyBookletter1911(
-                  fontSize: 12,
-                  color: Colors.grey[600],
+                  fontSize: 12.sp,
+                  color: AppColors.textMuted(context),
                 ),
               ),
               Text(
                 value,
                 style: GoogleFonts.goudyBookletter1911(
-                  fontSize: 14,
+                  fontSize: 14.sp,
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -414,9 +416,9 @@ class _DeliveryDetailScreenState extends State<DeliveryDetailScreen> {
     }
 
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.surface(context),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.05),
@@ -433,10 +435,10 @@ class _DeliveryDetailScreenState extends State<DeliveryDetailScreen> {
                 child: ElevatedButton.icon(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue,
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    foregroundColor: AppColors.surface(context),
+                    padding: EdgeInsets.symmetric(vertical: 16.h),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(8.r),
                     ),
                   ),
                   onPressed: _pickupItem,
@@ -445,7 +447,7 @@ class _DeliveryDetailScreenState extends State<DeliveryDetailScreen> {
                     'Pickup from Seller',
                     style: GoogleFonts.goudyBookletter1911(
                       fontWeight: FontWeight.w600,
-                      fontSize: 16,
+                      fontSize: 16.sp,
                     ),
                   ),
                 ),
@@ -455,10 +457,10 @@ class _DeliveryDetailScreenState extends State<DeliveryDetailScreen> {
                 child: ElevatedButton.icon(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.green,
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    foregroundColor: AppColors.surface(context),
+                    padding: EdgeInsets.symmetric(vertical: 16.h),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(8.r),
                     ),
                   ),
                   onPressed: _markAsDelivered,
@@ -467,7 +469,7 @@ class _DeliveryDetailScreenState extends State<DeliveryDetailScreen> {
                     'Mark as Delivered',
                     style: GoogleFonts.goudyBookletter1911(
                       fontWeight: FontWeight.w600,
-                      fontSize: 16,
+                      fontSize: 16.sp,
                     ),
                   ),
                 ),
@@ -502,7 +504,7 @@ class _DeliveryDetailScreenState extends State<DeliveryDetailScreen> {
           ElevatedButton(
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.blue,
-              foregroundColor: Colors.white,
+              foregroundColor: AppColors.surface(context),
             ),
             onPressed: () => Navigator.pop(context, true),
             child: Text(
@@ -575,7 +577,7 @@ class _DeliveryDetailScreenState extends State<DeliveryDetailScreen> {
           ElevatedButton(
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.green,
-              foregroundColor: Colors.white,
+              foregroundColor: AppColors.surface(context),
             ),
             onPressed: () => Navigator.pop(context, true),
             child: Text(

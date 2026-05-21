@@ -7,6 +7,8 @@ import '../../services/withdrawal_service.dart';
 import '../../models/withdrawal_model.dart';
 import 'withdrawal_history_screen.dart';
 
+import '../../utils/app_colors.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 class EarningsScreen extends StatefulWidget {
   final bool hideScaffold;
 
@@ -129,12 +131,12 @@ class _EarningsScreenState extends State<EarningsScreen> {
                 Text(
                   'Available: ₱${_balanceInfo?.availableBalance.toStringAsFixed(2) ?? '0.00'}',
                   style: GoogleFonts.goudyBookletter1911(
-                    fontSize: 13,
+                    fontSize: 13.sp,
                     color: Colors.green[700],
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-                const SizedBox(height: 16),
+                SizedBox(height: 16.h),
                 TextField(
                   controller: amountController,
                   keyboardType: TextInputType.number,
@@ -143,23 +145,23 @@ class _EarningsScreenState extends State<EarningsScreen> {
                     hintText: 'Minimum ₱100.00',
                     prefixText: '₱ ',
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5),
+                      borderRadius: BorderRadius.circular(5.r),
                     ),
                     labelStyle: GoogleFonts.goudyBookletter1911(),
                   ),
                   style: GoogleFonts.goudyBookletter1911(),
                 ),
-                const SizedBox(height: 16),
+                SizedBox(height: 16.h),
                 DropdownButtonFormField<String>(
                   value: selectedMethod,
                   decoration: InputDecoration(
                     labelText: 'Withdrawal Method',
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5),
+                      borderRadius: BorderRadius.circular(5.r),
                     ),
                     labelStyle: GoogleFonts.goudyBookletter1911(),
                   ),
-                  style: GoogleFonts.goudyBookletter1911(color: Colors.black),
+                  style: GoogleFonts.goudyBookletter1911(color: AppColors.onSurface(context)),
                   items: ['Cash', 'Bank Transfer', 'GCash']
                       .map(
                         (method) => DropdownMenuItem(
@@ -174,7 +176,7 @@ class _EarningsScreenState extends State<EarningsScreen> {
                     }
                   },
                 ),
-                const SizedBox(height: 16),
+                SizedBox(height: 16.h),
                 TextField(
                   controller: notesController,
                   maxLines: 3,
@@ -182,7 +184,7 @@ class _EarningsScreenState extends State<EarningsScreen> {
                     labelText: 'Notes (Optional)',
                     hintText: 'Add any additional information...',
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5),
+                      borderRadius: BorderRadius.circular(5.r),
                     ),
                     labelStyle: GoogleFonts.goudyBookletter1911(),
                   ),
@@ -201,8 +203,8 @@ class _EarningsScreenState extends State<EarningsScreen> {
             ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.black,
-                foregroundColor: Colors.white,
+                backgroundColor: AppColors.onSurface(context),
+                foregroundColor: AppColors.surface(context),
               ),
               onPressed: () async {
                 final amount = double.tryParse(amountController.text);
@@ -277,8 +279,8 @@ class _EarningsScreenState extends State<EarningsScreen> {
       future: _ordersFuture,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(
-            child: CircularProgressIndicator(color: Colors.black),
+          return Center(
+            child: CircularProgressIndicator(color: AppColors.onSurface(context)),
           );
         }
         if (snapshot.hasError) {
@@ -317,15 +319,15 @@ class _EarningsScreenState extends State<EarningsScreen> {
     }
 
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: AppColors.scaffoldBackground(context),
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.surface(context),
         elevation: 0,
         automaticallyImplyLeading: false,
         title: Text(
           'Earnings',
           style: GoogleFonts.goudyBookletter1911(
-            color: Colors.black,
+            color: AppColors.onSurface(context),
             fontWeight: FontWeight.w600,
           ),
         ),
@@ -336,11 +338,11 @@ class _EarningsScreenState extends State<EarningsScreen> {
 
   Widget _buildWithdrawalSection() {
     return Container(
-      margin: const EdgeInsets.all(16),
-      padding: const EdgeInsets.all(20),
+      margin: EdgeInsets.all(16.w),
+      padding: EdgeInsets.all(20.w),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(5),
+        color: AppColors.surface(context),
+        borderRadius: BorderRadius.circular(5.r),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.05),
@@ -358,65 +360,65 @@ class _EarningsScreenState extends State<EarningsScreen> {
                 Text(
                   'Available Balance',
                   style: GoogleFonts.goudyBookletter1911(
-                    fontSize: 14,
-                    color: Colors.grey[600],
+                    fontSize: 14.sp,
+                    color: AppColors.textMuted(context),
                   ),
                 ),
-                const SizedBox(height: 8),
+                SizedBox(height: 8.h),
                 _isLoadingBalance
-                    ? const SizedBox(
-                        height: 32,
+                    ? SizedBox(
+                        height: 32.h,
                         child: CircularProgressIndicator(strokeWidth: 2),
                       )
                     : Text(
                         '₱${_balanceInfo?.availableBalance.toStringAsFixed(2) ?? '0.00'}',
                         style: GoogleFonts.playfairDisplay(
-                          fontSize: 28,
+                          fontSize: 28.sp,
                           fontWeight: FontWeight.bold,
                           color: Colors.green[700],
                           fontFeatures: const [FontFeature.tabularFigures()],
                         ),
                       ),
-                const SizedBox(height: 4),
+                SizedBox(height: 4.h),
                 Text(
                   'Minimum withdrawal: ₱100.00',
                   style: GoogleFonts.goudyBookletter1911(
-                    fontSize: 11,
-                    color: Colors.grey[500],
+                    fontSize: 11.sp,
+                    color: AppColors.textFaint(context),
                   ),
                 ),
               ],
             ),
           ),
-          const SizedBox(width: 16),
+          SizedBox(width: 16.w),
           Column(
             children: [
               ElevatedButton.icon(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.black,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 20,
-                    vertical: 12,
+                  backgroundColor: AppColors.onSurface(context),
+                  foregroundColor: AppColors.surface(context),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 20.w,
+                    vertical: 12.h,
                   ),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(5),
+                    borderRadius: BorderRadius.circular(5.r),
                   ),
                 ),
                 onPressed: (_balanceInfo?.hasPending ?? false)
                     ? null
                     : _showWithdrawalDialog,
-                icon: const Icon(Icons.account_balance_wallet, size: 18),
+                icon: Icon(Icons.account_balance_wallet, size: 18.r),
                 label: Text(
                   'Request\nWithdrawal',
                   textAlign: TextAlign.center,
                   style: GoogleFonts.goudyBookletter1911(
-                    fontSize: 12,
+                    fontSize: 12.sp,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
               ),
-              const SizedBox(height: 8),
+              SizedBox(height: 8.h),
               TextButton(
                 onPressed: () {
                   Navigator.push(
@@ -429,7 +431,7 @@ class _EarningsScreenState extends State<EarningsScreen> {
                 child: Text(
                   'View History',
                   style: GoogleFonts.goudyBookletter1911(
-                    fontSize: 11,
+                    fontSize: 11.sp,
                     color: Colors.blue,
                   ),
                 ),
@@ -443,53 +445,53 @@ class _EarningsScreenState extends State<EarningsScreen> {
 
   Widget _buildDateFilterSection() {
     return Container(
-      padding: const EdgeInsets.all(16),
-      color: Colors.white,
+      padding: EdgeInsets.all(16.w),
+      color: AppColors.surface(context),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             'Filter by Date:',
             style: GoogleFonts.goudyBookletter1911(
-              fontSize: 13,
+              fontSize: 13.sp,
               fontWeight: FontWeight.w500,
-              color: Colors.grey[700],
+              color: AppColors.textBody(context),
             ),
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12.h),
           Row(
             children: [
               Expanded(
                 child: GestureDetector(
                   onTap: () => _selectDate(context, true),
                   child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 14,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 12.w,
+                      vertical: 14.h,
                     ),
                     decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey[300]!),
-                      borderRadius: BorderRadius.circular(5),
-                      color: Colors.white,
+                      border: Border.all(color: AppColors.border(context)),
+                      borderRadius: BorderRadius.circular(5.r),
+                      color: AppColors.surface(context),
                     ),
                     child: Row(
                       children: [
                         Icon(
                           Icons.calendar_today,
-                          size: 16,
-                          color: Colors.grey[600],
+                          size: 16.r,
+                          color: AppColors.textMuted(context),
                         ),
-                        const SizedBox(width: 8),
+                        SizedBox(width: 8.w),
                         Expanded(
                           child: Text(
                             _startDate != null
                                 ? _formatDateShort(_startDate!)
                                 : 'Start Date',
                             style: GoogleFonts.goudyBookletter1911(
-                              fontSize: 13,
+                              fontSize: 13.sp,
                               color: _startDate != null
-                                  ? Colors.black
-                                  : Colors.grey[500],
+                                  ? AppColors.onSurface(context)
+                                  : AppColors.textFaint(context),
                             ),
                           ),
                         ),
@@ -499,12 +501,12 @@ class _EarningsScreenState extends State<EarningsScreen> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8),
+                padding: EdgeInsets.symmetric(horizontal: 8.w),
                 child: Text(
                   'to',
                   style: GoogleFonts.goudyBookletter1911(
-                    fontSize: 13,
-                    color: Colors.grey[600],
+                    fontSize: 13.sp,
+                    color: AppColors.textMuted(context),
                   ),
                 ),
               ),
@@ -512,33 +514,33 @@ class _EarningsScreenState extends State<EarningsScreen> {
                 child: GestureDetector(
                   onTap: () => _selectDate(context, false),
                   child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 14,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 12.w,
+                      vertical: 14.h,
                     ),
                     decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey[300]!),
-                      borderRadius: BorderRadius.circular(5),
-                      color: Colors.white,
+                      border: Border.all(color: AppColors.border(context)),
+                      borderRadius: BorderRadius.circular(5.r),
+                      color: AppColors.surface(context),
                     ),
                     child: Row(
                       children: [
                         Icon(
                           Icons.calendar_today,
-                          size: 16,
-                          color: Colors.grey[600],
+                          size: 16.r,
+                          color: AppColors.textMuted(context),
                         ),
-                        const SizedBox(width: 8),
+                        SizedBox(width: 8.w),
                         Expanded(
                           child: Text(
                             _endDate != null
                                 ? _formatDateShort(_endDate!)
                                 : 'End Date',
                             style: GoogleFonts.goudyBookletter1911(
-                              fontSize: 13,
+                              fontSize: 13.sp,
                               color: _endDate != null
-                                  ? Colors.black
-                                  : Colors.grey[500],
+                                  ? AppColors.onSurface(context)
+                                  : AppColors.textFaint(context),
                             ),
                           ),
                         ),
@@ -547,7 +549,7 @@ class _EarningsScreenState extends State<EarningsScreen> {
                   ),
                 ),
               ),
-              const SizedBox(width: 8),
+              SizedBox(width: 8.w),
               IconButton(
                 onPressed: () {
                   setState(() {
@@ -558,16 +560,16 @@ class _EarningsScreenState extends State<EarningsScreen> {
                 },
                 icon: const Icon(Icons.refresh),
                 style: IconButton.styleFrom(
-                  backgroundColor: Colors.black,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.all(12),
+                  backgroundColor: AppColors.onSurface(context),
+                  foregroundColor: AppColors.surface(context),
+                  padding: EdgeInsets.all(12.w),
                 ),
                 tooltip: 'Refresh',
               ),
             ],
           ),
           if (_startDate != null || _endDate != null) ...[
-            const SizedBox(height: 8),
+            SizedBox(height: 8.h),
             TextButton.icon(
               onPressed: () {
                 setState(() {
@@ -576,10 +578,10 @@ class _EarningsScreenState extends State<EarningsScreen> {
                 });
                 _loadOrders();
               },
-              icon: const Icon(Icons.clear, size: 16),
+              icon: Icon(Icons.clear, size: 16.r),
               label: Text(
                 'Clear Filter',
-                style: GoogleFonts.goudyBookletter1911(fontSize: 12),
+                style: GoogleFonts.goudyBookletter1911(fontSize: 12.sp),
               ),
             ),
           ],
@@ -599,10 +601,10 @@ class _EarningsScreenState extends State<EarningsScreen> {
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
-            colorScheme: const ColorScheme.light(
-              primary: Colors.black,
-              onPrimary: Colors.white,
-              onSurface: Colors.black,
+            colorScheme: ColorScheme.light(
+              primary: AppColors.onSurface(context),
+              onPrimary: AppColors.surface(context),
+              onSurface: AppColors.onSurface(context),
             ),
           ),
           child: child!,
@@ -675,11 +677,11 @@ class _EarningsScreenState extends State<EarningsScreen> {
 
   Widget _buildWithdrawalHistorySection() {
     return Container(
-      margin: const EdgeInsets.all(16),
-      padding: const EdgeInsets.all(20),
+      margin: EdgeInsets.all(16.w),
+      padding: EdgeInsets.all(20.w),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(5),
+        color: AppColors.surface(context),
+        borderRadius: BorderRadius.circular(5.r),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.05),
@@ -697,7 +699,7 @@ class _EarningsScreenState extends State<EarningsScreen> {
               Text(
                 'Withdrawal History',
                 style: GoogleFonts.playfairDisplay(
-                  fontSize: 16,
+                  fontSize: 16.sp,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -712,21 +714,21 @@ class _EarningsScreenState extends State<EarningsScreen> {
                 },
                 child: Text(
                   'View All',
-                  style: GoogleFonts.goudyBookletter1911(fontSize: 13),
+                  style: GoogleFonts.goudyBookletter1911(fontSize: 13.sp),
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12.h),
           FutureBuilder<List<WithdrawalModel>>(
             future: _withdrawalService.getWithdrawalHistory(
               AuthService().currentUserId ?? '',
             ),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(
+                return Center(
                   child: Padding(
-                    padding: EdgeInsets.all(20),
+                    padding: EdgeInsets.all(20.w),
                     child: CircularProgressIndicator(strokeWidth: 2),
                   ),
                 );
@@ -735,20 +737,20 @@ class _EarningsScreenState extends State<EarningsScreen> {
               if (!snapshot.hasData || snapshot.data!.isEmpty) {
                 return Center(
                   child: Padding(
-                    padding: const EdgeInsets.all(20),
+                    padding: EdgeInsets.all(20.w),
                     child: Column(
                       children: [
                         Icon(
                           Icons.account_balance_wallet_outlined,
-                          size: 48,
-                          color: Colors.grey[300],
+                          size: 48.r,
+                          color: AppColors.border(context),
                         ),
-                        const SizedBox(height: 8),
+                        SizedBox(height: 8.h),
                         Text(
                           'No withdrawal history',
                           style: GoogleFonts.goudyBookletter1911(
-                            fontSize: 13,
-                            color: Colors.grey[600],
+                            fontSize: 13.sp,
+                            color: AppColors.textMuted(context),
                           ),
                         ),
                       ],
@@ -776,12 +778,12 @@ class _EarningsScreenState extends State<EarningsScreen> {
         : Colors.orange;
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(12),
+      margin: EdgeInsets.only(bottom: 12.h),
+      padding: EdgeInsets.all(12.w),
       decoration: BoxDecoration(
-        color: Colors.grey[50],
-        borderRadius: BorderRadius.circular(5),
-        border: Border.all(color: Colors.grey[200]!),
+        color: AppColors.scaffoldBackground(context),
+        borderRadius: BorderRadius.circular(5.r),
+        border: Border.all(color: AppColors.surfaceVariant2(context)),
       ),
       child: Row(
         children: [
@@ -792,15 +794,15 @@ class _EarningsScreenState extends State<EarningsScreen> {
                 Text(
                   _formatDate(withdrawal.requestedAt),
                   style: GoogleFonts.goudyBookletter1911(
-                    fontSize: 12,
-                    color: Colors.grey[600],
+                    fontSize: 12.sp,
+                    color: AppColors.textMuted(context),
                   ),
                 ),
-                const SizedBox(height: 4),
+                SizedBox(height: 4.h),
                 Text(
                   '₱${withdrawal.amount.toStringAsFixed(2)}',
                   style: GoogleFonts.playfairDisplay(
-                    fontSize: 16,
+                    fontSize: 16.sp,
                     fontWeight: FontWeight.w600,
                     fontFeatures: const [FontFeature.tabularFigures()],
                   ),
@@ -809,16 +811,16 @@ class _EarningsScreenState extends State<EarningsScreen> {
             ),
           ),
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
             decoration: BoxDecoration(
               color: statusColor.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(5),
+              borderRadius: BorderRadius.circular(5.r),
               border: Border.all(color: statusColor),
             ),
             child: Text(
               withdrawal.status.toUpperCase(),
               style: GoogleFonts.goudyBookletter1911(
-                fontSize: 10,
+                fontSize: 10.sp,
                 fontWeight: FontWeight.w600,
                 color: statusColor,
               ),
@@ -838,11 +840,11 @@ class _EarningsScreenState extends State<EarningsScreen> {
     }
 
     return Container(
-      margin: const EdgeInsets.all(16),
-      padding: const EdgeInsets.all(20),
+      margin: EdgeInsets.all(16.w),
+      padding: EdgeInsets.all(20.w),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(5),
+        color: AppColors.surface(context),
+        borderRadius: BorderRadius.circular(5.r),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.05),
@@ -860,24 +862,24 @@ class _EarningsScreenState extends State<EarningsScreen> {
               Text(
                 'Delivery History',
                 style: GoogleFonts.playfairDisplay(
-                  fontSize: 16,
+                  fontSize: 16.sp,
                   fontWeight: FontWeight.w600,
                 ),
               ),
               if (orders.isNotEmpty)
                 Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 6,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 12.w,
+                    vertical: 6.h,
                   ),
                   decoration: BoxDecoration(
                     color: Colors.green.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(5),
+                    borderRadius: BorderRadius.circular(5.r),
                   ),
                   child: Text(
                     'Total: ₱${totalEarnings.toStringAsFixed(2)}',
                     style: GoogleFonts.playfairDisplay(
-                      fontSize: 13,
+                      fontSize: 13.sp,
                       fontWeight: FontWeight.w600,
                       color: Colors.green[700],
                       fontFeatures: const [FontFeature.tabularFigures()],
@@ -886,32 +888,32 @@ class _EarningsScreenState extends State<EarningsScreen> {
                 ),
             ],
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
           if (orders.isEmpty)
             Center(
               child: Padding(
-                padding: const EdgeInsets.all(40),
+                padding: EdgeInsets.all(40.w),
                 child: Column(
                   children: [
                     Icon(
                       Icons.receipt_long_outlined,
-                      size: 64,
-                      color: Colors.grey[300],
+                      size: 64.r,
+                      color: AppColors.border(context),
                     ),
-                    const SizedBox(height: 16),
+                    SizedBox(height: 16.h),
                     Text(
                       'No delivery history',
                       style: GoogleFonts.goudyBookletter1911(
-                        fontSize: 14,
-                        color: Colors.grey[600],
+                        fontSize: 14.sp,
+                        color: AppColors.textMuted(context),
                       ),
                     ),
-                    const SizedBox(height: 4),
+                    SizedBox(height: 4.h),
                     Text(
                       'Complete deliveries to start earning',
                       style: GoogleFonts.goudyBookletter1911(
-                        fontSize: 12,
-                        color: Colors.grey[500],
+                        fontSize: 12.sp,
+                        color: AppColors.textFaint(context),
                       ),
                     ),
                   ],
@@ -936,12 +938,12 @@ class _EarningsScreenState extends State<EarningsScreen> {
     final deliveredAt = order['delivered_at'];
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(16),
+      margin: EdgeInsets.only(bottom: 12.h),
+      padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
-        color: Colors.grey[50],
-        borderRadius: BorderRadius.circular(5),
-        border: Border.all(color: Colors.grey[200]!),
+        color: AppColors.scaffoldBackground(context),
+        borderRadius: BorderRadius.circular(5.r),
+        border: Border.all(color: AppColors.surfaceVariant2(context)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -956,37 +958,37 @@ class _EarningsScreenState extends State<EarningsScreen> {
                     Text(
                       'Order #$orderNumber',
                       style: GoogleFonts.playfairDisplay(
-                        fontSize: 14,
+                        fontSize: 14.sp,
                         fontWeight: FontWeight.w600,
                         fontFeatures: const [FontFeature.tabularFigures()],
                       ),
                     ),
-                    const SizedBox(height: 4),
+                    SizedBox(height: 4.h),
                     Text(
                       deliveredAt != null
                           ? _formatDate(DateTime.parse(deliveredAt))
                           : 'N/A',
                       style: GoogleFonts.goudyBookletter1911(
-                        fontSize: 11,
-                        color: Colors.grey[600],
+                        fontSize: 11.sp,
+                        color: AppColors.textMuted(context),
                       ),
                     ),
                   ],
                 ),
               ),
               Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 6,
+                padding: EdgeInsets.symmetric(
+                  horizontal: 12.w,
+                  vertical: 6.h,
                 ),
                 decoration: BoxDecoration(
                   color: Colors.green.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(5),
+                  borderRadius: BorderRadius.circular(5.r),
                 ),
                 child: Text(
                   '+₱${deliveryFee.toStringAsFixed(2)}',
                   style: GoogleFonts.playfairDisplay(
-                    fontSize: 16,
+                    fontSize: 16.sp,
                     fontWeight: FontWeight.bold,
                     color: Colors.green[700],
                     fontFeatures: const [FontFeature.tabularFigures()],
@@ -997,17 +999,17 @@ class _EarningsScreenState extends State<EarningsScreen> {
           ),
           const Divider(height: 20),
           _buildInfoRow2('Shop', seller['shop_name'] ?? 'N/A'),
-          const SizedBox(height: 6),
+          SizedBox(height: 6.h),
           _buildInfoRow2(
             'Customer',
             '${buyer['first_name'] ?? ''} ${buyer['last_name'] ?? ''}'.trim(),
           ),
-          const SizedBox(height: 6),
+          SizedBox(height: 6.h),
           _buildInfoRow2(
             'Delivery Address',
             order['delivery_address'] ?? 'N/A',
           ),
-          const SizedBox(height: 6),
+          SizedBox(height: 6.h),
           _buildInfoRow2('Order Amount', '₱${totalAmount.toStringAsFixed(2)}'),
         ],
       ),
@@ -1022,12 +1024,12 @@ class _EarningsScreenState extends State<EarningsScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SizedBox(
-          width: 120,
+          width: 120.w,
           child: Text(
             '$label:',
             style: GoogleFonts.goudyBookletter1911(
-              fontSize: 12,
-              color: Colors.grey[600],
+              fontSize: 12.sp,
+              color: AppColors.textMuted(context),
             ),
           ),
         ),
@@ -1036,12 +1038,12 @@ class _EarningsScreenState extends State<EarningsScreen> {
             value,
             style: isMonetary
                 ? GoogleFonts.playfairDisplay(
-                    fontSize: 12,
+                    fontSize: 12.sp,
                     fontWeight: FontWeight.w600,
                     fontFeatures: const [FontFeature.tabularFigures()],
                   )
                 : GoogleFonts.goudyBookletter1911(
-                    fontSize: 12,
+                    fontSize: 12.sp,
                     fontWeight: FontWeight.w500,
                   ),
           ),
@@ -1067,23 +1069,23 @@ class _EarningsScreenState extends State<EarningsScreen> {
         children: [
           Icon(
             Icons.account_balance_wallet_outlined,
-            size: 80,
-            color: Colors.grey[400],
+            size: 80.r,
+            color: AppColors.textFaint(context),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
           Text(
             'No earnings yet',
             style: GoogleFonts.goudyBookletter1911(
-              fontSize: 18,
-              color: Colors.grey[600],
+              fontSize: 18.sp,
+              color: AppColors.textMuted(context),
             ),
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: 8.h),
           Text(
             'Complete deliveries to start earning',
             style: GoogleFonts.goudyBookletter1911(
-              fontSize: 14,
-              color: Colors.grey[500],
+              fontSize: 14.sp,
+              color: AppColors.textFaint(context),
             ),
           ),
         ],
@@ -1096,21 +1098,21 @@ class _EarningsScreenState extends State<EarningsScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.error_outline, size: 80, color: Colors.grey[400]),
-          const SizedBox(height: 16),
+          Icon(Icons.error_outline, size: 80.r, color: AppColors.textFaint(context)),
+          SizedBox(height: 16.h),
           Text(
             'Connection Error',
             style: GoogleFonts.goudyBookletter1911(
-              fontSize: 18,
-              color: Colors.grey[600],
+              fontSize: 18.sp,
+              color: AppColors.textMuted(context),
             ),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.black,
-              foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+              backgroundColor: AppColors.onSurface(context),
+              foregroundColor: AppColors.surface(context),
+              padding: EdgeInsets.symmetric(horizontal: 32.w, vertical: 12.h),
             ),
             onPressed: _loadOrders,
             child: Text(

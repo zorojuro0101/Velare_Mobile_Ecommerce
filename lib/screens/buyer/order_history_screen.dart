@@ -6,10 +6,13 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../models/order_model.dart';
 import '../../services/order_service.dart';
 import '../../services/auth_service.dart';
+import '../../services/gemini_service.dart';
 import '../../utils/image_helper.dart';
 import '../../utils/snackbar_helper.dart';
 import 'order_detail_screen.dart';
 
+import '../../utils/app_colors.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 class OrderHistoryScreen extends StatefulWidget {
   final String? initialTab;
   
@@ -170,11 +173,11 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> with TickerProv
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: AppColors.scaffoldBackground(context),
       appBar: AppBar(
         title: Text('My Orders', style: GoogleFonts.playfairDisplay(fontWeight: FontWeight.bold)),
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
+        backgroundColor: AppColors.surface(context),
+        foregroundColor: AppColors.onSurface(context),
         elevation: 0,
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(60),
@@ -182,12 +185,12 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> with TickerProv
         ),
       ),
       body: _ordersFuture == null
-          ? const Center(child: CircularProgressIndicator(color: Colors.black))
+          ? Center(child: CircularProgressIndicator(color: AppColors.onSurface(context)))
           : FutureBuilder<List<Order>>(
               future: _ordersFuture,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator(color: Colors.black));
+                  return Center(child: CircularProgressIndicator(color: AppColors.onSurface(context)));
                 }
                 if (snapshot.hasError) {
                   return Center(
@@ -206,7 +209,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> with TickerProv
                 return RefreshIndicator(
                   onRefresh: () async => _loadOrders(),
                   child: ListView.builder(
-                    padding: const EdgeInsets.all(16),
+                    padding: EdgeInsets.all(16.w),
                     itemCount: filteredOrders.length,
                     itemBuilder: (context, index) {
                       return _buildOrderCard(filteredOrders[index]);
@@ -228,13 +231,13 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> with TickerProv
 
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.surface(context),
         border: Border(
-          top: BorderSide(color: Colors.grey[200]!, width: 1),
+          top: BorderSide(color: AppColors.surfaceVariant2(context), width: 1),
         ),
       ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8),
+        padding: EdgeInsets.symmetric(vertical: 8.h),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: tabs.map((tab) {
@@ -250,22 +253,22 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> with TickerProv
                     Icon(
                       tab['icon'] as IconData,
                       size: 24,
-                      color: isSelected ? const Color(0xFFD4AF37) : Colors.grey[600],
+                      color: isSelected ? const Color(0xFFD4AF37) : AppColors.textMuted(context),
                     ),
-                    const SizedBox(height: 4),
+                    SizedBox(height: 4.h),
                     Text(
                       tab['label'] as String,
                       style: GoogleFonts.goudyBookletter1911(
-                        fontSize: 11,
+                        fontSize: 11.sp,
                         fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
-                        color: isSelected ? const Color(0xFFD4AF37) : Colors.grey[600],
+                        color: isSelected ? const Color(0xFFD4AF37) : AppColors.textMuted(context),
                       ),
                       textAlign: TextAlign.center,
                     ),
-                    const SizedBox(height: 4),
+                    SizedBox(height: 4.h),
                     Container(
-                      height: 2,
-                      width: 40,
+                      height: 2.h,
+                      width: 40.w,
                       color: isSelected ? const Color(0xFFD4AF37) : Colors.transparent,
                     ),
                   ],
@@ -282,16 +285,16 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> with TickerProv
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.shopping_bag_outlined, size: 100, color: Colors.grey[400]),
-          const SizedBox(height: 16),
+          Icon(Icons.shopping_bag_outlined, size: 100.r, color: AppColors.textFaint(context)),
+          SizedBox(height: 16.h),
           Text(
             'No orders yet',
-            style: GoogleFonts.goudyBookletter1911(fontSize: 18, color: Colors.grey[600]),
+            style: GoogleFonts.goudyBookletter1911(fontSize: 18.sp, color: AppColors.textMuted(context)),
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: 8.h),
           Text(
             'Start shopping to see your orders here',
-            style: GoogleFonts.goudyBookletter1911(fontSize: 14, color: Colors.grey[500]),
+            style: GoogleFonts.goudyBookletter1911(fontSize: 14.sp, color: AppColors.textFaint(context)),
           ),
         ],
       ),
@@ -314,11 +317,11 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> with TickerProv
         ).then((_) => _loadOrders());
       },
       child: Container(
-        margin: const EdgeInsets.only(bottom: 12),
-        padding: const EdgeInsets.all(16),
+        margin: EdgeInsets.only(bottom: 12.h),
+        padding: EdgeInsets.all(16.w),
         decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
+          color: AppColors.surface(context),
+          borderRadius: BorderRadius.circular(12.r),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: 0.05),
@@ -336,11 +339,11 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> with TickerProv
                 // Shop logo
                 if (order.shopLogo != null && order.shopLogo!.isNotEmpty) ...[
                   Container(
-                    width: 32,
-                    height: 32,
+                    width: 32.w,
+                    height: 32.h,
                     decoration: BoxDecoration(
                       color: const Color(0xFFD3BD9B),
-                      borderRadius: BorderRadius.circular(6),
+                      borderRadius: BorderRadius.circular(6.r),
                     ),
                     child: Builder(
                       builder: (context) {
@@ -350,15 +353,15 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> with TickerProv
                             child: Text(
                               order.shopName?.isNotEmpty == true ? order.shopName![0].toUpperCase() : 'S',
                               style: GoogleFonts.playfairDisplay(
-                                fontSize: 14,
+                                fontSize: 14.sp,
                                 fontWeight: FontWeight.bold,
-                                color: Colors.white,
+                                color: AppColors.surface(context),
                               ),
                             ),
                           );
                         }
                         return ClipRRect(
-                          borderRadius: BorderRadius.circular(6),
+                          borderRadius: BorderRadius.circular(6.r),
                           child: CachedNetworkImage(
                             imageUrl: imageUrl,
                             fit: BoxFit.cover,
@@ -366,9 +369,9 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> with TickerProv
                               child: Text(
                                 order.shopName?.isNotEmpty == true ? order.shopName![0].toUpperCase() : 'S',
                                 style: GoogleFonts.playfairDisplay(
-                                  fontSize: 14,
+                                  fontSize: 14.sp,
                                   fontWeight: FontWeight.bold,
-                                  color: Colors.white,
+                                  color: AppColors.surface(context),
                                 ),
                               ),
                             ),
@@ -376,9 +379,9 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> with TickerProv
                               child: Text(
                                 order.shopName?.isNotEmpty == true ? order.shopName![0].toUpperCase() : 'S',
                                 style: GoogleFonts.playfairDisplay(
-                                  fontSize: 14,
+                                  fontSize: 14.sp,
                                   fontWeight: FontWeight.bold,
-                                  color: Colors.white,
+                                  color: AppColors.surface(context),
                                 ),
                               ),
                             ),
@@ -387,7 +390,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> with TickerProv
                       },
                     ),
                   ),
-                  const SizedBox(width: 10),
+                  SizedBox(width: 10.w),
                 ],
                 Expanded(
                   child: Column(
@@ -397,14 +400,14 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> with TickerProv
                         Text(
                           order.shopName!,
                           style: GoogleFonts.goudyBookletter1911(
-                            fontSize: 13,
-                            color: Colors.grey[600],
+                            fontSize: 13.sp,
+                            color: AppColors.textMuted(context),
                           ),
                         ),
                       Text(
                         order.orderNumber,
                         style: GoogleFonts.playfairDisplay(
-                          fontSize: 16,
+                          fontSize: 16.sp,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -414,23 +417,23 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> with TickerProv
                 // Status badge in upper right corner
                 (isDelivered || isCancelled)
                     ? Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                        padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5),
+                          borderRadius: BorderRadius.circular(5.r),
                         ),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Icon(
                               _getStatusIcon(status),
-                              size: 12,
+                              size: 12.r,
                               color: _getStatusColor(status),
                             ),
-                            const SizedBox(width: 4),
+                            SizedBox(width: 4.w),
                             Text(
                               _getDisplayStatus(order),
                               style: GoogleFonts.goudyBookletter1911(
-                                fontSize: 11,
+                                fontSize: 11.sp,
                                 fontWeight: FontWeight.w600,
                                 color: _getStatusColor(status),
                               ),
@@ -442,16 +445,16 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> with TickerProv
                         animation: _pulseController,
                         builder: (context, child) {
                           return Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                            padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
                             decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(5),
+                              borderRadius: BorderRadius.circular(5.r),
                             ),
                             child: Stack(
                               children: [
                                 // Animated wave overlay - moves across transparent background
                                 Positioned.fill(
                                   child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(5),
+                                    borderRadius: BorderRadius.circular(5.r),
                                     child: Opacity(
                                       opacity: _pulseController.value,
                                       child: FractionallySizedBox(
@@ -483,14 +486,14 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> with TickerProv
                                   children: [
                                     Icon(
                                       _getStatusIcon(status),
-                                      size: 12,
+                                      size: 12.r,
                                       color: _getStatusColor(status),
                                     ),
-                                    const SizedBox(width: 4),
+                                    SizedBox(width: 4.w),
                                     Text(
                                       _getDisplayStatus(order),
                                       style: GoogleFonts.goudyBookletter1911(
-                                        fontSize: 11,
+                                        fontSize: 11.sp,
                                         fontWeight: FontWeight.w600,
                                         color: _getStatusColor(status),
                                       ),
@@ -504,40 +507,40 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> with TickerProv
                       ),
               ],
             ),
-            const SizedBox(height: 12),
+            SizedBox(height: 12.h),
             // Display order items (products) - no border
             if (order.items != null && order.items!.isNotEmpty) ...[
               ...order.items!.map((item) => Padding(
-                padding: const EdgeInsets.only(bottom: 8),
+                padding: EdgeInsets.only(bottom: 8.h),
                 child: Row(
                   children: [
                     // Product image
                     Container(
-                      width: 50,
-                      height: 50,
+                      width: 50.w,
+                      height: 50.h,
                       decoration: BoxDecoration(
                         color: const Color(0xFFD3BD9B),
-                        borderRadius: BorderRadius.circular(6),
+                        borderRadius: BorderRadius.circular(6.r),
                       ),
                       child: item.primaryImage != null && item.primaryImage!.isNotEmpty
                           ? ClipRRect(
-                              borderRadius: BorderRadius.circular(6),
+                              borderRadius: BorderRadius.circular(6.r),
                               child: CachedNetworkImage(
                                 imageUrl: ImageHelper.getImageUrl(item.primaryImage!),
                                 fit: BoxFit.cover,
-                                placeholder: (context, url) => const Center(
-                                  child: Icon(Icons.shopping_bag, color: Colors.white, size: 20),
+                                placeholder: (context, url) => Center(
+                                  child: Icon(Icons.shopping_bag, color: AppColors.surface(context), size: 20.r),
                                 ),
-                                errorWidget: (context, url, error) => const Center(
-                                  child: Icon(Icons.shopping_bag, color: Colors.white, size: 20),
+                                errorWidget: (context, url, error) => Center(
+                                  child: Icon(Icons.shopping_bag, color: AppColors.surface(context), size: 20.r),
                                 ),
                               ),
                             )
-                          : const Center(
-                              child: Icon(Icons.shopping_bag, color: Colors.white, size: 20),
+                          : Center(
+                              child: Icon(Icons.shopping_bag, color: AppColors.surface(context), size: 20.r),
                             ),
                     ),
-                    const SizedBox(width: 12),
+                    SizedBox(width: 12.w),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -545,41 +548,41 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> with TickerProv
                           Text(
                             item.productName,
                             style: GoogleFonts.goudyBookletter1911(
-                              fontSize: 14,
+                              fontSize: 14.sp,
                               fontWeight: FontWeight.w500,
                             ),
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                           ),
                           if (item.variantColor != null || item.variantSize != null) ...[
-                            const SizedBox(height: 4),
+                            SizedBox(height: 4.h),
                             Text(
                               [
                                 if (item.variantColor != null) item.variantColor,
                                 if (item.variantSize != null) item.variantSize,
                               ].join(' • '),
                               style: GoogleFonts.goudyBookletter1911(
-                                fontSize: 12,
-                                color: Colors.grey[600],
+                                fontSize: 12.sp,
+                                color: AppColors.textMuted(context),
                               ),
                             ),
                           ],
                         ],
                       ),
                     ),
-                    const SizedBox(width: 12),
+                    SizedBox(width: 12.w),
                     Text(
                       'x${item.quantity}',
                       style: GoogleFonts.playfairDisplay(
-                        fontSize: 14,
+                        fontSize: 14.sp,
                         fontWeight: FontWeight.w600,
-                        color: Colors.grey[700],
+                        color: AppColors.textBody(context),
                       ),
                     ),
                   ],
                 ),
               )),
-              const SizedBox(height: 12),
+              SizedBox(height: 12.h),
             ],
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -587,14 +590,14 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> with TickerProv
                 Text(
                   'Total',
                   style: GoogleFonts.goudyBookletter1911(
-                    fontSize: 14,
-                    color: Colors.grey[600],
+                    fontSize: 14.sp,
+                    color: AppColors.textMuted(context),
                   ),
                 ),
                 Text(
                   '₱${order.totalAmount.toStringAsFixed(2)}',
                   style: GoogleFonts.playfairDisplay(
-                    fontSize: 18,
+                    fontSize: 18.sp,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -602,28 +605,28 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> with TickerProv
             ),
             // Cancel button below total price on lower right
             if (canCancel) ...[
-              const SizedBox(height: 12),
+              SizedBox(height: 12.h),
               Align(
                 alignment: Alignment.centerRight,
                 child: SizedBox(
-                  height: 28,
+                  height: 28.h,
                   child: OutlinedButton(
                     onPressed: () => _cancelOrder(order),
                     style: OutlinedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
-                      side: const BorderSide(color: Colors.black, width: 1),
-                      backgroundColor: Colors.white,
+                      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 0.h),
+                      side: BorderSide(color: AppColors.onSurface(context), width: 1),
+                      backgroundColor: AppColors.surface(context),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(5),
+                        borderRadius: BorderRadius.circular(5.r),
                       ),
                       minimumSize: const Size(0, 28),
                     ),
                     child: Text(
                       'Cancel',
                       style: GoogleFonts.goudyBookletter1911(
-                        fontSize: 11,
+                        fontSize: 11.sp,
                         fontWeight: FontWeight.w600,
-                        color: Colors.black,
+                        color: AppColors.onSurface(context),
                       ),
                     ),
                   ),
@@ -633,20 +636,20 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> with TickerProv
             // Order Received button when order status is delivered but not yet received
             if (order.orderStatus == 'delivered' && 
                 !order.orderReceived) ...[
-              const SizedBox(height: 12),
+              SizedBox(height: 12.h),
               Align(
                 alignment: Alignment.centerRight,
                 child: SizedBox(
-                  height: 28,
+                  height: 28.h,
                   child: OutlinedButton(
                     onPressed: () => _markOrderReceived(order),
                     style: OutlinedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
-                      backgroundColor: Colors.white,
+                      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 0.h),
+                      backgroundColor: AppColors.surface(context),
                       foregroundColor: const Color(0xFFD4AF37),
                       side: const BorderSide(color: Color(0xFFD4AF37), width: 1),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(5),
+                        borderRadius: BorderRadius.circular(5.r),
                       ),
                       minimumSize: const Size(0, 28),
                       elevation: 0,
@@ -654,7 +657,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> with TickerProv
                     child: Text(
                       'Order Received',
                       style: GoogleFonts.goudyBookletter1911(
-                        fontSize: 11,
+                        fontSize: 11.sp,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -664,20 +667,20 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> with TickerProv
             ],
             // Write a Review button when order is received but not yet reviewed
             if (order.orderReceived && !order.hasReviews) ...[
-              const SizedBox(height: 12),
+              SizedBox(height: 12.h),
               Align(
                 alignment: Alignment.centerRight,
                 child: SizedBox(
-                  height: 28,
+                  height: 28.h,
                   child: OutlinedButton(
                     onPressed: () => _showReviewDialog(order),
                     style: OutlinedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
-                      backgroundColor: Colors.white,
-                      foregroundColor: Colors.black,
-                      side: const BorderSide(color: Colors.black, width: 1),
+                      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 0.h),
+                      backgroundColor: AppColors.surface(context),
+                      foregroundColor: AppColors.onSurface(context),
+                      side: BorderSide(color: AppColors.onSurface(context), width: 1),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(5),
+                        borderRadius: BorderRadius.circular(5.r),
                       ),
                       minimumSize: const Size(0, 28),
                       elevation: 0,
@@ -685,7 +688,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> with TickerProv
                     child: Text(
                       'Write a Review',
                       style: GoogleFonts.goudyBookletter1911(
-                        fontSize: 11,
+                        fontSize: 11.sp,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -860,11 +863,11 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> with TickerProv
               );
             },
             child: Container(
-              width: 320,
-              padding: const EdgeInsets.all(16),
+              width: 320.w,
+              padding: EdgeInsets.all(16.w),
               decoration: BoxDecoration(
                 color: backgroundColor,
-                borderRadius: BorderRadius.circular(5),
+                borderRadius: BorderRadius.circular(5.r),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withOpacity(0.3),
@@ -877,16 +880,16 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> with TickerProv
                 children: [
                   Icon(
                     backgroundColor == Colors.green ? Icons.check_circle : Icons.error,
-                    color: Colors.white,
-                    size: 24,
+                    color: AppColors.surface(context),
+                    size: 24.r,
                   ),
-                  const SizedBox(width: 12),
+                  SizedBox(width: 12.w),
                   Expanded(
                     child: Text(
                       message,
                       style: GoogleFonts.goudyBookletter1911(
-                        color: Colors.white,
-                        fontSize: 14,
+                        color: AppColors.surface(context),
+                        fontSize: 14.sp,
                       ),
                     ),
                   ),
@@ -895,7 +898,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> with TickerProv
                       _currentNotification?.remove();
                       _currentNotification = null;
                     },
-                    icon: const Icon(Icons.close, color: Colors.white),
+                    icon: Icon(Icons.close, color: AppColors.surface(context)),
                   ),
                 ],
               ),
@@ -937,8 +940,8 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> with TickerProv
       barrierDismissible: false,
       builder: (dialogContext) => StatefulBuilder(
         builder: (context, setState) => AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-          contentPadding: const EdgeInsets.all(24),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.r)),
+          contentPadding: EdgeInsets.all(24.w),
           title: Text(
             'Write a Review',
             style: GoogleFonts.playfairDisplay(fontWeight: FontWeight.bold),
@@ -952,21 +955,21 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> with TickerProv
                 children: [
                   if (errorMessage != null) ...[
                     Container(
-                      padding: const EdgeInsets.all(12),
+                      padding: EdgeInsets.all(12.w),
                       decoration: BoxDecoration(
                         color: Colors.red[50],
                         border: Border.all(color: Colors.red),
-                        borderRadius: BorderRadius.circular(5),
+                        borderRadius: BorderRadius.circular(5.r),
                       ),
                       child: Row(
                         children: [
-                          const Icon(Icons.error_outline, color: Colors.red, size: 20),
-                          const SizedBox(width: 8),
+                          Icon(Icons.error_outline, color: Colors.red, size: 20.r),
+                          SizedBox(width: 8.w),
                           Expanded(
                             child: Text(
                               errorMessage!,
                               style: GoogleFonts.goudyBookletter1911(
-                                fontSize: 13,
+                                fontSize: 13.sp,
                                 color: Colors.red[900],
                               ),
                             ),
@@ -974,12 +977,12 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> with TickerProv
                         ],
                       ),
                     ),
-                    const SizedBox(height: 16),
+                    SizedBox(height: 16.h),
                   ],
                   ...List.generate(order.items!.length, (index) {
                     final item = order.items![index];
                     return Padding(
-                      padding: const EdgeInsets.only(bottom: 16),
+                      padding: EdgeInsets.only(bottom: 16.h),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -987,24 +990,24 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> with TickerProv
                           Row(
                             children: [
                               Container(
-                            width: 80,
-                            height: 80,
+                            width: 80.w,
+                            height: 80.h,
                             decoration: BoxDecoration(
                               color: const Color(0xFFD3BD9B),
-                              borderRadius: BorderRadius.circular(8),
+                              borderRadius: BorderRadius.circular(8.r),
                             ),
                             child: item.primaryImage != null && item.primaryImage!.isNotEmpty
                                 ? ClipRRect(
-                                    borderRadius: BorderRadius.circular(8),
+                                    borderRadius: BorderRadius.circular(8.r),
                                     child: CachedNetworkImage(
                                       imageUrl: ImageHelper.getImageUrl(item.primaryImage!),
                                       fit: BoxFit.cover,
-                                      errorWidget: (context, url, error) => const Icon(Icons.shopping_bag, color: Colors.white, size: 32),
+                                      errorWidget: (context, url, error) => Icon(Icons.shopping_bag, color: AppColors.surface(context), size: 32.r),
                                     ),
                                   )
-                                : const Icon(Icons.shopping_bag, color: Colors.white, size: 32),
+                                : Icon(Icons.shopping_bag, color: AppColors.surface(context), size: 32.r),
                           ),
-                          const SizedBox(width: 16),
+                          SizedBox(width: 16.w),
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -1012,7 +1015,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> with TickerProv
                                 Text(
                                   item.productName,
                                   style: GoogleFonts.goudyBookletter1911(
-                                    fontSize: 16,
+                                    fontSize: 16.sp,
                                     fontWeight: FontWeight.w600,
                                   ),
                                 ),
@@ -1023,8 +1026,8 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> with TickerProv
                                       if (item.variantSize != null) item.variantSize,
                                     ].join(' • '),
                                     style: GoogleFonts.goudyBookletter1911(
-                                      fontSize: 13,
-                                      color: Colors.grey[600],
+                                      fontSize: 13.sp,
+                                      color: AppColors.textMuted(context),
                                     ),
                                   ),
                               ],
@@ -1032,7 +1035,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> with TickerProv
                           ),
                         ],
                       ),
-                      const SizedBox(height: 16),
+                      SizedBox(height: 16.h),
                       // Star rating
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -1045,7 +1048,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> with TickerProv
                                   ? Icons.star
                                   : Icons.star_border,
                               color: Colors.amber,
-                              size: 36,
+                              size: 36.r,
                             ),
                             onPressed: () {
                               setState(() {
@@ -1057,7 +1060,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> with TickerProv
                           );
                         }),
                       ),
-                      const SizedBox(height: 8),
+                      SizedBox(height: 8.h),
                       // Review text
                       TextField(
                         controller: reviewControllers[item.productId],
@@ -1065,24 +1068,24 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> with TickerProv
                         decoration: InputDecoration(
                           hintText: 'Share your experience with this product...',
                           hintStyle: GoogleFonts.goudyBookletter1911(
-                            fontSize: 13,
-                            color: Colors.grey[600],
+                            fontSize: 13.sp,
+                            color: AppColors.textMuted(context),
                           ),
                           border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(5),
-                            borderSide: const BorderSide(color: Colors.black),
+                            borderRadius: BorderRadius.circular(5.r),
+                            borderSide: BorderSide(color: AppColors.onSurface(context)),
                           ),
                           enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(5),
-                            borderSide: const BorderSide(color: Colors.black),
+                            borderRadius: BorderRadius.circular(5.r),
+                            borderSide: BorderSide(color: AppColors.onSurface(context)),
                           ),
                           focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(5),
-                            borderSide: const BorderSide(color: Colors.black, width: 2),
+                            borderRadius: BorderRadius.circular(5.r),
+                            borderSide: BorderSide(color: AppColors.onSurface(context), width: 2),
                           ),
-                          contentPadding: const EdgeInsets.all(12),
+                          contentPadding: EdgeInsets.all(12.w),
                         ),
-                        style: GoogleFonts.goudyBookletter1911(fontSize: 13),
+                        style: GoogleFonts.goudyBookletter1911(fontSize: 13.sp),
                         onChanged: (value) {
                           if (errorMessage != null) {
                             setState(() {
@@ -1104,9 +1107,9 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> with TickerProv
             TextButton(
               onPressed: isSubmitting ? null : () => Navigator.pop(dialogContext),
               style: TextButton.styleFrom(
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.r)),
               ),
-              child: Text('Cancel', style: GoogleFonts.goudyBookletter1911(color: Colors.black)),
+              child: Text('Cancel', style: GoogleFonts.goudyBookletter1911(color: AppColors.onSurface(context))),
             ),
             ElevatedButton(
               onPressed: isSubmitting ? null : () async {
@@ -1144,12 +1147,33 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> with TickerProv
                   }
 
                   for (var item in order.items!) {
+                    final reviewText = reviewControllers[item.productId]!.text.trim();
+                    String? sentiment;
+                    if (reviewText.isNotEmpty) {
+                      sentiment = await GeminiService.analyzeSentiment(reviewText);
+                      if (sentiment == null) {
+                        debugPrint(
+                          '[Review] Gemini returned null sentiment for product ${item.productId}. '
+                          'Review will be saved with sentiment=null. Check Gemini API key/model.',
+                        );
+                      } else {
+                        debugPrint(
+                          '[Review] Sentiment for product ${item.productId}: $sentiment',
+                        );
+                      }
+                    }
+
+                    // Single insert path. If the sentiment column doesn't exist
+                    // in the database (PostgrestException 42703), surface the
+                    // error instead of silently retrying without it - that was
+                    // hiding real failures.
                     await supabase.from('product_reviews').insert({
                       'product_id': item.productId,
                       'buyer_id': int.parse(buyerId),
                       'order_id': order.id,
                       'rating': ratings[item.productId]!,
-                      'review_text': reviewControllers[item.productId]!.text.trim(),
+                      'review_text': reviewText,
+                      'sentiment': sentiment,
                     });
 
                     // Update product rating
@@ -1196,17 +1220,17 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> with TickerProv
                 }
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.black,
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                backgroundColor: AppColors.onSurface(context),
+                foregroundColor: AppColors.surface(context),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.r)),
               ),
               child: isSubmitting
-                  ? const SizedBox(
-                      width: 16,
-                      height: 16,
+                  ? SizedBox(
+                      width: 16.w,
+                      height: 16.h,
                       child: CircularProgressIndicator(
                         strokeWidth: 2,
-                        color: Colors.white,
+                        color: AppColors.surface(context),
                       ),
                     )
                   : Text('Submit', style: GoogleFonts.goudyBookletter1911()),
@@ -1221,7 +1245,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> with TickerProv
     final confirm = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.r)),
         title: Text('Confirm Order Received', style: GoogleFonts.playfairDisplay(fontWeight: FontWeight.bold)),
         content: Text(
           'Have you received your order in good condition?',
@@ -1231,18 +1255,18 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> with TickerProv
           TextButton(
             onPressed: () => Navigator.pop(context, false),
             style: TextButton.styleFrom(
-              foregroundColor: Colors.grey[700],
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+              foregroundColor: AppColors.textBody(context),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.r)),
             ),
             child: Text('Not Yet', style: GoogleFonts.goudyBookletter1911()),
           ),
           OutlinedButton(
             onPressed: () => Navigator.pop(context, true),
             style: OutlinedButton.styleFrom(
-              backgroundColor: Colors.white,
+              backgroundColor: AppColors.surface(context),
               foregroundColor: const Color(0xFFD4AF37),
               side: const BorderSide(color: Color(0xFFD4AF37), width: 1),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.r)),
             ),
             child: Text('Yes, Received', style: GoogleFonts.goudyBookletter1911()),
           ),

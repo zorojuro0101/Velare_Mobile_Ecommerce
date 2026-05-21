@@ -13,6 +13,8 @@ import '../../utils/snackbar_helper.dart';
 import '../../widgets/address_selector_modal.dart';
 import 'order_history_screen.dart';
 
+import '../../utils/app_colors.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 class CheckoutScreen extends StatefulWidget {
   final List<CartItem> items;
   final double totalAmount;
@@ -471,11 +473,11 @@ class _CheckoutScreenState extends State<CheckoutScreen> with SingleTickerProvid
       context: context,
       barrierDismissible: false,
       builder: (context) => Dialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
         child: Stack(
           children: [
             Padding(
-              padding: const EdgeInsets.all(32),
+              padding: EdgeInsets.all(32.w),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -488,62 +490,62 @@ class _CheckoutScreenState extends State<CheckoutScreen> with SingleTickerProvid
                       return Transform.scale(
                         scale: value,
                         child: Container(
-                          width: 80,
-                          height: 80,
+                          width: 80.w,
+                          height: 80.h,
                           decoration: BoxDecoration(
-                            color: Colors.black,
+                            color: AppColors.onSurface(context),
                             shape: BoxShape.circle,
                           ),
                           child: Icon(
                             Icons.check,
-                            size: 50,
-                            color: Colors.white,
+                            size: 50.r,
+                            color: AppColors.surface(context),
                           ),
                         ),
                       );
                     },
                   ),
-                  const SizedBox(height: 24),
+                  SizedBox(height: 24.h),
                   Text(
                     'Order Placed Successfully!',
                     style: GoogleFonts.playfairDisplay(
-                      fontSize: 22,
+                      fontSize: 22.sp,
                       fontWeight: FontWeight.bold,
                     ),
                     textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: 12),
+                  SizedBox(height: 12.h),
                   Text(
                     'Your order has been placed and is being processed.',
                     style: GoogleFonts.goudyBookletter1911(
-                      fontSize: 14,
-                      color: Colors.grey[600],
+                      fontSize: 14.sp,
+                      color: AppColors.textMuted(context),
                     ),
                     textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: 20),
+                  SizedBox(height: 20.h),
                   Container(
-                    padding: const EdgeInsets.all(16),
+                    padding: EdgeInsets.all(16.w),
                     decoration: BoxDecoration(
-                      color: Colors.grey[100],
-                      borderRadius: BorderRadius.circular(8),
+                      color: AppColors.surfaceVariant(context),
+                      borderRadius: BorderRadius.circular(8.r),
                     ),
                     child: Column(
                       children: [
                         Text(
                           orderNumbers.length > 1 ? 'Order Numbers' : 'Order Number',
                           style: GoogleFonts.goudyBookletter1911(
-                            fontSize: 12,
-                            color: Colors.grey[600],
+                            fontSize: 12.sp,
+                            color: AppColors.textMuted(context),
                           ),
                         ),
-                        const SizedBox(height: 8),
+                        SizedBox(height: 8.h),
                         ...orderNumbers.map((orderNum) => Padding(
-                          padding: const EdgeInsets.only(bottom: 4),
+                          padding: EdgeInsets.only(bottom: 4.h),
                           child: Text(
                             orderNum,
                             style: GoogleFonts.playfairDisplay(
-                              fontSize: 16,
+                              fontSize: 16.sp,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -551,7 +553,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> with SingleTickerProvid
                       ],
                     ),
                   ),
-                  const SizedBox(height: 24),
+                  SizedBox(height: 24.h),
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
@@ -566,17 +568,17 @@ class _CheckoutScreenState extends State<CheckoutScreen> with SingleTickerProvid
                         );
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.black,
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        backgroundColor: AppColors.onSurface(context),
+                        foregroundColor: AppColors.surface(context),
+                        padding: EdgeInsets.symmetric(vertical: 14.h),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: BorderRadius.circular(8.r),
                         ),
                       ),
                       child: Text(
                         'View My Orders',
                         style: GoogleFonts.goudyBookletter1911(
-                          fontSize: 15,
+                          fontSize: 15.sp,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -606,13 +608,13 @@ class _CheckoutScreenState extends State<CheckoutScreen> with SingleTickerProvid
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: AppColors.scaffoldBackground(context),
       body: Column(
         children: [
           // White status bar area
           Container(
             height: MediaQuery.of(context).padding.top,
-            color: Colors.white,
+            color: AppColors.surface(context),
           ),
           _buildImageCarousel(),
           Expanded(
@@ -638,7 +640,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> with SingleTickerProvid
     return Container(
       height: MediaQuery.of(context).size.height * 0.4,
       width: double.infinity,
-      color: Colors.grey[200],
+      color: AppColors.surfaceVariant2(context),
       child: Stack(
         children: [
           // Product image with fade animation
@@ -650,12 +652,12 @@ class _CheckoutScreenState extends State<CheckoutScreen> with SingleTickerProvid
               height: double.infinity,
               fit: BoxFit.cover,
               placeholder: (context, url) => Container(
-                color: Colors.grey[300],
+                color: AppColors.border(context),
                 child: const Center(child: CircularProgressIndicator(strokeWidth: 2)),
               ),
               errorWidget: (context, url, error) => Container(
-                color: Colors.grey[300],
-                child: const Icon(Icons.image_not_supported, size: 60),
+                color: AppColors.border(context),
+                child: Icon(Icons.image_not_supported, size: 60.r),
               ),
             ),
           ),
@@ -665,7 +667,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> with SingleTickerProvid
             left: 0,
             right: 0,
             child: Container(
-              height: 100,
+              height: 100.h,
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
@@ -685,7 +687,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> with SingleTickerProvid
             child: IconButton(
               icon: Icon(
                 Icons.arrow_back,
-                color: Colors.white,
+                color: AppColors.alwaysWhite,
                 shadows: [
                   Shadow(
                     color: Colors.black.withValues(alpha: 0.5),
@@ -704,11 +706,11 @@ class _CheckoutScreenState extends State<CheckoutScreen> with SingleTickerProvid
               right: 16,
               child: Center(
                 child: Container(
-                  height: 3,
+                  height: 3.h,
                   constraints: const BoxConstraints(maxWidth: 200),
                   decoration: BoxDecoration(
                     color: Colors.white.withValues(alpha: 0.3),
-                    borderRadius: BorderRadius.circular(2),
+                    borderRadius: BorderRadius.circular(2.r),
                   ),
                   child: Row(
                     children: List.generate(
@@ -720,9 +722,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> with SingleTickerProvid
                           ),
                           decoration: BoxDecoration(
                             color: index <= _currentImageIndex
-                                ? Colors.white
+                                ? AppColors.alwaysWhite
                                 : Colors.transparent,
-                            borderRadius: BorderRadius.circular(2),
+                            borderRadius: BorderRadius.circular(2.r),
                             boxShadow: index <= _currentImageIndex
                                 ? [
                                     BoxShadow(
@@ -747,9 +749,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> with SingleTickerProvid
             child: Text(
               'Checkout',
               style: GoogleFonts.playfairDisplay(
-                fontSize: 28,
+                fontSize: 28.sp,
                 fontWeight: FontWeight.bold,
-                color: Colors.white,
+                color: AppColors.alwaysWhite,
                 shadows: [
                   Shadow(
                     color: Colors.black.withValues(alpha: 0.5),
@@ -766,49 +768,49 @@ class _CheckoutScreenState extends State<CheckoutScreen> with SingleTickerProvid
 
   Widget _buildVoucherSection() {
     return Container(
-      margin: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-      padding: const EdgeInsets.all(16),
+      margin: EdgeInsets.fromLTRB(16.w, 0.h, 16.w, 16.h),
+      padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
+        color: AppColors.surface(context),
+        borderRadius: BorderRadius.circular(12.r),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              const Icon(Icons.local_offer, size: 20),
-              const SizedBox(width: 8),
+              Icon(Icons.local_offer, size: 20.r),
+              SizedBox(width: 8.w),
               Text(
                 'Vouchers',
                 style: GoogleFonts.goudyBookletter1911(
-                  fontSize: 16,
+                  fontSize: 16.sp,
                   fontWeight: FontWeight.w600,
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
           if (_isLoadingVouchers)
-            const Center(
+            Center(
               child: Padding(
-                padding: EdgeInsets.all(20),
+                padding: EdgeInsets.all(20.w),
                 child: CircularProgressIndicator(strokeWidth: 2),
               ),
             )
           else if (_availableVouchers.isEmpty)
             Container(
-              padding: const EdgeInsets.all(20),
+              padding: EdgeInsets.all(20.w),
               decoration: BoxDecoration(
-                color: Colors.grey[100],
-                borderRadius: BorderRadius.circular(8),
+                color: AppColors.surfaceVariant(context),
+                borderRadius: BorderRadius.circular(8.r),
               ),
               child: Center(
                 child: Text(
                   'No vouchers available',
                   style: GoogleFonts.goudyBookletter1911(
-                    fontSize: 14,
-                    color: Colors.grey[600],
+                    fontSize: 14.sp,
+                    color: AppColors.textMuted(context),
                   ),
                 ),
               ),
@@ -835,13 +837,13 @@ class _CheckoutScreenState extends State<CheckoutScreen> with SingleTickerProvid
                 return GestureDetector(
                   onTap: () => _selectVoucher(buyerVoucher),
                   child: Container(
-                    margin: const EdgeInsets.only(bottom: 12),
-                    padding: const EdgeInsets.all(12),
+                    margin: EdgeInsets.only(bottom: 12.h),
+                    padding: EdgeInsets.all(12.w),
                     decoration: BoxDecoration(
-                      color: isSelected ? Colors.black.withValues(alpha: 0.05) : Colors.grey[100],
-                      borderRadius: BorderRadius.circular(8),
+                      color: isSelected ? Colors.black.withValues(alpha: 0.05) : AppColors.surfaceVariant(context),
+                      borderRadius: BorderRadius.circular(8.r),
                       border: Border.all(
-                        color: isSelected ? Colors.black : Colors.transparent,
+                        color: isSelected ? AppColors.onSurface(context) : Colors.transparent,
                         width: 2,
                       ),
                     ),
@@ -849,14 +851,14 @@ class _CheckoutScreenState extends State<CheckoutScreen> with SingleTickerProvid
                       children: [
                         Icon(
                           isSelected ? Icons.radio_button_checked : Icons.radio_button_unchecked,
-                          size: 20,
-                          color: isSelected ? Colors.black : Colors.grey[400],
+                          size: 20.r,
+                          color: isSelected ? AppColors.onSurface(context) : AppColors.textFaint(context),
                         ),
-                        const SizedBox(width: 12),
+                        SizedBox(width: 12.w),
                         // Voucher icon
                         Container(
-                          width: 40,
-                          height: 40,
+                          width: 40.w,
+                          height: 40.h,
                           decoration: BoxDecoration(
                             color: const Color(0xFFD4AF37).withValues(alpha: 0.15),
                             shape: BoxShape.circle,
@@ -867,7 +869,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> with SingleTickerProvid
                             color: const Color(0xFFD4AF37),
                           ),
                         ),
-                        const SizedBox(width: 12),
+                        SizedBox(width: 12.w),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -876,28 +878,28 @@ class _CheckoutScreenState extends State<CheckoutScreen> with SingleTickerProvid
                                 voucher['voucher_name'] ?? '',
                                 style: GoogleFonts.goudyBookletter1911(
                                   fontWeight: FontWeight.w600,
-                                  fontSize: 14,
-                                  color: Colors.black,
+                                  fontSize: 14.sp,
+                                  color: AppColors.onSurface(context),
                                 ),
                               ),
-                              const SizedBox(height: 2),
+                              SizedBox(height: 2.h),
                               Text(
                                 voucherType == 'free_shipping'
                                     ? 'Free Shipping'
                                     : '$discountPercent% off',
                                 style: GoogleFonts.playfairDisplay(
-                                  fontSize: 13,
+                                  fontSize: 13.sp,
                                   fontWeight: FontWeight.w600,
                                   color: Colors.green[700],
                                 ),
                               ),
                               if (shopName != null) ...[
-                                const SizedBox(height: 2),
+                                SizedBox(height: 2.h),
                                 Text(
                                   'For: $shopName',
                                   style: GoogleFonts.goudyBookletter1911(
-                                    fontSize: 11,
-                                    color: Colors.grey[600],
+                                    fontSize: 11.sp,
+                                    color: AppColors.textMuted(context),
                                   ),
                                 ),
                               ],
@@ -917,33 +919,33 @@ class _CheckoutScreenState extends State<CheckoutScreen> with SingleTickerProvid
 
   Widget _buildDeliverySection() {
     return Container(
-      margin: const EdgeInsets.all(16),
-      padding: const EdgeInsets.all(16),
+      margin: EdgeInsets.all(16.w),
+      padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
+        color: AppColors.surface(context),
+        borderRadius: BorderRadius.circular(12.r),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              const Icon(Icons.location_on, size: 20),
-              const SizedBox(width: 8),
+              Icon(Icons.location_on, size: 20.r),
+              SizedBox(width: 8.w),
               Text(
                 'Delivery Address',
                 style: GoogleFonts.goudyBookletter1911(
-                  fontSize: 16,
+                  fontSize: 16.sp,
                   fontWeight: FontWeight.w600,
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
           if (_isLoadingAddresses)
-            const Center(
+            Center(
               child: Padding(
-                padding: EdgeInsets.all(20),
+                padding: EdgeInsets.all(20.w),
                 child: CircularProgressIndicator(strokeWidth: 2),
               ),
             )
@@ -951,41 +953,41 @@ class _CheckoutScreenState extends State<CheckoutScreen> with SingleTickerProvid
             Column(
               children: [
                 Container(
-                  padding: const EdgeInsets.all(20),
+                  padding: EdgeInsets.all(20.w),
                   decoration: BoxDecoration(
-                    color: Colors.grey[100],
-                    borderRadius: BorderRadius.circular(8),
+                    color: AppColors.surfaceVariant(context),
+                    borderRadius: BorderRadius.circular(8.r),
                   ),
                   child: Column(
                     children: [
-                      Icon(Icons.location_off, size: 40, color: Colors.grey[400]),
-                      const SizedBox(height: 8),
+                      Icon(Icons.location_off, size: 40.r, color: AppColors.textFaint(context)),
+                      SizedBox(height: 8.h),
                       Text(
                         'No saved addresses',
                         style: GoogleFonts.goudyBookletter1911(
-                          fontSize: 14,
-                          color: Colors.grey[600],
+                          fontSize: 14.sp,
+                          color: AppColors.textMuted(context),
                         ),
                       ),
                     ],
                   ),
                 ),
-                const SizedBox(height: 12),
+                SizedBox(height: 12.h),
                 SizedBox(
                   width: double.infinity,
                   child: OutlinedButton.icon(
                     onPressed: _showAddNewAddressModal,
-                    icon: const Icon(Icons.add, size: 18),
+                    icon: Icon(Icons.add, size: 18.r),
                     label: Text(
                       'Add New Address',
-                      style: GoogleFonts.goudyBookletter1911(fontSize: 14),
+                      style: GoogleFonts.goudyBookletter1911(fontSize: 14.sp),
                     ),
                     style: OutlinedButton.styleFrom(
-                      foregroundColor: Colors.black,
-                      side: const BorderSide(color: Colors.black),
-                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      foregroundColor: AppColors.onSurface(context),
+                      side: BorderSide(color: AppColors.onSurface(context)),
+                      padding: EdgeInsets.symmetric(vertical: 12.h),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(8.r),
                       ),
                     ),
                   ),
@@ -1003,13 +1005,13 @@ class _CheckoutScreenState extends State<CheckoutScreen> with SingleTickerProvid
                   return GestureDetector(
                     onTap: () => _selectAddress(address),
                     child: Container(
-                      margin: const EdgeInsets.only(bottom: 12),
-                      padding: const EdgeInsets.all(12),
+                      margin: EdgeInsets.only(bottom: 12.h),
+                      padding: EdgeInsets.all(12.w),
                       decoration: BoxDecoration(
-                        color: isSelected ? Colors.black.withValues(alpha: 0.05) : Colors.grey[100],
-                        borderRadius: BorderRadius.circular(8),
+                        color: isSelected ? Colors.black.withValues(alpha: 0.05) : AppColors.surfaceVariant(context),
+                        borderRadius: BorderRadius.circular(8.r),
                         border: Border.all(
-                          color: isSelected ? Colors.black : Colors.transparent,
+                          color: isSelected ? AppColors.onSurface(context) : Colors.transparent,
                           width: 2,
                         ),
                       ),
@@ -1017,10 +1019,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> with SingleTickerProvid
                         children: [
                           Icon(
                             isSelected ? Icons.radio_button_checked : Icons.radio_button_unchecked,
-                            size: 20,
-                            color: isSelected ? Colors.black : Colors.grey[400],
+                            size: 20.r,
+                            color: isSelected ? AppColors.onSurface(context) : AppColors.textFaint(context),
                           ),
-                          const SizedBox(width: 12),
+                          SizedBox(width: 12.w),
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -1031,23 +1033,23 @@ class _CheckoutScreenState extends State<CheckoutScreen> with SingleTickerProvid
                                       address['recipient_name'] ?? '',
                                       style: GoogleFonts.goudyBookletter1911(
                                         fontWeight: FontWeight.w600,
-                                        fontSize: 14,
+                                        fontSize: 14.sp,
                                       ),
                                     ),
                                     if (isDefault) ...[
-                                      const SizedBox(width: 8),
+                                      SizedBox(width: 8.w),
                                       Container(
-                                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                        padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
                                         decoration: BoxDecoration(
-                                          color: Colors.black,
-                                          borderRadius: BorderRadius.circular(4),
+                                          color: AppColors.onSurface(context),
+                                          borderRadius: BorderRadius.circular(4.r),
                                         ),
                                         child: Text(
                                           'DEFAULT',
                                           style: GoogleFonts.goudyBookletter1911(
-                                            fontSize: 9,
+                                            fontSize: 9.sp,
                                             fontWeight: FontWeight.bold,
-                                            color: Colors.white,
+                                            color: AppColors.surface(context),
                                           ),
                                         ),
                                       ),
@@ -1055,21 +1057,21 @@ class _CheckoutScreenState extends State<CheckoutScreen> with SingleTickerProvid
                                   ],
                                 ),
                                 if (address['phone_number'] != null) ...[
-                                  const SizedBox(height: 2),
+                                  SizedBox(height: 2.h),
                                   Text(
                                     address['phone_number'],
                                     style: GoogleFonts.playfairDisplay(
-                                      fontSize: 12,
-                                      color: Colors.grey[600],
+                                      fontSize: 12.sp,
+                                      color: AppColors.textMuted(context),
                                     ),
                                   ),
                                 ],
-                                const SizedBox(height: 4),
+                                SizedBox(height: 4.h),
                                 Text(
                                   _getFullAddressDisplay(address),
                                   style: GoogleFonts.goudyBookletter1911(
-                                    fontSize: 12,
-                                    color: Colors.grey[700],
+                                    fontSize: 12.sp,
+                                    color: AppColors.textBody(context),
                                   ),
                                   maxLines: 2,
                                   overflow: TextOverflow.ellipsis,
@@ -1087,17 +1089,17 @@ class _CheckoutScreenState extends State<CheckoutScreen> with SingleTickerProvid
                   width: double.infinity,
                   child: OutlinedButton.icon(
                     onPressed: _showAddNewAddressModal,
-                    icon: const Icon(Icons.add, size: 18),
+                    icon: Icon(Icons.add, size: 18.r),
                     label: Text(
                       'Add New Address',
-                      style: GoogleFonts.goudyBookletter1911(fontSize: 14),
+                      style: GoogleFonts.goudyBookletter1911(fontSize: 14.sp),
                     ),
                     style: OutlinedButton.styleFrom(
-                      foregroundColor: Colors.black,
-                      side: const BorderSide(color: Colors.black),
-                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      foregroundColor: AppColors.onSurface(context),
+                      side: BorderSide(color: AppColors.onSurface(context)),
+                      padding: EdgeInsets.symmetric(vertical: 12.h),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(8.r),
                       ),
                     ),
                   ),
@@ -1120,29 +1122,29 @@ class _CheckoutScreenState extends State<CheckoutScreen> with SingleTickerProvid
     }
 
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16),
-      padding: const EdgeInsets.all(16),
+      margin: EdgeInsets.symmetric(horizontal: 16.w),
+      padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
+        color: AppColors.surface(context),
+        borderRadius: BorderRadius.circular(12.r),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              const Icon(Icons.shopping_bag, size: 20),
-              const SizedBox(width: 8),
+              Icon(Icons.shopping_bag, size: 20.r),
+              SizedBox(width: 8.w),
               Text(
                 'Order Summary',
                 style: GoogleFonts.goudyBookletter1911(
-                  fontSize: 16,
+                  fontSize: 16.sp,
                   fontWeight: FontWeight.w600,
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
           // Display items grouped by shop
           ...groupedItems.entries.map((entry) {
             final shopName = entry.key;
@@ -1154,16 +1156,16 @@ class _CheckoutScreenState extends State<CheckoutScreen> with SingleTickerProvid
               children: [
                 // Shop header
                 Padding(
-                  padding: const EdgeInsets.only(bottom: 12),
+                  padding: EdgeInsets.only(bottom: 12.h),
                   child: Row(
                     children: [
                       // Shop logo or first letter
                       Container(
-                        width: 28,
-                        height: 28,
+                        width: 28.w,
+                        height: 28.h,
                         decoration: BoxDecoration(
                           color: const Color(0xFFD3BD9B),
-                          borderRadius: BorderRadius.circular(6),
+                          borderRadius: BorderRadius.circular(6.r),
                         ),
                         child: shopLogo != null && shopLogo.isNotEmpty
                             ? Builder(
@@ -1174,15 +1176,15 @@ class _CheckoutScreenState extends State<CheckoutScreen> with SingleTickerProvid
                                       child: Text(
                                         shopName.isNotEmpty ? shopName[0].toUpperCase() : 'S',
                                         style: GoogleFonts.playfairDisplay(
-                                          fontSize: 14,
+                                          fontSize: 14.sp,
                                           fontWeight: FontWeight.bold,
-                                          color: Colors.white,
+                                          color: AppColors.surface(context),
                                         ),
                                       ),
                                     );
                                   }
                                   return ClipRRect(
-                                    borderRadius: BorderRadius.circular(6),
+                                    borderRadius: BorderRadius.circular(6.r),
                                     child: CachedNetworkImage(
                                       imageUrl: imageUrl,
                                       fit: BoxFit.cover,
@@ -1190,9 +1192,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> with SingleTickerProvid
                                         child: Text(
                                           shopName.isNotEmpty ? shopName[0].toUpperCase() : 'S',
                                           style: GoogleFonts.playfairDisplay(
-                                            fontSize: 14,
+                                            fontSize: 14.sp,
                                             fontWeight: FontWeight.bold,
-                                            color: Colors.white,
+                                            color: AppColors.surface(context),
                                           ),
                                         ),
                                       ),
@@ -1200,9 +1202,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> with SingleTickerProvid
                                         child: Text(
                                           shopName.isNotEmpty ? shopName[0].toUpperCase() : 'S',
                                           style: GoogleFonts.playfairDisplay(
-                                            fontSize: 14,
+                                            fontSize: 14.sp,
                                             fontWeight: FontWeight.bold,
-                                            color: Colors.white,
+                                            color: AppColors.surface(context),
                                           ),
                                         ),
                                       ),
@@ -1214,18 +1216,18 @@ class _CheckoutScreenState extends State<CheckoutScreen> with SingleTickerProvid
                                 child: Text(
                                   shopName.isNotEmpty ? shopName[0].toUpperCase() : 'S',
                                   style: GoogleFonts.playfairDisplay(
-                                    fontSize: 14,
+                                    fontSize: 14.sp,
                                     fontWeight: FontWeight.bold,
-                                    color: Colors.white,
+                                    color: AppColors.surface(context),
                                   ),
                                 ),
                               ),
                       ),
-                      const SizedBox(width: 10),
+                      SizedBox(width: 10.w),
                       Text(
                         shopName,
                         style: GoogleFonts.goudyBookletter1911(
-                          fontSize: 14,
+                          fontSize: 14.sp,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -1234,69 +1236,69 @@ class _CheckoutScreenState extends State<CheckoutScreen> with SingleTickerProvid
                 ),
                 // Shop items
                 ...shopItems.map((item) => Padding(
-                  padding: const EdgeInsets.only(bottom: 12, left: 38),
+                  padding: EdgeInsets.only(bottom: 12.h, left: 38.w),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       // Product image
                       ClipRRect(
-                        borderRadius: BorderRadius.circular(6),
+                        borderRadius: BorderRadius.circular(6.r),
                         child: CachedNetworkImage(
                           imageUrl: ImageHelper.getImageUrl(item.primaryImage),
                           width: 50,
                           height: 50,
                           fit: BoxFit.cover,
                           placeholder: (context, url) => Container(
-                            color: Colors.grey[200],
+                            color: AppColors.surfaceVariant2(context),
                             child: const Center(child: CircularProgressIndicator(strokeWidth: 2)),
                           ),
                           errorWidget: (context, url, error) => Container(
-                            color: Colors.grey[200],
-                            child: const Icon(Icons.image_not_supported, size: 20),
+                            color: AppColors.surfaceVariant2(context),
+                            child: Icon(Icons.image_not_supported, size: 20.r),
                           ),
                         ),
                       ),
-                      const SizedBox(width: 12),
+                      SizedBox(width: 12.w),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
                               item.productName,
-                              style: GoogleFonts.goudyBookletter1911(fontSize: 13),
+                              style: GoogleFonts.goudyBookletter1911(fontSize: 13.sp),
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                             ),
                             if (item.color != null || item.size != null)
                               Padding(
-                                padding: const EdgeInsets.only(top: 2),
+                                padding: EdgeInsets.only(top: 2.h),
                                 child: Text(
                                   [
                                     if (item.color != null) item.color,
                                     if (item.size != null) item.size,
                                   ].join(' • '),
                                   style: GoogleFonts.goudyBookletter1911(
-                                    fontSize: 11,
-                                    color: Colors.grey[600],
+                                    fontSize: 11.sp,
+                                    color: AppColors.textMuted(context),
                                   ),
                                 ),
                               ),
-                            const SizedBox(height: 4),
+                            SizedBox(height: 4.h),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
                                   '₱${item.price.toStringAsFixed(2)}',
                                   style: GoogleFonts.playfairDisplay(
-                                    fontSize: 13,
+                                    fontSize: 13.sp,
                                     fontWeight: FontWeight.w600,
                                   ),
                                 ),
                                 Text(
                                   'x${item.quantity}',
                                   style: GoogleFonts.goudyBookletter1911(
-                                    fontSize: 12,
-                                    color: Colors.grey[600],
+                                    fontSize: 12.sp,
+                                    color: AppColors.textMuted(context),
                                   ),
                                 ),
                               ],
@@ -1304,11 +1306,11 @@ class _CheckoutScreenState extends State<CheckoutScreen> with SingleTickerProvid
                           ],
                         ),
                       ),
-                      const SizedBox(width: 12),
+                      SizedBox(width: 12.w),
                       Text(
                         '₱${item.totalPrice.toStringAsFixed(2)}',
                         style: GoogleFonts.playfairDisplay(
-                          fontSize: 14,
+                          fontSize: 14.sp,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -1316,30 +1318,30 @@ class _CheckoutScreenState extends State<CheckoutScreen> with SingleTickerProvid
                   ),
                 )),
                 if (entry.key != groupedItems.keys.last)
-                  const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 12),
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 12.h),
                     child: Divider(height: 1),
                   ),
               ],
             );
           }),
           const Divider(),
-          const SizedBox(height: 8),
+          SizedBox(height: 8.h),
           // Subtotal
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
                 'Subtotal',
-                style: GoogleFonts.goudyBookletter1911(fontSize: 14),
+                style: GoogleFonts.goudyBookletter1911(fontSize: 14.sp),
               ),
               Text(
                 '₱${widget.totalAmount.toStringAsFixed(2)}',
-                style: GoogleFonts.playfairDisplay(fontSize: 14),
+                style: GoogleFonts.playfairDisplay(fontSize: 14.sp),
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12.h),
           // Shipping Fee section header
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1347,21 +1349,21 @@ class _CheckoutScreenState extends State<CheckoutScreen> with SingleTickerProvid
               Text(
                 'Shipping Fee',
                 style: GoogleFonts.goudyBookletter1911(
-                  fontSize: 14,
+                  fontSize: 14.sp,
                   fontWeight: FontWeight.w600,
                 ),
               ),
               if (_isLoadingShipping)
-                const SizedBox(
-                  height: 14,
-                  width: 14,
+                SizedBox(
+                  height: 14.h,
+                  width: 14.w,
                   child: CircularProgressIndicator(strokeWidth: 2),
                 )
               else
                 Text(
                   '₱${_calculateShippingFee().toStringAsFixed(2)}',
                   style: GoogleFonts.playfairDisplay(
-                    fontSize: 14,
+                    fontSize: 14.sp,
                     fontWeight: FontWeight.w600,
                     decoration: _selectedVoucher != null &&
                             _selectedVoucher!['vouchers']['voucher_type'] ==
@@ -1371,7 +1373,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> with SingleTickerProvid
                     color: _selectedVoucher != null &&
                             _selectedVoucher!['vouchers']['voucher_type'] ==
                                 'free_shipping'
-                        ? Colors.grey[400]
+                        ? AppColors.textFaint(context)
                         : null,
                   ),
                 ),
@@ -1379,7 +1381,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> with SingleTickerProvid
           ),
           // Per-shop shipping breakdown
           if (!_isLoadingShipping && _shopShippingResults.isNotEmpty) ...[
-            const SizedBox(height: 6),
+            SizedBox(height: 6.h),
             ..._shopShippingResults.map((result) {
               final isFreeForThisShop = _selectedVoucher != null &&
                   _selectedVoucher!['vouchers']['voucher_type'] ==
@@ -1387,7 +1389,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> with SingleTickerProvid
                   _selectedVoucher!['seller_id']?.toString() ==
                       result.sellerId;
               return Padding(
-                padding: const EdgeInsets.only(left: 12, bottom: 4),
+                padding: EdgeInsets.only(left: 12.w, bottom: 4.h),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -1395,30 +1397,30 @@ class _CheckoutScreenState extends State<CheckoutScreen> with SingleTickerProvid
                       children: [
                         Icon(
                           Icons.store_outlined,
-                          size: 12,
-                          color: Colors.grey[500],
+                          size: 12.r,
+                          color: AppColors.textFaint(context),
                         ),
-                        const SizedBox(width: 4),
+                        SizedBox(width: 4.w),
                         Text(
                           result.shopName,
                           style: GoogleFonts.goudyBookletter1911(
-                            fontSize: 12,
-                            color: Colors.grey[600],
+                            fontSize: 12.sp,
+                            color: AppColors.textMuted(context),
                           ),
                         ),
-                        const SizedBox(width: 6),
+                        SizedBox(width: 6.w),
                         Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 5, vertical: 1),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 5.w, vertical: 1.h),
                           decoration: BoxDecoration(
-                            color: Colors.grey[100],
-                            borderRadius: BorderRadius.circular(4),
+                            color: AppColors.surfaceVariant(context),
+                            borderRadius: BorderRadius.circular(4.r),
                           ),
                           child: Text(
                             result.tierLabel,
                             style: GoogleFonts.goudyBookletter1911(
-                              fontSize: 9,
-                              color: Colors.grey[600],
+                              fontSize: 9.sp,
+                              color: AppColors.textMuted(context),
                             ),
                           ),
                         ),
@@ -1428,7 +1430,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> with SingleTickerProvid
                         ? Text(
                             'FREE',
                             style: GoogleFonts.goudyBookletter1911(
-                              fontSize: 12,
+                              fontSize: 12.sp,
                               color: Colors.green[700],
                               fontWeight: FontWeight.w600,
                             ),
@@ -1436,8 +1438,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> with SingleTickerProvid
                         : Text(
                             '₱${result.fee.toStringAsFixed(2)}',
                             style: GoogleFonts.goudyBookletter1911(
-                              fontSize: 12,
-                              color: Colors.grey[600],
+                              fontSize: 12.sp,
+                              color: AppColors.textMuted(context),
                             ),
                           ),
                   ],
@@ -1449,19 +1451,19 @@ class _CheckoutScreenState extends State<CheckoutScreen> with SingleTickerProvid
           if (_selectedVoucher != null &&
               _selectedVoucher!['vouchers']['voucher_type'] ==
                   'free_shipping') ...[
-            const SizedBox(height: 4),
+            SizedBox(height: 4.h),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
                   'Free Shipping Discount',
                   style: GoogleFonts.goudyBookletter1911(
-                      fontSize: 13, color: Colors.green[700]),
+                      fontSize: 13.sp, color: Colors.green[700]),
                 ),
                 Text(
                   '-₱${(_calculateShippingFee() - _getTotalShippingFee()).toStringAsFixed(2)}',
                   style: GoogleFonts.playfairDisplay(
-                      fontSize: 13, color: Colors.green[700]),
+                      fontSize: 13.sp, color: Colors.green[700]),
                 ),
               ],
             ),
@@ -1470,32 +1472,32 @@ class _CheckoutScreenState extends State<CheckoutScreen> with SingleTickerProvid
           if (_selectedVoucher != null &&
               _selectedVoucher!['vouchers']['voucher_type'] !=
                   'free_shipping') ...[
-            const SizedBox(height: 8),
+            SizedBox(height: 8.h),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
                   'Discount',
                   style: GoogleFonts.goudyBookletter1911(
-                      fontSize: 14, color: Colors.green[700]),
+                      fontSize: 14.sp, color: Colors.green[700]),
                 ),
                 Text(
                   '-₱${_calculateDiscount().toStringAsFixed(2)}',
                   style: GoogleFonts.playfairDisplay(
-                      fontSize: 14, color: Colors.green[700]),
+                      fontSize: 14.sp, color: Colors.green[700]),
                 ),
               ],
             ),
           ],
           const Divider(),
-          const SizedBox(height: 8),
+          SizedBox(height: 8.h),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
                 'Total',
                 style: GoogleFonts.goudyBookletter1911(
-                  fontSize: 16,
+                  fontSize: 16.sp,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -1503,16 +1505,16 @@ class _CheckoutScreenState extends State<CheckoutScreen> with SingleTickerProvid
                   ? Text(
                       'Calculating...',
                       style: GoogleFonts.goudyBookletter1911(
-                        fontSize: 14,
-                        color: Colors.grey[500],
+                        fontSize: 14.sp,
+                        color: AppColors.textFaint(context),
                       ),
                     )
                   : Text(
                       '₱${(widget.totalAmount + _getTotalShippingFee() - _calculateDiscount()).toStringAsFixed(2)}',
                       style: GoogleFonts.playfairDisplay(
-                        fontSize: 18,
+                        fontSize: 18.sp,
                         fontWeight: FontWeight.bold,
-                        color: Colors.black,
+                        color: AppColors.onSurface(context),
                       ),
                     ),
             ],
@@ -1524,9 +1526,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> with SingleTickerProvid
 
   Widget _buildBottomBar() {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: EdgeInsets.all(20.w),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.surface(context),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.1),
@@ -1545,20 +1547,20 @@ class _CheckoutScreenState extends State<CheckoutScreen> with SingleTickerProvid
                 children: [
                   Text(
                     'Total Payment',
-                    style: GoogleFonts.goudyBookletter1911(fontSize: 12, color: Colors.grey[600]),
+                    style: GoogleFonts.goudyBookletter1911(fontSize: 12.sp, color: AppColors.textMuted(context)),
                   ),
                   _isLoadingShipping
                       ? Text(
                           'Calculating...',
                           style: GoogleFonts.goudyBookletter1911(
-                            fontSize: 14,
-                            color: Colors.grey[500],
+                            fontSize: 14.sp,
+                            color: AppColors.textFaint(context),
                           ),
                         )
                       : Text(
                           '₱${(widget.totalAmount + _getTotalShippingFee() - _calculateDiscount()).toStringAsFixed(2)}',
                           style: GoogleFonts.playfairDisplay(
-                            fontSize: 20,
+                            fontSize: 20.sp,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -1568,26 +1570,26 @@ class _CheckoutScreenState extends State<CheckoutScreen> with SingleTickerProvid
             ElevatedButton(
               onPressed: (_isLoading || _isLoadingShipping) ? null : _placeOrder,
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.black,
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                backgroundColor: AppColors.onSurface(context),
+                foregroundColor: AppColors.surface(context),
+                padding: EdgeInsets.symmetric(horizontal: 32.w, vertical: 16.h),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(8.r),
                 ),
               ),
               child: _isLoading
-                  ? const SizedBox(
-                      height: 20,
-                      width: 20,
+                  ? SizedBox(
+                      height: 20.h,
+                      width: 20.w,
                       child: CircularProgressIndicator(
                         strokeWidth: 2,
-                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                        valueColor: AlwaysStoppedAnimation<Color>(AppColors.surface(context)),
                       ),
                     )
                   : Text(
                       'Place Order',
                       style: GoogleFonts.goudyBookletter1911(
-                        fontSize: 16,
+                        fontSize: 16.sp,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -1831,9 +1833,9 @@ class _AddAddressModalState extends State<_AddAddressModal> {
   Widget build(BuildContext context) {
     return Container(
       height: MediaQuery.of(context).size.height * 0.9,
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      decoration: BoxDecoration(
+        color: AppColors.surface(context),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
       ),
       child: Column(
         children: [
@@ -1842,7 +1844,7 @@ class _AddAddressModalState extends State<_AddAddressModal> {
             child: Form(
               key: _formKey,
               child: ListView(
-                padding: const EdgeInsets.all(24),
+                padding: EdgeInsets.all(24.w),
                 children: [
                   _buildTextField(
                     controller: _recipientController,
@@ -1855,7 +1857,7 @@ class _AddAddressModalState extends State<_AddAddressModal> {
                       return null;
                     },
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16.h),
                   _buildTextField(
                     controller: _phoneController,
                     label: 'Phone Number',
@@ -1872,53 +1874,53 @@ class _AddAddressModalState extends State<_AddAddressModal> {
                       return null;
                     },
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16.h),
                   _buildTextField(
                     controller: _houseNumberController,
                     label: 'House/Unit/Floor No.',
                     hint: 'e.g., Unit 123, 5th Floor',
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16.h),
                   _buildTextField(
                     controller: _streetController,
                     label: 'Street Name',
                     hint: 'Enter street name',
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16.h),
                   _buildAddressSelector(),
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16.h),
                   _buildTextField(
                     controller: _postalCodeController,
                     label: 'Postal Code',
                     hint: 'Auto-filled based on address',
                     keyboardType: TextInputType.number,
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16.h),
                   _buildDefaultCheckbox(),
-                  const SizedBox(height: 24),
+                  SizedBox(height: 24.h),
                   ElevatedButton(
                     onPressed: _isSaving ? null : _saveAddress,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.black,
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      backgroundColor: AppColors.onSurface(context),
+                      foregroundColor: AppColors.surface(context),
+                      padding: EdgeInsets.symmetric(vertical: 16.h),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(8.r),
                       ),
                     ),
                     child: _isSaving
-                        ? const SizedBox(
-                            height: 20,
-                            width: 20,
+                        ? SizedBox(
+                            height: 20.h,
+                            width: 20.w,
                             child: CircularProgressIndicator(
                               strokeWidth: 2,
-                              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                              valueColor: AlwaysStoppedAnimation<Color>(AppColors.surface(context)),
                             ),
                           )
                         : Text(
                             'Add Address',
                             style: GoogleFonts.goudyBookletter1911(
-                              fontSize: 16,
+                              fontSize: 16.sp,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
@@ -1934,9 +1936,9 @@ class _AddAddressModalState extends State<_AddAddressModal> {
 
   Widget _buildHeader() {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: EdgeInsets.all(20.w),
       decoration: BoxDecoration(
-        border: Border(bottom: BorderSide(color: Colors.grey[300]!)),
+        border: Border(bottom: BorderSide(color: AppColors.border(context))),
       ),
       child: Row(
         children: [
@@ -1944,7 +1946,7 @@ class _AddAddressModalState extends State<_AddAddressModal> {
             child: Text(
               'Add New Address',
               style: GoogleFonts.playfairDisplay(
-                fontSize: 20,
+                fontSize: 20.sp,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -1972,11 +1974,11 @@ class _AddAddressModalState extends State<_AddAddressModal> {
         Text(
           label,
           style: GoogleFonts.goudyBookletter1911(
-            fontSize: 14,
+            fontSize: 14.sp,
             fontWeight: FontWeight.w500,
           ),
         ),
-        const SizedBox(height: 8),
+        SizedBox(height: 8.h),
         TextFormField(
           controller: controller,
           keyboardType: keyboardType,
@@ -1985,26 +1987,26 @@ class _AddAddressModalState extends State<_AddAddressModal> {
           decoration: InputDecoration(
             counterText: maxLength != null ? '' : null,
             hintText: hint,
-            hintStyle: GoogleFonts.goudyBookletter1911(color: Colors.grey[400]),
+            hintStyle: GoogleFonts.goudyBookletter1911(color: AppColors.textFaint(context)),
             filled: true,
-            fillColor: Colors.white,
+            fillColor: AppColors.surface(context),
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(color: Colors.grey[300]!),
+              borderRadius: BorderRadius.circular(8.r),
+              borderSide: BorderSide(color: AppColors.border(context)),
             ),
             enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(color: Colors.grey[300]!),
+              borderRadius: BorderRadius.circular(8.r),
+              borderSide: BorderSide(color: AppColors.border(context)),
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(color: Colors.black, width: 2),
+              borderRadius: BorderRadius.circular(8.r),
+              borderSide: BorderSide(color: AppColors.onSurface(context), width: 2),
             ),
             errorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(8.r),
               borderSide: const BorderSide(color: Colors.red),
             ),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
           ),
           style: keyboardType == TextInputType.phone || keyboardType == TextInputType.number
               ? GoogleFonts.playfairDisplay()
@@ -2021,22 +2023,22 @@ class _AddAddressModalState extends State<_AddAddressModal> {
         Text(
           'Region, Province, City, Barangay',
           style: GoogleFonts.goudyBookletter1911(
-            fontSize: 14,
+            fontSize: 14.sp,
             fontWeight: FontWeight.w500,
           ),
         ),
-        const SizedBox(height: 8),
+        SizedBox(height: 8.h),
         GestureDetector(
           onTap: _selectAddress,
           child: Container(
-            padding: const EdgeInsets.all(16),
+            padding: EdgeInsets.all(16.w),
             decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(8),
+              color: AppColors.surface(context),
+              borderRadius: BorderRadius.circular(8.r),
               border: Border.all(
                 color: _showAddressError && _addressDisplay.isEmpty 
                     ? Colors.red.withValues(alpha: 0.3) 
-                    : Colors.grey[300]!,
+                    : AppColors.border(context),
               ),
             ),
             child: Row(
@@ -2045,14 +2047,14 @@ class _AddAddressModalState extends State<_AddAddressModal> {
                   child: Text(
                     _addressDisplay.isEmpty ? 'Select address location' : _addressDisplay,
                     style: GoogleFonts.goudyBookletter1911(
-                      color: _addressDisplay.isEmpty ? Colors.grey[400] : Colors.black,
+                      color: _addressDisplay.isEmpty ? AppColors.textFaint(context) : AppColors.onSurface(context),
                     ),
                   ),
                 ),
                 Icon(
                   _addressDisplay.isEmpty ? Icons.add_circle_outline : Icons.edit_outlined,
-                  size: 20,
-                  color: Colors.grey[600],
+                  size: 20.r,
+                  color: AppColors.textMuted(context),
                 ),
               ],
             ),
@@ -2060,11 +2062,11 @@ class _AddAddressModalState extends State<_AddAddressModal> {
         ),
         if (_showAddressError && _addressDisplay.isEmpty)
           Padding(
-            padding: const EdgeInsets.only(top: 8, left: 12),
+            padding: EdgeInsets.only(top: 8.h, left: 12.w),
             child: Text(
               'Please select address location',
               style: GoogleFonts.goudyBookletter1911(
-                fontSize: 12,
+                fontSize: 12.sp,
                 color: Colors.red,
               ),
             ),
@@ -2075,11 +2077,11 @@ class _AddAddressModalState extends State<_AddAddressModal> {
 
   Widget _buildDefaultCheckbox() {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: Colors.grey[300]!),
+        color: AppColors.surface(context),
+        borderRadius: BorderRadius.circular(8.r),
+        border: Border.all(color: AppColors.border(context)),
       ),
       child: Row(
         children: [
@@ -2090,12 +2092,12 @@ class _AddAddressModalState extends State<_AddAddressModal> {
                 _isDefault = value ?? false;
               });
             },
-            activeColor: Colors.black,
+            activeColor: AppColors.onSurface(context),
           ),
           Expanded(
             child: Text(
               'Set as default address',
-              style: GoogleFonts.goudyBookletter1911(fontSize: 14),
+              style: GoogleFonts.goudyBookletter1911(fontSize: 14.sp),
             ),
           ),
         ],

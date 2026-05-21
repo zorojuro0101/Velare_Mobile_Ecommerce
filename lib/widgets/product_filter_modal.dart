@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../utils/app_colors.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 class ProductFilterModal extends StatefulWidget {
   final String? selectedCategory;
   final double? minPrice;
@@ -71,23 +73,23 @@ class _ProductFilterModalState extends State<ProductFilterModal> {
   Widget build(BuildContext context) {
     return Container(
       height: MediaQuery.of(context).size.height * 0.85,
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      decoration: BoxDecoration(
+        color: AppColors.surface(context),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
       ),
       child: Column(
         children: [
           _buildHeader(),
           Expanded(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.all(24),
+              padding: EdgeInsets.all(24.w),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   _buildCategorySection(),
-                  const SizedBox(height: 24),
+                  SizedBox(height: 24.h),
                   _buildPriceSection(),
-                  const SizedBox(height: 24),
+                  SizedBox(height: 24.h),
                   _buildSortSection(),
                 ],
               ),
@@ -101,9 +103,9 @@ class _ProductFilterModalState extends State<ProductFilterModal> {
 
   Widget _buildHeader() {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: EdgeInsets.all(20.w),
       decoration: BoxDecoration(
-        border: Border(bottom: BorderSide(color: Colors.grey[300]!)),
+        border: Border(bottom: BorderSide(color: AppColors.border(context))),
       ),
       child: Row(
         children: [
@@ -111,7 +113,7 @@ class _ProductFilterModalState extends State<ProductFilterModal> {
             child: Text(
               'Filters',
               style: GoogleFonts.goudyBookletter1911(
-                fontSize: 20,
+                fontSize: 20.sp,
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -136,18 +138,18 @@ class _ProductFilterModalState extends State<ProductFilterModal> {
         Text(
           'Category',
           style: GoogleFonts.goudyBookletter1911(
-            fontSize: 16,
+            fontSize: 16.sp,
             fontWeight: FontWeight.w600,
           ),
         ),
-        const SizedBox(height: 12),
+        SizedBox(height: 12.h),
         ..._categories.map((category) {
           return RadioListTile<String>(
             value: category['value']!,
             groupValue: _selectedCategory,
             onChanged: (value) => setState(() => _selectedCategory = value),
             title: Text(category['name']!, style: GoogleFonts.goudyBookletter1911()),
-            activeColor: Colors.black,
+            activeColor: AppColors.onSurface(context),
             contentPadding: EdgeInsets.zero,
           );
         }),
@@ -162,11 +164,11 @@ class _ProductFilterModalState extends State<ProductFilterModal> {
         Text(
           'Price Range',
           style: GoogleFonts.goudyBookletter1911(
-            fontSize: 16,
+            fontSize: 16.sp,
             fontWeight: FontWeight.w600,
           ),
         ),
-        const SizedBox(height: 12),
+        SizedBox(height: 12.h),
         Row(
           children: [
             Expanded(
@@ -183,7 +185,7 @@ class _ProductFilterModalState extends State<ProductFilterModal> {
                 },
               ),
             ),
-            const SizedBox(width: 16),
+            SizedBox(width: 16.w),
             Expanded(
               child: TextField(
                 decoration: InputDecoration(
@@ -211,18 +213,18 @@ class _ProductFilterModalState extends State<ProductFilterModal> {
         Text(
           'Sort By',
           style: GoogleFonts.goudyBookletter1911(
-            fontSize: 16,
+            fontSize: 16.sp,
             fontWeight: FontWeight.w600,
           ),
         ),
-        const SizedBox(height: 12),
+        SizedBox(height: 12.h),
         ..._sortOptions.map((option) {
           return RadioListTile<String>(
             value: option['value']!,
             groupValue: _sortBy,
             onChanged: (value) => setState(() => _sortBy = value!),
             title: Text(option['name']!, style: GoogleFonts.goudyBookletter1911()),
-            activeColor: Colors.black,
+            activeColor: AppColors.onSurface(context),
             contentPadding: EdgeInsets.zero,
           );
         }),
@@ -232,9 +234,9 @@ class _ProductFilterModalState extends State<ProductFilterModal> {
 
   Widget _buildBottomButtons() {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: EdgeInsets.all(20.w),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.surface(context),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.1),
@@ -249,17 +251,17 @@ class _ProductFilterModalState extends State<ProductFilterModal> {
           child: ElevatedButton(
             onPressed: _applyFilters,
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.black,
-              foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(vertical: 16),
+              backgroundColor: AppColors.onSurface(context),
+              foregroundColor: AppColors.surface(context),
+              padding: EdgeInsets.symmetric(vertical: 16.h),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(8.r),
               ),
             ),
             child: Text(
               'Apply Filters',
               style: GoogleFonts.goudyBookletter1911(
-                fontSize: 16,
+                fontSize: 16.sp,
                 fontWeight: FontWeight.w600,
               ),
             ),

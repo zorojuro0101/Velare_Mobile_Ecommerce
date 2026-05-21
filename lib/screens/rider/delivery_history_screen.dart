@@ -4,6 +4,8 @@ import '../../services/auth_service.dart';
 import '../../services/rider_service.dart';
 import 'delivery_detail_screen.dart';
 
+import '../../utils/app_colors.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 class DeliveryHistoryScreen extends StatefulWidget {
   const DeliveryHistoryScreen({super.key});
 
@@ -34,18 +36,18 @@ class _DeliveryHistoryScreenState extends State<DeliveryHistoryScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: AppColors.scaffoldBackground(context),
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.surface(context),
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          icon: Icon(Icons.arrow_back, color: AppColors.onSurface(context)),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
           'Delivery History',
           style: GoogleFonts.goudyBookletter1911(
-            color: Colors.black,
+            color: AppColors.onSurface(context),
             fontWeight: FontWeight.w600,
           ),
         ),
@@ -58,7 +60,7 @@ class _DeliveryHistoryScreenState extends State<DeliveryHistoryScreen> {
               future: _historyFuture,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator(color: Colors.black));
+                  return Center(child: CircularProgressIndicator(color: AppColors.onSurface(context)));
                 }
                 if (snapshot.hasError) {
                   return _buildErrorState();
@@ -74,7 +76,7 @@ class _DeliveryHistoryScreenState extends State<DeliveryHistoryScreen> {
                 }
 
                 return ListView.builder(
-                  padding: const EdgeInsets.all(16),
+                  padding: EdgeInsets.all(16.w),
                   itemCount: filteredOrders.length,
                   itemBuilder: (context, index) {
                     return _buildHistoryCard(filteredOrders[index]);
@@ -90,8 +92,8 @@ class _DeliveryHistoryScreenState extends State<DeliveryHistoryScreen> {
 
   Widget _buildFilterChips() {
     return Container(
-      padding: const EdgeInsets.all(16),
-      color: Colors.white,
+      padding: EdgeInsets.all(16.w),
+      color: AppColors.surface(context),
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: Row(
@@ -108,7 +110,7 @@ class _DeliveryHistoryScreenState extends State<DeliveryHistoryScreen> {
   Widget _buildFilterChip(String label, String value) {
     final isSelected = _filterStatus == value;
     return Padding(
-      padding: const EdgeInsets.only(right: 8),
+      padding: EdgeInsets.only(right: 8.w),
       child: FilterChip(
         label: Text(label),
         selected: isSelected,
@@ -118,13 +120,13 @@ class _DeliveryHistoryScreenState extends State<DeliveryHistoryScreen> {
           });
         },
         labelStyle: GoogleFonts.goudyBookletter1911(
-          color: isSelected ? Colors.white : Colors.black,
+          color: isSelected ? AppColors.surface(context) : AppColors.onSurface(context),
           fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
         ),
-        backgroundColor: Colors.white,
-        selectedColor: Colors.black,
-        checkmarkColor: Colors.white,
-        side: BorderSide(color: Colors.grey[300]!),
+        backgroundColor: AppColors.surface(context),
+        selectedColor: AppColors.onSurface(context),
+        checkmarkColor: AppColors.surface(context),
+        side: BorderSide(color: AppColors.border(context)),
       ),
     );
   }
@@ -143,10 +145,10 @@ class _DeliveryHistoryScreenState extends State<DeliveryHistoryScreen> {
     final statusColor = _getStatusColor(status);
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 12),
+      margin: EdgeInsets.only(bottom: 12.h),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
+        color: AppColors.surface(context),
+        borderRadius: BorderRadius.circular(12.r),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.05),
@@ -158,7 +160,7 @@ class _DeliveryHistoryScreenState extends State<DeliveryHistoryScreen> {
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(12.r),
           onTap: () {
             Navigator.push(
               context,
@@ -168,7 +170,7 @@ class _DeliveryHistoryScreenState extends State<DeliveryHistoryScreen> {
             );
           },
           child: Padding(
-            padding: const EdgeInsets.all(16),
+            padding: EdgeInsets.all(16.w),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -179,27 +181,27 @@ class _DeliveryHistoryScreenState extends State<DeliveryHistoryScreen> {
                       'Order #${order['order_id'] ?? order['id']}',
                       style: GoogleFonts.goudyBookletter1911(
                         fontWeight: FontWeight.w600,
-                        fontSize: 16,
+                        fontSize: 16.sp,
                       ),
                     ),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
                       decoration: BoxDecoration(
                         color: statusColor,
-                        borderRadius: BorderRadius.circular(6),
+                        borderRadius: BorderRadius.circular(6.r),
                       ),
                       child: Text(
                         status.toUpperCase(),
                         style: GoogleFonts.goudyBookletter1911(
-                          color: Colors.white,
-                          fontSize: 10,
+                          color: AppColors.surface(context),
+                          fontSize: 10.sp,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 12),
+                SizedBox(height: 12.h),
                 _buildInfoRow(Icons.person_outline, order['recipient'] ?? 'N/A'),
                 _buildInfoRow(Icons.location_on_outlined, order['address'] ?? 'N/A'),
                 _buildInfoRow(Icons.calendar_today, _formatDate(order['created_at'])),
@@ -213,14 +215,14 @@ class _DeliveryHistoryScreenState extends State<DeliveryHistoryScreen> {
                         Text(
                           'Total Amount',
                           style: GoogleFonts.goudyBookletter1911(
-                            fontSize: 12,
-                            color: Colors.grey[600],
+                            fontSize: 12.sp,
+                            color: AppColors.textMuted(context),
                           ),
                         ),
                         Text(
                           '₱${order['total_amount'] ?? 0}',
                           style: GoogleFonts.goudyBookletter1911(
-                            fontSize: 18,
+                            fontSize: 18.sp,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -228,20 +230,20 @@ class _DeliveryHistoryScreenState extends State<DeliveryHistoryScreen> {
                     ),
                     if (status == 'delivered')
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                        padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
                         decoration: BoxDecoration(
                           color: Colors.green.withValues(alpha: 0.1),
-                          borderRadius: BorderRadius.circular(6),
+                          borderRadius: BorderRadius.circular(6.r),
                         ),
                         child: Row(
                           children: [
-                            const Icon(Icons.check_circle, color: Colors.green, size: 16),
-                            const SizedBox(width: 4),
+                            Icon(Icons.check_circle, color: Colors.green, size: 16.r),
+                            SizedBox(width: 4.w),
                             Text(
                               'Completed',
                               style: GoogleFonts.goudyBookletter1911(
                                 color: Colors.green,
-                                fontSize: 12,
+                                fontSize: 12.sp,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
@@ -260,15 +262,15 @@ class _DeliveryHistoryScreenState extends State<DeliveryHistoryScreen> {
 
   Widget _buildInfoRow(IconData icon, String text) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
+      padding: EdgeInsets.only(bottom: 8.h),
       child: Row(
         children: [
-          Icon(icon, size: 16, color: Colors.grey[600]),
-          const SizedBox(width: 10),
+          Icon(icon, size: 16.r, color: AppColors.textMuted(context)),
+          SizedBox(width: 10.w),
           Expanded(
             child: Text(
               text,
-              style: GoogleFonts.goudyBookletter1911(fontSize: 13, color: Colors.grey[700]),
+              style: GoogleFonts.goudyBookletter1911(fontSize: 13.sp, color: AppColors.textBody(context)),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
@@ -304,16 +306,16 @@ class _DeliveryHistoryScreenState extends State<DeliveryHistoryScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.history, size: 80, color: Colors.grey[400]),
-          const SizedBox(height: 16),
+          Icon(Icons.history, size: 80.r, color: AppColors.textFaint(context)),
+          SizedBox(height: 16.h),
           Text(
             'No delivery history',
-            style: GoogleFonts.goudyBookletter1911(fontSize: 18, color: Colors.grey[600]),
+            style: GoogleFonts.goudyBookletter1911(fontSize: 18.sp, color: AppColors.textMuted(context)),
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: 8.h),
           Text(
             'Your completed deliveries will appear here',
-            style: GoogleFonts.goudyBookletter1911(fontSize: 14, color: Colors.grey[500]),
+            style: GoogleFonts.goudyBookletter1911(fontSize: 14.sp, color: AppColors.textFaint(context)),
           ),
         ],
       ),
@@ -325,18 +327,18 @@ class _DeliveryHistoryScreenState extends State<DeliveryHistoryScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.error_outline, size: 80, color: Colors.grey[400]),
-          const SizedBox(height: 16),
+          Icon(Icons.error_outline, size: 80.r, color: AppColors.textFaint(context)),
+          SizedBox(height: 16.h),
           Text(
             'Connection Error',
-            style: GoogleFonts.goudyBookletter1911(fontSize: 18, color: Colors.grey[600]),
+            style: GoogleFonts.goudyBookletter1911(fontSize: 18.sp, color: AppColors.textMuted(context)),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.black,
-              foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+              backgroundColor: AppColors.onSurface(context),
+              foregroundColor: AppColors.surface(context),
+              padding: EdgeInsets.symmetric(horizontal: 32.w, vertical: 12.h),
             ),
             onPressed: _loadHistory,
             child: Text('Retry', style: GoogleFonts.goudyBookletter1911(fontWeight: FontWeight.w600)),

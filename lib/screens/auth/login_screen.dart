@@ -3,10 +3,12 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../services/auth_service.dart';
 import '../../utils/snackbar_helper.dart';
 import '../buyer/buyer_main_screen.dart';
-import '../buyer/browse_products_screen.dart';
+import '../buyer/guest_home.dart';
 import '../rider/rider_home.dart';
 import 'register_screen.dart';
 
+import '../../utils/app_colors.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -61,16 +63,16 @@ class _LoginScreenState extends State<LoginScreen> {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (context) => const BrowseProductsScreen(isGuestMode: true),
+              builder: (context) => const GuestHome(),
             ),
           );
         }
       },
       child: Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.surface(context),
         body: Center(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.all(24),
+            padding: EdgeInsets.all(24.w),
             child: Form(
               key: _formKey,
               child: Column(
@@ -79,50 +81,50 @@ class _LoginScreenState extends State<LoginScreen> {
                   Text(
                     'Velare',
                     style: GoogleFonts.playfairDisplay(
-                      fontSize: 32,
+                      fontSize: 32.sp,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                const SizedBox(height: 8),
+                SizedBox(height: 8.h),
                 Text(
                   'Login',
                   style: GoogleFonts.goudyBookletter1911(
-                    fontSize: 24,
+                    fontSize: 24.sp,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                const SizedBox(height: 40),
+                SizedBox(height: 40.h),
                 TextFormField(
                   controller: _emailController,
                   decoration: InputDecoration(
                     labelText: 'Email',
                     labelStyle: GoogleFonts.goudyBookletter1911(),
                     filled: true,
-                    fillColor: Colors.grey[100],
+                    fillColor: AppColors.surfaceVariant(context),
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(8.r),
                       borderSide: BorderSide.none,
                     ),
                   ),
                   keyboardType: TextInputType.emailAddress,
                   validator: (v) => v!.isEmpty ? 'Enter email' : null,
                 ),
-                const SizedBox(height: 16),
+                SizedBox(height: 16.h),
                 TextFormField(
                   controller: _passwordController,
                   decoration: InputDecoration(
                     labelText: 'Password',
                     labelStyle: GoogleFonts.goudyBookletter1911(),
                     filled: true,
-                    fillColor: Colors.grey[100],
+                    fillColor: AppColors.surfaceVariant(context),
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(8.r),
                       borderSide: BorderSide.none,
                     ),
                     suffixIcon: IconButton(
                       icon: Icon(
                         _obscurePassword ? Icons.visibility_off : Icons.visibility,
-                        color: Colors.grey[600],
+                        color: AppColors.textMuted(context),
                       ),
                       onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
                     ),
@@ -130,44 +132,44 @@ class _LoginScreenState extends State<LoginScreen> {
                   obscureText: _obscurePassword,
                   validator: (v) => v!.isEmpty ? 'Enter password' : null,
                 ),
-                const SizedBox(height: 24),
+                SizedBox(height: 24.h),
                 SizedBox(
                   width: double.infinity,
-                  height: 48,
+                  height: 48.h,
                   child: ElevatedButton(
                     onPressed: _isLoading ? null : _login,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.black,
-                      foregroundColor: Colors.white,
+                      backgroundColor: AppColors.onSurface(context),
+                      foregroundColor: AppColors.surface(context),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(8.r),
                       ),
                     ),
                     child: _isLoading
-                        ? const SizedBox(
-                            height: 20,
-                            width: 20,
+                        ? SizedBox(
+                            height: 20.h,
+                            width: 20.w,
                             child: CircularProgressIndicator(
                               strokeWidth: 2,
-                              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                              valueColor: AlwaysStoppedAnimation<Color>(AppColors.surface(context)),
                             ),
                           )
                         : Text(
                             'Login',
                             style: GoogleFonts.goudyBookletter1911(
-                              fontSize: 16,
+                              fontSize: 16.sp,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
                   ),
                 ),
-                const SizedBox(height: 16),
+                SizedBox(height: 16.h),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
                       "Don't have an account? ",
-                      style: GoogleFonts.goudyBookletter1911(color: Colors.grey[600]),
+                      style: GoogleFonts.goudyBookletter1911(color: AppColors.textMuted(context)),
                     ),
                     GestureDetector(
                       onTap: () {
@@ -179,7 +181,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       child: Text(
                         'Register',
                         style: GoogleFonts.goudyBookletter1911(
-                          color: Colors.black,
+                          color: AppColors.onSurface(context),
                           fontWeight: FontWeight.w600,
                         ),
                       ),

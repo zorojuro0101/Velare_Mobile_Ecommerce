@@ -7,6 +7,8 @@ import '../../services/auth_service.dart';
 import '../../utils/snackbar_helper.dart';
 import '../../widgets/address_selector_modal.dart';
 
+import '../../utils/app_colors.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 class AddEditAddressScreen extends StatefulWidget {
   final Map<String, dynamic>? address;
 
@@ -278,20 +280,20 @@ class _AddEditAddressScreenState extends State<AddEditAddressScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: AppColors.scaffoldBackground(context),
       appBar: AppBar(
         title: Text(
           widget.address == null ? 'Add Address' : 'Edit Address',
           style: GoogleFonts.playfairDisplay(fontWeight: FontWeight.bold),
         ),
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
+        backgroundColor: AppColors.surface(context),
+        foregroundColor: AppColors.onSurface(context),
         elevation: 0,
       ),
       body: Form(
         key: _formKey,
         child: ListView(
-          padding: const EdgeInsets.all(16),
+          padding: EdgeInsets.all(16.w),
           children: [
             _buildTextField(
               controller: _recipientController,
@@ -304,7 +306,7 @@ class _AddEditAddressScreenState extends State<AddEditAddressScreen> {
                 return null;
               },
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 16.h),
             _buildTextField(
               controller: _phoneController,
               label: 'Phone Number',
@@ -321,53 +323,53 @@ class _AddEditAddressScreenState extends State<AddEditAddressScreen> {
                 return null;
               },
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 16.h),
             _buildTextField(
               controller: _houseNumberController,
               label: 'House/Unit/Floor No.',
               hint: 'e.g., Unit 123, 5th Floor',
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 16.h),
             _buildTextField(
               controller: _streetController,
               label: 'Street Name',
               hint: 'Enter street name',
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 16.h),
             _buildAddressSelector(),
-            const SizedBox(height: 16),
+            SizedBox(height: 16.h),
             _buildTextField(
               controller: _postalCodeController,
               label: 'Postal Code',
               hint: 'Auto-filled based on address',
               keyboardType: TextInputType.number,
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 16.h),
             _buildDefaultCheckbox(),
-            const SizedBox(height: 24),
+            SizedBox(height: 24.h),
             ElevatedButton(
               onPressed: _isSaving ? null : _saveAddress,
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.black,
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(vertical: 16),
+                backgroundColor: AppColors.onSurface(context),
+                foregroundColor: AppColors.surface(context),
+                padding: EdgeInsets.symmetric(vertical: 16.h),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(8.r),
                 ),
               ),
               child: _isSaving
-                  ? const SizedBox(
-                      height: 20,
-                      width: 20,
+                  ? SizedBox(
+                      height: 20.h,
+                      width: 20.w,
                       child: CircularProgressIndicator(
                         strokeWidth: 2,
-                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                        valueColor: AlwaysStoppedAnimation<Color>(AppColors.surface(context)),
                       ),
                     )
                   : Text(
                       widget.address == null ? 'Add Address' : 'Save Changes',
                       style: GoogleFonts.goudyBookletter1911(
-                        fontSize: 16,
+                        fontSize: 16.sp,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -392,11 +394,11 @@ class _AddEditAddressScreenState extends State<AddEditAddressScreen> {
         Text(
           label,
           style: GoogleFonts.goudyBookletter1911(
-            fontSize: 14,
+            fontSize: 14.sp,
             fontWeight: FontWeight.w500,
           ),
         ),
-        const SizedBox(height: 8),
+        SizedBox(height: 8.h),
         TextFormField(
           controller: controller,
           keyboardType: keyboardType,
@@ -405,26 +407,26 @@ class _AddEditAddressScreenState extends State<AddEditAddressScreen> {
           decoration: InputDecoration(
             counterText: maxLength != null ? '' : null,
             hintText: hint,
-            hintStyle: GoogleFonts.goudyBookletter1911(color: Colors.grey[400]),
+            hintStyle: GoogleFonts.goudyBookletter1911(color: AppColors.textFaint(context)),
             filled: true,
-            fillColor: Colors.white,
+            fillColor: AppColors.surface(context),
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(color: Colors.grey[300]!),
+              borderRadius: BorderRadius.circular(8.r),
+              borderSide: BorderSide(color: AppColors.border(context)),
             ),
             enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(color: Colors.grey[300]!),
+              borderRadius: BorderRadius.circular(8.r),
+              borderSide: BorderSide(color: AppColors.border(context)),
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(color: Colors.black, width: 2),
+              borderRadius: BorderRadius.circular(8.r),
+              borderSide: BorderSide(color: AppColors.onSurface(context), width: 2),
             ),
             errorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(8.r),
               borderSide: const BorderSide(color: Colors.red),
             ),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
           ),
           style: keyboardType == TextInputType.phone || keyboardType == TextInputType.number
               ? GoogleFonts.playfairDisplay()
@@ -441,22 +443,22 @@ class _AddEditAddressScreenState extends State<AddEditAddressScreen> {
         Text(
           'Region, Province, City, Barangay',
           style: GoogleFonts.goudyBookletter1911(
-            fontSize: 14,
+            fontSize: 14.sp,
             fontWeight: FontWeight.w500,
           ),
         ),
-        const SizedBox(height: 8),
+        SizedBox(height: 8.h),
         GestureDetector(
           onTap: _selectAddress,
           child: Container(
-            padding: const EdgeInsets.all(16),
+            padding: EdgeInsets.all(16.w),
             decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(8),
+              color: AppColors.surface(context),
+              borderRadius: BorderRadius.circular(8.r),
               border: Border.all(
                 color: _showAddressError && _addressDisplay.isEmpty 
                     ? Colors.red.withValues(alpha: 0.3) 
-                    : Colors.grey[300]!,
+                    : AppColors.border(context),
               ),
             ),
             child: Row(
@@ -465,14 +467,14 @@ class _AddEditAddressScreenState extends State<AddEditAddressScreen> {
                   child: Text(
                     _addressDisplay.isEmpty ? 'Select address location' : _addressDisplay,
                     style: GoogleFonts.goudyBookletter1911(
-                      color: _addressDisplay.isEmpty ? Colors.grey[400] : Colors.black,
+                      color: _addressDisplay.isEmpty ? AppColors.textFaint(context) : AppColors.onSurface(context),
                     ),
                   ),
                 ),
                 Icon(
                   _addressDisplay.isEmpty ? Icons.add_circle_outline : Icons.edit_outlined,
-                  size: 20,
-                  color: Colors.grey[600],
+                  size: 20.r,
+                  color: AppColors.textMuted(context),
                 ),
               ],
             ),
@@ -480,11 +482,11 @@ class _AddEditAddressScreenState extends State<AddEditAddressScreen> {
         ),
         if (_showAddressError && _addressDisplay.isEmpty)
           Padding(
-            padding: const EdgeInsets.only(top: 8, left: 12),
+            padding: EdgeInsets.only(top: 8.h, left: 12.w),
             child: Text(
               'Please select address location',
               style: GoogleFonts.goudyBookletter1911(
-                fontSize: 12,
+                fontSize: 12.sp,
                 color: Colors.red,
               ),
             ),
@@ -495,11 +497,11 @@ class _AddEditAddressScreenState extends State<AddEditAddressScreen> {
 
   Widget _buildDefaultCheckbox() {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: Colors.grey[300]!),
+        color: AppColors.surface(context),
+        borderRadius: BorderRadius.circular(8.r),
+        border: Border.all(color: AppColors.border(context)),
       ),
       child: Row(
         children: [
@@ -510,12 +512,12 @@ class _AddEditAddressScreenState extends State<AddEditAddressScreen> {
                 _isDefault = value ?? false;
               });
             },
-            activeColor: Colors.black,
+            activeColor: AppColors.onSurface(context),
           ),
           Expanded(
             child: Text(
               'Set as default address',
-              style: GoogleFonts.goudyBookletter1911(fontSize: 14),
+              style: GoogleFonts.goudyBookletter1911(fontSize: 14.sp),
             ),
           ),
         ],

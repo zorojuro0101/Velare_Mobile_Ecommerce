@@ -6,6 +6,8 @@ import '../../services/report_service.dart';
 import '../../utils/image_helper.dart';
 import '../../utils/snackbar_helper.dart';
 
+import '../../utils/app_colors.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 class MyReportsScreen extends StatefulWidget {
   const MyReportsScreen({super.key});
 
@@ -34,29 +36,29 @@ class _MyReportsScreenState extends State<MyReportsScreen> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.r)),
         title: Text(
           'Delete Report',
           style: GoogleFonts.playfairDisplay(fontWeight: FontWeight.bold),
         ),
         content: Text(
           'Are you sure you want to delete this report? This action cannot be undone.',
-          style: GoogleFonts.goudyBookletter1911(fontSize: 14),
+          style: GoogleFonts.goudyBookletter1911(fontSize: 14.sp),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
             style: TextButton.styleFrom(
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.r)),
             ),
-            child: Text('Cancel', style: GoogleFonts.goudyBookletter1911(color: Colors.black)),
+            child: Text('Cancel', style: GoogleFonts.goudyBookletter1911(color: AppColors.onSurface(context))),
           ),
           ElevatedButton(
             onPressed: () => Navigator.pop(context, true),
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.red,
-              foregroundColor: Colors.white,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+              foregroundColor: AppColors.surface(context),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.r)),
             ),
             child: Text('Delete', style: GoogleFonts.goudyBookletter1911()),
           ),
@@ -101,16 +103,16 @@ class _MyReportsScreenState extends State<MyReportsScreen> {
         Text(
           label,
           style: GoogleFonts.goudyBookletter1911(
-            fontSize: 12,
+            fontSize: 12.sp,
             fontWeight: FontWeight.w600,
-            color: Colors.grey[600],
+            color: AppColors.textMuted(context),
           ),
         ),
         if (value.isNotEmpty) ...[
-          const SizedBox(height: 4),
+          SizedBox(height: 4.h),
           Text(
             value,
-            style: GoogleFonts.goudyBookletter1911(fontSize: 14),
+            style: GoogleFonts.goudyBookletter1911(fontSize: 14.sp),
           ),
         ],
       ],
@@ -131,13 +133,13 @@ class _MyReportsScreenState extends State<MyReportsScreen> {
                   fit: BoxFit.contain,
                   errorBuilder: (context, error, stackTrace) {
                     return Container(
-                      padding: const EdgeInsets.all(20),
-                      color: Colors.white,
-                      child: const Column(
+                      padding: EdgeInsets.all(20.w),
+                      color: AppColors.surface(context),
+                      child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(Icons.error, size: 48, color: Colors.red),
-                          SizedBox(height: 8),
+                          Icon(Icons.error, size: 48.r, color: Colors.red),
+                          SizedBox(height: 8.h),
                           Text('Failed to load image'),
                         ],
                       ),
@@ -150,7 +152,7 @@ class _MyReportsScreenState extends State<MyReportsScreen> {
               top: 10,
               right: 10,
               child: IconButton(
-                icon: const Icon(Icons.close, color: Colors.white, size: 30),
+                icon: Icon(Icons.close, color: AppColors.surface(context), size: 30.r),
                 onPressed: () => Navigator.pop(context),
                 style: IconButton.styleFrom(
                   backgroundColor: Colors.black.withValues(alpha: 0.5),
@@ -171,11 +173,11 @@ class _MyReportsScreenState extends State<MyReportsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: AppColors.scaffoldBackground(context),
       appBar: AppBar(
         title: Text('My Reports', style: GoogleFonts.playfairDisplay(fontWeight: FontWeight.bold)),
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
+        backgroundColor: AppColors.surface(context),
+        foregroundColor: AppColors.onSurface(context),
         elevation: 0,
       ),
       body: FutureBuilder<List<Report>>(
@@ -198,21 +200,21 @@ class _MyReportsScreenState extends State<MyReportsScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.inbox, size: 80, color: Colors.grey[400]),
-                  const SizedBox(height: 16),
+                  Icon(Icons.inbox, size: 80.r, color: AppColors.textFaint(context)),
+                  SizedBox(height: 16.h),
                   Text(
                     'No reports yet',
                     style: GoogleFonts.goudyBookletter1911(
-                      fontSize: 18,
-                      color: Colors.grey[600],
+                      fontSize: 18.sp,
+                      color: AppColors.textMuted(context),
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  SizedBox(height: 8.h),
                   Text(
                     'Submit a report if you have issues',
                     style: GoogleFonts.goudyBookletter1911(
-                      fontSize: 14,
-                      color: Colors.grey[500],
+                      fontSize: 14.sp,
+                      color: AppColors.textFaint(context),
                     ),
                   ),
                 ],
@@ -226,7 +228,7 @@ class _MyReportsScreenState extends State<MyReportsScreen> {
               _loadReports();
             },
             child: ListView.builder(
-              padding: const EdgeInsets.all(16),
+              padding: EdgeInsets.all(16.w),
               itemCount: reports.length,
               itemBuilder: (context, index) {
                 final report = reports[index];
@@ -248,25 +250,25 @@ class _MyReportsScreenState extends State<MyReportsScreen> {
         return false;
       },
       background: Container(
-        margin: const EdgeInsets.only(bottom: 12),
-        padding: const EdgeInsets.symmetric(horizontal: 20),
+        margin: EdgeInsets.only(bottom: 12.h),
+        padding: EdgeInsets.symmetric(horizontal: 20.w),
         decoration: BoxDecoration(
           color: Colors.red,
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(8.r),
         ),
         alignment: Alignment.centerRight,
-        child: const Icon(
+        child: Icon(
           Icons.delete,
-          color: Colors.white,
-          size: 28,
+          color: AppColors.surface(context),
+          size: 28.r,
         ),
       ),
       child: Container(
-        margin: const EdgeInsets.only(bottom: 12),
-        padding: const EdgeInsets.all(16),
+        margin: EdgeInsets.only(bottom: 12.h),
+        padding: EdgeInsets.all(16.w),
         decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(8),
+          color: AppColors.surface(context),
+          borderRadius: BorderRadius.circular(8.r),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: 0.05),
@@ -283,16 +285,16 @@ class _MyReportsScreenState extends State<MyReportsScreen> {
                   ? () => _showImageDialog(report.evidenceImage!)
                   : null,
               child: Container(
-                width: 80,
-                height: 80,
+                width: 80.w,
+                height: 80.h,
                 decoration: BoxDecoration(
-                  color: Colors.grey[200],
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: Colors.grey[300]!, width: 1),
+                  color: AppColors.surfaceVariant2(context),
+                  borderRadius: BorderRadius.circular(8.r),
+                  border: Border.all(color: AppColors.border(context), width: 1),
                 ),
                 child: report.evidenceImage != null
                     ? ClipRRect(
-                        borderRadius: BorderRadius.circular(7),
+                        borderRadius: BorderRadius.circular(7.r),
                         child: Image.network(
                           ImageHelper.getImageUrl(report.evidenceImage!),
                           width: 80,
@@ -303,13 +305,13 @@ class _MyReportsScreenState extends State<MyReportsScreen> {
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Icon(Icons.image_not_supported, color: Colors.grey[400], size: 24),
-                                  const SizedBox(height: 4),
+                                  Icon(Icons.image_not_supported, color: AppColors.textFaint(context), size: 24.r),
+                                  SizedBox(height: 4.h),
                                   Text(
                                     'Error',
                                     style: GoogleFonts.goudyBookletter1911(
-                                      fontSize: 10,
-                                      color: Colors.grey[500],
+                                      fontSize: 10.sp,
+                                      color: AppColors.textFaint(context),
                                     ),
                                   ),
                                 ],
@@ -322,14 +324,14 @@ class _MyReportsScreenState extends State<MyReportsScreen> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(Icons.image_outlined, color: Colors.grey[400], size: 28),
-                            const SizedBox(height: 4),
+                            Icon(Icons.image_outlined, color: AppColors.textFaint(context), size: 28.r),
+                            SizedBox(height: 4.h),
                             Text(
                               'No image\nuploaded',
                               textAlign: TextAlign.center,
                               style: GoogleFonts.goudyBookletter1911(
-                                fontSize: 9,
-                                color: Colors.grey[500],
+                                fontSize: 9.sp,
+                                color: AppColors.textFaint(context),
                               ),
                             ),
                           ],
@@ -337,7 +339,7 @@ class _MyReportsScreenState extends State<MyReportsScreen> {
                       ),
               ),
             ),
-            const SizedBox(width: 12),
+            SizedBox(width: 12.w),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -351,15 +353,15 @@ class _MyReportsScreenState extends State<MyReportsScreen> {
                             Text(
                               'Report ID: ',
                               style: GoogleFonts.playfairDisplay(
-                                fontSize: 15,
+                                fontSize: 15.sp,
                                 fontWeight: FontWeight.bold,
-                                color: Colors.grey[700],
+                                color: AppColors.textBody(context),
                               ),
                             ),
                             Text(
                               '#${report.reportId}',
                               style: GoogleFonts.playfairDisplay(
-                                fontSize: 15,
+                                fontSize: 15.sp,
                                 fontWeight: FontWeight.bold,
                                 color: const Color(0xFFD4AF37),
                               ),
@@ -368,15 +370,15 @@ class _MyReportsScreenState extends State<MyReportsScreen> {
                         ),
                       ),
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
                         decoration: BoxDecoration(
                           color: _getStatusColor(report.status).withValues(alpha: 0.2),
-                          borderRadius: BorderRadius.circular(4),
+                          borderRadius: BorderRadius.circular(4.r),
                         ),
                         child: Text(
                           report.statusDisplay,
                           style: GoogleFonts.goudyBookletter1911(
-                            fontSize: 10,
+                            fontSize: 10.sp,
                             fontWeight: FontWeight.w600,
                             color: _getStatusColor(report.status),
                           ),
@@ -384,65 +386,65 @@ class _MyReportsScreenState extends State<MyReportsScreen> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 6),
+                  SizedBox(height: 6.h),
                   Row(
                     children: [
                       Expanded(
                         child: Text(
                           report.reportedUserName ?? 'Unknown',
                           style: GoogleFonts.goudyBookletter1911(
-                            fontSize: 13,
+                            fontSize: 13.sp,
                             fontWeight: FontWeight.w500,
                           ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
-                      const SizedBox(width: 4),
+                      SizedBox(width: 4.w),
                       Text(
                         '(${report.reportedUserType == 'seller' ? 'Seller' : 'Rider'})',
                         style: GoogleFonts.goudyBookletter1911(
-                          fontSize: 12,
-                          color: Colors.grey[600],
+                          fontSize: 12.sp,
+                          color: AppColors.textMuted(context),
                         ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 6),
+                  SizedBox(height: 6.h),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                    padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
                     decoration: BoxDecoration(
-                      color: Colors.grey[200],
-                      borderRadius: BorderRadius.circular(3),
+                      color: AppColors.surfaceVariant2(context),
+                      borderRadius: BorderRadius.circular(3.r),
                     ),
                     child: Text(
                       report.categoryDisplay,
                       style: GoogleFonts.goudyBookletter1911(
-                        fontSize: 10,
+                        fontSize: 10.sp,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
                   ),
-                  const SizedBox(height: 6),
+                  SizedBox(height: 6.h),
                   Text(
                     report.reportReason,
                     style: GoogleFonts.goudyBookletter1911(
-                      fontSize: 12,
-                      color: Colors.grey[700],
+                      fontSize: 12.sp,
+                      color: AppColors.textBody(context),
                     ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
                   if (report.adminNotes != null && report.adminNotes!.isNotEmpty) ...[
-                    const SizedBox(height: 6),
+                    SizedBox(height: 6.h),
                     _buildDetailRow('Admin Notes:', report.adminNotes!),
                   ],
-                  const SizedBox(height: 6),
+                  SizedBox(height: 6.h),
                   Text(
                     _formatDate(report.createdAt),
                     style: GoogleFonts.goudyBookletter1911(
-                      fontSize: 10,
-                      color: Colors.grey[500],
+                      fontSize: 10.sp,
+                      color: AppColors.textFaint(context),
                     ),
                   ),
                 ],

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -6,6 +7,8 @@ import '../../models/product_model.dart';
 import '../../utils/image_helper.dart';
 import 'product_detail_screen.dart';
 
+import '../../utils/app_colors.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 class VoucherProductsScreen extends StatefulWidget {
   final int voucherId;
   
@@ -147,7 +150,7 @@ class _VoucherProductsScreenState extends State<VoucherProductsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.surface(context),
       body: CustomScrollView(
         slivers: [
           _buildHeroSection(),
@@ -167,8 +170,8 @@ class _VoucherProductsScreenState extends State<VoucherProductsScreen> {
   Widget _buildHeroSection() {
     if (_voucher == null) {
       return SliverAppBar(
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
+        backgroundColor: AppColors.surface(context),
+        foregroundColor: AppColors.onSurface(context),
         elevation: 0,
         pinned: true,
       );
@@ -186,7 +189,7 @@ class _VoucherProductsScreenState extends State<VoucherProductsScreen> {
       expandedHeight: 300,
       pinned: true,
       backgroundColor: const Color(0xFFD4AF37),
-      foregroundColor: Colors.white,
+      foregroundColor: AppColors.alwaysWhite,
       elevation: 0,
       flexibleSpace: LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
@@ -204,9 +207,9 @@ class _VoucherProductsScreenState extends State<VoucherProductsScreen> {
               child: Text(
                 '$discountPercent% OFF',
                 style: GoogleFonts.playfairDisplay(
-                  fontSize: 20,
+                  fontSize: 20.sp,
                   fontWeight: FontWeight.bold,
-                  color: Colors.white,
+                  color: AppColors.alwaysWhite,
                 ),
               ),
             ),
@@ -224,45 +227,45 @@ class _VoucherProductsScreenState extends State<VoucherProductsScreen> {
                         size: 80,
                         color: Colors.white.withValues(alpha: 0.9),
                       ),
-                      const SizedBox(height: 20),
+                      SizedBox(height: 20.h),
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        padding: EdgeInsets.symmetric(horizontal: 20.w),
                         child: Text(
                           voucherName,
                           style: GoogleFonts.playfairDisplay(
-                            fontSize: 28,
+                            fontSize: 28.sp,
                             fontWeight: FontWeight.bold,
-                            color: Colors.white,
+                            color: AppColors.alwaysWhite,
                           ),
                           textAlign: TextAlign.center,
                         ),
                       ),
-                      const SizedBox(height: 12),
+                      SizedBox(height: 12.h),
                       Text(
                         '$discountPercent% OFF${endDate != null ? ' • Valid until ${_formatDate(endDate)}' : ''}',
                         style: GoogleFonts.goudyBookletter1911(
-                          fontSize: 16,
+                          fontSize: 16.sp,
                           color: Colors.white.withValues(alpha: 0.95),
                         ),
                         textAlign: TextAlign.center,
                       ),
-                      const SizedBox(height: 16),
+                      SizedBox(height: 16.h),
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                        padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 8.h),
                         decoration: BoxDecoration(
                           color: Colors.white.withValues(alpha: 0.2),
-                          borderRadius: BorderRadius.circular(20),
+                          borderRadius: BorderRadius.circular(20.r),
                         ),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            const Icon(Icons.store, color: Colors.white, size: 18),
-                            const SizedBox(width: 8),
+                            Icon(Icons.store, color: AppColors.alwaysWhite, size: 18.r),
+                            SizedBox(width: 8.w),
                             Text(
                               '$shopCount Shop${shopCount > 1 ? 's' : ''}',
                               style: GoogleFonts.goudyBookletter1911(
-                                fontSize: 14,
-                                color: Colors.white,
+                                fontSize: 14.sp,
+                                color: AppColors.alwaysWhite,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
@@ -286,40 +289,40 @@ class _VoucherProductsScreenState extends State<VoucherProductsScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.shopping_bag_outlined, size: 80, color: Colors.grey[400]),
-            const SizedBox(height: 16),
+            Icon(Icons.shopping_bag_outlined, size: 80.r, color: AppColors.textFaint(context)),
+            SizedBox(height: 16.h),
             Text(
               'No Products Available',
               style: GoogleFonts.playfairDisplay(
-                fontSize: 24,
+                fontSize: 24.sp,
                 fontWeight: FontWeight.bold,
-                color: Colors.grey[700],
+                color: AppColors.textBody(context),
               ),
             ),
-            const SizedBox(height: 8),
+            SizedBox(height: 8.h),
             Text(
               'There are no products available\nwith this voucher yet.',
               style: GoogleFonts.goudyBookletter1911(
-                fontSize: 14,
-                color: Colors.grey[500],
+                fontSize: 14.sp,
+                color: AppColors.textFaint(context),
               ),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 24),
+            SizedBox(height: 24.h),
             ElevatedButton(
               onPressed: () => Navigator.pop(context),
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFFD4AF37),
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+                foregroundColor: AppColors.surface(context),
+                padding: EdgeInsets.symmetric(horizontal: 32.w, vertical: 12.h),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(8.r),
                 ),
               ),
               child: Text(
                 'Back to Vouchers',
                 style: GoogleFonts.playfairDisplay(
-                  fontSize: 16,
+                  fontSize: 16.sp,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -332,18 +335,13 @@ class _VoucherProductsScreenState extends State<VoucherProductsScreen> {
 
   Widget _buildProductsGrid() {
     return SliverPadding(
-      padding: const EdgeInsets.all(16),
-      sliver: SliverGrid(
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          childAspectRatio: 0.65,
-          crossAxisSpacing: 16,
-          mainAxisSpacing: 16,
-        ),
-        delegate: SliverChildBuilderDelegate(
-          (context, index) => _buildProductCard(_products[index]),
-          childCount: _products.length,
-        ),
+      padding: EdgeInsets.all(16.w),
+      sliver: SliverMasonryGrid.count(
+        crossAxisCount: 2,
+        crossAxisSpacing: 16.w,
+        mainAxisSpacing: 16.h,
+        childCount: _products.length,
+        itemBuilder: (context, index) => _buildProductCard(_products[index]),
       ),
     );
   }
@@ -360,8 +358,8 @@ class _VoucherProductsScreenState extends State<VoucherProductsScreen> {
       },
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
+          color: AppColors.surface(context),
+          borderRadius: BorderRadius.circular(12.r),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: 0.05),
@@ -372,11 +370,12 @@ class _VoucherProductsScreenState extends State<VoucherProductsScreen> {
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Expanded(
-              flex: 3,
+            AspectRatio(
+              aspectRatio: 1,
               child: ClipRRect(
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+                borderRadius: BorderRadius.vertical(top: Radius.circular(12.r)),
                 child: product.primaryImage != null && product.primaryImage!.isNotEmpty
                     ? CachedNetworkImage(
                         imageUrl: ImageHelper.getImageUrl(product.primaryImage!),
@@ -384,54 +383,51 @@ class _VoucherProductsScreenState extends State<VoucherProductsScreen> {
                         height: double.infinity,
                         fit: BoxFit.cover,
                         placeholder: (context, url) => Container(
-                          color: Colors.grey[200],
+                          color: AppColors.surfaceVariant2(context),
                           child: const Center(child: CircularProgressIndicator()),
                         ),
                         errorWidget: (context, url, error) => Container(
-                          color: Colors.grey[100],
+                          color: AppColors.surfaceVariant(context),
                           child: Center(
-                            child: Icon(Icons.image_outlined, size: 50, color: Colors.grey[400]),
+                            child: Icon(Icons.image_outlined, size: 50.r, color: AppColors.textFaint(context)),
                           ),
                         ),
                       )
                     : Container(
                         width: double.infinity,
                         height: double.infinity,
-                        color: Colors.grey[100],
+                        color: AppColors.surfaceVariant(context),
                         child: Center(
-                          child: Icon(Icons.image_outlined, size: 50, color: Colors.grey[400]),
+                          child: Icon(Icons.image_outlined, size: 50.r, color: AppColors.textFaint(context)),
                         ),
                       ),
               ),
             ),
-            Expanded(
-              flex: 1,
-              child: Padding(
-                padding: const EdgeInsets.all(8),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      product.productName,
-                      style: GoogleFonts.goudyBookletter1911(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w600,
-                        height: 1.2,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
+            Padding(
+              padding: EdgeInsets.all(8.w),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    product.productName,
+                    style: GoogleFonts.goudyBookletter1911(
+                      fontSize: 13.sp,
+                      fontWeight: FontWeight.w600,
+                      height: 1.2,
                     ),
-                    const SizedBox(height: 4),
-                    Text(
-                      '₱${product.price.toStringAsFixed(2)}',
-                      style: GoogleFonts.playfairDisplay(
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                      ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  SizedBox(height: 4.h),
+                  Text(
+                    '₱${product.price.toStringAsFixed(2)}',
+                    style: GoogleFonts.playfairDisplay(
+                      fontSize: 15.sp,
+                      fontWeight: FontWeight.bold,
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ],

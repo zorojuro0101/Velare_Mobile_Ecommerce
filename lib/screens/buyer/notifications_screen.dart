@@ -6,6 +6,8 @@ import '../../utils/snackbar_helper.dart';
 import 'order_history_screen.dart';
 import 'order_detail_screen.dart';
 
+import '../../utils/app_colors.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 class NotificationsScreen extends StatefulWidget {
   const NotificationsScreen({super.key});
 
@@ -146,7 +148,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
       case 'message':
         return const Color(0xFFB8860B); // Dark Goldenrod
       default:
-        return Colors.black;
+        return AppColors.onSurface(context);
     }
   }
 
@@ -173,11 +175,11 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     final unreadCount = _notifications.where((n) => n['is_read'] != true).length;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.surface(context),
       appBar: AppBar(
         title: Text('Notifications', style: GoogleFonts.playfairDisplay(fontWeight: FontWeight.bold)),
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
+        backgroundColor: AppColors.surface(context),
+        foregroundColor: AppColors.onSurface(context),
         elevation: 0,
         actions: [
           if (unreadCount > 0)
@@ -186,7 +188,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
               child: Text(
                 'Mark all read',
                 style: GoogleFonts.goudyBookletter1911(
-                  fontSize: 14,
+                  fontSize: 14.sp,
                   color: const Color(0xFFD4AF37), // Gold
                   fontWeight: FontWeight.w600,
                 ),
@@ -202,7 +204,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                   color: const Color(0xFFD4AF37),
                   onRefresh: _loadNotifications,
                   child: ListView.builder(
-                    padding: const EdgeInsets.all(16),
+                    padding: EdgeInsets.all(16.w),
                     itemCount: _notifications.length,
                     itemBuilder: (context, index) {
                       return _buildNotificationCard(_notifications[index]);
@@ -217,16 +219,16 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.notifications_none, size: 100, color: Colors.grey[400]),
-          const SizedBox(height: 16),
+          Icon(Icons.notifications_none, size: 100.r, color: AppColors.textFaint(context)),
+          SizedBox(height: 16.h),
           Text(
             'No notifications',
-            style: GoogleFonts.goudyBookletter1911(fontSize: 18, color: Colors.grey[600]),
+            style: GoogleFonts.goudyBookletter1911(fontSize: 18.sp, color: AppColors.textMuted(context)),
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: 8.h),
           Text(
             'You\'re all caught up!',
-            style: GoogleFonts.goudyBookletter1911(fontSize: 14, color: Colors.grey[500]),
+            style: GoogleFonts.goudyBookletter1911(fontSize: 14.sp, color: AppColors.textFaint(context)),
           ),
         ],
       ),
@@ -243,12 +245,12 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
       direction: DismissDirection.endToStart,
       background: Container(
         alignment: Alignment.centerRight,
-        padding: const EdgeInsets.only(right: 20),
+        padding: EdgeInsets.only(right: 20.w),
         decoration: BoxDecoration(
           color: Colors.red,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(12.r),
         ),
-        child: const Icon(Icons.delete, color: Colors.white),
+        child: Icon(Icons.delete, color: AppColors.surface(context)),
       ),
       onDismissed: (_) => _deleteNotification(notification['notification_id']),
       child: GestureDetector(
@@ -259,13 +261,13 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
           _handleNotificationTap(notification);
         },
         child: Container(
-          margin: const EdgeInsets.only(bottom: 12),
-          padding: const EdgeInsets.all(16),
+          margin: EdgeInsets.only(bottom: 12.h),
+          padding: EdgeInsets.all(16.w),
           decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(12),
+            color: AppColors.surface(context),
+            borderRadius: BorderRadius.circular(12.r),
             border: Border.all(
-              color: isRead ? Colors.grey[300]! : const Color(0xFFD4AF37),
+              color: isRead ? AppColors.border(context) : const Color(0xFFD4AF37),
               width: isRead ? 1 : 2,
             ),
             boxShadow: [
@@ -280,19 +282,19 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                width: 40,
-                height: 40,
+                width: 40.w,
+                height: 40.h,
                 decoration: BoxDecoration(
                   color: _getNotificationColor(type).withValues(alpha: 0.15),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
                   _getNotificationIcon(type),
-                  size: 20,
+                  size: 20.r,
                   color: _getNotificationColor(type),
                 ),
               ),
-              const SizedBox(width: 12),
+              SizedBox(width: 12.w),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -300,28 +302,28 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                     Text(
                       notification['title'] ?? 'Notification',
                       style: GoogleFonts.playfairDisplay(
-                        fontSize: 15,
+                        fontSize: 15.sp,
                         fontWeight: isRead ? FontWeight.w600 : FontWeight.bold,
-                        color: Colors.black,
+                        color: AppColors.onSurface(context),
                       ),
                     ),
-                    const SizedBox(height: 4),
+                    SizedBox(height: 4.h),
                     Text(
                       notification['message'] ?? '',
                       style: GoogleFonts.goudyBookletter1911(
-                        fontSize: 13,
-                        color: Colors.grey[700],
+                        fontSize: 13.sp,
+                        color: AppColors.textBody(context),
                       ),
                       // Show full text for security/warning, limit for others
                       maxLines: isSecurityOrWarning ? null : 3,
                       overflow: isSecurityOrWarning ? TextOverflow.visible : TextOverflow.ellipsis,
                     ),
-                    const SizedBox(height: 8),
+                    SizedBox(height: 8.h),
                     Text(
                       _formatTime(notification['created_at']),
                       style: GoogleFonts.goudyBookletter1911(
-                        fontSize: 12,
-                        color: Colors.grey[500],
+                        fontSize: 12.sp,
+                        color: AppColors.textFaint(context),
                       ),
                     ),
                   ],
@@ -329,8 +331,8 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
               ),
               if (!isRead)
                 Container(
-                  width: 10,
-                  height: 10,
+                  width: 10.w,
+                  height: 10.h,
                   decoration: const BoxDecoration(
                     color: Color(0xFFD4AF37), // Gold dot for unread
                     shape: BoxShape.circle,

@@ -6,6 +6,8 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../services/auth_service.dart';
 import '../../utils/snackbar_helper.dart';
 
+import '../../utils/app_colors.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 class VerificationDocumentsScreen extends StatefulWidget {
   const VerificationDocumentsScreen({super.key});
 
@@ -170,71 +172,71 @@ class _VerificationDocumentsScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: AppColors.scaffoldBackground(context),
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.surface(context),
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          icon: Icon(Icons.arrow_back, color: AppColors.onSurface(context)),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
           'Verification Documents',
           style: GoogleFonts.goudyBookletter1911(
-            color: Colors.black,
+            color: AppColors.onSurface(context),
             fontWeight: FontWeight.w600,
           ),
         ),
       ),
       body: _isLoading
-          ? const Center(child: CircularProgressIndicator(color: Colors.black))
+          ? Center(child: CircularProgressIndicator(color: AppColors.onSurface(context)))
           : SingleChildScrollView(
-              padding: const EdgeInsets.all(16),
+              padding: EdgeInsets.all(16.w),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   _buildInfoCard(),
-                  const SizedBox(height: 24),
+                  SizedBox(height: 24.h),
                   _buildDocumentSection(
                     'OR/CR (Official Receipt / Certificate of Registration)',
                     'orcr',
                     _riderData?['orcr_file_path'],
                     _orcrImage,
                   ),
-                  const SizedBox(height: 24),
+                  SizedBox(height: 24.h),
                   _buildDocumentSection(
                     'Driver\'s License',
                     'license',
                     _riderData?['driver_license_file_path'],
                     _licenseImage,
                   ),
-                  const SizedBox(height: 32),
+                  SizedBox(height: 32.h),
                   if (_orcrImage != null || _licenseImage != null)
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.black,
-                          foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          backgroundColor: AppColors.onSurface(context),
+                          foregroundColor: AppColors.surface(context),
+                          padding: EdgeInsets.symmetric(vertical: 16.h),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(5),
+                            borderRadius: BorderRadius.circular(5.r),
                           ),
                         ),
                         onPressed: _isUploading ? null : _uploadDocuments,
                         child: _isUploading
-                            ? const SizedBox(
-                                height: 20,
-                                width: 20,
+                            ? SizedBox(
+                                height: 20.h,
+                                width: 20.w,
                                 child: CircularProgressIndicator(
                                   strokeWidth: 2,
-                                  color: Colors.white,
+                                  color: AppColors.surface(context),
                                 ),
                               )
                             : Text(
                                 'Upload Documents',
                                 style: GoogleFonts.goudyBookletter1911(
-                                  fontSize: 16,
+                                  fontSize: 16.sp,
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
@@ -248,21 +250,21 @@ class _VerificationDocumentsScreenState
 
   Widget _buildInfoCard() {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
         color: Colors.blue[50],
-        borderRadius: BorderRadius.circular(5),
+        borderRadius: BorderRadius.circular(5.r),
         border: Border.all(color: Colors.blue[200]!),
       ),
       child: Row(
         children: [
-          Icon(Icons.info_outline, color: Colors.blue[700], size: 24),
-          const SizedBox(width: 12),
+          Icon(Icons.info_outline, color: Colors.blue[700], size: 24.r),
+          SizedBox(width: 12.w),
           Expanded(
             child: Text(
               'Upload clear photos of your OR/CR and Driver\'s License for verification purposes.',
               style: GoogleFonts.goudyBookletter1911(
-                fontSize: 13,
+                fontSize: 13.sp,
                 color: Colors.blue[900],
               ),
             ),
@@ -279,10 +281,10 @@ class _VerificationDocumentsScreenState
     File? newImage,
   ) {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: EdgeInsets.all(20.w),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(5),
+        color: AppColors.surface(context),
+        borderRadius: BorderRadius.circular(5.r),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.05),
@@ -297,29 +299,29 @@ class _VerificationDocumentsScreenState
           Text(
             title,
             style: GoogleFonts.goudyBookletter1911(
-              fontSize: 16,
+              fontSize: 16.sp,
               fontWeight: FontWeight.w600,
             ),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
           GestureDetector(
             onTap: () => _pickImage(documentType),
             child: Container(
-              height: 200,
+              height: 200.h,
               width: double.infinity,
               decoration: BoxDecoration(
-                color: Colors.grey[100],
-                borderRadius: BorderRadius.circular(5),
-                border: Border.all(color: Colors.grey[300]!, width: 2),
+                color: AppColors.surfaceVariant(context),
+                borderRadius: BorderRadius.circular(5.r),
+                border: Border.all(color: AppColors.border(context), width: 2),
               ),
               child: newImage != null
                   ? ClipRRect(
-                      borderRadius: BorderRadius.circular(5),
+                      borderRadius: BorderRadius.circular(5.r),
                       child: Image.file(newImage, fit: BoxFit.cover),
                     )
                   : existingUrl != null
                   ? ClipRRect(
-                      borderRadius: BorderRadius.circular(5),
+                      borderRadius: BorderRadius.circular(5.r),
                       child: Image.network(
                         existingUrl,
                         fit: BoxFit.cover,
@@ -331,30 +333,30 @@ class _VerificationDocumentsScreenState
                   : _buildPlaceholder(),
             ),
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12.h),
           Row(
             children: [
               Expanded(
                 child: OutlinedButton.icon(
                   style: OutlinedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    side: const BorderSide(color: Colors.black),
+                    padding: EdgeInsets.symmetric(vertical: 12.h),
+                    side: BorderSide(color: AppColors.onSurface(context)),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(5),
+                      borderRadius: BorderRadius.circular(5.r),
                     ),
                   ),
                   onPressed: () => _pickImage(documentType),
-                  icon: const Icon(Icons.photo_library, size: 18),
+                  icon: Icon(Icons.photo_library, size: 18.r),
                   label: Text(
                     newImage != null || existingUrl != null
                         ? 'Change Photo'
                         : 'Select Photo',
-                    style: GoogleFonts.goudyBookletter1911(fontSize: 13),
+                    style: GoogleFonts.goudyBookletter1911(fontSize: 13.sp),
                   ),
                 ),
               ),
               if (newImage != null) ...[
-                const SizedBox(width: 8),
+                SizedBox(width: 8.w),
                 IconButton(
                   onPressed: () {
                     setState(() {
@@ -373,15 +375,15 @@ class _VerificationDocumentsScreenState
           ),
           if (existingUrl != null && newImage == null)
             Padding(
-              padding: const EdgeInsets.only(top: 8),
+              padding: EdgeInsets.only(top: 8.h),
               child: Row(
                 children: [
-                  Icon(Icons.check_circle, color: Colors.green, size: 16),
-                  const SizedBox(width: 4),
+                  Icon(Icons.check_circle, color: Colors.green, size: 16.r),
+                  SizedBox(width: 4.w),
                   Text(
                     'Document uploaded',
                     style: GoogleFonts.goudyBookletter1911(
-                      fontSize: 12,
+                      fontSize: 12.sp,
                       color: Colors.green,
                       fontWeight: FontWeight.w500,
                     ),
@@ -398,20 +400,20 @@ class _VerificationDocumentsScreenState
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Icon(Icons.cloud_upload_outlined, size: 48, color: Colors.grey[400]),
-        const SizedBox(height: 8),
+        Icon(Icons.cloud_upload_outlined, size: 48.r, color: AppColors.textFaint(context)),
+        SizedBox(height: 8.h),
         Text(
           'Tap to select image',
           style: GoogleFonts.goudyBookletter1911(
-            fontSize: 14,
-            color: Colors.grey[600],
+            fontSize: 14.sp,
+            color: AppColors.textMuted(context),
           ),
         ),
         Text(
           'JPG or PNG only',
           style: GoogleFonts.goudyBookletter1911(
-            fontSize: 12,
-            color: Colors.grey[500],
+            fontSize: 12.sp,
+            color: AppColors.textFaint(context),
           ),
         ),
       ],

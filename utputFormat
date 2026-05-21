@@ -1,0 +1,22 @@
+HTTP/1.1 400 Bad Request
+Vary: X-Origin
+Vary: Referer
+Content-Type: application/json; charset=UTF-8
+Date: Thu, 21 May 2026 01:12:51 GMT
+Server: scaffolding on HTTPServer2
+X-XSS-Protection: 0
+X-Frame-Options: SAMEORIGIN
+X-Content-Type-Options: nosniff
+Server-Timing: gfet4t7; dur=5
+Alt-Svc: h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+Accept-Ranges: none
+Vary: Origin,Accept-Encoding
+Transfer-Encoding: chunked
+
+{
+  "error": {
+    "code": 400,
+    "message": "Invalid JSON payload received. Expected an object key or }.\n\\\n^",
+    "status": "INVALID_ARGUMENT"
+  }
+}

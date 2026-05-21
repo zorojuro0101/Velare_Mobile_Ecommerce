@@ -13,6 +13,8 @@ import 'checkout_screen.dart';
 import 'notifications_screen.dart';
 import 'chat_list_screen.dart';
 
+import '../../utils/app_colors.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 class CartScreen extends StatefulWidget {
   const CartScreen({super.key});
 
@@ -192,11 +194,11 @@ class _CartScreenState extends State<CartScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: AppColors.scaffoldBackground(context),
       appBar: AppBar(
         title: Text('Shopping Cart', style: GoogleFonts.playfairDisplay(fontWeight: FontWeight.bold)),
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
+        backgroundColor: AppColors.surface(context),
+        foregroundColor: AppColors.onSurface(context),
         elevation: 0,
         actions: [
           NotificationDot(
@@ -219,11 +221,11 @@ class _CartScreenState extends State<CartScreen> {
               ).then((_) => _loadCounts());
             },
           ),
-          const SizedBox(width: 8),
+          SizedBox(width: 8.w),
         ],
       ),
       body: _isLoading
-          ? const Center(child: CircularProgressIndicator(color: Colors.black))
+          ? Center(child: CircularProgressIndicator(color: AppColors.onSurface(context)))
           : _cartItems.isEmpty
               ? _buildEmptyCart()
               : Column(
@@ -231,7 +233,7 @@ class _CartScreenState extends State<CartScreen> {
                     _buildSelectAllBar(_cartItems),
                     Expanded(
                       child: ListView.builder(
-                        padding: const EdgeInsets.all(16),
+                        padding: EdgeInsets.all(16.w),
                         itemCount: _groupByShop(_cartItems).length,
                         itemBuilder: (context, index) {
                           final groupedItems = _groupByShop(_cartItems);
@@ -252,21 +254,21 @@ class _CartScreenState extends State<CartScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.shopping_cart_outlined, size: 100, color: Colors.grey[400]),
-          const SizedBox(height: 16),
+          Icon(Icons.shopping_cart_outlined, size: 100.r, color: AppColors.textFaint(context)),
+          SizedBox(height: 16.h),
           Text(
             'Your cart is empty',
-            style: GoogleFonts.goudyBookletter1911(fontSize: 18, color: Colors.grey[600]),
+            style: GoogleFonts.goudyBookletter1911(fontSize: 18.sp, color: AppColors.textMuted(context)),
           ),
-          const SizedBox(height: 24),
+          SizedBox(height: 24.h),
           ElevatedButton(
             onPressed: () => Navigator.pop(context),
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.black,
-              foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+              backgroundColor: AppColors.onSurface(context),
+              foregroundColor: AppColors.surface(context),
+              padding: EdgeInsets.symmetric(horizontal: 32.w, vertical: 16.h),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(5),
+                borderRadius: BorderRadius.circular(5.r),
               ),
             ),
             child: Text('Start Shopping', style: GoogleFonts.goudyBookletter1911()),
@@ -278,14 +280,14 @@ class _CartScreenState extends State<CartScreen> {
 
   Widget _buildSelectAllBar(List<CartItem> items) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      color: Colors.white,
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+      color: AppColors.surface(context),
       child: Row(
         children: [
           Checkbox(
             value: _selectAll,
             onChanged: (_) => _toggleSelectAll(items),
-            activeColor: Colors.black,
+            activeColor: AppColors.onSurface(context),
           ),
           Text('Select All', style: GoogleFonts.goudyBookletter1911(fontWeight: FontWeight.w500)),
         ],
@@ -298,25 +300,25 @@ class _CartScreenState extends State<CartScreen> {
     final shopLogo = items.isNotEmpty ? items.first.shopLogo : null;
     
     return Container(
-      margin: const EdgeInsets.only(bottom: 16),
+      margin: EdgeInsets.only(bottom: 16.h),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
+        color: AppColors.surface(context),
+        borderRadius: BorderRadius.circular(12.r),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.all(16),
+            padding: EdgeInsets.all(16.w),
             child: Row(
               children: [
                 // Shop logo or first letter
                 Container(
-                  width: 32,
-                  height: 32,
+                  width: 32.w,
+                  height: 32.h,
                   decoration: BoxDecoration(
                     color: const Color(0xFFD3BD9B),
-                    borderRadius: BorderRadius.circular(6),
+                    borderRadius: BorderRadius.circular(6.r),
                   ),
                   child: shopLogo != null && shopLogo.isNotEmpty
                       ? Builder(
@@ -328,15 +330,15 @@ class _CartScreenState extends State<CartScreen> {
                                 child: Text(
                                   shopName.isNotEmpty ? shopName[0].toUpperCase() : 'S',
                                   style: GoogleFonts.playfairDisplay(
-                                    fontSize: 16,
+                                    fontSize: 16.sp,
                                     fontWeight: FontWeight.bold,
-                                    color: Colors.white,
+                                    color: AppColors.surface(context),
                                   ),
                                 ),
                               );
                             }
                             return ClipRRect(
-                              borderRadius: BorderRadius.circular(6),
+                              borderRadius: BorderRadius.circular(6.r),
                               child: CachedNetworkImage(
                                 imageUrl: imageUrl,
                                 fit: BoxFit.cover,
@@ -344,9 +346,9 @@ class _CartScreenState extends State<CartScreen> {
                                   child: Text(
                                     shopName.isNotEmpty ? shopName[0].toUpperCase() : 'S',
                                     style: GoogleFonts.playfairDisplay(
-                                      fontSize: 16,
+                                      fontSize: 16.sp,
                                       fontWeight: FontWeight.bold,
-                                      color: Colors.white,
+                                      color: AppColors.surface(context),
                                     ),
                                   ),
                                 ),
@@ -354,9 +356,9 @@ class _CartScreenState extends State<CartScreen> {
                                   child: Text(
                                     shopName.isNotEmpty ? shopName[0].toUpperCase() : 'S',
                                     style: GoogleFonts.playfairDisplay(
-                                      fontSize: 16,
+                                      fontSize: 16.sp,
                                       fontWeight: FontWeight.bold,
-                                      color: Colors.white,
+                                      color: AppColors.surface(context),
                                     ),
                                   ),
                                 ),
@@ -368,18 +370,18 @@ class _CartScreenState extends State<CartScreen> {
                           child: Text(
                             shopName.isNotEmpty ? shopName[0].toUpperCase() : 'S',
                             style: GoogleFonts.playfairDisplay(
-                              fontSize: 16,
+                              fontSize: 16.sp,
                               fontWeight: FontWeight.bold,
-                              color: Colors.white,
+                              color: AppColors.surface(context),
                             ),
                           ),
                         ),
                 ),
-                const SizedBox(width: 12),
+                SizedBox(width: 12.w),
                 Text(
                   shopName,
                   style: GoogleFonts.goudyBookletter1911(
-                    fontSize: 16,
+                    fontSize: 16.sp,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -398,7 +400,7 @@ class _CartScreenState extends State<CartScreen> {
     String imageUrl = ImageHelper.getImageUrl(item.primaryImage);
 
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16.w),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -413,7 +415,7 @@ class _CartScreenState extends State<CartScreen> {
                 }
               });
             },
-            activeColor: Colors.black,
+            activeColor: AppColors.onSurface(context),
           ),
           GestureDetector(
             onTap: () {
@@ -425,24 +427,24 @@ class _CartScreenState extends State<CartScreen> {
               );
             },
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(8.r),
               child: CachedNetworkImage(
                 imageUrl: imageUrl,
                 width: 80,
                 height: 80,
                 fit: BoxFit.cover,
                 placeholder: (context, url) => Container(
-                  color: Colors.grey[200],
+                  color: AppColors.surfaceVariant2(context),
                   child: const Center(child: CircularProgressIndicator(strokeWidth: 2)),
                 ),
                 errorWidget: (context, url, error) => Container(
-                  color: Colors.grey[200],
+                  color: AppColors.surfaceVariant2(context),
                   child: const Icon(Icons.image_not_supported),
                 ),
               ),
             ),
           ),
-          const SizedBox(width: 12),
+          SizedBox(width: 12.w),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -450,7 +452,7 @@ class _CartScreenState extends State<CartScreen> {
                 Text(
                   item.productName,
                   style: GoogleFonts.goudyBookletter1911(
-                    fontSize: 14,
+                    fontSize: 14.sp,
                     fontWeight: FontWeight.w500,
                   ),
                   maxLines: 2,
@@ -458,27 +460,27 @@ class _CartScreenState extends State<CartScreen> {
                 ),
                 if (item.color != null || item.size != null)
                   Padding(
-                    padding: const EdgeInsets.only(top: 4),
+                    padding: EdgeInsets.only(top: 4.h),
                     child: Text(
                       [
                         if (item.color != null) 'Color: ${item.color}',
                         if (item.size != null) 'Size: ${item.size}',
                       ].join(' • '),
                       style: GoogleFonts.goudyBookletter1911(
-                        fontSize: 12,
-                        color: Colors.grey[600],
+                        fontSize: 12.sp,
+                        color: AppColors.textMuted(context),
                       ),
                     ),
                   ),
-                const SizedBox(height: 8),
+                SizedBox(height: 8.h),
                 Text(
                   '₱${item.price.toStringAsFixed(2)}',
                   style: GoogleFonts.playfairDisplay(
-                    fontSize: 16,
+                    fontSize: 16.sp,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(height: 8),
+                SizedBox(height: 8.h),
                 Row(
                   children: [
                     _buildQuantityButton(
@@ -488,7 +490,7 @@ class _CartScreenState extends State<CartScreen> {
                           : null,
                     ),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      padding: EdgeInsets.symmetric(horizontal: 16.w),
                       child: Text(
                         '${item.quantity}',
                         style: GoogleFonts.goudyBookletter1911(fontWeight: FontWeight.w600),
@@ -515,14 +517,14 @@ class _CartScreenState extends State<CartScreen> {
   Widget _buildQuantityButton(IconData icon, VoidCallback? onPressed) {
     return Container(
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey[300]!),
-        borderRadius: BorderRadius.circular(4),
+        border: Border.all(color: AppColors.border(context)),
+        borderRadius: BorderRadius.circular(4.r),
       ),
       child: InkWell(
         onTap: onPressed,
         child: Padding(
-          padding: const EdgeInsets.all(4),
-          child: Icon(icon, size: 16),
+          padding: EdgeInsets.all(4.w),
+          child: Icon(icon, size: 16.r),
         ),
       ),
     );
@@ -533,9 +535,9 @@ class _CartScreenState extends State<CartScreen> {
     final selectedCount = _selectedItems.length;
 
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: EdgeInsets.all(20.w),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.surface(context),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.1),
@@ -554,12 +556,12 @@ class _CartScreenState extends State<CartScreen> {
                 children: [
                   Text(
                     'Total ($selectedCount items)',
-                    style: GoogleFonts.goudyBookletter1911(fontSize: 12, color: Colors.grey[600]),
+                    style: GoogleFonts.goudyBookletter1911(fontSize: 12.sp, color: AppColors.textMuted(context)),
                   ),
                   Text(
                     '₱${total.toStringAsFixed(2)}',
                     style: GoogleFonts.playfairDisplay(
-                      fontSize: 20,
+                      fontSize: 20.sp,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -582,17 +584,17 @@ class _CartScreenState extends State<CartScreen> {
                     }
                   : null,
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.black,
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                backgroundColor: AppColors.onSurface(context),
+                foregroundColor: AppColors.surface(context),
+                padding: EdgeInsets.symmetric(horizontal: 32.w, vertical: 16.h),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(8.r),
                 ),
               ),
               child: Text(
                 'Checkout',
                 style: GoogleFonts.goudyBookletter1911(
-                  fontSize: 16,
+                  fontSize: 16.sp,
                   fontWeight: FontWeight.w600,
                 ),
               ),

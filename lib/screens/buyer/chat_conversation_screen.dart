@@ -7,6 +7,8 @@ import '../../services/chat_service.dart';
 import '../../utils/image_helper.dart';
 import '../../utils/snackbar_helper.dart';
 
+import '../../utils/app_colors.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 class ChatConversationScreen extends StatefulWidget {
   final int conversationId;
   final String recipientName;
@@ -211,18 +213,18 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[100],
+      backgroundColor: AppColors.surfaceVariant(context),
       appBar: AppBar(
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
+        backgroundColor: AppColors.surface(context),
+        foregroundColor: AppColors.onSurface(context),
         elevation: 0,
         title: Row(
           children: [
             Container(
-              width: 36,
-              height: 36,
+              width: 36.w,
+              height: 36.h,
               decoration: BoxDecoration(
-                color: Colors.grey[300],
+                color: AppColors.border(context),
                 shape: BoxShape.circle,
               ),
               child: widget.shopLogo != null && widget.shopLogo!.isNotEmpty
@@ -233,18 +235,18 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
                           return Icon(
                             widget.userType == 'rider' ? Icons.delivery_dining : Icons.store,
                             size: 20,
-                            color: Colors.grey[600],
+                            color: AppColors.textMuted(context),
                           );
                         }
                         return ClipOval(
                           child: CachedNetworkImage(
                             imageUrl: imageUrl,
                             fit: BoxFit.cover,
-                            placeholder: (context, url) => Icon(Icons.store, size: 20, color: Colors.grey[600]),
+                            placeholder: (context, url) => Icon(Icons.store, size: 20.r, color: AppColors.textMuted(context)),
                             errorWidget: (context, url, error) => Icon(
                               widget.userType == 'rider' ? Icons.delivery_dining : Icons.store,
                               size: 20,
-                              color: Colors.grey[600],
+                              color: AppColors.textMuted(context),
                             ),
                           ),
                         );
@@ -253,15 +255,15 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
                   : Icon(
                       widget.userType == 'rider' ? Icons.delivery_dining : Icons.store,
                       size: 20,
-                      color: Colors.grey[600],
+                      color: AppColors.textMuted(context),
                     ),
             ),
-            const SizedBox(width: 12),
+            SizedBox(width: 12.w),
             Expanded(
               child: Text(
                 widget.recipientName,
                 style: GoogleFonts.goudyBookletter1911(
-                  fontSize: 16,
+                  fontSize: 16.sp,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -273,13 +275,13 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
         children: [
           Expanded(
             child: _isLoading
-                ? const Center(child: CircularProgressIndicator(color: Colors.black))
+                ? Center(child: CircularProgressIndicator(color: AppColors.onSurface(context)))
                 : _messages.isEmpty
                     ? _buildEmptyState()
                     : ListView.builder(
                         controller: _scrollController,
                         reverse: true, // Show recent messages at bottom
-                        padding: const EdgeInsets.all(16),
+                        padding: EdgeInsets.all(16.w),
                         itemCount: _messages.length,
                         itemBuilder: (context, index) {
                           // Since reverse: true, index 0 is the newest message at bottom
@@ -317,16 +319,16 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.chat_bubble_outline, size: 80, color: Colors.grey[400]),
-          const SizedBox(height: 16),
+          Icon(Icons.chat_bubble_outline, size: 80.r, color: AppColors.textFaint(context)),
+          SizedBox(height: 16.h),
           Text(
             'No messages yet',
-            style: GoogleFonts.goudyBookletter1911(fontSize: 16, color: Colors.grey[600]),
+            style: GoogleFonts.goudyBookletter1911(fontSize: 16.sp, color: AppColors.textMuted(context)),
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: 8.h),
           Text(
             'Start the conversation',
-            style: GoogleFonts.goudyBookletter1911(fontSize: 14, color: Colors.grey[500]),
+            style: GoogleFonts.goudyBookletter1911(fontSize: 14.sp, color: AppColors.textFaint(context)),
           ),
         ],
       ),
@@ -339,7 +341,7 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
     final isRevealed = _revealedMessageId == message.messageId;
 
     return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
+      padding: EdgeInsets.only(bottom: 12.h),
       child: GestureDetector(
         onHorizontalDragUpdate: (details) {
           // Swipe right for received messages (not mine)
@@ -366,10 +368,10 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
               // Show avatar only for the most recent message from sender
               if (showAvatar)
                 Container(
-                  width: 32,
-                  height: 32,
+                  width: 32.w,
+                  height: 32.h,
                   decoration: BoxDecoration(
-                    color: Colors.grey[300],
+                    color: AppColors.border(context),
                     shape: BoxShape.circle,
                   ),
                   child: widget.shopLogo != null && widget.shopLogo!.isNotEmpty
@@ -380,18 +382,18 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
                               return Icon(
                                 widget.userType == 'rider' ? Icons.delivery_dining : Icons.store,
                                 size: 16,
-                                color: Colors.grey[600],
+                                color: AppColors.textMuted(context),
                               );
                             }
                             return ClipOval(
                               child: CachedNetworkImage(
                                 imageUrl: imageUrl,
                                 fit: BoxFit.cover,
-                                placeholder: (context, url) => Icon(Icons.store, size: 16, color: Colors.grey[600]),
+                                placeholder: (context, url) => Icon(Icons.store, size: 16.r, color: AppColors.textMuted(context)),
                                 errorWidget: (context, url, error) => Icon(
                                   widget.userType == 'rider' ? Icons.delivery_dining : Icons.store,
                                   size: 16,
-                                  color: Colors.grey[600],
+                                  color: AppColors.textMuted(context),
                                 ),
                               ),
                             );
@@ -400,34 +402,34 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
                       : Icon(
                           widget.userType == 'rider' ? Icons.delivery_dining : Icons.store,
                           size: 16,
-                          color: Colors.grey[600],
+                          color: AppColors.textMuted(context),
                         ),
                 )
               else
-                const SizedBox(width: 32),
-              const SizedBox(width: 8),
+                SizedBox(width: 32.w),
+              SizedBox(width: 8.w),
             ],
             // Timestamp for received messages (shown on left when swiping right)
             if (!isMe && isRevealed)
               Padding(
-                padding: const EdgeInsets.only(right: 8),
+                padding: EdgeInsets.only(right: 8.w),
                 child: Text(
                   _formatTime(message.createdAt),
                   style: GoogleFonts.goudyBookletter1911(
-                    fontSize: 11,
-                    color: Colors.grey[600],
+                    fontSize: 11.sp,
+                    color: AppColors.textMuted(context),
                   ),
                   textAlign: TextAlign.right,
                 ),
               ),
             Flexible(
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
                 decoration: BoxDecoration(
-                  color: isMe ? Colors.black : Colors.white,
+                  color: isMe ? AppColors.onSurface(context) : AppColors.surface(context),
                   borderRadius: BorderRadius.only(
-                    topLeft: const Radius.circular(16),
-                    topRight: const Radius.circular(16),
+                    topLeft: Radius.circular(16.r),
+                    topRight: Radius.circular(16.r),
                     bottomLeft: Radius.circular(isMe ? 16 : 4),
                     bottomRight: Radius.circular(isMe ? 4 : 16),
                   ),
@@ -439,31 +441,31 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
                     Text(
                       message.message,
                       style: GoogleFonts.goudyBookletter1911(
-                        fontSize: 14,
-                        color: isMe ? Colors.white : Colors.black87,
+                        fontSize: 14.sp,
+                        color: isMe ? AppColors.surface(context) : AppColors.onSurfaceStrong(context),
                       ),
                     ),
                     if (message.isSending) ...[
-                      const SizedBox(height: 4),
+                      SizedBox(height: 4.h),
                       Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           SizedBox(
-                            width: 10,
-                            height: 10,
+                            width: 10.w,
+                            height: 10.h,
                             child: CircularProgressIndicator(
                               strokeWidth: 1.5,
                               valueColor: AlwaysStoppedAnimation<Color>(
-                                isMe ? Colors.white70 : Colors.grey[600]!,
+                                isMe ? Colors.white70 : AppColors.textMuted(context),
                               ),
                             ),
                           ),
-                          const SizedBox(width: 6),
+                          SizedBox(width: 6.w),
                           Text(
                             'Sending...',
                             style: GoogleFonts.goudyBookletter1911(
-                              fontSize: 11,
-                              color: isMe ? Colors.white70 : Colors.grey[600],
+                              fontSize: 11.sp,
+                              color: isMe ? Colors.white70 : AppColors.textMuted(context),
                               fontStyle: FontStyle.italic,
                             ),
                           ),
@@ -477,26 +479,26 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
             // Timestamp for sent messages (shown on right when swiping left)
             if (isMe && isRevealed)
               Padding(
-                padding: const EdgeInsets.only(left: 8),
+                padding: EdgeInsets.only(left: 8.w),
                 child: Text(
                   message.isSending ? 'Sending...' : _formatTime(message.createdAt),
                   style: GoogleFonts.goudyBookletter1911(
-                    fontSize: 11,
-                    color: Colors.grey[600],
+                    fontSize: 11.sp,
+                    color: AppColors.textMuted(context),
                     fontStyle: message.isSending ? FontStyle.italic : FontStyle.normal,
                   ),
                   textAlign: TextAlign.left,
                 ),
               ),
             if (isMe) ...[
-              const SizedBox(width: 8),
+              SizedBox(width: 8.w),
               // Show avatar only for the most recent message from you
               if (showAvatar)
                 Container(
-                  width: 32,
-                  height: 32,
+                  width: 32.w,
+                  height: 32.h,
                   decoration: BoxDecoration(
-                    color: Colors.grey[300],
+                    color: AppColors.border(context),
                     shape: BoxShape.circle,
                   ),
                   child: _buyerProfilePicture != null && _buyerProfilePicture!.isNotEmpty
@@ -504,22 +506,22 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
                           builder: (context) {
                             final imageUrl = ImageHelper.getImageUrl(_buyerProfilePicture!);
                             if (imageUrl.isEmpty) {
-                              return Icon(Icons.person, size: 16, color: Colors.grey[600]);
+                              return Icon(Icons.person, size: 16.r, color: AppColors.textMuted(context));
                             }
                             return ClipOval(
                               child: CachedNetworkImage(
                                 imageUrl: imageUrl,
                                 fit: BoxFit.cover,
-                                placeholder: (context, url) => Icon(Icons.person, size: 16, color: Colors.grey[600]),
-                                errorWidget: (context, url, error) => Icon(Icons.person, size: 16, color: Colors.grey[600]),
+                                placeholder: (context, url) => Icon(Icons.person, size: 16.r, color: AppColors.textMuted(context)),
+                                errorWidget: (context, url, error) => Icon(Icons.person, size: 16.r, color: AppColors.textMuted(context)),
                               ),
                             );
                           },
                         )
-                      : Icon(Icons.person, size: 16, color: Colors.grey[600]),
+                      : Icon(Icons.person, size: 16.r, color: AppColors.textMuted(context)),
                 )
               else
-                const SizedBox(width: 32),
+                SizedBox(width: 32.w),
             ],
           ],
         ),
@@ -529,9 +531,9 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
 
   Widget _buildMessageInput() {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.surface(context),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.05),
@@ -545,18 +547,18 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
           children: [
             Expanded(
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
+                padding: EdgeInsets.symmetric(horizontal: 16.w),
                 decoration: BoxDecoration(
-                  color: Colors.grey[100],
-                  borderRadius: BorderRadius.circular(24),
+                  color: AppColors.surfaceVariant(context),
+                  borderRadius: BorderRadius.circular(24.r),
                 ),
                 child: TextField(
                   controller: _messageController,
                   decoration: InputDecoration(
                     hintText: 'Type a message...',
                     hintStyle: GoogleFonts.goudyBookletter1911(
-                      fontSize: 14,
-                      color: Colors.grey[600],
+                      fontSize: 14.sp,
+                      color: AppColors.textMuted(context),
                     ),
                     border: InputBorder.none,
                   ),
@@ -566,14 +568,14 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
                 ),
               ),
             ),
-            const SizedBox(width: 8),
+            SizedBox(width: 8.w),
             Container(
-              decoration: const BoxDecoration(
-                color: Colors.black,
+              decoration: BoxDecoration(
+                color: AppColors.onSurface(context),
                 shape: BoxShape.circle,
               ),
               child: IconButton(
-                icon: const Icon(Icons.send, color: Colors.white, size: 20),
+                icon: Icon(Icons.send, color: AppColors.surface(context), size: 20.r),
                 onPressed: _sendMessage,
               ),
             ),

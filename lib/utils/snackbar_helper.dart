@@ -1,27 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'app_colors.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 class SnackBarHelper {
   static void showSuccess(BuildContext context, String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Container(
-          padding: const EdgeInsets.all(12),
+          padding: EdgeInsets.all(12.w),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: AppColors.surface(context),
             border: Border.all(color: Colors.green, width: 2),
-            borderRadius: BorderRadius.circular(5),
+            borderRadius: BorderRadius.circular(5.r),
           ),
           child: Row(
             children: [
-              const Icon(Icons.check_circle_outline, color: Colors.green, size: 20),
-              const SizedBox(width: 12),
+              Icon(Icons.check_circle_outline, color: Colors.green, size: 20.r),
+              SizedBox(width: 12.w),
               Expanded(
                 child: Text(
                   message,
                   style: GoogleFonts.goudyBookletter1911(
                     color: Colors.green,
-                    fontSize: 14,
+                    fontSize: 14.sp,
                   ),
                 ),
               ),
@@ -40,22 +42,22 @@ class SnackBarHelper {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Container(
-          padding: const EdgeInsets.all(12),
+          padding: EdgeInsets.all(12.w),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: AppColors.surface(context),
             border: Border.all(color: Colors.red, width: 2),
-            borderRadius: BorderRadius.circular(5),
+            borderRadius: BorderRadius.circular(5.r),
           ),
           child: Row(
             children: [
-              const Icon(Icons.error_outline, color: Colors.red, size: 20),
-              const SizedBox(width: 12),
+              Icon(Icons.error_outline, color: Colors.red, size: 20.r),
+              SizedBox(width: 12.w),
               Expanded(
                 child: Text(
                   message,
                   style: GoogleFonts.goudyBookletter1911(
                     color: Colors.red,
-                    fontSize: 14,
+                    fontSize: 14.sp,
                   ),
                 ),
               ),
@@ -74,22 +76,22 @@ class SnackBarHelper {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Container(
-          padding: const EdgeInsets.all(12),
+          padding: EdgeInsets.all(12.w),
           decoration: BoxDecoration(
-            color: Colors.white,
-            border: Border.all(color: Colors.black, width: 2),
-            borderRadius: BorderRadius.circular(5),
+            color: AppColors.surface(context),
+            border: Border.all(color: AppColors.onSurface(context), width: 2),
+            borderRadius: BorderRadius.circular(5.r),
           ),
           child: Row(
             children: [
-              const Icon(Icons.info_outline, color: Colors.black, size: 20),
-              const SizedBox(width: 12),
+              Icon(Icons.info_outline, color: AppColors.onSurface(context), size: 20.r),
+              SizedBox(width: 12.w),
               Expanded(
                 child: Text(
                   message,
                   style: GoogleFonts.goudyBookletter1911(
-                    color: Colors.black,
-                    fontSize: 14,
+                    color: AppColors.onSurface(context),
+                    fontSize: 14.sp,
                   ),
                 ),
               ),

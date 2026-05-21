@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -15,6 +16,8 @@ import 'notifications_screen.dart';
 import 'cart_screen.dart';
 import 'chat_list_screen.dart';
 
+import '../../utils/app_colors.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 class FavoritesScreen extends StatefulWidget {
   const FavoritesScreen({super.key});
 
@@ -220,11 +223,11 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
         }
 
         return Container(
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+          decoration: BoxDecoration(
+            color: AppColors.surface(context),
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
           ),
-          padding: const EdgeInsets.all(24),
+          padding: EdgeInsets.all(24.w),
           child: SafeArea(
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -233,19 +236,19 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                 Text(
                   'Select Variant',
                   style: GoogleFonts.playfairDisplay(
-                    fontSize: 20,
+                    fontSize: 20.sp,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(height: 20),
+                SizedBox(height: 20.h),
                 Text(
                   'Color',
                   style: GoogleFonts.playfairDisplay(
-                    fontSize: 16,
+                    fontSize: 16.sp,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(height: 12),
+                SizedBox(height: 12.h),
                 Wrap(
                   spacing: 8,
                   runSpacing: 8,
@@ -259,33 +262,33 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                         });
                       },
                       child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
                         decoration: BoxDecoration(
-                          color: isSelected ? Colors.black : Colors.white,
-                          border: Border.all(color: isSelected ? Colors.black : Colors.grey[300]!),
-                          borderRadius: BorderRadius.circular(8),
+                          color: isSelected ? AppColors.onSurface(context) : AppColors.surface(context),
+                          border: Border.all(color: isSelected ? AppColors.onSurface(context) : AppColors.border(context)),
+                          borderRadius: BorderRadius.circular(8.r),
                         ),
                         child: Text(
                           color ?? '',
                           style: GoogleFonts.goudyBookletter1911(
-                            fontSize: 14,
+                            fontSize: 14.sp,
                             fontWeight: FontWeight.w600,
-                            color: isSelected ? Colors.white : Colors.black,
+                            color: isSelected ? AppColors.surface(context) : AppColors.onSurface(context),
                           ),
                         ),
                       ),
                     );
                   }).toList(),
                 ),
-                const SizedBox(height: 20),
+                SizedBox(height: 20.h),
                 Text(
                   'Size',
                   style: GoogleFonts.playfairDisplay(
-                    fontSize: 16,
+                    fontSize: 16.sp,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(height: 12),
+                SizedBox(height: 12.h),
                 Wrap(
                   spacing: 8,
                   runSpacing: 8,
@@ -304,42 +307,42 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                         });
                       },
                       child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
                         decoration: BoxDecoration(
                           color: isOutOfStock
-                              ? Colors.grey[100]
-                              : (isSelected ? Colors.black : Colors.white),
+                              ? AppColors.surfaceVariant(context)
+                              : (isSelected ? AppColors.onSurface(context) : AppColors.surface(context)),
                           border: Border.all(
                             color: isOutOfStock
-                                ? Colors.grey[300]!
-                                : (isSelected ? Colors.black : Colors.grey[300]!),
+                                ? AppColors.border(context)
+                                : (isSelected ? AppColors.onSurface(context) : AppColors.border(context)),
                           ),
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: BorderRadius.circular(8.r),
                         ),
                         child: Text(
                           isOutOfStock ? '$size (Out)' : size,
                           style: GoogleFonts.goudyBookletter1911(
-                            fontSize: 14,
+                            fontSize: 14.sp,
                             fontWeight: FontWeight.w600,
                             color: isOutOfStock
-                                ? Colors.grey[400]
-                                : (isSelected ? Colors.white : Colors.black),
+                                ? AppColors.textFaint(context)
+                                : (isSelected ? AppColors.surface(context) : AppColors.onSurface(context)),
                           ),
                         ),
                       ),
                     );
                   }).toList(),
                 ),
-                const SizedBox(height: 24),
+                SizedBox(height: 24.h),
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.black,
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      backgroundColor: AppColors.onSurface(context),
+                      foregroundColor: AppColors.surface(context),
+                      padding: EdgeInsets.symmetric(vertical: 16.h),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(8.r),
                       ),
                     ),
                     onPressed: () {
@@ -356,7 +359,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                     child: Text(
                       'Confirm',
                       style: GoogleFonts.goudyBookletter1911(
-                        fontSize: 16,
+                        fontSize: 16.sp,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -373,14 +376,14 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: AppColors.scaffoldBackground(context),
       appBar: AppBar(
         title: Text(
           'Favorites',
           style: GoogleFonts.playfairDisplay(fontWeight: FontWeight.bold),
         ),
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
+        backgroundColor: AppColors.surface(context),
+        foregroundColor: AppColors.onSurface(context),
         elevation: 0,
         actions: [
           NotificationDot(
@@ -413,16 +416,16 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
               ).then((_) => _loadCounts());
             },
           ),
-          const SizedBox(width: 8),
+          SizedBox(width: 8.w),
         ],
       ),
       body: _favoritesFuture == null
-          ? const Center(child: CircularProgressIndicator(color: Colors.black))
+          ? Center(child: CircularProgressIndicator(color: AppColors.onSurface(context)))
           : FutureBuilder<List<FavoriteItem>>(
               future: _favoritesFuture,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator(color: Colors.black));
+                  return Center(child: CircularProgressIndicator(color: AppColors.onSurface(context)));
                 }
                 if (snapshot.hasError) {
                   return Center(
@@ -435,14 +438,11 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
 
                 return RefreshIndicator(
                   onRefresh: () async => _loadFavorites(),
-                  child: GridView.builder(
-                    padding: const EdgeInsets.all(16),
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      childAspectRatio: 0.55,
-                      crossAxisSpacing: 12,
-                      mainAxisSpacing: 12,
-                    ),
+                  child: MasonryGridView.count(
+                    padding: EdgeInsets.all(16.w),
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 12.w,
+                    mainAxisSpacing: 12.h,
                     itemCount: snapshot.data!.length,
                     itemBuilder: (context, index) {
                       return _buildFavoriteCard(snapshot.data![index]);
@@ -459,24 +459,24 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.favorite_border, size: 100, color: Colors.grey[400]),
-          const SizedBox(height: 16),
+          Icon(Icons.favorite_border, size: 100.r, color: AppColors.textFaint(context)),
+          SizedBox(height: 16.h),
           Text(
             'No favorites yet',
-            style: GoogleFonts.goudyBookletter1911(fontSize: 18, color: Colors.grey[600]),
+            style: GoogleFonts.goudyBookletter1911(fontSize: 18.sp, color: AppColors.textMuted(context)),
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: 8.h),
           Text(
             'Start adding items you love',
-            style: GoogleFonts.goudyBookletter1911(fontSize: 14, color: Colors.grey[500]),
+            style: GoogleFonts.goudyBookletter1911(fontSize: 14.sp, color: AppColors.textFaint(context)),
           ),
-          const SizedBox(height: 24),
+          SizedBox(height: 24.h),
           ElevatedButton(
             onPressed: () => Navigator.pop(context),
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.black,
-              foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+              backgroundColor: AppColors.onSurface(context),
+              foregroundColor: AppColors.surface(context),
+              padding: EdgeInsets.symmetric(horizontal: 32.w, vertical: 16.h),
             ),
             child: Text('Browse Products', style: GoogleFonts.goudyBookletter1911()),
           ),
@@ -511,8 +511,8 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
       },
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
+          color: AppColors.surface(context),
+          borderRadius: BorderRadius.circular(12.r),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: 0.05),
@@ -527,19 +527,19 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
             Stack(
               children: [
                 ClipRRect(
-                  borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(12.r)),
                   child: AspectRatio(
                     aspectRatio: 1,
                     child: CachedNetworkImage(
                       imageUrl: imageUrl,
                       fit: BoxFit.cover,
                       placeholder: (context, url) => Container(
-                        color: Colors.grey[200],
+                        color: AppColors.surfaceVariant2(context),
                         child: const Center(child: CircularProgressIndicator(strokeWidth: 2)),
                       ),
                       errorWidget: (context, url, error) => Container(
-                        color: Colors.grey[200],
-                        child: const Icon(Icons.image_not_supported, size: 40, color: Colors.grey),
+                        color: AppColors.surfaceVariant2(context),
+                        child: Icon(Icons.image_not_supported, size: 40.r, color: Colors.grey),
                       ),
                     ),
                   ),
@@ -549,7 +549,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                   right: 8,
                   child: Container(
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: AppColors.surface(context),
                       shape: BoxShape.circle,
                       boxShadow: [
                         BoxShadow(
@@ -559,7 +559,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                       ],
                     ),
                     child: IconButton(
-                      icon: const Icon(Icons.favorite, size: 20, color: Color(0xFFFFD700)),
+                      icon: Icon(Icons.favorite, size: 20.r, color: Color(0xFFFFD700)),
                       padding: EdgeInsets.zero,
                       constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
                       onPressed: () => _showRemoveDialog(item),
@@ -569,26 +569,26 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
               ],
             ),
             Padding(
-              padding: const EdgeInsets.all(12),
+              padding: EdgeInsets.all(12.w),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     item.productName,
-                    style: GoogleFonts.goudyBookletter1911(fontSize: 13, fontWeight: FontWeight.bold),
+                    style: GoogleFonts.goudyBookletter1911(fontSize: 13.sp, fontWeight: FontWeight.bold),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(height: 4),
+                  SizedBox(height: 4.h),
                   Text(
                     '₱${item.price.toStringAsFixed(2)}',
                     style: GoogleFonts.playfairDisplay(
-                      fontSize: 16,
+                      fontSize: 16.sp,
                       fontWeight: FontWeight.bold,
-                      color: Colors.black87,
+                      color: AppColors.onSurfaceStrong(context),
                     ),
                   ),
-                  const SizedBox(height: 6),
+                  SizedBox(height: 6.h),
                   GestureDetector(
                     onTap: () => _showVariantSelector(item),
                     child: Row(
@@ -599,47 +599,47 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                                 ? '${_selectedVariants[item.productId]!['color']} / ${_selectedVariants[item.productId]!['size']}'
                                 : 'Select variant',
                             style: GoogleFonts.goudyBookletter1911(
-                              fontSize: 11,
-                              color: Colors.grey[700],
+                              fontSize: 11.sp,
+                              color: AppColors.textBody(context),
                             ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
-                        Icon(Icons.arrow_drop_down, size: 18, color: Colors.grey[600]),
+                        Icon(Icons.arrow_drop_down, size: 18.r, color: AppColors.textMuted(context)),
                       ],
                     ),
                   ),
                   if (item.shopName != null) ...[
-                    const SizedBox(height: 4),
+                    SizedBox(height: 4.h),
                     Text(
                       item.shopName!,
                       style: GoogleFonts.goudyBookletter1911(
-                        fontSize: 11,
-                        color: Colors.grey[600],
+                        fontSize: 11.sp,
+                        color: AppColors.textMuted(context),
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
                   ],
-                  const SizedBox(height: 8),
+                  SizedBox(height: 8.h),
                   SizedBox(
                     width: double.infinity,
                     child: OutlinedButton(
                       onPressed: () => _addToCart(item),
                       style: OutlinedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 8),
-                        side: const BorderSide(color: Colors.black),
+                        padding: EdgeInsets.symmetric(vertical: 8.h),
+                        side: BorderSide(color: AppColors.onSurface(context)),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(6),
+                          borderRadius: BorderRadius.circular(6.r),
                         ),
                       ),
                       child: Text(
                         'Add to Cart',
                         style: GoogleFonts.goudyBookletter1911(
-                          fontSize: 12,
+                          fontSize: 12.sp,
                           fontWeight: FontWeight.w600,
-                          color: Colors.black,
+                          color: AppColors.onSurface(context),
                         ),
                       ),
                     ),

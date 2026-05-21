@@ -4,6 +4,8 @@ import '../../services/withdrawal_service.dart';
 import '../../services/auth_service.dart';
 import '../../models/withdrawal_model.dart';
 
+import '../../utils/app_colors.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 class WithdrawalHistoryScreen extends StatefulWidget {
   const WithdrawalHistoryScreen({super.key});
 
@@ -63,18 +65,18 @@ class _WithdrawalHistoryScreenState extends State<WithdrawalHistoryScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: AppColors.scaffoldBackground(context),
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.surface(context),
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          icon: Icon(Icons.arrow_back, color: AppColors.onSurface(context)),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
           'Withdrawal History',
           style: GoogleFonts.poppins(
-            color: Colors.black,
+            color: AppColors.onSurface(context),
             fontWeight: FontWeight.w600,
           ),
         ),
@@ -90,7 +92,7 @@ class _WithdrawalHistoryScreenState extends State<WithdrawalHistoryScreen> {
                 : RefreshIndicator(
                     onRefresh: _loadHistory,
                     child: ListView.builder(
-                      padding: const EdgeInsets.all(16),
+                      padding: EdgeInsets.all(16.w),
                       itemCount: _filteredWithdrawals.length,
                       itemBuilder: (context, index) {
                         return _buildWithdrawalCard(
@@ -107,14 +109,14 @@ class _WithdrawalHistoryScreenState extends State<WithdrawalHistoryScreen> {
 
   Widget _buildFilterChips() {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      color: Colors.white,
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+      color: AppColors.surface(context),
       child: Row(
         children: [
           _buildFilterChip('All'),
-          const SizedBox(width: 8),
+          SizedBox(width: 8.w),
           _buildFilterChip('Pending'),
-          const SizedBox(width: 8),
+          SizedBox(width: 8.w),
           _buildFilterChip('Completed'),
         ],
       ),
@@ -127,8 +129,8 @@ class _WithdrawalHistoryScreenState extends State<WithdrawalHistoryScreen> {
       label: Text(
         label,
         style: GoogleFonts.poppins(
-          fontSize: 13,
-          color: isSelected ? Colors.white : Colors.grey[700],
+          fontSize: 13.sp,
+          color: isSelected ? AppColors.surface(context) : AppColors.textBody(context),
           fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
         ),
       ),
@@ -136,9 +138,9 @@ class _WithdrawalHistoryScreenState extends State<WithdrawalHistoryScreen> {
       onSelected: (selected) {
         setState(() => _selectedFilter = label);
       },
-      backgroundColor: Colors.grey[200],
+      backgroundColor: AppColors.surfaceVariant2(context),
       selectedColor: Colors.green,
-      checkmarkColor: Colors.white,
+      checkmarkColor: AppColors.surface(context),
     );
   }
 
@@ -148,11 +150,11 @@ class _WithdrawalHistoryScreenState extends State<WithdrawalHistoryScreen> {
         : Colors.orange;
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(16),
+      margin: EdgeInsets.only(bottom: 12.h),
+      padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
+        color: AppColors.surface(context),
+        borderRadius: BorderRadius.circular(12.r),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.05),
@@ -170,19 +172,19 @@ class _WithdrawalHistoryScreenState extends State<WithdrawalHistoryScreen> {
               Text(
                 '₱${withdrawal.amount.toStringAsFixed(2)}',
                 style: GoogleFonts.poppins(
-                  fontSize: 24,
+                  fontSize: 24.sp,
                   fontWeight: FontWeight.bold,
                   color: Colors.green[700],
                 ),
               ),
               Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 6,
+                padding: EdgeInsets.symmetric(
+                  horizontal: 12.w,
+                  vertical: 6.h,
                 ),
                 decoration: BoxDecoration(
                   color: statusColor.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(6),
+                  borderRadius: BorderRadius.circular(6.r),
                   border: Border.all(color: statusColor),
                 ),
                 child: Row(
@@ -195,11 +197,11 @@ class _WithdrawalHistoryScreenState extends State<WithdrawalHistoryScreen> {
                       size: 16,
                       color: statusColor,
                     ),
-                    const SizedBox(width: 4),
+                    SizedBox(width: 4.w),
                     Text(
                       withdrawal.status.toUpperCase(),
                       style: GoogleFonts.poppins(
-                        fontSize: 11,
+                        fontSize: 11.sp,
                         fontWeight: FontWeight.w600,
                         color: statusColor,
                       ),
@@ -209,16 +211,16 @@ class _WithdrawalHistoryScreenState extends State<WithdrawalHistoryScreen> {
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12.h),
           _buildInfoRow(Icons.payment, 'Method', withdrawal.withdrawalMethod),
-          const SizedBox(height: 8),
+          SizedBox(height: 8.h),
           _buildInfoRow(
             Icons.calendar_today,
             'Requested',
             _formatDate(withdrawal.requestedAt),
           ),
           if (withdrawal.processedAt != null) ...[
-            const SizedBox(height: 8),
+            SizedBox(height: 8.h),
             _buildInfoRow(
               Icons.check_circle_outline,
               'Processed',
@@ -230,14 +232,14 @@ class _WithdrawalHistoryScreenState extends State<WithdrawalHistoryScreen> {
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(Icons.note, size: 16, color: Colors.grey[600]),
-                const SizedBox(width: 8),
+                Icon(Icons.note, size: 16.r, color: AppColors.textMuted(context)),
+                SizedBox(width: 8.w),
                 Expanded(
                   child: Text(
                     withdrawal.notes!,
                     style: GoogleFonts.poppins(
-                      fontSize: 13,
-                      color: Colors.grey[700],
+                      fontSize: 13.sp,
+                      color: AppColors.textBody(context),
                       fontStyle: FontStyle.italic,
                     ),
                   ),
@@ -253,15 +255,15 @@ class _WithdrawalHistoryScreenState extends State<WithdrawalHistoryScreen> {
   Widget _buildInfoRow(IconData icon, String label, String value) {
     return Row(
       children: [
-        Icon(icon, size: 16, color: Colors.grey[600]),
-        const SizedBox(width: 8),
+        Icon(icon, size: 16.r, color: AppColors.textMuted(context)),
+        SizedBox(width: 8.w),
         Text(
           '$label: ',
-          style: GoogleFonts.poppins(fontSize: 13, color: Colors.grey[600]),
+          style: GoogleFonts.poppins(fontSize: 13.sp, color: AppColors.textMuted(context)),
         ),
         Text(
           value,
-          style: GoogleFonts.poppins(fontSize: 13, fontWeight: FontWeight.w500),
+          style: GoogleFonts.poppins(fontSize: 13.sp, fontWeight: FontWeight.w500),
         ),
       ],
     );
@@ -274,24 +276,24 @@ class _WithdrawalHistoryScreenState extends State<WithdrawalHistoryScreen> {
         children: [
           Icon(
             Icons.account_balance_wallet_outlined,
-            size: 80,
-            color: Colors.grey[300],
+            size: 80.r,
+            color: AppColors.border(context),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
           Text(
             'No withdrawal history',
             style: GoogleFonts.poppins(
-              fontSize: 18,
+              fontSize: 18.sp,
               fontWeight: FontWeight.w600,
-              color: Colors.grey[600],
+              color: AppColors.textMuted(context),
             ),
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: 8.h),
           Text(
             _selectedFilter == 'All'
                 ? 'You haven\'t made any withdrawals yet'
                 : 'No $_selectedFilter withdrawals found',
-            style: GoogleFonts.poppins(fontSize: 14, color: Colors.grey[500]),
+            style: GoogleFonts.poppins(fontSize: 14.sp, color: AppColors.textFaint(context)),
           ),
         ],
       ),

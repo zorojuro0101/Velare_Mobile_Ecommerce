@@ -6,6 +6,8 @@ import '../../services/auth_service.dart';
 import '../../services/rider_service.dart';
 import '../auth/login_screen.dart';
 
+import '../../utils/app_colors.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 class RiderDashboard extends StatefulWidget {
   const RiderDashboard({super.key});
 
@@ -127,27 +129,27 @@ class _RiderDashboardState extends State<RiderDashboard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[100],
+      backgroundColor: AppColors.surfaceVariant(context),
       appBar: AppBar(
-        backgroundColor: Colors.black,
+        backgroundColor: AppColors.onSurface(context),
         elevation: 0,
         title: Text(
           'Rider Console',
           style: GoogleFonts.goudyBookletter1911(
-            color: Colors.white,
+            color: AppColors.surface(context),
             fontWeight: FontWeight.w600,
           ),
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.person_outline, color: Colors.white),
+            icon: Icon(Icons.person_outline, color: AppColors.surface(context)),
             onPressed: _showLogoutDialog,
           ),
         ],
       ),
       body: RefreshIndicator(
         onRefresh: _loadDashboardData,
-        color: Colors.black,
+        color: AppColors.onSurface(context),
         child: Column(
           children: [
             _buildStatsCards(),
@@ -156,8 +158,8 @@ class _RiderDashboardState extends State<RiderDashboard> {
                 future: _ordersFuture,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(
-                      child: CircularProgressIndicator(color: Colors.black),
+                    return Center(
+                      child: CircularProgressIndicator(color: AppColors.onSurface(context)),
                     );
                   }
                   if (snapshot.hasError) {
@@ -179,16 +181,16 @@ class _RiderDashboardState extends State<RiderDashboard> {
   Widget _buildStatsCards() {
     if (_isLoadingStats) {
       return Container(
-        margin: const EdgeInsets.all(16),
-        height: 200,
-        child: const Center(
-          child: CircularProgressIndicator(color: Colors.black),
+        margin: EdgeInsets.all(16.w),
+        height: 200.h,
+        child: Center(
+          child: CircularProgressIndicator(color: AppColors.onSurface(context)),
         ),
       );
     }
 
     return Container(
-      margin: const EdgeInsets.all(16),
+      margin: EdgeInsets.all(16.w),
       child: GridView.count(
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
@@ -219,7 +221,7 @@ class _RiderDashboardState extends State<RiderDashboard> {
             title: 'Today\'s Earnings',
             value: '₱${_todayEarnings.toStringAsFixed(2)}',
             icon: Icons.attach_money,
-            color: Colors.black,
+            color: AppColors.onSurface(context),
           ),
         ],
       ),
@@ -233,11 +235,11 @@ class _RiderDashboardState extends State<RiderDashboard> {
     required Color color,
   }) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey[300]!),
+        color: AppColors.surface(context),
+        borderRadius: BorderRadius.circular(12.r),
+        border: Border.all(color: AppColors.border(context)),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.05),
@@ -257,29 +259,29 @@ class _RiderDashboardState extends State<RiderDashboard> {
                 child: Text(
                   title,
                   style: GoogleFonts.goudyBookletter1911(
-                    fontSize: 12,
-                    color: Colors.grey[700],
+                    fontSize: 12.sp,
+                    color: AppColors.textBody(context),
                   ),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
               Container(
-                padding: const EdgeInsets.all(8),
+                padding: EdgeInsets.all(8.w),
                 decoration: BoxDecoration(
                   color: color.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(8.r),
                 ),
-                child: Icon(icon, color: color, size: 20),
+                child: Icon(icon, color: color, size: 20.r),
               ),
             ],
           ),
           Text(
             value,
             style: GoogleFonts.playfairDisplay(
-              fontSize: 20,
+              fontSize: 20.sp,
               fontWeight: FontWeight.bold,
-              color: Colors.black,
+              color: AppColors.onSurface(context),
               fontFeatures: const [FontFeature.tabularFigures()],
             ),
           ),
@@ -290,19 +292,19 @@ class _RiderDashboardState extends State<RiderDashboard> {
 
   Widget _buildOrderList(List<dynamic> orders) {
     return ListView.builder(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      padding: EdgeInsets.symmetric(horizontal: 16.w),
       itemCount: orders.length,
       itemBuilder: (context, index) {
         final order = orders[index];
         return Container(
-          margin: const EdgeInsets.only(bottom: 12),
+          margin: EdgeInsets.only(bottom: 12.h),
           decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: Colors.grey[300]!),
+            color: AppColors.surface(context),
+            borderRadius: BorderRadius.circular(12.r),
+            border: Border.all(color: AppColors.border(context)),
           ),
           child: Padding(
-            padding: const EdgeInsets.all(16),
+            padding: EdgeInsets.all(16.w),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -313,30 +315,30 @@ class _RiderDashboardState extends State<RiderDashboard> {
                       'Order #${order['order_id']}',
                       style: GoogleFonts.playfairDisplay(
                         fontWeight: FontWeight.w600,
-                        fontSize: 16,
+                        fontSize: 16.sp,
                       ),
                     ),
                     Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 4,
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 10.w,
+                        vertical: 4.h,
                       ),
                       decoration: BoxDecoration(
-                        color: Colors.black,
-                        borderRadius: BorderRadius.circular(6),
+                        color: AppColors.onSurface(context),
+                        borderRadius: BorderRadius.circular(6.r),
                       ),
                       child: Text(
                         (order['status'] ?? '').toString().toUpperCase(),
                         style: GoogleFonts.playfairDisplay(
-                          color: Colors.white,
-                          fontSize: 10,
+                          color: AppColors.surface(context),
+                          fontSize: 10.sp,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 12),
+                SizedBox(height: 12.h),
                 _buildInfoRow(
                   Icons.person_outline,
                   order['recipient'] ?? 'N/A',
@@ -346,28 +348,28 @@ class _RiderDashboardState extends State<RiderDashboard> {
                   Icons.location_on_outlined,
                   order['address'] ?? 'N/A',
                 ),
-                const SizedBox(height: 12),
+                SizedBox(height: 12.h),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
                       '₱${order['total_amount'] ?? 0}',
                       style: GoogleFonts.playfairDisplay(
-                        fontSize: 20,
+                        fontSize: 20.sp,
                         fontWeight: FontWeight.bold,
                         fontFeatures: const [FontFeature.tabularFigures()],
                       ),
                     ),
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.black,
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 24,
-                          vertical: 12,
+                        backgroundColor: AppColors.onSurface(context),
+                        foregroundColor: AppColors.surface(context),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 24.w,
+                          vertical: 12.h,
                         ),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: BorderRadius.circular(8.r),
                         ),
                       ),
                       onPressed: () {
@@ -377,7 +379,7 @@ class _RiderDashboardState extends State<RiderDashboard> {
                               'Order #${order['order_id']} accepted!',
                               style: GoogleFonts.goudyBookletter1911(),
                             ),
-                            backgroundColor: Colors.black,
+                            backgroundColor: AppColors.onSurface(context),
                           ),
                         );
                       },
@@ -400,17 +402,17 @@ class _RiderDashboardState extends State<RiderDashboard> {
 
   Widget _buildInfoRow(IconData icon, String text) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
+      padding: EdgeInsets.only(bottom: 8.h),
       child: Row(
         children: [
-          Icon(icon, size: 18, color: Colors.grey[700]),
-          const SizedBox(width: 10),
+          Icon(icon, size: 18.r, color: AppColors.textBody(context)),
+          SizedBox(width: 10.w),
           Expanded(
             child: Text(
               text,
               style: GoogleFonts.goudyBookletter1911(
-                fontSize: 14,
-                color: Colors.grey[800],
+                fontSize: 14.sp,
+                color: AppColors.textBodyStrong(context),
               ),
             ),
           ),
@@ -424,21 +426,21 @@ class _RiderDashboardState extends State<RiderDashboard> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.inbox_outlined, size: 80, color: Colors.grey[400]),
-          const SizedBox(height: 16),
+          Icon(Icons.inbox_outlined, size: 80.r, color: AppColors.textFaint(context)),
+          SizedBox(height: 16.h),
           Text(
             'No orders available',
             style: GoogleFonts.goudyBookletter1911(
-              fontSize: 18,
-              color: Colors.grey[600],
+              fontSize: 18.sp,
+              color: AppColors.textMuted(context),
             ),
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: 8.h),
           Text(
             'Pull down to refresh',
             style: GoogleFonts.goudyBookletter1911(
-              fontSize: 14,
-              color: Colors.grey[500],
+              fontSize: 14.sp,
+              color: AppColors.textFaint(context),
             ),
           ),
         ],
@@ -451,21 +453,21 @@ class _RiderDashboardState extends State<RiderDashboard> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.error_outline, size: 80, color: Colors.grey[400]),
-          const SizedBox(height: 16),
+          Icon(Icons.error_outline, size: 80.r, color: AppColors.textFaint(context)),
+          SizedBox(height: 16.h),
           Text(
             'Connection Error',
             style: GoogleFonts.goudyBookletter1911(
-              fontSize: 18,
-              color: Colors.grey[600],
+              fontSize: 18.sp,
+              color: AppColors.textMuted(context),
             ),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.black,
-              foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+              backgroundColor: AppColors.onSurface(context),
+              foregroundColor: AppColors.surface(context),
+              padding: EdgeInsets.symmetric(horizontal: 32.w, vertical: 12.h),
             ),
             onPressed: _refreshOrders,
             child: Text(
@@ -514,7 +516,7 @@ class _RiderDashboardState extends State<RiderDashboard> {
             child: Text(
               'Logout',
               style: GoogleFonts.goudyBookletter1911(
-                color: Colors.black,
+                color: AppColors.onSurface(context),
                 fontWeight: FontWeight.w600,
               ),
             ),

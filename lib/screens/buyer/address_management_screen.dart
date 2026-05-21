@@ -5,6 +5,8 @@ import '../../services/auth_service.dart';
 import '../../utils/snackbar_helper.dart';
 import 'add_edit_address_screen.dart';
 
+import '../../utils/app_colors.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 class AddressManagementScreen extends StatefulWidget {
   const AddressManagementScreen({super.key});
 
@@ -184,19 +186,19 @@ class _AddressManagementScreenState extends State<AddressManagementScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: AppColors.scaffoldBackground(context),
       appBar: AppBar(
         title: Text('My Addresses', style: GoogleFonts.playfairDisplay(fontWeight: FontWeight.bold)),
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
+        backgroundColor: AppColors.surface(context),
+        foregroundColor: AppColors.onSurface(context),
         elevation: 0,
       ),
       body: _isLoading
-          ? const Center(child: CircularProgressIndicator(color: Colors.black))
+          ? Center(child: CircularProgressIndicator(color: AppColors.onSurface(context)))
           : _addresses.isEmpty
               ? _buildEmptyState()
               : ListView.builder(
-                  padding: const EdgeInsets.all(16),
+                  padding: EdgeInsets.all(16.w),
                   itemCount: _addresses.length,
                   itemBuilder: (context, index) {
                     return _buildAddressCard(_addresses[index]);
@@ -204,8 +206,8 @@ class _AddressManagementScreenState extends State<AddressManagementScreen> {
                 ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _addAddress,
-        backgroundColor: Colors.black,
-        foregroundColor: Colors.white,
+        backgroundColor: AppColors.onSurface(context),
+        foregroundColor: AppColors.surface(context),
         icon: const Icon(Icons.add),
         label: Text('Add Address', style: GoogleFonts.goudyBookletter1911()),
       ),
@@ -217,16 +219,16 @@ class _AddressManagementScreenState extends State<AddressManagementScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.location_off, size: 100, color: Colors.grey[400]),
-          const SizedBox(height: 16),
+          Icon(Icons.location_off, size: 100.r, color: AppColors.textFaint(context)),
+          SizedBox(height: 16.h),
           Text(
             'No addresses saved',
-            style: GoogleFonts.goudyBookletter1911(fontSize: 18, color: Colors.grey[600]),
+            style: GoogleFonts.goudyBookletter1911(fontSize: 18.sp, color: AppColors.textMuted(context)),
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: 8.h),
           Text(
             'Add an address for faster checkout',
-            style: GoogleFonts.goudyBookletter1911(fontSize: 14, color: Colors.grey[500]),
+            style: GoogleFonts.goudyBookletter1911(fontSize: 14.sp, color: AppColors.textFaint(context)),
           ),
         ],
       ),
@@ -244,11 +246,11 @@ class _AddressManagementScreenState extends State<AddressManagementScreen> {
     final postalCode = address['postal_code'] ?? '';
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 12),
+      margin: EdgeInsets.only(bottom: 12.h),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: isDefault ? Border.all(color: Colors.black, width: 2) : null,
+        color: AppColors.surface(context),
+        borderRadius: BorderRadius.circular(12.r),
+        border: isDefault ? Border.all(color: AppColors.onSurface(context), width: 2) : null,
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.05),
@@ -261,9 +263,9 @@ class _AddressManagementScreenState extends State<AddressManagementScreen> {
         color: Colors.transparent,
         child: InkWell(
           onTap: () => _editAddress(address),
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(12.r),
           child: Padding(
-            padding: const EdgeInsets.all(16),
+            padding: EdgeInsets.all(16.w),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -274,23 +276,23 @@ class _AddressManagementScreenState extends State<AddressManagementScreen> {
                         children: [
                           Icon(
                             Icons.location_on,
-                            size: 20,
-                            color: isDefault ? Colors.black : Colors.grey[600],
+                            size: 20.r,
+                            color: isDefault ? AppColors.onSurface(context) : AppColors.textMuted(context),
                           ),
-                          const SizedBox(width: 8),
+                          SizedBox(width: 8.w),
                           if (isDefault)
                             Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                              padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
                               decoration: BoxDecoration(
-                                color: Colors.black,
-                                borderRadius: BorderRadius.circular(4),
+                                color: AppColors.onSurface(context),
+                                borderRadius: BorderRadius.circular(4.r),
                               ),
                               child: Text(
                                 'DEFAULT',
                                 style: GoogleFonts.goudyBookletter1911(
-                                  fontSize: 10,
+                                  fontSize: 10.sp,
                                   fontWeight: FontWeight.bold,
-                                  color: Colors.white,
+                                  color: AppColors.surface(context),
                                 ),
                               ),
                             ),
@@ -313,8 +315,8 @@ class _AddressManagementScreenState extends State<AddressManagementScreen> {
                             value: 'default',
                             child: Row(
                               children: [
-                                const Icon(Icons.check_circle_outline, size: 18),
-                                const SizedBox(width: 8),
+                                Icon(Icons.check_circle_outline, size: 18.r),
+                                SizedBox(width: 8.w),
                                 Text('Set as Default', style: GoogleFonts.goudyBookletter1911()),
                               ],
                             ),
@@ -323,8 +325,8 @@ class _AddressManagementScreenState extends State<AddressManagementScreen> {
                           value: 'edit',
                           child: Row(
                             children: [
-                              const Icon(Icons.edit_outlined, size: 18),
-                              const SizedBox(width: 8),
+                              Icon(Icons.edit_outlined, size: 18.r),
+                              SizedBox(width: 8.w),
                               Text('Edit', style: GoogleFonts.goudyBookletter1911()),
                             ],
                           ),
@@ -333,8 +335,8 @@ class _AddressManagementScreenState extends State<AddressManagementScreen> {
                           value: 'delete',
                           child: Row(
                             children: [
-                              const Icon(Icons.delete_outline, size: 18, color: Colors.red),
-                              const SizedBox(width: 8),
+                              Icon(Icons.delete_outline, size: 18.r, color: Colors.red),
+                              SizedBox(width: 8.w),
                               Text('Delete', style: GoogleFonts.goudyBookletter1911(color: Colors.red)),
                             ],
                           ),
@@ -343,41 +345,41 @@ class _AddressManagementScreenState extends State<AddressManagementScreen> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 12),
+                SizedBox(height: 12.h),
                 Text(
                   recipientName,
                   style: GoogleFonts.goudyBookletter1911(
-                    fontSize: 16,
+                    fontSize: 16.sp,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
                 if (phoneNumber.isNotEmpty) ...[
-                  const SizedBox(height: 4),
+                  SizedBox(height: 4.h),
                   Text(
                     phoneNumber,
                     style: GoogleFonts.playfairDisplay(
-                      fontSize: 14,
-                      color: Colors.grey[600],
+                      fontSize: 14.sp,
+                      color: AppColors.textMuted(context),
                     ),
                   ),
                 ],
-                const SizedBox(height: 8),
+                SizedBox(height: 8.h),
                 Text(
                   fullAddress,
                   style: GoogleFonts.goudyBookletter1911(
-                    fontSize: 14,
-                    color: Colors.grey[700],
+                    fontSize: 14.sp,
+                    color: AppColors.textBody(context),
                   ),
                 ),
-                const SizedBox(height: 4),
+                SizedBox(height: 4.h),
                 Row(
                   children: [
                     Expanded(
                       child: Text(
                         '$barangay, $city, $province',
                         style: GoogleFonts.goudyBookletter1911(
-                          fontSize: 14,
-                          color: Colors.grey[600],
+                          fontSize: 14.sp,
+                          color: AppColors.textMuted(context),
                         ),
                       ),
                     ),
@@ -385,8 +387,8 @@ class _AddressManagementScreenState extends State<AddressManagementScreen> {
                       Text(
                         postalCode,
                         style: GoogleFonts.playfairDisplay(
-                          fontSize: 14,
-                          color: Colors.grey[600],
+                          fontSize: 14.sp,
+                          color: AppColors.textMuted(context),
                         ),
                       ),
                   ],

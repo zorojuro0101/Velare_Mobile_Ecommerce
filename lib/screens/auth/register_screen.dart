@@ -3,9 +3,11 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../services/auth_service.dart';
 import '../../utils/snackbar_helper.dart';
 import '../../widgets/address_selector_modal.dart';
-import '../buyer/browse_products_screen.dart';
+import '../buyer/guest_home.dart';
 import 'login_screen.dart';
 
+import '../../utils/app_colors.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
 
@@ -255,13 +257,13 @@ class _RegisterScreenState extends State<RegisterScreen> with SingleTickerProvid
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (context) => const BrowseProductsScreen(isGuestMode: true),
+              builder: (context) => const GuestHome(),
             ),
           );
         }
       },
       child: Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.surface(context),
       body: SafeArea(
         child: Column(
           children: [
@@ -285,30 +287,30 @@ class _RegisterScreenState extends State<RegisterScreen> with SingleTickerProvid
 
   Widget _buildHeader() {
     return Padding(
-      padding: const EdgeInsets.all(24),
+      padding: EdgeInsets.all(24.w),
       child: Column(
         children: [
           Text(
             'Velare',
             style: GoogleFonts.playfairDisplay(
-              fontSize: 32,
+              fontSize: 32.sp,
               fontWeight: FontWeight.bold,
             ),
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: 8.h),
           Text(
             'Register',
             style: GoogleFonts.goudyBookletter1911(
-              fontSize: 24,
+              fontSize: 24.sp,
               fontWeight: FontWeight.w600,
             ),
           ),
-          const SizedBox(height: 4),
+          SizedBox(height: 4.h),
           Text(
             'Shop your favorite products with ease',
             style: GoogleFonts.goudyBookletter1911(
-              fontSize: 14,
-              color: Colors.grey[600],
+              fontSize: 14.sp,
+              color: AppColors.textMuted(context),
             ),
           ),
         ],
@@ -318,17 +320,17 @@ class _RegisterScreenState extends State<RegisterScreen> with SingleTickerProvid
 
   Widget _buildTabBar() {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 24),
+      margin: EdgeInsets.symmetric(horizontal: 24.w),
       decoration: BoxDecoration(
-        border: Border(bottom: BorderSide(color: Colors.grey[300]!)),
+        border: Border(bottom: BorderSide(color: AppColors.border(context))),
       ),
       child: TabBar(
         controller: _tabController,
-        labelColor: Colors.black,
+        labelColor: AppColors.onSurface(context),
         unselectedLabelColor: Colors.grey,
-        labelStyle: GoogleFonts.goudyBookletter1911(fontSize: 16, fontWeight: FontWeight.w600),
-        unselectedLabelStyle: GoogleFonts.goudyBookletter1911(fontSize: 16),
-        indicatorColor: Colors.black,
+        labelStyle: GoogleFonts.goudyBookletter1911(fontSize: 16.sp, fontWeight: FontWeight.w600),
+        unselectedLabelStyle: GoogleFonts.goudyBookletter1911(fontSize: 16.sp),
+        indicatorColor: AppColors.onSurface(context),
         indicatorWeight: 3,
         tabs: const [
           Tab(text: 'Buyer'),
@@ -340,7 +342,7 @@ class _RegisterScreenState extends State<RegisterScreen> with SingleTickerProvid
 
   Widget _buildBuyerForm() {
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(24),
+      padding: EdgeInsets.all(24.w),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -353,15 +355,15 @@ class _RegisterScreenState extends State<RegisterScreen> with SingleTickerProvid
                     labelText: 'First Name',
                     labelStyle: GoogleFonts.goudyBookletter1911(),
                     filled: true,
-                    fillColor: Colors.grey[100],
+                    fillColor: AppColors.surfaceVariant(context),
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(8.r),
                       borderSide: BorderSide.none,
                     ),
                   ),
                 ),
               ),
-              const SizedBox(width: 12),
+              SizedBox(width: 12.w),
               Expanded(
                 child: TextField(
                   controller: _buyerLastNameController,
@@ -369,9 +371,9 @@ class _RegisterScreenState extends State<RegisterScreen> with SingleTickerProvid
                     labelText: 'Last Name',
                     labelStyle: GoogleFonts.goudyBookletter1911(),
                     filled: true,
-                    fillColor: Colors.grey[100],
+                    fillColor: AppColors.surfaceVariant(context),
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(8.r),
                       borderSide: BorderSide.none,
                     ),
                   ),
@@ -379,7 +381,7 @@ class _RegisterScreenState extends State<RegisterScreen> with SingleTickerProvid
               ),
             ],
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
           TextField(
             controller: _buyerEmailController,
             keyboardType: TextInputType.emailAddress,
@@ -387,21 +389,21 @@ class _RegisterScreenState extends State<RegisterScreen> with SingleTickerProvid
               labelText: 'Email',
               labelStyle: GoogleFonts.goudyBookletter1911(),
               filled: true,
-              fillColor: Colors.grey[100],
+              fillColor: AppColors.surfaceVariant(context),
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(8.r),
                 borderSide: BorderSide.none,
               ),
             ),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
           GestureDetector(
             onTap: () => _showAddressModal(true),
             child: Container(
-              padding: const EdgeInsets.all(16),
+              padding: EdgeInsets.all(16.w),
               decoration: BoxDecoration(
-                color: Colors.grey[100],
-                borderRadius: BorderRadius.circular(8),
+                color: AppColors.surfaceVariant(context),
+                borderRadius: BorderRadius.circular(8.r),
               ),
               child: Row(
                 children: [
@@ -409,16 +411,16 @@ class _RegisterScreenState extends State<RegisterScreen> with SingleTickerProvid
                     child: Text(
                       _getAddressDisplay(_buyerAddress),
                       style: GoogleFonts.goudyBookletter1911(
-                        color: _buyerAddress == null ? Colors.grey[600] : Colors.black,
+                        color: _buyerAddress == null ? AppColors.textMuted(context) : AppColors.onSurface(context),
                       ),
                     ),
                   ),
-                  const Icon(Icons.arrow_forward_ios, size: 16),
+                  Icon(Icons.arrow_forward_ios, size: 16.r),
                 ],
               ),
             ),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
           TextField(
             controller: _buyerPasswordController,
             obscureText: !_buyerPasswordVisible,
@@ -426,9 +428,9 @@ class _RegisterScreenState extends State<RegisterScreen> with SingleTickerProvid
               labelText: 'Password',
               labelStyle: GoogleFonts.goudyBookletter1911(),
               filled: true,
-              fillColor: Colors.grey[100],
+              fillColor: AppColors.surfaceVariant(context),
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(8.r),
                 borderSide: BorderSide.none,
               ),
               suffixIcon: IconButton(
@@ -439,43 +441,43 @@ class _RegisterScreenState extends State<RegisterScreen> with SingleTickerProvid
               ),
             ),
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: 8.h),
           _buildPasswordGuidelines(),
-          const SizedBox(height: 24),
+          SizedBox(height: 24.h),
           ElevatedButton(
             onPressed: _isLoading ? null : _registerBuyer,
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.black,
-              foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(vertical: 16),
+              backgroundColor: AppColors.onSurface(context),
+              foregroundColor: AppColors.surface(context),
+              padding: EdgeInsets.symmetric(vertical: 16.h),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(8.r),
               ),
             ),
             child: _isLoading
-                ? const SizedBox(
-                    height: 20,
-                    width: 20,
+                ? SizedBox(
+                    height: 20.h,
+                    width: 20.w,
                     child: CircularProgressIndicator(
                       strokeWidth: 2,
-                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                      valueColor: AlwaysStoppedAnimation<Color>(AppColors.surface(context)),
                     ),
                   )
                 : Text(
                     'Register as Buyer',
                     style: GoogleFonts.goudyBookletter1911(
-                      fontSize: 16,
+                      fontSize: 16.sp,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
                 'Already have an account? ',
-                style: GoogleFonts.goudyBookletter1911(color: Colors.grey[600]),
+                style: GoogleFonts.goudyBookletter1911(color: AppColors.textMuted(context)),
               ),
               GestureDetector(
                 onTap: () {
@@ -487,7 +489,7 @@ class _RegisterScreenState extends State<RegisterScreen> with SingleTickerProvid
                 child: Text(
                   'Login',
                   style: GoogleFonts.goudyBookletter1911(
-                    color: Colors.black,
+                    color: AppColors.onSurface(context),
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -501,7 +503,7 @@ class _RegisterScreenState extends State<RegisterScreen> with SingleTickerProvid
 
   Widget _buildRiderForm() {
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(24),
+      padding: EdgeInsets.all(24.w),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -514,15 +516,15 @@ class _RegisterScreenState extends State<RegisterScreen> with SingleTickerProvid
                     labelText: 'First Name',
                     labelStyle: GoogleFonts.goudyBookletter1911(),
                     filled: true,
-                    fillColor: Colors.grey[100],
+                    fillColor: AppColors.surfaceVariant(context),
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(8.r),
                       borderSide: BorderSide.none,
                     ),
                   ),
                 ),
               ),
-              const SizedBox(width: 12),
+              SizedBox(width: 12.w),
               Expanded(
                 child: TextField(
                   controller: _riderLastNameController,
@@ -530,9 +532,9 @@ class _RegisterScreenState extends State<RegisterScreen> with SingleTickerProvid
                     labelText: 'Last Name',
                     labelStyle: GoogleFonts.goudyBookletter1911(),
                     filled: true,
-                    fillColor: Colors.grey[100],
+                    fillColor: AppColors.surfaceVariant(context),
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(8.r),
                       borderSide: BorderSide.none,
                     ),
                   ),
@@ -540,7 +542,7 @@ class _RegisterScreenState extends State<RegisterScreen> with SingleTickerProvid
               ),
             ],
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
           TextField(
             controller: _riderEmailController,
             keyboardType: TextInputType.emailAddress,
@@ -548,21 +550,21 @@ class _RegisterScreenState extends State<RegisterScreen> with SingleTickerProvid
               labelText: 'Email',
               labelStyle: GoogleFonts.goudyBookletter1911(),
               filled: true,
-              fillColor: Colors.grey[100],
+              fillColor: AppColors.surfaceVariant(context),
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(8.r),
                 borderSide: BorderSide.none,
               ),
             ),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
           GestureDetector(
             onTap: () => _showAddressModal(false),
             child: Container(
-              padding: const EdgeInsets.all(16),
+              padding: EdgeInsets.all(16.w),
               decoration: BoxDecoration(
-                color: Colors.grey[100],
-                borderRadius: BorderRadius.circular(8),
+                color: AppColors.surfaceVariant(context),
+                borderRadius: BorderRadius.circular(8.r),
               ),
               child: Row(
                 children: [
@@ -570,16 +572,16 @@ class _RegisterScreenState extends State<RegisterScreen> with SingleTickerProvid
                     child: Text(
                       _getAddressDisplay(_riderAddress),
                       style: GoogleFonts.goudyBookletter1911(
-                        color: _riderAddress == null ? Colors.grey[600] : Colors.black,
+                        color: _riderAddress == null ? AppColors.textMuted(context) : AppColors.onSurface(context),
                       ),
                     ),
                   ),
-                  const Icon(Icons.arrow_forward_ios, size: 16),
+                  Icon(Icons.arrow_forward_ios, size: 16.r),
                 ],
               ),
             ),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
           TextField(
             controller: _riderPasswordController,
             obscureText: !_riderPasswordVisible,
@@ -587,9 +589,9 @@ class _RegisterScreenState extends State<RegisterScreen> with SingleTickerProvid
               labelText: 'Password',
               labelStyle: GoogleFonts.goudyBookletter1911(),
               filled: true,
-              fillColor: Colors.grey[100],
+              fillColor: AppColors.surfaceVariant(context),
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(8.r),
                 borderSide: BorderSide.none,
               ),
               suffixIcon: IconButton(
@@ -600,43 +602,43 @@ class _RegisterScreenState extends State<RegisterScreen> with SingleTickerProvid
               ),
             ),
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: 8.h),
           _buildPasswordGuidelines(),
-          const SizedBox(height: 24),
+          SizedBox(height: 24.h),
           ElevatedButton(
             onPressed: _isLoading ? null : _registerRider,
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.black,
-              foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(vertical: 16),
+              backgroundColor: AppColors.onSurface(context),
+              foregroundColor: AppColors.surface(context),
+              padding: EdgeInsets.symmetric(vertical: 16.h),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(8.r),
               ),
             ),
             child: _isLoading
-                ? const SizedBox(
-                    height: 20,
-                    width: 20,
+                ? SizedBox(
+                    height: 20.h,
+                    width: 20.w,
                     child: CircularProgressIndicator(
                       strokeWidth: 2,
-                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                      valueColor: AlwaysStoppedAnimation<Color>(AppColors.surface(context)),
                     ),
                   )
                 : Text(
                     'Register as Rider',
                     style: GoogleFonts.goudyBookletter1911(
-                      fontSize: 16,
+                      fontSize: 16.sp,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
                 'Already have an account? ',
-                style: GoogleFonts.goudyBookletter1911(color: Colors.grey[600]),
+                style: GoogleFonts.goudyBookletter1911(color: AppColors.textMuted(context)),
               ),
               GestureDetector(
                 onTap: () {
@@ -648,7 +650,7 @@ class _RegisterScreenState extends State<RegisterScreen> with SingleTickerProvid
                 child: Text(
                   'Login',
                   style: GoogleFonts.goudyBookletter1911(
-                    color: Colors.black,
+                    color: AppColors.onSurface(context),
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -662,11 +664,11 @@ class _RegisterScreenState extends State<RegisterScreen> with SingleTickerProvid
 
   Widget _buildPasswordGuidelines() {
     return Container(
-      padding: const EdgeInsets.all(12),
+      padding: EdgeInsets.all(12.w),
       decoration: BoxDecoration(
-        color: Colors.grey[50],
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: Colors.grey[300]!),
+        color: AppColors.scaffoldBackground(context),
+        borderRadius: BorderRadius.circular(8.r),
+        border: Border.all(color: AppColors.border(context)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -674,12 +676,12 @@ class _RegisterScreenState extends State<RegisterScreen> with SingleTickerProvid
           Text(
             'Password must contain:',
             style: GoogleFonts.goudyBookletter1911(
-              fontSize: 12,
+              fontSize: 12.sp,
               fontWeight: FontWeight.w600,
-              color: Colors.grey[700],
+              color: AppColors.textBody(context),
             ),
           ),
-          const SizedBox(height: 4),
+          SizedBox(height: 4.h),
           _buildGuidelineItem('6+ characters'),
           _buildGuidelineItem('1 uppercase letter'),
           _buildGuidelineItem('1 lowercase letter'),
@@ -691,16 +693,16 @@ class _RegisterScreenState extends State<RegisterScreen> with SingleTickerProvid
 
   Widget _buildGuidelineItem(String text) {
     return Padding(
-      padding: const EdgeInsets.only(top: 2),
+      padding: EdgeInsets.only(top: 2.h),
       child: Row(
         children: [
-          Icon(Icons.check_circle_outline, size: 14, color: Colors.grey[600]),
-          const SizedBox(width: 6),
+          Icon(Icons.check_circle_outline, size: 14.r, color: AppColors.textMuted(context)),
+          SizedBox(width: 6.w),
           Text(
             text,
             style: GoogleFonts.goudyBookletter1911(
-              fontSize: 11,
-              color: Colors.grey[600],
+              fontSize: 11.sp,
+              color: AppColors.textMuted(context),
             ),
           ),
         ],

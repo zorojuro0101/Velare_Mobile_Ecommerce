@@ -7,6 +7,8 @@ import '../../services/rider_service.dart';
 import '../../utils/snackbar_helper.dart';
 import 'delivery_detail_screen.dart';
 
+import '../../utils/app_colors.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 class DeliveryManagementScreen extends StatefulWidget {
   final int initialTab;
   final bool hideScaffold;
@@ -217,38 +219,38 @@ class _DeliveryManagementScreenState extends State<DeliveryManagementScreen>
   Widget build(BuildContext context) {
     final tabBar = TabBar(
       controller: _tabController,
-      labelColor: Colors.black,
+      labelColor: AppColors.onSurface(context),
       unselectedLabelColor: Colors.grey,
-      indicatorColor: Colors.black,
+      indicatorColor: AppColors.onSurface(context),
       labelStyle: GoogleFonts.goudyBookletter1911(
-        fontSize: 14,
+        fontSize: 14.sp,
         fontWeight: FontWeight.w600,
       ),
-      unselectedLabelStyle: GoogleFonts.goudyBookletter1911(fontSize: 14),
+      unselectedLabelStyle: GoogleFonts.goudyBookletter1911(fontSize: 14.sp),
       tabs: [
         Tab(
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.pending_actions, size: 18),
-              const SizedBox(width: 6),
+              Icon(Icons.pending_actions, size: 18.r),
+              SizedBox(width: 6.w),
               const Text('Pending Pickups'),
               if (_pendingPickups.isNotEmpty) ...[
-                const SizedBox(width: 6),
+                SizedBox(width: 6.w),
                 Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 6,
-                    vertical: 2,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 6.w,
+                    vertical: 2.h,
                   ),
                   decoration: BoxDecoration(
                     color: Colors.orange,
-                    borderRadius: BorderRadius.circular(5),
+                    borderRadius: BorderRadius.circular(5.r),
                   ),
                   child: Text(
                     '${_pendingPickups.length}',
                     style: GoogleFonts.goudyBookletter1911(
-                      fontSize: 11,
-                      color: Colors.white,
+                      fontSize: 11.sp,
+                      color: AppColors.surface(context),
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -261,25 +263,25 @@ class _DeliveryManagementScreenState extends State<DeliveryManagementScreen>
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.local_shipping, size: 18),
-              const SizedBox(width: 6),
+              Icon(Icons.local_shipping, size: 18.r),
+              SizedBox(width: 6.w),
               const Text('Active'),
               if (_activeDeliveries.isNotEmpty) ...[
-                const SizedBox(width: 6),
+                SizedBox(width: 6.w),
                 Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 6,
-                    vertical: 2,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 6.w,
+                    vertical: 2.h,
                   ),
                   decoration: BoxDecoration(
                     color: Colors.blue,
-                    borderRadius: BorderRadius.circular(5),
+                    borderRadius: BorderRadius.circular(5.r),
                   ),
                   child: Text(
                     '${_activeDeliveries.length}',
                     style: GoogleFonts.goudyBookletter1911(
-                      fontSize: 11,
-                      color: Colors.white,
+                      fontSize: 11.sp,
+                      color: AppColors.surface(context),
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -301,24 +303,24 @@ class _DeliveryManagementScreenState extends State<DeliveryManagementScreen>
         child: Column(
           children: [
             Container(
-              color: Colors.white,
+              color: AppColors.surface(context),
               child: Column(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.all(16),
+                    padding: EdgeInsets.all(16.w),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
                           'Delivery Management',
                           style: GoogleFonts.playfairDisplay(
-                            color: Colors.black,
-                            fontSize: 20,
+                            color: AppColors.onSurface(context),
+                            fontSize: 20.sp,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                         IconButton(
-                          icon: const Icon(Icons.refresh, color: Colors.black),
+                          icon: Icon(Icons.refresh, color: AppColors.onSurface(context)),
                           onPressed: _loadData,
                         ),
                       ],
@@ -335,21 +337,21 @@ class _DeliveryManagementScreenState extends State<DeliveryManagementScreen>
     }
 
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: AppColors.scaffoldBackground(context),
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.surface(context),
         elevation: 0,
         automaticallyImplyLeading: false,
         title: Text(
           'Delivery Management',
           style: GoogleFonts.goudyBookletter1911(
-            color: Colors.black,
+            color: AppColors.onSurface(context),
             fontWeight: FontWeight.w600,
           ),
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.refresh, color: Colors.black),
+            icon: Icon(Icons.refresh, color: AppColors.onSurface(context)),
             onPressed: _loadData,
           ),
         ],
@@ -361,8 +363,8 @@ class _DeliveryManagementScreenState extends State<DeliveryManagementScreen>
 
   Widget _buildPendingPickupsTab() {
     if (_isLoadingPending) {
-      return const Center(
-        child: CircularProgressIndicator(color: Colors.black),
+      return Center(
+        child: CircularProgressIndicator(color: AppColors.onSurface(context)),
       );
     }
 
@@ -376,9 +378,9 @@ class _DeliveryManagementScreenState extends State<DeliveryManagementScreen>
 
     return RefreshIndicator(
       onRefresh: _loadPendingPickups,
-      color: Colors.black,
+      color: AppColors.onSurface(context),
       child: ListView.builder(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(16.w),
         itemCount: _pendingPickups.length,
         itemBuilder: (context, index) {
           return _buildPendingPickupCard(_pendingPickups[index]);
@@ -389,8 +391,8 @@ class _DeliveryManagementScreenState extends State<DeliveryManagementScreen>
 
   Widget _buildActiveDeliveriesTab() {
     if (_isLoadingActive) {
-      return const Center(
-        child: CircularProgressIndicator(color: Colors.black),
+      return Center(
+        child: CircularProgressIndicator(color: AppColors.onSurface(context)),
       );
     }
 
@@ -404,9 +406,9 @@ class _DeliveryManagementScreenState extends State<DeliveryManagementScreen>
 
     return RefreshIndicator(
       onRefresh: _loadActiveDeliveries,
-      color: Colors.black,
+      color: AppColors.onSurface(context),
       child: ListView.builder(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(16.w),
         itemCount: _activeDeliveries.length,
         itemBuilder: (context, index) {
           return _buildActiveDeliveryCard(_activeDeliveries[index]);
@@ -423,10 +425,10 @@ class _DeliveryManagementScreenState extends State<DeliveryManagementScreen>
     final totalAmount = order['total_amount'] ?? 0;
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 12),
+      margin: EdgeInsets.only(bottom: 12.h),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
+        color: AppColors.surface(context),
+        borderRadius: BorderRadius.circular(12.r),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.05),
@@ -436,7 +438,7 @@ class _DeliveryManagementScreenState extends State<DeliveryManagementScreen>
         ],
       ),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(16.w),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -447,31 +449,31 @@ class _DeliveryManagementScreenState extends State<DeliveryManagementScreen>
                   'Order #$orderNumber',
                   style: GoogleFonts.playfairDisplay(
                     fontWeight: FontWeight.w600,
-                    fontSize: 16,
+                    fontSize: 16.sp,
                     fontFeatures: const [FontFeature.tabularFigures()],
                   ),
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 4,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 10.w,
+                    vertical: 4.h,
                   ),
                   decoration: BoxDecoration(
                     color: Colors.orange,
-                    borderRadius: BorderRadius.circular(5),
+                    borderRadius: BorderRadius.circular(5.r),
                   ),
                   child: Text(
                     'PENDING',
                     style: GoogleFonts.goudyBookletter1911(
-                      color: Colors.white,
-                      fontSize: 10,
+                      color: AppColors.surface(context),
+                      fontSize: 10.sp,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 12),
+            SizedBox(height: 12.h),
             _buildInfoRow(
               Icons.store_outlined,
               'Store: ${seller['shop_name'] ?? 'N/A'}',
@@ -508,14 +510,14 @@ class _DeliveryManagementScreenState extends State<DeliveryManagementScreen>
                     Text(
                       'Total Amount',
                       style: GoogleFonts.goudyBookletter1911(
-                        fontSize: 12,
-                        color: Colors.grey[600],
+                        fontSize: 12.sp,
+                        color: AppColors.textMuted(context),
                       ),
                     ),
                     Text(
                       '₱${totalAmount.toString()}',
                       style: GoogleFonts.playfairDisplay(
-                        fontSize: 20,
+                        fontSize: 20.sp,
                         fontWeight: FontWeight.bold,
                         fontFeatures: const [FontFeature.tabularFigures()],
                       ),
@@ -529,11 +531,11 @@ class _DeliveryManagementScreenState extends State<DeliveryManagementScreen>
                         foregroundColor: Colors.red,
                         side: const BorderSide(color: Colors.red),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(5),
+                          borderRadius: BorderRadius.circular(5.r),
                         ),
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 12,
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 16.w,
+                          vertical: 12.h,
                         ),
                       ),
                       onPressed: () {
@@ -544,17 +546,17 @@ class _DeliveryManagementScreenState extends State<DeliveryManagementScreen>
                         style: GoogleFonts.goudyBookletter1911(),
                       ),
                     ),
-                    const SizedBox(width: 8),
+                    SizedBox(width: 8.w),
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.black,
-                        foregroundColor: Colors.white,
+                        backgroundColor: AppColors.onSurface(context),
+                        foregroundColor: AppColors.surface(context),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(5),
+                          borderRadius: BorderRadius.circular(5.r),
                         ),
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 20,
-                          vertical: 12,
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 20.w,
+                          vertical: 12.h,
                         ),
                       ),
                       onPressed: () => _acceptOrder(pickup),
@@ -609,10 +611,10 @@ class _DeliveryManagementScreenState extends State<DeliveryManagementScreen>
     final totalAmount = order['total_amount'] ?? 0;
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 12),
+      margin: EdgeInsets.only(bottom: 12.h),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
+        color: AppColors.surface(context),
+        borderRadius: BorderRadius.circular(12.r),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.05),
@@ -624,7 +626,7 @@ class _DeliveryManagementScreenState extends State<DeliveryManagementScreen>
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          borderRadius: BorderRadius.circular(5),
+          borderRadius: BorderRadius.circular(5.r),
           onTap: () {
             Navigator.push(
               context,
@@ -634,7 +636,7 @@ class _DeliveryManagementScreenState extends State<DeliveryManagementScreen>
             ).then((_) => _loadActiveDeliveries());
           },
           child: Padding(
-            padding: const EdgeInsets.all(16),
+            padding: EdgeInsets.all(16.w),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -646,27 +648,27 @@ class _DeliveryManagementScreenState extends State<DeliveryManagementScreen>
                         'Order #$orderNumber',
                         style: GoogleFonts.playfairDisplay(
                           fontWeight: FontWeight.w600,
-                          fontSize: 16,
+                          fontSize: 16.sp,
                           fontFeatures: const [FontFeature.tabularFigures()],
                         ),
                       ),
                     ),
-                    const SizedBox(width: 8),
+                    SizedBox(width: 8.w),
                     Flexible(
                       child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 4,
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 8.w,
+                          vertical: 4.h,
                         ),
                         decoration: BoxDecoration(
                           color: statusColor,
-                          borderRadius: BorderRadius.circular(5),
+                          borderRadius: BorderRadius.circular(5.r),
                         ),
                         child: Text(
                           statusText,
                           style: GoogleFonts.goudyBookletter1911(
-                            color: Colors.white,
-                            fontSize: 9,
+                            color: AppColors.surface(context),
+                            fontSize: 9.sp,
                             fontWeight: FontWeight.w600,
                           ),
                           maxLines: 1,
@@ -676,7 +678,7 @@ class _DeliveryManagementScreenState extends State<DeliveryManagementScreen>
                     ),
                   ],
                 ),
-                const SizedBox(height: 12),
+                SizedBox(height: 12.h),
                 _buildInfoRow(
                   Icons.store_outlined,
                   'From: ${seller['shop_name'] ?? 'N/A'}',
@@ -703,14 +705,14 @@ class _DeliveryManagementScreenState extends State<DeliveryManagementScreen>
                         Text(
                           'Total Amount',
                           style: GoogleFonts.goudyBookletter1911(
-                            fontSize: 12,
-                            color: Colors.grey[600],
+                            fontSize: 12.sp,
+                            color: AppColors.textMuted(context),
                           ),
                         ),
                         Text(
                           '₱${totalAmount.toString()}',
                           style: GoogleFonts.playfairDisplay(
-                            fontSize: 20,
+                            fontSize: 20.sp,
                             fontWeight: FontWeight.bold,
                             fontFeatures: const [FontFeature.tabularFigures()],
                           ),
@@ -726,13 +728,13 @@ class _DeliveryManagementScreenState extends State<DeliveryManagementScreen>
                                       delivery['delivery_id']
                               ? Colors.grey
                               : Colors.blue,
-                          foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 12,
+                          foregroundColor: AppColors.surface(context),
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 16.w,
+                            vertical: 12.h,
                           ),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: BorderRadius.circular(8.r),
                           ),
                         ),
                         onPressed:
@@ -743,17 +745,17 @@ class _DeliveryManagementScreenState extends State<DeliveryManagementScreen>
                         icon:
                             _isProcessing &&
                                 _processingDeliveryId == delivery['delivery_id']
-                            ? const SizedBox(
-                                width: 18,
-                                height: 18,
+                            ? SizedBox(
+                                width: 18.w,
+                                height: 18.h,
                                 child: CircularProgressIndicator(
                                   strokeWidth: 2,
                                   valueColor: AlwaysStoppedAnimation<Color>(
-                                    Colors.white,
+                                    AppColors.surface(context),
                                   ),
                                 ),
                               )
-                            : const Icon(Icons.shopping_bag, size: 18),
+                            : Icon(Icons.shopping_bag, size: 18.r),
                         label: Text(
                           _isProcessing &&
                                   _processingDeliveryId ==
@@ -762,7 +764,7 @@ class _DeliveryManagementScreenState extends State<DeliveryManagementScreen>
                               : 'Mark as Picked Up',
                           style: GoogleFonts.goudyBookletter1911(
                             fontWeight: FontWeight.w600,
-                            fontSize: 13,
+                            fontSize: 13.sp,
                           ),
                         ),
                       )
@@ -775,13 +777,13 @@ class _DeliveryManagementScreenState extends State<DeliveryManagementScreen>
                                       delivery['delivery_id']
                               ? Colors.grey
                               : Colors.green,
-                          foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 20,
-                            vertical: 12,
+                          foregroundColor: AppColors.surface(context),
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 20.w,
+                            vertical: 12.h,
                           ),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: BorderRadius.circular(8.r),
                           ),
                         ),
                         onPressed:
@@ -792,17 +794,17 @@ class _DeliveryManagementScreenState extends State<DeliveryManagementScreen>
                         icon:
                             _isProcessing &&
                                 _processingDeliveryId == delivery['delivery_id']
-                            ? const SizedBox(
-                                width: 20,
-                                height: 20,
+                            ? SizedBox(
+                                width: 20.w,
+                                height: 20.h,
                                 child: CircularProgressIndicator(
                                   strokeWidth: 2,
                                   valueColor: AlwaysStoppedAnimation<Color>(
-                                    Colors.white,
+                                    AppColors.surface(context),
                                   ),
                                 ),
                               )
-                            : const Icon(Icons.check_circle_outline, size: 20),
+                            : Icon(Icons.check_circle_outline, size: 20.r),
                         label: Text(
                           _isProcessing &&
                                   _processingDeliveryId ==
@@ -819,22 +821,22 @@ class _DeliveryManagementScreenState extends State<DeliveryManagementScreen>
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFFF8F9FA),
                           foregroundColor: const Color(0xFF6C757D),
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 12,
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 16.w,
+                            vertical: 12.h,
                           ),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: BorderRadius.circular(8.r),
                           ),
                           elevation: 0,
                         ),
                         onPressed: null, // Disabled
-                        icon: const Icon(Icons.hourglass_empty, size: 18),
+                        icon: Icon(Icons.hourglass_empty, size: 18.r),
                         label: Text(
                           'Awaiting Confirmation',
                           style: GoogleFonts.goudyBookletter1911(
                             fontWeight: FontWeight.w600,
-                            fontSize: 13,
+                            fontSize: 13.sp,
                           ),
                         ),
                       ),
@@ -850,17 +852,17 @@ class _DeliveryManagementScreenState extends State<DeliveryManagementScreen>
 
   Widget _buildInfoRow(IconData icon, String text) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
+      padding: EdgeInsets.only(bottom: 8.h),
       child: Row(
         children: [
-          Icon(icon, size: 18, color: Colors.grey[700]),
-          const SizedBox(width: 10),
+          Icon(icon, size: 18.r, color: AppColors.textBody(context)),
+          SizedBox(width: 10.w),
           Expanded(
             child: Text(
               text,
               style: GoogleFonts.goudyBookletter1911(
-                fontSize: 14,
-                color: Colors.grey[800],
+                fontSize: 14.sp,
+                color: AppColors.textBodyStrong(context),
               ),
             ),
           ),
@@ -918,7 +920,7 @@ class _DeliveryManagementScreenState extends State<DeliveryManagementScreen>
           ElevatedButton(
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.blue,
-              foregroundColor: Colors.white,
+              foregroundColor: AppColors.surface(context),
             ),
             onPressed: () => Navigator.pop(context, true),
             child: Text(
@@ -989,7 +991,7 @@ class _DeliveryManagementScreenState extends State<DeliveryManagementScreen>
           ElevatedButton(
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.green,
-              foregroundColor: Colors.white,
+              foregroundColor: AppColors.surface(context),
             ),
             onPressed: () => Navigator.pop(context, true),
             child: Text(
@@ -1050,21 +1052,21 @@ class _DeliveryManagementScreenState extends State<DeliveryManagementScreen>
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(icon, size: 80, color: Colors.grey[400]),
-          const SizedBox(height: 16),
+          Icon(icon, size: 80.r, color: AppColors.textFaint(context)),
+          SizedBox(height: 16.h),
           Text(
             title,
             style: GoogleFonts.goudyBookletter1911(
-              fontSize: 18,
-              color: Colors.grey[600],
+              fontSize: 18.sp,
+              color: AppColors.textMuted(context),
             ),
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: 8.h),
           Text(
             subtitle,
             style: GoogleFonts.goudyBookletter1911(
-              fontSize: 14,
-              color: Colors.grey[500],
+              fontSize: 14.sp,
+              color: AppColors.textFaint(context),
             ),
           ),
         ],

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../utils/app_colors.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 class IconBadge extends StatelessWidget {
   final IconData icon;
   final int count;
@@ -31,11 +33,11 @@ class IconBadge extends StatelessWidget {
             right: 6,
             top: 6,
             child: Container(
-              padding: const EdgeInsets.all(3),
+              padding: EdgeInsets.all(3.w),
               decoration: BoxDecoration(
                 color: badgeColor ?? const Color(0xFFD4AF37),
                 shape: BoxShape.circle,
-                border: Border.all(color: Colors.white, width: 1.5),
+                border: Border.all(color: AppColors.surface(context), width: 1.5),
               ),
               constraints: const BoxConstraints(
                 minWidth: 18,
@@ -45,8 +47,8 @@ class IconBadge extends StatelessWidget {
                 child: Text(
                   count > 9 ? '9+' : '$count',
                   style: GoogleFonts.playfairDisplay(
-                    color: Colors.white,
-                    fontSize: 11,
+                    color: AppColors.surface(context),
+                    fontSize: 11.sp,
                     fontWeight: FontWeight.bold,
                     height: 1,
                   ),
@@ -88,12 +90,12 @@ class NotificationDot extends StatelessWidget {
             right: 12,
             top: 12,
             child: Container(
-              width: 10,
-              height: 10,
+              width: 10.w,
+              height: 10.h,
               decoration: BoxDecoration(
                 color: const Color(0xFFD4AF37),
                 shape: BoxShape.circle,
-                border: Border.all(color: Colors.white, width: 2),
+                border: Border.all(color: AppColors.surface(context), width: 2),
               ),
             ),
           ),

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 
+import '../utils/app_colors.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 class SplashScreen extends StatefulWidget {
   final Widget nextScreen;
   
@@ -84,7 +86,7 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.surface(context),
       body: Center(
         child: AnimatedBuilder(
           animation: _controller,
@@ -103,24 +105,24 @@ class _SplashScreenState extends State<SplashScreen>
                       height: 200,
                       fit: BoxFit.contain,
                     ),
-                    const SizedBox(height: 24),
+                    SizedBox(height: 24.h),
                     // Optional: Add app name or tagline
                     Text(
                       'VELARE',
                       style: TextStyle(
-                        fontSize: 32,
+                        fontSize: 32.sp,
                         fontWeight: FontWeight.bold,
-                        color: Colors.black87,
-                        letterSpacing: 4,
+                        color: AppColors.onSurfaceStrong(context),
+                        letterSpacing: 4.sp,
                       ),
                     ),
-                    const SizedBox(height: 8),
+                    SizedBox(height: 8.h),
                     Text(
                       'Sustainable Fashion',
                       style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.black54,
-                        letterSpacing: 1,
+                        fontSize: 14.sp,
+                        color: AppColors.onSurfaceMedium(context),
+                        letterSpacing: 1.sp,
                       ),
                     ),
                   ],

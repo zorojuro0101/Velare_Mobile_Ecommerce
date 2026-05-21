@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'config/supabase_config.dart';
 import 'services/auth_service.dart';
-import 'screens/buyer/browse_products_screen.dart';
+import 'services/theme_service.dart';
 import 'screens/buyer/buyer_home.dart';
+import 'screens/buyer/guest_home.dart';
 import 'screens/rider/rider_home.dart';
 import 'screens/splash_screen.dart';
 
@@ -18,7 +20,10 @@ void main() async {
   
   // Initialize auth service and load saved session
   await AuthService().initialize();
-  
+
+  // Initialize theme service and load saved dark-mode preference
+  await ThemeService().initialize();
+
   runApp(const MyApp());
 }
 
@@ -27,26 +32,69 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Velaree',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
-        useMaterial3: true,
-        // Set default text theme with Goudy Bookletter 1911
-        textTheme: GoogleFonts.goudyBookletter1911TextTheme(),
-        // Set app bar theme with Playfair Display for titles
-        appBarTheme: AppBarTheme(
-          titleTextStyle: GoogleFonts.playfairDisplay(
-            fontSize: 20,
-            fontWeight: FontWeight.w600,
-            color: Colors.black,
-          ),
+    final themeService = ThemeService();
+
+    // Light theme - existing look
+    final lightTheme = ThemeData(
+      brightness: Brightness.light,
+      colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+      useMaterial3: true,
+      scaffoldBackgroundColor: Colors.white,
+      textTheme: GoogleFonts.goudyBookletter1911TextTheme(),
+      appBarTheme: AppBarTheme(
+        titleTextStyle: GoogleFonts.playfairDisplay(
+          fontSize: 20,
+          fontWeight: FontWeight.w600,
+          color: Colors.black,
         ),
       ),
-      home: const SplashScreen(
-        nextScreen: AppInitializer(),
+    );
+
+    // Dark theme - mirror of light with inverted neutrals
+    final darkTheme = ThemeData(
+      brightness: Brightness.dark,
+      colorScheme: ColorScheme.fromSeed(
+        seedColor: Colors.blue,
+        brightness: Brightness.dark,
       ),
-      debugShowCheckedModeBanner: false,
+      useMaterial3: true,
+      scaffoldBackgroundColor: const Color(0xFF121212),
+      textTheme: GoogleFonts.goudyBookletter1911TextTheme(
+        ThemeData(brightness: Brightness.dark).textTheme,
+      ),
+      appBarTheme: AppBarTheme(
+        titleTextStyle: GoogleFonts.playfairDisplay(
+          fontSize: 20,
+          fontWeight: FontWeight.w600,
+          color: Colors.white,
+        ),
+      ),
+      cardColor: const Color(0xFF1E1E1E),
+      dividerColor: const Color(0xFF2A2A2A),
+    );
+
+    return ScreenUtilInit(
+      // Base design size — gamitin ang sukat ng UI mockup mo (default: iPhone 13/14)
+      designSize: const Size(390, 844),
+      minTextAdapt: true,
+      splitScreenMode: true,
+      builder: (context, child) {
+        return AnimatedBuilder(
+          animation: themeService,
+          builder: (context, _) {
+            return MaterialApp(
+              title: 'Velaree',
+              theme: lightTheme,
+              darkTheme: darkTheme,
+              themeMode: themeService.themeMode,
+              home: const SplashScreen(
+                nextScreen: AppInitializer(),
+              ),
+              debugShowCheckedModeBanner: false,
+            );
+          },
+        );
+      },
     );
   }
 }
@@ -70,6 +118,6 @@ class AppInitializer extends StatelessWidget {
     }
 
     // Otherwise, show guest mode
-    return const BrowseProductsScreen(isGuestMode: true);
+    return const GuestHome();
   }
 }
