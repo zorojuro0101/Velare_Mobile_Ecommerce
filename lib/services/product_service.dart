@@ -1,5 +1,6 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/product_model.dart';
+import '../utils/color_matcher.dart';
 
 class ProductService {
   final _supabase = Supabase.instance.client;
@@ -97,6 +98,121 @@ class ProductService {
     } catch (e) {
       print('ProductService - Error searching products: $e');
       throw Exception('Error searching products: $e');
+    }
+  }
+
+  /// Smart search na nag-co-combine ng:
+  /// - Free-text matching sa `product_name`, `description`, at variant `color` name
+  /// - Color similarity matching via `hex_code` ng product_variants
+  ///
+  /// Ginagamit ito ng voice search para suportahan ang creative seller-defined
+  /// color names (e.g. "Eggplant", "Lipstick") via fuzzy hex matching.
+  ///
+  /// Logic:
+  /// 1. Run a text-keyword query if [keywords] is provided.
+  /// 2. If [canonicalColor] is provided, fetch variants whose hex_code is
+  ///    visually within Lab-distance threshold of that color's anchors,
+  ///    then collect their product_ids.
+  /// 3. Combine results:
+  ///    - Both filters → intersection (products na text-match AT may matching color variant)
+  ///    - Color only → products with matching variant
+  ///    - Text only → text matches
+  ///    - Neither → empty list
+  Future<List<Product>> searchProductsAdvanced({
+    String? keywords,
+    String? canonicalColor,
+  }) async {
+    try {
+      final hasText = keywords != null && keywords.trim().isNotEmpty;
+      final hasColor = canonicalColor != null && canonicalColor.trim().isNotEmpty;
+
+      if (!hasText && !hasColor) return [];
+
+      // Step 1: Text-keyword candidates (search across name, description, materials, AND variant color names)
+      Set<int>? textMatchIds;
+      List<Product> textMatches = [];
+      if (hasText) {
+        final q = keywords.trim();
+        final response = await _supabase
+            .from('products')
+            .select('''
+              *,
+              product_images(image_url),
+              product_variants(color, hex_code)
+            ''')
+            .or('product_name.ilike.%$q%,description.ilike.%$q%,materials.ilike.%$q%,category.ilike.%$q%')
+            .order('created_at', ascending: false);
+
+        textMatches = (response as List).map((item) => Product.fromJson(item)).toList();
+        textMatchIds = textMatches.map((p) => p.id).toSet();
+      }
+
+      // Step 2: Color-similarity candidates via hex_code matching
+      Set<int>? colorMatchIds;
+      if (hasColor) {
+        // Fetch ALL variants (we need hex codes to compute Lab distance client-side).
+        // Variants table is small relative to products; for very large catalogs we
+        // could later add a `canonical_color` column to avoid this scan.
+        final variantsResp = await _supabase
+            .from('product_variants')
+            .select('product_id, hex_code, color');
+
+        final ids = <int>{};
+        for (final row in (variantsResp as List)) {
+          final pid = row['product_id'] as int?;
+          if (pid == null) continue;
+          final hex = row['hex_code'] as String?;
+          final colorName = row['color'] as String?;
+
+          // Match if hex is visually close, OR if the seller's color name
+          // resolves to the same canonical bucket (covers cases where hex is
+          // missing).
+          final hexMatch = ColorMatcher.hexMatchesColor(hex, canonicalColor);
+          final nameMatch = !hexMatch &&
+              ColorMatcher.canonicalColorFromName(colorName) == canonicalColor.toLowerCase();
+          if (hexMatch || nameMatch) {
+            ids.add(pid);
+          }
+        }
+        colorMatchIds = ids;
+      }
+
+      // Step 3: Combine
+      List<Product> results;
+      if (hasText && hasColor) {
+        // Intersection
+        final intersect = textMatchIds!.intersection(colorMatchIds!);
+        results = textMatches.where((p) => intersect.contains(p.id)).toList();
+        // If intersection is empty, fall back to text matches so the user
+        // still sees something rather than a blank screen.
+        if (results.isEmpty && textMatches.isNotEmpty) {
+          results = textMatches;
+        }
+      } else if (hasText) {
+        results = textMatches;
+      } else {
+        // Color only: fetch the products by their IDs
+        if (colorMatchIds == null || colorMatchIds.isEmpty) return [];
+        final response = await _supabase
+            .from('products')
+            .select('''
+              *,
+              product_images(image_url)
+            ''')
+            .inFilter('product_id', colorMatchIds.toList())
+            .order('created_at', ascending: false);
+        results = (response as List).map((item) => Product.fromJson(item)).toList();
+      }
+
+      print('ProductService - Advanced search keywords="$keywords" color="$canonicalColor" -> ${results.length} results');
+      return results;
+    } catch (e) {
+      print('ProductService - Error in advanced search: $e');
+      // Fallback to plain text search to avoid breaking the UX.
+      if (keywords != null && keywords.trim().isNotEmpty) {
+        return searchProducts(keywords);
+      }
+      return [];
     }
   }
 

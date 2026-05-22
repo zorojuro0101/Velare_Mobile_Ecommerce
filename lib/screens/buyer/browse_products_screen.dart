@@ -12,8 +12,10 @@ import '../../services/notification_service.dart';
 import '../../services/chat_service.dart';
 import '../../services/auth_service.dart';
 import '../../widgets/icon_badge.dart';
+import '../../widgets/voice_search_modal.dart';
 import '../../utils/image_helper.dart';
 import '../../utils/snackbar_helper.dart';
+import '../../utils/color_matcher.dart';
 import 'product_detail_screen.dart';
 import 'cart_screen.dart';
 import 'notifications_screen.dart';
@@ -314,6 +316,10 @@ class _BrowseProductsScreenState extends State<BrowseProductsScreen> {
             Expanded(
               child: RefreshIndicator(
                 onRefresh: () async {
+                  // Clear any active search/filter so refresh shows the
+                  // default homepage state.
+                  _searchController.clear();
+                  _selectedCategory = 'All';
                   _loadProducts();
                   _loadHeroProducts();
                   if (_isLoggedIn) {
@@ -451,6 +457,11 @@ class _BrowseProductsScreenState extends State<BrowseProductsScreen> {
           hintText: 'Search products...',
           hintStyle: GoogleFonts.goudyBookletter1911(color: Colors.grey),
           prefixIcon: const Icon(Icons.search),
+          suffixIcon: IconButton(
+            icon: Icon(Icons.mic_none, color: AppColors.onSurface(context)),
+            tooltip: 'Voice search',
+            onPressed: _startVoiceSearch,
+          ),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12.r),
             borderSide: BorderSide(color: AppColors.border(context)),
@@ -469,13 +480,66 @@ class _BrowseProductsScreenState extends State<BrowseProductsScreen> {
         style: GoogleFonts.goudyBookletter1911(),
         onSubmitted: (value) {
           if (value.isNotEmpty) {
+            // Try to extract a known color from the typed query so users still
+            // benefit from fuzzy color matching even when typing manually.
+            final detectedColor = _detectColorInQuery(value);
+            final keywords = detectedColor != null
+                ? _stripColorFromQuery(value, detectedColor)
+                : value;
             setState(() {
-              _productsFuture = _productService.searchProducts(value);
+              _productsFuture = _productService.searchProductsAdvanced(
+                keywords: keywords,
+                canonicalColor: detectedColor,
+              );
             });
           }
         },
       ),
     );
+  }
+
+  /// Look for a canonical color name (or alias) within a manually typed query.
+  String? _detectColorInQuery(String query) {
+    final words = query.toLowerCase().split(RegExp(r'\s+'));
+    for (final w in words) {
+      final canonical = ColorMatcher.canonicalColorFromName(w);
+      if (canonical != null) return canonical;
+    }
+    return null;
+  }
+
+  /// Remove the detected color word(s) from the typed query so the rest can be
+  /// used as the keyword filter.
+  String _stripColorFromQuery(String query, String canonicalColor) {
+    final lowerQuery = query.toLowerCase();
+    var stripped = lowerQuery;
+    // Remove the canonical name itself
+    stripped = stripped.replaceAll(RegExp(r'\b' + RegExp.escape(canonicalColor) + r'\b'), '');
+    // Common aliases worth stripping (small, conservative list)
+    const tagalogColorWords = ['itim', 'puti', 'pula', 'asul', 'berde', 'lila', 'rosas', 'kahel', 'dilaw', 'abo', 'kayumanggi'];
+    for (final w in tagalogColorWords) {
+      stripped = stripped.replaceAll(RegExp(r'\b' + RegExp.escape(w) + r'\b'), '');
+    }
+    return stripped.replaceAll(RegExp(r'\s+'), ' ').trim();
+  }
+
+  Future<void> _startVoiceSearch() async {
+    final extraction = await VoiceSearchModal.show(context);
+    if (!mounted) return;
+    if (extraction == null || extraction.isEmpty) return;
+
+    final displayQuery = extraction.displayQuery;
+    _searchController.text = displayQuery;
+    setState(() {
+      _productsFuture = _productService.searchProductsAdvanced(
+        keywords: extraction.keywords,
+        canonicalColor: extraction.color,
+      );
+    });
+
+    // Tell the user what we heard, especially helpful when there are no
+    // results so they don't think the mic broke.
+    SnackBarHelper.showInfo(context, 'Searching for "$displayQuery"');
   }
 
   Widget _buildCategoryCarousel() {

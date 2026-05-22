@@ -1,8 +1,10 @@
 import 'dart:async';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:image_picker/image_picker.dart';
 import '../../models/order_model.dart';
 import '../../services/order_service.dart';
 import '../../services/auth_service.dart';
@@ -923,16 +925,55 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> with TickerProv
       return;
     }
 
-    // Create state for ratings and reviews
+    // Create state for ratings, reviews, and images
     Map<int, int> ratings = {};
     Map<int, TextEditingController> reviewControllers = {};
+    Map<int, List<XFile>> reviewImages = {};
     bool isSubmitting = false;
     String? errorMessage;
     Timer? errorTimer;
-    
+    const int maxImagesPerProduct = 5;
+
     for (var item in order.items!) {
       ratings[item.productId] = 0;
       reviewControllers[item.productId] = TextEditingController();
+      reviewImages[item.productId] = [];
+    }
+
+    Future<void> pickReviewImages(int productId, StateSetter setState) async {
+      try {
+        final picker = ImagePicker();
+        final remaining = maxImagesPerProduct - reviewImages[productId]!.length;
+        if (remaining <= 0) return;
+
+        final pickedFiles = await picker.pickMultiImage(
+          maxWidth: 1920,
+          maxHeight: 1920,
+          imageQuality: 85,
+        );
+
+        if (pickedFiles.isNotEmpty) {
+          final toAdd = pickedFiles.take(remaining).toList();
+          setState(() {
+            reviewImages[productId]!.addAll(toAdd);
+            errorMessage = null;
+            errorTimer?.cancel();
+          });
+        }
+      } catch (e) {
+        debugPrint('Error picking review images: $e');
+        setState(() {
+          errorMessage = 'Failed to pick images: $e';
+          errorTimer?.cancel();
+          errorTimer = Timer(const Duration(seconds: 3), () {
+            if (context.mounted) {
+              setState(() {
+                errorMessage = null;
+              });
+            }
+          });
+        });
+      }
     }
 
     showDialog(
@@ -941,7 +982,8 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> with TickerProv
       builder: (dialogContext) => StatefulBuilder(
         builder: (context, setState) => AlertDialog(
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.r)),
-          contentPadding: EdgeInsets.all(24.w),
+          contentPadding: EdgeInsets.all(20.w),
+          insetPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 24.h),
           title: Text(
             'Write a Review',
             style: GoogleFonts.playfairDisplay(fontWeight: FontWeight.bold),
@@ -1037,28 +1079,37 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> with TickerProv
                       ),
                       SizedBox(height: 16.h),
                       // Star rating
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: List.generate(5, (starIndex) {
-                          return IconButton(
-                            padding: EdgeInsets.zero,
-                            constraints: const BoxConstraints(),
-                            icon: Icon(
-                              starIndex < ratings[item.productId]!
-                                  ? Icons.star
-                                  : Icons.star_border,
-                              color: Colors.amber,
-                              size: 36.r,
-                            ),
-                            onPressed: () {
-                              setState(() {
-                                ratings[item.productId] = starIndex + 1;
-                                errorMessage = null;
-                                errorTimer?.cancel();
-                              });
-                            },
-                          );
-                        }),
+                      Center(
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          alignment: Alignment.center,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: List.generate(5, (starIndex) {
+                              return GestureDetector(
+                                behavior: HitTestBehavior.opaque,
+                                onTap: () {
+                                  setState(() {
+                                    ratings[item.productId] = starIndex + 1;
+                                    errorMessage = null;
+                                    errorTimer?.cancel();
+                                  });
+                                },
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 4.h),
+                                  child: Icon(
+                                    starIndex < ratings[item.productId]!
+                                        ? Icons.star
+                                        : Icons.star_border,
+                                    color: Colors.amber,
+                                    size: 32.r,
+                                  ),
+                                ),
+                              );
+                            }),
+                          ),
+                        ),
                       ),
                       SizedBox(height: 8.h),
                       // Review text
@@ -1094,6 +1145,139 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> with TickerProv
                             });
                           }
                         },
+                      ),
+                      SizedBox(height: 12.h),
+                      // Photos label
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Add Photos (Optional)',
+                            style: GoogleFonts.goudyBookletter1911(
+                              fontSize: 13.sp,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          Text(
+                            '${reviewImages[item.productId]!.length}/$maxImagesPerProduct',
+                            style: GoogleFonts.goudyBookletter1911(
+                              fontSize: 12.sp,
+                              color: AppColors.textMuted(context),
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 8.h),
+                      // Image picker thumbnails row
+                      SizedBox(
+                        height: 80.h,
+                        child: ListView.separated(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: reviewImages[item.productId]!.length +
+                              (reviewImages[item.productId]!.length < maxImagesPerProduct ? 1 : 0),
+                          separatorBuilder: (_, __) => SizedBox(width: 8.w),
+                          itemBuilder: (context, imgIndex) {
+                            final images = reviewImages[item.productId]!;
+                            // "Add" tile at the end
+                            if (imgIndex == images.length) {
+                              return GestureDetector(
+                                onTap: isSubmitting
+                                    ? null
+                                    : () => pickReviewImages(item.productId, setState),
+                                child: Container(
+                                  width: 80.w,
+                                  height: 80.h,
+                                  decoration: BoxDecoration(
+                                    color: AppColors.surfaceVariant(context),
+                                    border: Border.all(
+                                      color: AppColors.border(context),
+                                      width: 1.5,
+                                    ),
+                                    borderRadius: BorderRadius.circular(5.r),
+                                  ),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.add_photo_alternate_outlined,
+                                        color: AppColors.textMuted(context),
+                                        size: 28.r,
+                                      ),
+                                      SizedBox(height: 2.h),
+                                      Text(
+                                        'Add',
+                                        style: GoogleFonts.goudyBookletter1911(
+                                          fontSize: 11.sp,
+                                          color: AppColors.textMuted(context),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            }
+
+                            final imageFile = images[imgIndex];
+                            return Stack(
+                              children: [
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(5.r),
+                                  child: SizedBox(
+                                    width: 80.w,
+                                    height: 80.h,
+                                    child: FutureBuilder<Uint8List>(
+                                      future: imageFile.readAsBytes(),
+                                      builder: (context, snapshot) {
+                                        if (snapshot.connectionState == ConnectionState.done &&
+                                            snapshot.hasData) {
+                                          return Image.memory(
+                                            snapshot.data!,
+                                            fit: BoxFit.cover,
+                                          );
+                                        }
+                                        return Container(
+                                          color: AppColors.surfaceVariant(context),
+                                          child: Center(
+                                            child: SizedBox(
+                                              width: 16.w,
+                                              height: 16.h,
+                                              child: const CircularProgressIndicator(strokeWidth: 2),
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                ),
+                                Positioned(
+                                  top: 4,
+                                  right: 4,
+                                  child: GestureDetector(
+                                    onTap: isSubmitting
+                                        ? null
+                                        : () {
+                                            setState(() {
+                                              reviewImages[item.productId]!.removeAt(imgIndex);
+                                            });
+                                          },
+                                    child: Container(
+                                      padding: EdgeInsets.all(2.w),
+                                      decoration: const BoxDecoration(
+                                        color: Colors.red,
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: Icon(
+                                        Icons.close,
+                                        color: Colors.white,
+                                        size: 14.r,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
+                        ),
                       ),
                     ],
                   ),
@@ -1167,14 +1351,48 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> with TickerProv
                     // in the database (PostgrestException 42703), surface the
                     // error instead of silently retrying without it - that was
                     // hiding real failures.
-                    await supabase.from('product_reviews').insert({
+                    final inserted = await supabase.from('product_reviews').insert({
                       'product_id': item.productId,
                       'buyer_id': int.parse(buyerId),
                       'order_id': order.id,
                       'rating': ratings[item.productId]!,
                       'review_text': reviewText,
                       'sentiment': sentiment,
-                    });
+                    }).select('review_id').single();
+
+                    final reviewId = inserted['review_id'] as int;
+
+                    // Upload review images and save to review_images table
+                    final imagesToUpload = reviewImages[item.productId] ?? [];
+                    for (var i = 0; i < imagesToUpload.length; i++) {
+                      final imageFile = imagesToUpload[i];
+                      try {
+                        final bytes = await imageFile.readAsBytes();
+                        final ext = imageFile.path.split('.').last.toLowerCase();
+                        final fileName =
+                            'review_${reviewId}_${DateTime.now().millisecondsSinceEpoch}_$i.$ext';
+                        final filePath = 'static/uploads/reviews/$fileName';
+
+                        await supabase.storage.from('Images').uploadBinary(
+                              filePath,
+                              bytes,
+                              fileOptions: FileOptions(
+                                contentType:
+                                    'image/${ext == 'jpg' ? 'jpeg' : ext}',
+                                upsert: true,
+                              ),
+                            );
+
+                        await supabase.from('review_images').insert({
+                          'review_id': reviewId,
+                          'image_url': filePath,
+                        });
+                      } catch (imgError) {
+                        debugPrint(
+                          '[Review] Failed to upload image $i for review $reviewId: $imgError',
+                        );
+                      }
+                    }
 
                     // Update product rating
                     final reviewsResponse = await supabase

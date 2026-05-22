@@ -1264,7 +1264,8 @@ class _ReviewsSectionState extends State<_ReviewsSection> {
             sentiment,
             order_id,
             product_id,
-            buyers(first_name, last_name, profile_image)
+            buyers(first_name, last_name, profile_image),
+            review_images(image_url)
           ''')
           .eq('product_id', widget.productId)
           .order('created_at', ascending: false)
@@ -1335,7 +1336,8 @@ class _ReviewsSectionState extends State<_ReviewsSection> {
               rating,
               review_text,
               created_at,
-              buyers(first_name, last_name, profile_image)
+              buyers(first_name, last_name, profile_image),
+              review_images(image_url)
             ''')
             .eq('product_id', widget.productId)
             .order('created_at', ascending: false)
@@ -1691,8 +1693,154 @@ class _ReviewsSectionState extends State<_ReviewsSection> {
               ),
             ),
           ],
+          // Review images
+          Builder(
+            builder: (context) {
+              final imagesData = review['review_images'] as List?;
+              if (imagesData == null || imagesData.isEmpty) {
+                return const SizedBox.shrink();
+              }
+              final imagePaths = imagesData
+                  .map((img) => img['image_url'] as String?)
+                  .whereType<String>()
+                  .toList();
+              if (imagePaths.isEmpty) return const SizedBox.shrink();
+              return Padding(
+                padding: EdgeInsets.only(left: 62.w, top: 12.h),
+                child: SizedBox(
+                  height: 80.h,
+                  child: ListView.separated(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: imagePaths.length,
+                    separatorBuilder: (_, __) => SizedBox(width: 8.w),
+                    itemBuilder: (context, idx) {
+                      final url = ImageHelper.getImageUrl(imagePaths[idx]);
+                      return GestureDetector(
+                        onTap: () => _showReviewImageViewer(
+                          context,
+                          imagePaths,
+                          idx,
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(6.r),
+                          child: CachedNetworkImage(
+                            imageUrl: url,
+                            width: 80.w,
+                            height: 80.h,
+                            fit: BoxFit.cover,
+                            placeholder: (context, _) => Container(
+                              width: 80.w,
+                              height: 80.h,
+                              color: AppColors.surfaceVariant(context),
+                              child: Center(
+                                child: SizedBox(
+                                  width: 16.w,
+                                  height: 16.h,
+                                  child: const CircularProgressIndicator(strokeWidth: 2),
+                                ),
+                              ),
+                            ),
+                            errorWidget: (context, _, __) => Container(
+                              width: 80.w,
+                              height: 80.h,
+                              color: AppColors.surfaceVariant(context),
+                              child: Icon(
+                                Icons.broken_image_outlined,
+                                color: AppColors.textMuted(context),
+                                size: 24.r,
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              );
+            },
+          ),
         ],
       ),
+    );
+  }
+
+  void _showReviewImageViewer(
+    BuildContext context,
+    List<String> imagePaths,
+    int initialIndex,
+  ) {
+    showDialog(
+      context: context,
+      barrierColor: Colors.black87,
+      builder: (dialogContext) {
+        final controller = PageController(initialPage: initialIndex);
+        int currentIndex = initialIndex;
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return Dialog(
+              insetPadding: EdgeInsets.zero,
+              backgroundColor: Colors.transparent,
+              child: Stack(
+                children: [
+                  PageView.builder(
+                    controller: controller,
+                    itemCount: imagePaths.length,
+                    onPageChanged: (i) => setState(() => currentIndex = i),
+                    itemBuilder: (context, idx) {
+                      return InteractiveViewer(
+                        child: Center(
+                          child: CachedNetworkImage(
+                            imageUrl: ImageHelper.getImageUrl(imagePaths[idx]),
+                            fit: BoxFit.contain,
+                            placeholder: (context, _) => const Center(
+                              child: CircularProgressIndicator(color: Colors.white),
+                            ),
+                            errorWidget: (context, _, __) => const Icon(
+                              Icons.broken_image_outlined,
+                              color: Colors.white,
+                              size: 48,
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                  Positioned(
+                    top: 40.h,
+                    right: 16.w,
+                    child: IconButton(
+                      icon: const Icon(Icons.close, color: Colors.white, size: 28),
+                      onPressed: () => Navigator.pop(dialogContext),
+                    ),
+                  ),
+                  if (imagePaths.length > 1)
+                    Positioned(
+                      bottom: 30.h,
+                      left: 0,
+                      right: 0,
+                      child: Center(
+                        child: Container(
+                          padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+                          decoration: BoxDecoration(
+                            color: Colors.black54,
+                            borderRadius: BorderRadius.circular(20.r),
+                          ),
+                          child: Text(
+                            '${currentIndex + 1} / ${imagePaths.length}',
+                            style: GoogleFonts.goudyBookletter1911(
+                              color: Colors.white,
+                              fontSize: 13.sp,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            );
+          },
+        );
+      },
     );
   }
 

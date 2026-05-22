@@ -45,5 +45,9 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Velare needs access to your microphone for voice search.</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>Velare uses speech recognition to convert your voice into search queries.</string>
 </dict>
 </plist>
