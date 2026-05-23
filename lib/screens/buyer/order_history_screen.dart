@@ -30,6 +30,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> with TickerProv
   Future<List<Order>>? _ordersFuture;
   String _selectedFilter = 'pending';
   late AnimationController _pulseController;
+  RealtimeChannel? _ordersSubscription;
 
   @override
   void initState() {
@@ -51,10 +52,39 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> with TickerProv
     });
     _pulseController.forward();
     _loadOrders();
+    _setupRealtimeSubscription();
+  }
+
+  void _setupRealtimeSubscription() {
+    final userId = _authService.currentUserId;
+    if (userId == null) return;
+
+    _ordersSubscription = Supabase.instance.client
+        .channel('orders_buyer_$userId')
+        .onPostgresChanges(
+          event: PostgresChangeEvent.update,
+          schema: 'public',
+          table: 'orders',
+          callback: (payload) {
+            // Reload orders when order status changes (seller/rider updates)
+            _loadOrders();
+          },
+        )
+        .onPostgresChanges(
+          event: PostgresChangeEvent.update,
+          schema: 'public',
+          table: 'deliveries',
+          callback: (payload) {
+            // Reload when delivery status changes
+            _loadOrders();
+          },
+        )
+        .subscribe();
   }
 
   @override
   void dispose() {
+    _ordersSubscription?.unsubscribe();
     _pulseController.dispose();
     super.dispose();
   }

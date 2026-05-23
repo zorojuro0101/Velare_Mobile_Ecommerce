@@ -181,6 +181,7 @@ class _ViewShopScreenState extends State<ViewShopScreen> with SingleTickerProvid
             product_variants(variant_id, color, hex_code, size, stock_quantity, image_url)
           ''')
           .eq('seller_id', widget.sellerId)
+          .eq('is_active', true)
           .order('created_at', ascending: false);
 
       print('ViewShop - Loaded ${(response as List).length} products');

@@ -23,11 +23,48 @@ class OrderDetailScreen extends StatefulWidget {
 class _OrderDetailScreenState extends State<OrderDetailScreen> {
   final OrderService _orderService = OrderService();
   late Future<Order> _orderFuture;
+  RealtimeChannel? _orderSubscription;
 
   @override
   void initState() {
     super.initState();
     _loadOrder();
+    _setupRealtimeSubscription();
+  }
+
+  void _setupRealtimeSubscription() {
+    _orderSubscription = Supabase.instance.client
+        .channel('order_detail_${widget.orderId}')
+        .onPostgresChanges(
+          event: PostgresChangeEvent.update,
+          schema: 'public',
+          table: 'orders',
+          filter: PostgresChangeFilter(
+            type: PostgresChangeFilterType.eq,
+            column: 'order_id',
+            value: widget.orderId,
+          ),
+          callback: (payload) {
+            // Reload order when status changes
+            _loadOrder();
+          },
+        )
+        .onPostgresChanges(
+          event: PostgresChangeEvent.update,
+          schema: 'public',
+          table: 'deliveries',
+          callback: (payload) {
+            // Reload when delivery status changes
+            _loadOrder();
+          },
+        )
+        .subscribe();
+  }
+
+  @override
+  void dispose() {
+    _orderSubscription?.unsubscribe();
+    super.dispose();
   }
 
   void _loadOrder() {

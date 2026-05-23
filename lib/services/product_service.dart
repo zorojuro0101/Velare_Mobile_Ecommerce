@@ -14,6 +14,7 @@ class ProductService {
             product_images(image_url)
           ''')
           .eq('is_featured', true)
+          .eq('is_active', true)
           .order('created_at', ascending: false);
       
       return (response as List).map((item) => Product.fromJson(item)).toList();
@@ -32,6 +33,7 @@ class ProductService {
             *,
             product_images(image_url)
           ''')
+          .eq('is_active', true)
           .order('created_at', ascending: false);
       
       print('ProductService - Raw response with images: $response');
@@ -48,6 +50,7 @@ class ProductService {
         final response = await _supabase
             .from('products')
             .select('*')
+            .eq('is_active', true)
             .order('created_at', ascending: false);
         
         print('ProductService - Raw response without join: $response');
@@ -72,6 +75,7 @@ class ProductService {
             *,
             product_images(image_url)
           ''')
+          .eq('is_active', true)
           .ilike('category', '%$category%')
           .order('created_at', ascending: false);
       
@@ -91,6 +95,7 @@ class ProductService {
             *,
             product_images(image_url)
           ''')
+          .eq('is_active', true)
           .ilike('product_name', '%$query%')
           .order('created_at', ascending: false);
       
@@ -140,6 +145,7 @@ class ProductService {
               product_images(image_url),
               product_variants(color, hex_code)
             ''')
+            .eq('is_active', true)
             .or('product_name.ilike.%$q%,description.ilike.%$q%,materials.ilike.%$q%,category.ilike.%$q%')
             .order('created_at', ascending: false);
 
@@ -199,6 +205,7 @@ class ProductService {
               *,
               product_images(image_url)
             ''')
+            .eq('is_active', true)
             .inFilter('product_id', colorMatchIds.toList())
             .order('created_at', ascending: false);
         results = (response as List).map((item) => Product.fromJson(item)).toList();
@@ -270,6 +277,7 @@ class ProductService {
             *,
             product_images(image_url)
           ''')
+          .eq('is_active', true)
           .not('badge_type', 'is', null)
           .order('created_at', ascending: false)
           .limit(1)
@@ -290,6 +298,7 @@ class ProductService {
             *,
             product_images(image_url)
           ''')
+          .eq('is_active', true)
           .order('total_sold', ascending: false)
           .limit(1)
           .maybeSingle();
@@ -324,6 +333,7 @@ class ProductService {
             *,
             product_images(image_url)
           ''')
+          .eq('is_active', true)
           .order('created_at', ascending: false)
           .limit(1)
           .maybeSingle();
@@ -358,6 +368,7 @@ class ProductService {
             *,
             product_images(image_url)
           ''')
+          .eq('is_active', true)
           .order('created_at', ascending: false)
           .limit(1)
           .maybeSingle();

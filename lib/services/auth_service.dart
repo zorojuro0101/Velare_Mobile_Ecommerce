@@ -205,10 +205,13 @@ class AuthService {
         return {'success': false, 'message': 'Email already registered'};
       }
 
+      // Hash the password using SHA-256 before storing
+      final hashedPassword = sha256.convert(utf8.encode(password)).toString();
+
       // Insert new user into users table
       final response = await _supabase.from('users').insert({
         'email': email,
-        'password': password, // Store as-is (or hash it if needed)
+        'password': hashedPassword, // Store hashed password
         'user_type': userType,
         'status': 'pending', // Set status as pending for admin approval
         'created_at': DateTime.now().toIso8601String(),

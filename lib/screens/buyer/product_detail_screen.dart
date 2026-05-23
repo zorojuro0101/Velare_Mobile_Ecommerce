@@ -2021,7 +2021,8 @@ class _TabSectionState extends State<_TabSection> with SingleTickerProviderState
       final productsResponse = await Supabase.instance.client
           .from('products')
           .select('product_id')
-          .eq('seller_id', widget.product.sellerId!);
+          .eq('seller_id', widget.product.sellerId!)
+          .eq('is_active', true);
       
       print('Products count: ${(productsResponse as List).length}');
       

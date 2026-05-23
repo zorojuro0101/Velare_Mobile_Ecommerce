@@ -38,7 +38,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
     final userId = _chatService.getCurrentUserId();
     if (userId == null) return;
 
-    // Subscribe to messages table for real-time updates
+    // Subscribe to both messages and conversations tables for real-time updates
     _messagesSubscription = Supabase.instance.client
         .channel('chat_messages_$userId')
         .onPostgresChanges(
@@ -46,7 +46,6 @@ class _ChatListScreenState extends State<ChatListScreen> {
           schema: 'public',
           table: 'messages',
           callback: (payload) {
-            print('ChatList - New message received: ${payload.newRecord}');
             // Reload conversations when new message arrives
             _loadConversations();
           },
@@ -56,8 +55,16 @@ class _ChatListScreenState extends State<ChatListScreen> {
           schema: 'public',
           table: 'messages',
           callback: (payload) {
-            print('ChatList - Message updated: ${payload.newRecord}');
             // Reload conversations when message is updated (e.g., marked as read)
+            _loadConversations();
+          },
+        )
+        .onPostgresChanges(
+          event: PostgresChangeEvent.update,
+          schema: 'public',
+          table: 'conversations',
+          callback: (payload) {
+            // Reload when conversation last_message or last_message_at changes
             _loadConversations();
           },
         )

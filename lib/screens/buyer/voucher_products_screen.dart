@@ -87,6 +87,7 @@ class _VoucherProductsScreenState extends State<VoucherProductsScreen> {
               .from('products')
               .select('product_id, product_name, price, materials, seller_id')
               .inFilter('seller_id', sellerIds)
+              .eq('is_active', true)
               .order('product_id', ascending: false);
 
           print('Products response count: ${(productsResponse as List).length}');
