@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ shop.shop_name }} - Veláre</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/Velare Logo Tab 1.png') }}">
+    <!-- Optimized Google Fonts - Combined into one request -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@100;300;400;700&family=Cormorant+Garamond:wght@500;600;700&family=Cinzel:wght@700&family=Goodie&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/view_shop.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/logout-modal.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/chat.css') }}">
+    <script defer src="{{ url_for('static', filename='js/search-anim.js') }}"></script>
+</head>
+<body>
+    <!-- Hamburger menu outside header for proper z-index stacking -->
+    <div id="menuToggle" style="display: flex; align-items: center; gap: 10px;">
+        <button id="hamburgerBtn" aria-label="Open menu" type="button">
+            <div class="bar bar--top"></div>
+            <div class="bar bar--bottom"></div>
+        </button>
+    </div>
+    
+    <div class="header-container">
+        <span class="header"><a href="{{ url_for('index.index') }}" style="color: inherit; text-decoration: none;">Veláre</a></span>
+        <div class="icon-bar">
+            <div class="icon-wrapper search-icon-wrapper">
+                <img id="search-icon" src="{{ url_for('static', filename='images/search.png') }}" alt="Search" class="icon">
+                <span class="icon-label">Search</span>
+                <form id="search-form" class="search-form-animated" action="{{ url_for('browse_product.browse_product') }}" method="get" autocomplete="off">
+                    <input type="text" name="q" placeholder="Search product" class="search-input">
+                </form>
+            </div>
+            <div class="icon-wrapper notification-icon-wrapper">
+                <i class="bi bi-bell icon" id="notification-bell" style="font-size: 1.3rem;"></i>
+                <span class="notification-badge" id="notification-badge" style="display: none;">0</span>
+                <span class="icon-label">Notifications</span>
+                <div class="notification-dropdown">
+                    <div class="notification-header">Notifications</div>
+                    <div class="notification-list" id="notification-list">
+                        <div class="notification-loading">Loading...</div>
+                    </div>
+                </div>
+            </div>
+            <a href="{{ url_for('favorite.favorite') }}" class="icon-wrapper" style="text-decoration:none; color:inherit;">
+                <img src="{{ url_for('static', filename='images/star.png') }}" alt="Star" class="icon">
+                <span class="icon-label">Favorite</span>
+            </a>
+            <div class="icon-wrapper profile-icon-wrapper">
+                <img src="{{ url_for('static', filename='images/user.png') }}" alt="User" class="icon">
+                <span class="icon-label"></span>
+                <div class="profile-dropdown">
+                    {% if session.get('logged_in') %}
+                        <a href="{{ url_for('myAccount_profile.myAccount_profile') }}" class="dropdown-item">My Account</a>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" id="logout-link" class="dropdown-item" data-logout-url="{{ url_for('auth.login') }}">Logout</a>
+                    {% else %}
+                        <a href="{{ url_for('auth.login') }}" class="dropdown-item">Login</a>
+                        <div class="dropdown-divider"></div>
+                        <a href="{{ url_for('auth.register') }}" class="dropdown-item">Register</a>
+                    {% endif %}
+                </div>
+            </div>
+            <a href="{{ url_for('cart.cart') }}" class="icon-wrapper cart-icon-wrapper" style="text-decoration:none; color:inherit;">
+                <img src="{{ url_for('static', filename='images/shopping-cart.png') }}" alt="Cart" class="icon">
+                <span class="cart-badge" id="cart-badge" style="display: none;">0</span>
+                <span class="icon-label">Cart</span>
+            </a>
+        </div>
+    </div>
+    <hr class="divider">
+    
+    <div class="side-menu-overlay"></div>
+    <nav class="side-menu">
+        <div class="side-menu-divider"></div>
+        <a href="{{ url_for('browse_product.browse_product') }}" class="category-link"><span>All Products</span></a>
+        <a href="{{ url_for('browse_product.browse_product', category='dresses-skirts') }}" class="category-link"><span>Dresses & Skirts</span></a>
+        <a href="{{ url_for('browse_product.browse_product', category='tops-blouses') }}" class="category-link"><span>Tops & Blouses</span></a>
+        <a href="{{ url_for('browse_product.browse_product', category='activewear-yoga') }}" class="category-link"><span>Activewear & Yoga Pants</span></a>
+        <a href="{{ url_for('browse_product.browse_product', category='lingerie-sleepwear') }}" class="category-link"><span>Lingerie & Sleepwear</span></a>
+        <a href="{{ url_for('browse_product.browse_product', category='jackets-coats') }}" class="category-link"><span>Jackets & Coats</span></a>
+        <a href="{{ url_for('browse_product.browse_product', category='shoes-accessories') }}" class="category-link"><span>Shoes & Accessories</span></a>
+        <div class="side-menu-divider"></div>
+        <a href="{{ url_for('about_us.about_us') }}" class="category-link"><span>About Us</span></a>
+    </nav>
+    
+    <script>
+        const hamburgerBtn = document.getElementById('hamburgerBtn');
+        const sideMenu = document.querySelector('.side-menu');
+        const overlay = document.querySelector('.side-menu-overlay');
+        hamburgerBtn.addEventListener('click', function() {
+            const isOpen = sideMenu.classList.toggle('open');
+            overlay.classList.toggle('show', isOpen);
+            hamburgerBtn.classList.toggle('open', isOpen);
+        });
+        overlay.addEventListener('click', function() {
+            sideMenu.classList.remove('open');
+            overlay.classList.remove('show');
+            hamburgerBtn.classList.remove('open');
+        });
+    </script>
+    
+    <!-- Shop Header Section -->
+    {% if shop %}
+    <div class="shop-header-section">
+        <div class="shop-header-content">
+            <div class="shop-logo-container">
+                {% if shop.shop_logo %}
+                    {% if shop.shop_logo.startswith('http://') or shop.shop_logo.startswith('https://') %}
+                        <img src="{{ shop.shop_logo }}" alt="{{ shop.shop_name }}" class="shop-logo-large">
+                    {% elif shop.shop_logo.startswith('static/') %}
+                        <img src="/{{ shop.shop_logo }}" alt="{{ shop.shop_name }}" class="shop-logo-large">
+                    {% else %}
+                        <img src="{{ url_for('static', filename=shop.shop_logo) }}" alt="{{ shop.shop_name }}" class="shop-logo-large">
+                    {% endif %}
+                {% else %}
+                    <div class="shop-logo-placeholder-large">{{ shop.shop_name[0] }}</div>
+                {% endif %}
+            </div>
+            <div class="shop-info">
+                <div class="shop-info-left">
+                    <h1 class="shop-name">{{ shop.shop_name }}</h1>
+                    <p class="shop-description">{{ shop.shop_description or 'Welcome to our shop' }}</p>
+                    <button class="chat-with-shop-btn" data-seller-id="{{ shop.seller_id }}" data-shop-name="{{ shop.shop_name }}">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M20 2H4C2.9 2 2 2.9 2 4V22L6 18H20C21.1 18 22 17.1 22 16V4C22 2.9 21.1 2 20 2ZM20 16H5.17L4 17.17V4H20V16Z" fill="currentColor"/>
+                            <circle cx="7" cy="10" r="1" fill="currentColor"/>
+                            <circle cx="12" cy="10" r="1" fill="currentColor"/>
+                            <circle cx="17" cy="10" r="1" fill="currentColor"/>
+                        </svg>
+                        Chat with Shop
+                    </button>
+                </div>
+                <div class="shop-stats-card">
+                    <div class="stat-item">
+                        <span class="stat-value">{{ products|length }}</span>
+                        <span class="stat-label">Products</span>
+                    </div>
+                    <div class="stat-divider"></div>
+                    <div class="stat-item">
+                        <span class="stat-value">{{ "%.1f"|format(shop.rating) }} ⭐</span>
+                        <span class="stat-label">Rating</span>
+                    </div>
+                    <div class="stat-divider"></div>
+                    <div class="stat-item">
+                        <span class="stat-value">{{ total_reviews }}</span>
+                        <span class="stat-label">Reviews</span>
+                    </div>
+                    <div class="stat-divider"></div>
+                    <div class="stat-item">
+                        <span class="stat-value">{{ shop.created_at.strftime('%B %Y') if shop.created_at else 'N/A' }}</span>
+                        <span class="stat-label">Joined</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="shop-header-section">
+        <div class="shop-header-content">
+            <div class="shop-info">
+                <h1 class="shop-name">Shop Not Found</h1>
+                <p class="shop-description">The shop you're looking for doesn't exist or has been removed.</p>
+                <a href="{{ url_for('browse_product.browse_product') }}" class="btn">Browse Products</a>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    
+    <!-- Products Section with Tabs -->
+    <div class="products-container">
+        <div class="product-tabs">
+            <button class="tab active" data-filter="all">All Products</button>
+            <button class="tab" data-filter="new">New Products</button>
+            <button class="tab" data-filter="best">Best Sellers</button>
+            {% for category in all_categories[:3] %}
+                <button class="tab" data-filter="category" data-category="{{ category }}">{{ category|replace('-', ' ')|title }}</button>
+            {% endfor %}
+            {% if all_categories|length > 3 %}
+                <div class="tab more-tab">
+                    <span>More ▼</span>
+                    <div class="more-dropdown">
+                        {% for category in all_categories[3:] %}
+                            <button class="dropdown-item" data-filter="category" data-category="{{ category }}">{{ category|replace('-', ' ')|title }}</button>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+            <div class="tab-underline-bg">
+                <div class="tab-underline"></div>
+            </div>
+        </div>
+        
+        <!-- DEBUG: Products count = {{ products|length if products else 0 }} -->
+        {% if products %}
+            <div class="products-grid" id="productsGrid">
+                {% for product in products %}
+                <a href="{{ url_for('view_item.view_item', product_id=product.product_id) }}" 
+                   class="product-link" 
+                   data-category="{{ product.category }}"
+                   data-sold="{{ product.total_sold }}"
+                   data-rating="{{ product.rating }}"
+                   data-date="{{ product.created_at.strftime('%Y-%m-%d') }}"
+                   style="text-decoration: none; color: inherit;">
+                    <div class="product-card">
+                        <div class="product-image-placeholder">
+                            {% if product.primary_image %}
+                                {% if product.primary_image.startswith('http://') or product.primary_image.startswith('https://') %}
+                                    <img src="{{ product.primary_image }}" alt="{{ product.product_name }}">
+                                {% elif product.primary_image.startswith('static/') %}
+                                    <img src="/{{ product.primary_image }}" alt="{{ product.product_name }}">
+                                {% else %}
+                                    <img src="{{ url_for('static', filename=product.primary_image) }}" alt="{{ product.product_name }}">
+                                {% endif %}
+                            {% else %}
+                                <img src="{{ url_for('static', filename='images/sampleimage1.jpg') }}" alt="{{ product.product_name }}">
+                            {% endif %}
+                        </div>
+                        <div class="product-info">
+                            <h3 class="product-name">{{ product.product_name }}</h3>
+                            <p class="product-material">{{ product.get('materials', 'Premium Materials') }}</p>
+                            <p class="product-price">₱{{ "%.2f"|format(product.price) }}</p>
+                            {% if product.rating > 0 %}
+                                <p style="font-size: 0.85rem; color: #bf9f4a; margin-top: 5px;">⭐ {{ "%.1f"|format(product.rating) }} ({{ product.total_sold }} sold)</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div style="text-align: center; padding: 60px 20px; color: #666;">
+                <h3 style="font-family: 'Playfair Display', serif; font-size: 1.8rem; margin-bottom: 10px;">No Products Available</h3>
+                <p>This shop doesn't have any products listed yet.</p>
+            </div>
+        {% endif %}
+    </div>
+    
+    <!-- Logout Modal -->
+    <div id="logout-modal-overlay"></div>
+    <div id="logout-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-title">Do you want to Logout?</div>
+            <div class="modal-actions">
+                <button id="confirm-logout" class="modal-btn">Logout</button>
+                <button id="cancel-logout" class="modal-btn">Cancel</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Chat Widget -->
+    <div id="chat-widget">
+        <div id="chat-button">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M20 2H4C2.9 2 2 2.9 2 4V22L6 18H20C21.1 18 22 17.1 22 16V4C22 2.9 21.1 2 20 2ZM20 16H5.17L4 17.17V4H20V16Z" fill="currentColor"/>
+                <circle cx="7" cy="10" r="1" fill="currentColor"/>
+                <circle cx="12" cy="10" r="1" fill="currentColor"/>
+                <circle cx="17" cy="10" r="1" fill="currentColor"/>
+            </svg>
+            <span>Chat</span>
+        </div>
+        <div id="chat-window" class="chat-window-hidden">
+            <div class="chat-left-panel">
+                <div class="chat-header">
+                    <h3>Chat</h3>
+                    <div class="chat-controls">
+                        <button id="close-chat" class="chat-control-btn">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12L19 6.41Z" fill="currentColor"/></svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="chat-search"><input type="text" placeholder="Search name" class="chat-search-input"></div>
+                <div class="chat-contacts">
+                    <div class="chat-contact">
+                        <div class="contact-avatar"><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%23bf9f4a'/%3E%3Ctext x='16' y='20' text-anchor='middle' fill='white' font-size='12' font-weight='bold'%3EV%3C/text%3E%3C/svg%3E" alt="Velare Support"></div>
+                        <div class="contact-info"><div class="contact-name">Velare Support</div><div class="contact-message">How can we help you today?</div></div>
+                        <div class="contact-time">Now</div>
+                    </div>
+                </div>
+            </div>
+            <div class="chat-right-panel">
+                <div class="chat-welcome">
+                    <div class="welcome-icon"><svg width="80" height="60" viewBox="0 0 100 75" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="10" y="15" width="80" height="50" rx="8" fill="#e0d7c6" stroke="#bf9f4a" stroke-width="2"/><rect x="15" y="20" width="70" height="30" rx="4" fill="#fafafa"/><rect x="20" y="25" width="25" height="3" rx="1.5" fill="#bf9f4a"/><rect x="20" y="30" width="35" height="3" rx="1.5" fill="#bf9f4a"/><rect x="20" y="35" width="20" height="3" rx="1.5" fill="#bf9f4a"/><circle cx="65" cy="35" r="8" fill="#181818"/><circle cx="65" cy="35" r="3" fill="white"/><circle cx="67" cy="33" r="1" fill="#181818"/><circle cx="69" cy="35" r="1" fill="#181818"/><circle cx="67" cy="37" r="1" fill="#181818"/></svg></div>
+                    <h4>Welcome to Velare Chat</h4>
+                    <p>Search and connect with sellers to start chatting</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script defer src="{{ url_for('static', filename='js/logout-modal.js') }}"></script>
+    <script defer src="{{ url_for('static', filename='js/index.js') }}"></script>
+    <script defer src="{{ url_for('static', filename='js/category-navigation.js') }}"></script>
+    <script defer src="{{ url_for('static', filename='js/chat.js') }}"></script>
+    
+    <script>
+        // Product filtering tabs with animated underline
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabs = document.querySelectorAll('.tab');
+            const products = document.querySelectorAll('.product-link');
+            const underline = document.querySelector('.tab-underline');
+            
+            // Function to update underline position
+            function updateUnderline(activeTab) {
+                const tabRect = activeTab.getBoundingClientRect();
+                const containerRect = activeTab.parentElement.getBoundingClientRect();
+                const left = tabRect.left - containerRect.left;
+                const width = tabRect.width;
+                
+                underline.style.width = width + 'px';
+                underline.style.transform = `translateX(${left}px)`;
+            }
+            
+            // Initialize underline position
+            const activeTab = document.querySelector('.tab.active');
+            if (activeTab) {
+                updateUnderline(activeTab);
+            }
+            
+            // Handle dropdown items
+            const dropdownItems = document.querySelectorAll('.dropdown-item');
+            dropdownItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    
+                    // Remove active from all tabs
+                    tabs.forEach(t => t.classList.remove('active'));
+                    
+                    const filter = this.dataset.filter;
+                    const category = this.dataset.category;
+                    
+                    products.forEach(product => {
+                        let show = false;
+                        
+                        if (filter === 'category') {
+                            show = product.dataset.category === category;
+                        }
+                        
+                        product.style.display = show ? 'block' : 'none';
+                    });
+                });
+            });
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    // Skip if it's the more tab
+                    if (this.classList.contains('more-tab')) {
+                        return;
+                    }
+                    
+                    // Remove active class from all tabs
+                    tabs.forEach(t => t.classList.remove('active'));
+                    // Add active to clicked tab
+                    this.classList.add('active');
+                    
+                    // Update underline
+                    updateUnderline(this);
+                    
+                    const filter = this.dataset.filter;
+                    const category = this.dataset.category;
+                    
+                    // Get current date for "new" filter (products from last 3 days)
+                    const threeDaysAgo = new Date();
+                    threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
+                    
+                    products.forEach(product => {
+                        let show = false;
+                        
+                        if (filter === 'all') {
+                            show = true;
+                        } else if (filter === 'new') {
+                            const productDate = new Date(product.dataset.date);
+                            show = productDate >= threeDaysAgo;
+                        } else if (filter === 'best') {
+                            const rating = parseFloat(product.dataset.rating);
+                            show = rating >= 4.0; // Best products have 4.0+ rating
+                        } else if (filter === 'category') {
+                            show = product.dataset.category === category;
+                        }
+                        
+                        product.style.display = show ? 'block' : 'none';
+                    });
+                });
+            });
+            
+            // Update underline on window resize
+            window.addEventListener('resize', function() {
+                const activeTab = document.querySelector('.tab.active');
+                if (activeTab) {
+                    updateUnderline(activeTab);
+                }
+            });
+        });
+    </script>
+    <script defer src="{{ url_for('static', filename='js/notifications.js') }}"></script>
+</body>
+</html>
+
+<script defer src="{{ url_for('static', filename='js/cart-badge.js') }}"></script>

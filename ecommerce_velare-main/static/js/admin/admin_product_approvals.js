@@ -1,0 +1,716 @@
+document.addEventListener('DOMContentLoaded', function() {
+    // Fetch and display products on page load
+    fetchPendingProducts();
+    
+    // Fetch pending products from backend
+    async function fetchPendingProducts() {
+        const approvalCardsContainer = document.getElementById('approvalCardsContainer');
+        const statusFilter = document.getElementById('statusFilter');
+        const categoryFilter = document.getElementById('categoryFilter');
+        const productSearch = document.getElementById('productSearch');
+        
+        if (!approvalCardsContainer) return;
+        
+        try {
+            // Build query parameters
+            const params = new URLSearchParams();
+            if (statusFilter && statusFilter.value) {
+                params.append('status', statusFilter.value);
+            }
+            if (categoryFilter && categoryFilter.value) {
+                params.append('category', categoryFilter.value);
+            }
+            if (productSearch && productSearch.value) {
+                params.append('search', productSearch.value);
+            }
+            
+            // Show loading state
+            approvalCardsContainer.innerHTML = '<div style="text-align:center;padding:60px;color:#666;"><i class="bi bi-hourglass-split" style="font-size:2.5em;"></i><p style="margin-top:16px;">Loading products...</p></div>';
+            
+            const response = await fetch(`/api/admin/products/pending?${params.toString()}`);
+            const result = await response.json();
+            
+            if (!response.ok) {
+                throw new Error(result.message || 'Failed to fetch products');
+            }
+            
+            // Update pending count
+            const pendingCountElement = document.getElementById('pendingCount');
+            if (pendingCountElement && result.pending_count !== undefined) {
+                pendingCountElement.textContent = result.pending_count;
+            }
+            
+            // Clear container
+            approvalCardsContainer.innerHTML = '';
+            
+            if (!result.products || result.products.length === 0) {
+                approvalCardsContainer.innerHTML = '<div style="text-align:center;padding:60px;color:#666;"><i class="bi bi-inbox" style="font-size:2.5em;color:#D3BD9B;"></i><p style="margin-top:16px;">No products found</p></div>';
+                return;
+            }
+            
+            // Render product cards
+            result.products.forEach(product => {
+                const card = createProductCard(product);
+                approvalCardsContainer.appendChild(card);
+            });
+            
+            // Re-attach event listeners for new cards
+            attachCardEventListeners();
+            
+        } catch (error) {
+            console.error('Error fetching products:', error);
+            approvalCardsContainer.innerHTML = '<div style="text-align:center;padding:60px;color:#dc2626;"><i class="bi bi-exclamation-triangle" style="font-size:2.5em;"></i><p style="margin-top:16px;">Failed to load products. Please refresh the page.</p></div>';
+        }
+    }
+    
+    // Create product card HTML
+    function createProductCard(product) {
+        const card = document.createElement('div');
+        card.className = 'approval-card';
+        card.setAttribute('data-product-id', product.product_id);
+        card.setAttribute('data-status', product.approval_status);
+        
+        // Get first variant's images and stock for initial display
+        let defaultPrimaryImage = '/static/images/user.png';
+        let defaultThumbnails = [];
+        let initialStock = product.stock_quantity;
+        
+        if (product.variants && product.variants.length > 0) {
+            const firstVariant = product.variants[0];
+            if (firstVariant.images && firstVariant.images.length > 0) {
+                const primaryImg = firstVariant.images.find(img => img.is_primary) || firstVariant.images[0];
+                // Handle both Supabase URLs and local paths
+                if (primaryImg.url.startsWith('http://') || primaryImg.url.startsWith('https://')) {
+                    defaultPrimaryImage = primaryImg.url;
+                } else if (primaryImg.url.startsWith('static/')) {
+                    defaultPrimaryImage = `/${primaryImg.url}`;
+                } else {
+                    defaultPrimaryImage = `/static/${primaryImg.url}`;
+                }
+                defaultThumbnails = firstVariant.images.filter(img => img !== primaryImg).slice(0, 3);
+            } else if (firstVariant.image_url) {
+                // Handle both Supabase URLs and local paths
+                if (firstVariant.image_url.startsWith('http://') || firstVariant.image_url.startsWith('https://')) {
+                    defaultPrimaryImage = firstVariant.image_url;
+                } else if (firstVariant.image_url.startsWith('static/')) {
+                    defaultPrimaryImage = `/${firstVariant.image_url}`;
+                } else {
+                    defaultPrimaryImage = `/static/${firstVariant.image_url}`;
+                }
+            }
+            
+            // Calculate initial stock from first variant's color group
+            const firstColorKey = firstVariant.hex_code || firstVariant.color;
+            initialStock = 0;
+            product.variants.forEach(v => {
+                const vColorKey = v.hex_code || v.color;
+                if (vColorKey === firstColorKey) {
+                    initialStock += v.stock_quantity;
+                }
+            });
+        }
+        
+        // Store variant images data for click handling
+        const variantImagesData = {};
+        if (product.variants && product.variants.length > 0) {
+            product.variants.forEach(variant => {
+                const colorKey = variant.hex_code || variant.color || 'Unknown';
+                if (!variantImagesData[colorKey]) {
+                    let primaryImg = null;
+                    let subImages = [];
+                    
+                    if (variant.images && variant.images.length > 0) {
+                        primaryImg = variant.images.find(img => img.is_primary) || variant.images[0];
+                        subImages = variant.images.filter(img => img !== primaryImg);
+                    } else if (variant.image_url) {
+                        primaryImg = { url: variant.image_url };
+                    }
+                    
+                    variantImagesData[colorKey] = {
+                        primary: primaryImg,
+                        thumbnails: subImages
+                    };
+                }
+            });
+        }
+        
+        // Format date
+        const submittedDate = product.created_at ? new Date(product.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : 'N/A';
+        
+        // Status badge class
+        let statusClass = 'pending';
+        if (product.approval_status === 'approved') statusClass = 'approved';
+        else if (product.approval_status === 'rejected') statusClass = 'rejected';
+        
+        // SDG tags (Handmade and Biodegradable)
+        let sdgTagsHTML = '';
+        const sdgTags = [];
+        
+        if (product.sdg === 'handmade' || product.sdg === 'both') {
+            sdgTags.push('<span class="sdg-tag">Handmade</span>');
+        }
+        if (product.sdg === 'biodegradable' || product.sdg === 'both') {
+            sdgTags.push('<span class="sdg-tag">Biodegradable</span>');
+        }
+        
+        sdgTagsHTML = sdgTags.length > 0 ? sdgTags.join('') : '<span style="color:#999;">None</span>';
+        
+        // Group variants by color
+        const variantsByColor = {};
+        if (product.variants && product.variants.length > 0) {
+            product.variants.forEach(variant => {
+                const colorKey = variant.hex_code || variant.color || 'Unknown';
+                if (!variantsByColor[colorKey]) {
+                    // Get first image from variant images array, or fallback to variant.image_url
+                    let variantImage = variant.image_url;
+                    if (variant.images && variant.images.length > 0) {
+                        variantImage = variant.images[0].url;
+                    }
+                    
+                    variantsByColor[colorKey] = {
+                        color_name: variant.color || 'Unknown',
+                        hex_code: variant.hex_code || '#000000',
+                        image_url: variantImage,
+                        images: variant.images || [],
+                        sizes: []
+                    };
+                }
+                variantsByColor[colorKey].sizes.push({
+                    size: variant.size,
+                    stock: variant.stock_quantity
+                });
+            });
+        }
+        
+        // Build variants HTML
+        let variantsHTML = '';
+        if (Object.keys(variantsByColor).length > 0) {
+            variantsHTML = '<div class="product-variants-section">';
+            variantsHTML += '<label>Available Variants:</label>';
+            variantsHTML += '<div class="variants-grid">';
+            
+            Object.values(variantsByColor).forEach(colorGroup => {
+                const colorKey = colorGroup.hex_code;
+                const imagesData = variantImagesData[colorKey];
+                
+                variantsHTML += `<div class="variant-color-group clickable-variant" data-product-id="${product.product_id}" data-color-key="${colorKey}">`;
+                
+                // Color header with color swatch and name
+                variantsHTML += '<div class="variant-color-header">';
+                variantsHTML += `<div class="color-swatch" style="background-color: ${colorGroup.hex_code};"></div>`;
+                variantsHTML += `<span class="color-name">${colorGroup.color_name}</span>`;
+                variantsHTML += '</div>';
+                
+                // Show all images for this color variant
+                if (colorGroup.images && colorGroup.images.length > 0) {
+                    variantsHTML += '<div class="variant-images-row">';
+                    colorGroup.images.forEach((img, idx) => {
+                        // Handle both Supabase URLs and local paths
+                        let imgSrc = img.url;
+                        if (!imgSrc.startsWith('http://') && !imgSrc.startsWith('https://')) {
+                            imgSrc = imgSrc.startsWith('static/') ? `/${imgSrc}` : `/static/${imgSrc}`;
+                        }
+                        variantsHTML += `<div class="variant-image-item ${img.is_primary ? 'primary' : ''}">`;
+                        variantsHTML += `<img src="${imgSrc}" alt="${colorGroup.color_name} - Image ${idx + 1}" class="variant-thumb">`;
+                        if (img.is_primary) {
+                            variantsHTML += '<span class="primary-badge">Primary</span>';
+                        }
+                        variantsHTML += '</div>';
+                    });
+                    variantsHTML += '</div>';
+                } else if (colorGroup.image_url) {
+                    // Fallback to single image - handle both Supabase URLs and local paths
+                    let imgSrc = colorGroup.image_url;
+                    if (!imgSrc.startsWith('http://') && !imgSrc.startsWith('https://')) {
+                        imgSrc = imgSrc.startsWith('static/') ? `/${imgSrc}` : `/static/${imgSrc}`;
+                    }
+                    variantsHTML += '<div class="variant-images-row">';
+                    variantsHTML += `<div class="variant-image-item primary">`;
+                    variantsHTML += `<img src="${imgSrc}" alt="${colorGroup.color_name}" class="variant-thumb">`;
+                    variantsHTML += '<span class="primary-badge">Primary</span>';
+                    variantsHTML += '</div>';
+                    variantsHTML += '</div>';
+                }
+                
+                // Sizes for this color
+                variantsHTML += '<div class="variant-sizes-section">';
+                variantsHTML += '<label>Sizes & Stock:</label>';
+                variantsHTML += '<div class="variant-sizes">';
+                colorGroup.sizes.forEach(sizeInfo => {
+                    variantsHTML += `<span class="size-badge">${sizeInfo.size} (${sizeInfo.stock})</span>`;
+                });
+                variantsHTML += '</div>';
+                variantsHTML += '</div>';
+                
+                variantsHTML += '</div>';
+            });
+            
+            variantsHTML += '</div>';
+            variantsHTML += '</div>';
+        }
+        
+        card.innerHTML = `
+            <div class="card-header">
+                <div class="seller-info">
+                    <i class="bi bi-shop"></i>
+                    <span class="seller-name">${product.shop_name || product.seller_name || 'Unknown Seller'}</span>
+                </div>
+                <span class="status-badge ${statusClass}">${product.approval_status.charAt(0).toUpperCase() + product.approval_status.slice(1)}</span>
+            </div>
+            
+            <div class="card-body">
+                <div class="product-image-section">
+                    <div class="main-product-image" data-product-id="${product.product_id}">
+                        <img src="${defaultPrimaryImage}" alt="${product.product_name}">
+                    </div>
+                    <div class="thumbnail-images" data-product-id="${product.product_id}">
+                        ${defaultThumbnails.map(img => {
+                            let imgSrc = img.url;
+                            if (!imgSrc.startsWith('http://') && !imgSrc.startsWith('https://')) {
+                                imgSrc = imgSrc.startsWith('static/') ? `/${imgSrc}` : `/static/${imgSrc}`;
+                            }
+                            return `<img src="${imgSrc}" alt="Thumbnail">`;
+                        }).join('')}
+                    </div>
+                </div>
+                
+                <div class="product-details-section">
+                    <h3 class="product-name">${product.product_name}</h3>
+                    
+                    <div class="product-info-grid">
+                        <div class="info-item">
+                            <label>Category:</label>
+                            <span>${product.category}</span>
+                        </div>
+                        <div class="info-item">
+                            <label>Price:</label>
+                            <span class="price">₱${parseFloat(product.price).toLocaleString('en-PH', {minimumFractionDigits: 2})}</span>
+                        </div>
+                        <div class="info-item">
+                            <label>Total Stock:</label>
+                            <span class="total-stock-display" data-product-id="${product.product_id}">${initialStock} units</span>
+                        </div>
+                        <div class="info-item">
+                            <label>SDG Tags:</label>
+                            <div class="sdg-tags">
+                                ${sdgTagsHTML}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="product-description">
+                        <label>Description:</label>
+                        <p>${product.description || 'No description provided'}</p>
+                    </div>
+                    
+                    ${product.materials ? `
+                    <div class="product-materials">
+                        <label>Materials:</label>
+                        <p>${product.materials}</p>
+                    </div>
+                    ` : ''}
+                    
+                    ${variantsHTML}
+                    
+                    <div class="submission-info">
+                        <i class="bi bi-calendar3"></i>
+                        <span>Submitted: ${submittedDate}</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card-actions">
+                <button class="btn btn-approve" data-action="approve" ${product.approval_status !== 'pending' ? 'disabled style="opacity:0.5;cursor:not-allowed;"' : ''}>
+                    <i class="bi bi-check-circle"></i>
+                    Approve
+                </button>
+                <button class="btn btn-reject" data-action="reject" ${product.approval_status !== 'pending' ? 'disabled style="opacity:0.5;cursor:not-allowed;"' : ''}>
+                    <i class="bi bi-x-circle"></i>
+                    Reject
+                </button>
+            </div>
+        `;
+        
+        // Store variant images data on the card element
+        card.variantImagesData = variantImagesData;
+        
+        return card;
+    }
+    
+    // Sub-tab navigation
+    const mainTabs = document.querySelectorAll('.main-tab');
+    const productManagementTab = document.getElementById('productManagementTab');
+    const productManagementSubTabs = document.getElementById('productManagementSubTabs');
+    const productApprovalsTab = document.getElementById('productApprovalsTab');
+    const allProductsTab = document.getElementById('allProductsTab');
+
+    // Open Product Management by default
+    if (productManagementTab && productManagementSubTabs) {
+        productManagementTab.classList.add('active');
+        productManagementSubTabs.classList.add('open');
+        productManagementSubTabs.style.display = 'flex';
+    }
+
+    // Main tab click handler
+    mainTabs.forEach(tab => {
+        tab.addEventListener('click', function() {
+            // Remove active from all main tabs
+            mainTabs.forEach(t => t.classList.remove('active'));
+
+            // Animate sub-tabs closing if not Product Management
+            if (productManagementSubTabs && tab !== productManagementTab && productManagementSubTabs.classList.contains('open')) {
+                productManagementSubTabs.classList.remove('open');
+                productManagementSubTabs.classList.add('closing');
+                setTimeout(() => {
+                    productManagementSubTabs.classList.remove('closing');
+                    productManagementSubTabs.style.display = 'none';
+                }, 280);
+            } else if (productManagementSubTabs && tab === productManagementTab) {
+                productManagementSubTabs.style.display = 'flex';
+                setTimeout(() => {
+                    productManagementSubTabs.classList.add('open');
+                }, 10);
+            } else if (productManagementSubTabs) {
+                productManagementSubTabs.classList.remove('open', 'closing');
+                productManagementSubTabs.style.display = 'none';
+            }
+
+            // If Product Management, show sub-tabs
+            if (tab === productManagementTab) {
+                tab.classList.add('active');
+                productManagementSubTabs.style.display = 'flex';
+                setTimeout(() => {
+                    productManagementSubTabs.classList.add('open');
+                }, 10);
+            } else {
+                tab.classList.add('active');
+            }
+        });
+    });
+
+    // Sub-tab click handlers
+    if (productApprovalsTab) {
+        productApprovalsTab.addEventListener('click', function() {
+            document.querySelectorAll('.sub-tab').forEach(t => t.classList.remove('active'));
+            this.classList.add('active');
+            // Load product approvals content (already loaded by default)
+        });
+    }
+
+    if (allProductsTab) {
+        allProductsTab.addEventListener('click', function() {
+            document.querySelectorAll('.sub-tab').forEach(t => t.classList.remove('active'));
+            this.classList.add('active');
+            // Navigate to all products page or load content
+            alert('All Products view - to be implemented');
+        });
+    }
+
+    // Search functionality
+    const productSearch = document.getElementById('productSearch');
+    if (productSearch) {
+        let searchTimeout;
+        productSearch.addEventListener('input', function() {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                fetchPendingProducts();
+            }, 500); // Debounce search
+        });
+    }
+
+    // Category filter
+    const categoryFilter = document.getElementById('categoryFilter');
+    if (categoryFilter) {
+        categoryFilter.addEventListener('change', function() {
+            fetchPendingProducts();
+        });
+    }
+
+    // Status filter
+    const statusFilter = document.getElementById('statusFilter');
+    if (statusFilter) {
+        statusFilter.addEventListener('change', function() {
+            fetchPendingProducts();
+        });
+    }
+
+
+
+    // Attach event listeners to action buttons
+    function attachCardEventListeners() {
+        // Action button handlers
+        document.querySelectorAll('.btn[data-action]').forEach(btn => {
+            btn.addEventListener('click', function() {
+                if (this.disabled) return;
+                
+                const action = this.getAttribute('data-action');
+                const card = this.closest('.approval-card');
+                const productId = card.getAttribute('data-product-id');
+                
+                // Directly handle the action without modal
+                handleProductAction(action, productId, card);
+            });
+        });
+        
+        // Thumbnail image click to change main image
+        document.querySelectorAll('.thumbnail-images img').forEach(thumbnail => {
+            thumbnail.addEventListener('click', function() {
+                const mainImage = this.closest('.product-image-section').querySelector('.main-product-image img');
+                const tempSrc = mainImage.src;
+                mainImage.src = this.src;
+                this.src = tempSrc;
+            });
+        });
+        
+        // Variant click to update main image section
+        document.querySelectorAll('.clickable-variant').forEach(variantGroup => {
+            variantGroup.addEventListener('click', function() {
+                const productId = this.getAttribute('data-product-id');
+                const colorKey = this.getAttribute('data-color-key');
+                const card = this.closest('.approval-card');
+                const variantImagesData = card.variantImagesData;
+                
+                if (variantImagesData && variantImagesData[colorKey]) {
+                    const imagesData = variantImagesData[colorKey];
+                    const mainImageContainer = card.querySelector('.main-product-image img');
+                    const thumbnailsContainer = card.querySelector('.thumbnail-images');
+                    
+                    // Update main image
+                    if (imagesData.primary) {
+                        // Handle both Supabase URLs and local paths
+                        let imgSrc = imagesData.primary.url;
+                        if (imgSrc.startsWith('http://') || imgSrc.startsWith('https://')) {
+                            mainImageContainer.src = imgSrc;
+                        } else if (imgSrc.startsWith('static/')) {
+                            mainImageContainer.src = `/${imgSrc}`;
+                        } else {
+                            mainImageContainer.src = `/static/${imgSrc}`;
+                        }
+                    }
+                    
+                    // Update thumbnails
+                    thumbnailsContainer.innerHTML = '';
+                    if (imagesData.thumbnails && imagesData.thumbnails.length > 0) {
+                        imagesData.thumbnails.forEach(img => {
+                            const thumbImg = document.createElement('img');
+                            // Handle both Supabase URLs and local paths
+                            let imgSrc = img.url;
+                            if (imgSrc.startsWith('http://') || imgSrc.startsWith('https://')) {
+                                thumbImg.src = imgSrc;
+                            } else if (imgSrc.startsWith('static/')) {
+                                thumbImg.src = `/${imgSrc}`;
+                            } else {
+                                thumbImg.src = `/static/${imgSrc}`;
+                            }
+                            thumbImg.alt = 'Thumbnail';
+                            thumbImg.addEventListener('click', function() {
+                                const tempSrc = mainImageContainer.src;
+                                mainImageContainer.src = this.src;
+                                this.src = tempSrc;
+                            });
+                            thumbnailsContainer.appendChild(thumbImg);
+                        });
+                    }
+                    
+                    // Update stock display based on variant
+                    const stockDisplay = card.querySelector('.total-stock-display');
+                    const sizeBadges = this.querySelectorAll('.size-badge');
+                    let totalStock = 0;
+                    sizeBadges.forEach(badge => {
+                        const text = badge.textContent;
+                        const stockMatch = text.match(/\((\d+)\)/);
+                        if (stockMatch) {
+                            totalStock += parseInt(stockMatch[1]);
+                        }
+                    });
+                    if (stockDisplay) {
+                        stockDisplay.textContent = `${totalStock} units`;
+                    }
+                    
+                    // Highlight selected variant
+                    card.querySelectorAll('.clickable-variant').forEach(v => v.classList.remove('active'));
+                    this.classList.add('active');
+                }
+            });
+        });
+        
+        // Old variant color image click handler (keep for backward compatibility)
+        document.querySelectorAll('.variant-color-image').forEach(variantImg => {
+            variantImg.addEventListener('click', function() {
+                const card = this.closest('.approval-card');
+                const mainImage = card.querySelector('.main-product-image img');
+                if (mainImage) {
+                    mainImage.src = this.src;
+                }
+            });
+        });
+    }
+
+
+
+    async function handleProductAction(action, productId, card) {
+        const productName = card.querySelector('.product-name').textContent;
+        const statusBadge = card.querySelector('.status-badge');
+        const actionButtons = card.querySelectorAll('.btn');
+        
+        // Disable buttons during API call
+        actionButtons.forEach(btn => {
+            btn.disabled = true;
+            btn.style.opacity = '0.5';
+        });
+        
+        try {
+            let endpoint = '';
+            if (action === 'approve') {
+                endpoint = `/api/admin/products/${productId}/approve`;
+            } else if (action === 'reject') {
+                endpoint = `/api/admin/products/${productId}/reject`;
+            }
+            
+            const response = await fetch(endpoint, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            
+            const result = await response.json();
+            
+            if (!response.ok) {
+                throw new Error(result.message || 'Failed to process action');
+            }
+            
+            // Update UI based on action
+            if (action === 'approve') {
+                statusBadge.textContent = 'Approved';
+                statusBadge.classList.remove('pending');
+                statusBadge.classList.add('approved');
+                card.setAttribute('data-status', 'approved');
+                showNotification('Product approved successfully!', 'success');
+                
+            } else if (action === 'reject') {
+                statusBadge.textContent = 'Rejected';
+                statusBadge.classList.remove('pending');
+                statusBadge.classList.add('rejected');
+                card.setAttribute('data-status', 'rejected');
+                showNotification('Product rejected', 'info');
+            }
+            
+            // Keep buttons disabled after action
+            actionButtons.forEach(btn => {
+                btn.style.cursor = 'not-allowed';
+            });
+            
+            // Refresh the product list to update pending count
+            setTimeout(() => {
+                fetchPendingProducts();
+            }, 1500);
+            
+        } catch (error) {
+            console.error('Error processing action:', error);
+            showNotification(error.message || 'Failed to process action. Please try again.', 'error');
+            
+            // Re-enable buttons on error
+            actionButtons.forEach(btn => {
+                btn.disabled = false;
+                btn.style.opacity = '1';
+            });
+        }
+    }
+
+    function showNotification(message, type = 'success') {
+        // Remove any existing notifications first
+        const existingNotifications = document.querySelectorAll('.notification');
+        existingNotifications.forEach(notif => {
+            notif.style.animation = 'slideOut 0.3s ease';
+            setTimeout(() => {
+                notif.remove();
+            }, 300);
+        });
+        
+        // Create notification element
+        const notification = document.createElement('div');
+        notification.className = `notification notification-${type}`;
+        notification.innerHTML = `
+            <i class="bi bi-${type === 'success' ? 'check-circle' : type === 'error' ? 'x-circle' : 'info-circle'}"></i>
+            <span>${message}</span>
+        `;
+        
+        // Add styles
+        notification.style.cssText = `
+            position: fixed;
+            top: 100px;
+            right: 30px;
+            padding: 16px 24px;
+            background: ${type === 'success' ? '#ecfdf5' : type === 'error' ? '#fef2f2' : '#eff6ff'};
+            color: ${type === 'success' ? '#059669' : type === 'error' ? '#dc2626' : '#2563eb'};
+            border: 1.5px solid ${type === 'success' ? '#10b981' : type === 'error' ? '#f87171' : '#60a5fa'};
+            border-radius: 8px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            animation: slideIn 0.3s ease;
+        `;
+        
+        document.body.appendChild(notification);
+        
+        // Remove after 3 seconds
+        setTimeout(() => {
+            notification.style.animation = 'slideOut 0.3s ease';
+            setTimeout(() => {
+                notification.remove();
+            }, 300);
+        }, 3000);
+    }
+
+
+    // Pagination
+    const prevPageBtn = document.getElementById('prevPage');
+    const nextPageBtn = document.getElementById('nextPage');
+    
+    if (prevPageBtn) {
+        prevPageBtn.addEventListener('click', function() {
+            console.log('Previous page');
+            // Implement pagination logic here
+        });
+    }
+    
+    if (nextPageBtn) {
+        nextPageBtn.addEventListener('click', function() {
+            console.log('Next page');
+            // Implement pagination logic here
+        });
+    }
+
+    // Add CSS animations
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+        }
+    `;
+    document.head.appendChild(style);
+});

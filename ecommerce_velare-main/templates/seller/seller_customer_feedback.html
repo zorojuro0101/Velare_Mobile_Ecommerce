@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Veláre - Customer Feedback</title>
+	<link rel="icon" type="image/png" href="{{ url_for('static', filename='images/Velare Logo Tab 1.png') }}">
+	<!-- Google Fonts for aesthetic, expensive look -->
+	<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@100;300;400;700&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Goodie&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/accounts/myAccount_profile.css') }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/seller/seller_customer_feedback.css') }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/logout-modal.css') }}">
+	<!-- Bootstrap Icons CDN -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+	<!-- Chart.js for interactive charts -->
+	<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+	<div class="header-container">
+		<span class="header"><a href="{{ url_for('seller_dashboard.seller_dashboard') }}" style="color: inherit; text-decoration: none;">Veláre</a></span>
+	</div>
+	<hr class="divider">
+
+	<div class="main-content-container">
+		<div class="account-left-nav">
+			<div class="account-profile-header">
+				<div class="profile-img-placeholder">
+					{% if seller and seller.shop_logo %}
+						{% if seller.shop_logo.startswith('http://') or seller.shop_logo.startswith('https://') %}
+							<img src="{{ seller.shop_logo }}" alt="Shop Logo" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+						{% else %}
+							<img src="{{ url_for('static', filename=seller.shop_logo) }}" alt="Shop Logo" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+						{% endif %}
+					{% endif %}
+				</div>
+				<a href="{{ url_for('seller_information.seller_information') }}" class="profile-name-placeholder clickable-profile">
+					{% if seller and seller.shop_name %}
+						{{ seller.shop_name }}
+					{% else %}
+						Shop Name
+					{% endif %}
+				</a>
+			</div>
+			<div class="account-nav-divider"></div>
+			<div class="account-nav-list">
+				<a href="{{ url_for('seller_dashboard.seller_dashboard') }}" class="main-tab" style="text-decoration: none; color: inherit;">
+					<i class="bi bi-speedometer2" style="font-size:1.2em; vertical-align:middle; margin-right:10px;"></i>
+					<span class="main-tab-label">Dashboard</span>
+				</a>
+				<a href="{{ url_for('seller_product_management.seller_product_management') }}" class="main-tab" style="text-decoration: none; color: inherit;">
+					<i class="bi bi-box-seam" style="font-size:1.2em; vertical-align:middle; margin-right:10px;"></i>
+					<span class="main-tab-label">Product Management</span>
+				</a>
+				<a href="{{ url_for('seller_product_sales.seller_product_sales') }}" class="main-tab" style="text-decoration: none; color: inherit;">
+					<i class="bi bi-graph-up-arrow" style="font-size:1.2em; vertical-align:middle; margin-right:10px;"></i>
+					<span class="main-tab-label">Product Sales</span>
+				</a>
+				<a href="{{ url_for('seller_messages.seller_messages') }}" class="main-tab" style="text-decoration: none; color: inherit;">
+					<i class="bi bi-chat-dots" style="font-size:1.2em; vertical-align:middle; margin-right:10px;"></i>
+					<span class="main-tab-label">Messages</span>
+				</a>
+				<div class="main-tab active" id="customerFeedbackTab">
+					<i class="bi bi-star" style="font-size:1.2em; vertical-align:middle; margin-right:10px;"></i>
+					<span class="main-tab-label">Customer Feedback</span>
+				</div>
+				<a href="{{ url_for('seller_select_vouchers.seller_select_vouchers') }}" class="main-tab" style="text-decoration: none; color: inherit;">
+					<i class="bi bi-ticket-perforated" style="font-size:1.2em; vertical-align:middle; margin-right:10px;"></i>
+					<span class="main-tab-label">Shop Vouchers</span>
+				</a>
+				<a href="{{ url_for('seller_report_user.report_user_page') }}" class="main-tab" style="text-decoration: none; color: inherit;">
+					<i class="bi bi-flag" style="font-size:1.2em; vertical-align:middle; margin-right:10px;"></i>
+					<span class="main-tab-label">Report User</span>
+				</a>
+				<div class="main-tab" id="logout-link" data-logout-url="{{ url_for('auth.login') }}">
+					<i class="bi bi-box-arrow-right" style="font-size:1.2em; vertical-align:middle; margin-right:10px;"></i>
+					<span class="main-tab-label">Logout</span>
+				</div>
+			</div>
+			<div class="sidebar-vertical-line"></div>
+		</div>
+		<div class="account-card-container">
+			
+			<div class="dashboard-main-content">
+				
+				<!-- Summary Cards (Top Row) -->
+				<div class="feedback-summary-cards">
+					<div class="feedback-summary-card">
+						<div class="feedback-card-icon">
+							<i class="bi bi-star-fill"></i>
+						</div>
+						<div class="feedback-card-content">
+							<div class="feedback-card-title">Average Rating</div>
+							<div class="feedback-card-rating">
+								<div class="star-display" id="averageRatingStars">
+									<i class="bi bi-star-fill"></i>
+									<i class="bi bi-star-fill"></i>
+									<i class="bi bi-star-fill"></i>
+									<i class="bi bi-star-fill"></i>
+									<i class="bi bi-star-half"></i>
+								</div>
+								<div class="feedback-card-number" id="averageRatingNumber">0</div>
+							</div>
+							<div class="feedback-card-subtitle">Based on all reviews</div>
+						</div>
+					</div>
+					<div class="feedback-summary-card">
+						<div class="feedback-card-icon total">
+							<i class="bi bi-chat-square-text"></i>
+						</div>
+						<div class="feedback-card-content">
+							<div class="feedback-card-title">Total Feedback</div>
+							<div class="feedback-card-number" id="totalFeedback">0</div>
+							<div class="feedback-card-subtitle">All Time</div>
+						</div>
+					</div>
+					<div class="feedback-summary-card">
+						<div class="feedback-card-icon positive">
+							<i class="bi bi-emoji-smile"></i>
+						</div>
+						<div class="feedback-card-content">
+							<div class="feedback-card-title">Positive Reviews</div>
+							<div class="feedback-card-number" id="positiveReviews">0%</div>
+							<div class="feedback-card-subtitle">4-5 Star Ratings</div>
+						</div>
+					</div>
+				</div>
+				
+				<!-- Filters and Search Section -->
+				<div class="filters-section">
+					<div class="filters-container">
+						<div class="filter-group">
+							<label for="dateRangeFilter">
+								<i class="bi bi-calendar3"></i> Date Range
+							</label>
+							<div class="date-range-filter">
+								<input type="date" id="dateFrom" class="filter-select" placeholder="From Date">
+								<span style="margin: 0 8px;">to</span>
+								<input type="date" id="dateTo" class="filter-select" placeholder="To Date">
+							</div>
+						</div>
+						<div class="filter-group">
+							<label for="ratingFilter">
+								<i class="bi bi-star"></i> Rating
+							</label>
+							<select id="ratingFilter" class="filter-select">
+								<option value="all" selected>All Ratings</option>
+								<option value="5">5 Stars</option>
+								<option value="4">4 Stars</option>
+								<option value="3">3 Stars</option>
+								<option value="2">2 Stars</option>
+								<option value="1">1 Star</option>
+							</select>
+						</div>
+						<div class="filter-group search-group">
+							<label for="searchFeedback">
+								<i class="bi bi-search"></i> Search
+							</label>
+							<input type="text" id="searchFeedback" class="search-input" placeholder="Search comments...">
+						</div>
+					</div>
+					<button class="export-btn" id="exportFeedbackBtn">
+						<i class="bi bi-download"></i>
+						Export to CSV
+					</button>
+				</div>
+
+				<!-- Feedback Table -->
+				<div class="summary-card feedback-table-card">
+					<div class="summary-card-header">
+						<h2 class="summary-title">Customer Reviews</h2>
+						<div class="feedback-count">Showing <span id="displayedCount">0</span> of <span id="totalCount">0</span></div>
+					</div>
+					<div class="summary-table-container">
+						<table class="feedback-table" id="feedbackTable">
+							<thead>
+								<tr>
+									<th class="table-header">Rating</th>
+									<th class="table-header">Comment</th>
+									<th class="table-header">Customer</th>
+									<th class="table-header">Product</th>
+									<th class="table-header">Date Submitted</th>
+								</tr>
+							</thead>
+							<tbody id="feedbackTableBody">
+							<!-- Reviews will be dynamically loaded here -->
+						</tbody>
+						</table>
+					</div>
+					<!-- Pagination -->
+					<div class="pagination-container">
+						<button class="pagination-btn" id="prevPageBtn" disabled>
+							<i class="bi bi-chevron-left"></i>
+							Previous
+						</button>
+						<div class="pagination-info">
+							<span>Page <span id="currentPage">1</span> of <span id="totalPages">1</span></span>
+						</div>
+						<button class="pagination-btn" id="nextPageBtn">
+							Next
+							<i class="bi bi-chevron-right"></i>
+						</button>
+					</div>
+				</div>
+
+				<!-- Analytics/Graphs Section -->
+				<div class="charts-section">
+					<div class="chart-card">
+						<div class="chart-header">
+						<h3 class="chart-title">
+							<i class="bi bi-bar-chart-fill"></i>
+							Feedback Distribution
+						</h3>
+						<div class="chart-info" id="distributionChartInfo">Selected Date Range</div>
+					</div>
+						<div class="chart-container">
+							<canvas id="feedbackDistributionChart"></canvas>
+						</div>
+					</div>
+					<div class="chart-card">
+						<div class="chart-header">
+						<h3 class="chart-title" id="trendChartTitle">
+							<i class="bi bi-graph-up"></i>
+							<span id="trendChartLabel">Rating Trend</span>
+						</h3>
+						<div class="chart-info" id="trendChartInfo">Selected Date Range</div>
+					</div>
+						<div class="chart-container">
+							<canvas id="ratingTrendChart"></canvas>
+						</div>
+					</div>
+				</div>
+
+				<!-- Rating Breakdown Section -->
+				<div class="rating-breakdown-card">
+					<h3 class="breakdown-title">Rating Breakdown <span id="breakdownDateRange" style="font-size: 0.75rem; font-weight: 400; color: #999;"></span></h3>
+					<div class="rating-bars">
+						<div class="rating-bar-item">
+							<div class="rating-bar-label">
+								<span class="star-label">5 <i class="bi bi-star-fill"></i></span>
+							</div>
+							<div class="rating-bar-container">
+								<div class="rating-bar-fill" style="width: 0%;" data-rating="5"></div>
+							</div>
+							<div class="rating-bar-count">0</div>
+						</div>
+						<div class="rating-bar-item">
+							<div class="rating-bar-label">
+								<span class="star-label">4 <i class="bi bi-star-fill"></i></span>
+							</div>
+							<div class="rating-bar-container">
+								<div class="rating-bar-fill" style="width: 0%;" data-rating="4"></div>
+							</div>
+							<div class="rating-bar-count">0</div>
+						</div>
+						<div class="rating-bar-item">
+							<div class="rating-bar-label">
+								<span class="star-label">3 <i class="bi bi-star-fill"></i></span>
+							</div>
+							<div class="rating-bar-container">
+								<div class="rating-bar-fill" style="width: 0%;" data-rating="3"></div>
+							</div>
+							<div class="rating-bar-count">0</div>
+						</div>
+						<div class="rating-bar-item">
+							<div class="rating-bar-label">
+								<span class="star-label">2 <i class="bi bi-star-fill"></i></span>
+							</div>
+							<div class="rating-bar-container">
+								<div class="rating-bar-fill" style="width: 0%;" data-rating="2"></div>
+							</div>
+							<div class="rating-bar-count">0</div>
+						</div>
+						<div class="rating-bar-item">
+							<div class="rating-bar-label">
+								<span class="star-label">1 <i class="bi bi-star-fill"></i></span>
+							</div>
+							<div class="rating-bar-container">
+								<div class="rating-bar-fill" style="width: 0%;" data-rating="1"></div>
+							</div>
+							<div class="rating-bar-count">0</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Product Quality Analysis Section -->
+				<div class="product-quality-analysis">
+					<h3 class="analysis-title">Product Quality Analysis</h3>
+					<div class="quality-columns">
+						<div class="quality-column top-rated">
+							<div class="quality-header">
+								<i class="bi bi-trophy-fill"></i>
+								<h4>Top Rated Products</h4>
+								<span class="quality-subtitle">Average Rating ≥ 4.5</span>
+							</div>
+							<div class="quality-products" id="topRatedProducts">
+							<!-- Top rated products will be dynamically loaded here -->
+						</div>
+						</div>
+						<div class="quality-column lowest-rated">
+							<div class="quality-header">
+								<i class="bi bi-exclamation-triangle-fill"></i>
+								<h4>Needs Improvement</h4>
+								<span class="quality-subtitle">Average Rating < 4.0</span>
+							</div>
+							<div class="quality-products" id="lowestRatedProducts">
+							<!-- Lowest rated products will be dynamically loaded here -->
+						</div>
+						</div>
+					</div>
+				</div>
+
+	<!-- Logout Modal Overlay and Confirmation Modal -->
+	<div id="logout-modal-overlay"></div>
+	<div id="logout-modal" class="modal">
+		<div class="modal-content">
+			<div class="modal-title">Do you want to Logout?</div>
+			<div class="modal-actions">
+				<button id="confirm-logout" class="modal-btn">Logout</button>
+				<button id="cancel-logout" class="modal-btn">Cancel</button>
+			</div>
+		</div>
+	</div>
+	<script defer src="{{ url_for('static', filename='js/logout-modal.js') }}"></script>
+	<script defer src="{{ url_for('static', filename='js/seller/seller-dashboard-nav.js') }}"></script>
+	<script defer src="{{ url_for('static', filename='js/seller/seller-nav-hover.js') }}"></script>
+	<script defer src="{{ url_for('static', filename='js/seller/seller_customer_feedback.js') }}"></script>
+</body>
+</html>

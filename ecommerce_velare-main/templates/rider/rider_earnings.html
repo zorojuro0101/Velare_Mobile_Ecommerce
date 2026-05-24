@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rider Earnings - Veláre</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/Velare Logo Tab 1.png') }}">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@100;300;400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Goodie&display=swap" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/rider/rider_earnings.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/logout-modal.css') }}">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <img src="{{ url_for('static', filename='images/velarelogo.png') }}" alt="Velare Logo">
+                <h2>Veláre</h2>
+            </div>
+            
+            <!-- Rider Profile Section -->
+            <a href="{{ url_for('rider_profile.rider_profile') }}" class="sidebar-profile-link">
+                <div class="sidebar-profile" id="sidebarProfile">
+                    <div class="sidebar-profile-img" id="sidebarProfileImgContainer">
+                        {% if rider and rider.profile_image %}
+                            {% if rider.profile_image.startswith('http://') or rider.profile_image.startswith('https://') %}
+                                <img src="{{ rider.profile_image }}" alt="Rider Profile" id="sidebarProfileImg">
+                            {% elif rider.profile_image.startswith('static/') %}
+                                <img src="/{{ rider.profile_image }}" alt="Rider Profile" id="sidebarProfileImg">
+                            {% else %}
+                                <img src="{{ url_for('static', filename=rider.profile_image) }}" alt="Rider Profile" id="sidebarProfileImg">
+                            {% endif %}
+                        {% endif %}
+                        <div class="profile-initial" id="sidebarProfileInitial" {% if rider and rider.profile_image %}style="display:none;"{% endif %}>{{ rider.first_name[0].upper() if rider and rider.first_name else 'R' }}</div>
+                    </div>
+                    <div class="sidebar-profile-info">
+                        <h3 class="sidebar-profile-name" id="sidebarProfileName">{{ rider.first_name + ' ' + rider.last_name if rider else 'Rider Name' }}</h3>
+                        <p class="sidebar-profile-role">Delivery Rider</p>
+                    </div>
+                </div>
+            </a>
+            
+            <nav class="nav-menu">
+                <a href="{{ url_for('rider_dashboard.rider_dashboard') }}" class="nav-item" data-tab="dashboard">
+                    <i class="bi bi-speedometer2 icon"></i>
+                    <span>Dashboard</span>
+                </a>
+                <div class="nav-item-group">
+                    <a href="#" class="nav-item" data-tab="delivery-management" id="deliveryManagementToggle">
+                        <i class="bi bi-box-seam icon"></i>
+                        <span>Delivery Management</span>
+                        <i class="bi bi-chevron-down dropdown-arrow"></i>
+                    </a>
+                    <div class="nav-submenu" id="deliverySubmenu">
+                        <a href="{{ url_for('rider_pickup.rider_pickup') }}" class="nav-subitem" data-tab="list-pickup">
+                            <i class="bi bi-clipboard-check icon"></i>
+                            <span>List for Pickup</span>
+                        </a>
+                        <a href="{{ url_for('rider_activeDelivery.rider_activeDelivery') }}" class="nav-subitem" data-tab="active-delivery">
+                            <i class="bi bi-truck icon"></i>
+                            <span>List for Active Delivery</span>
+                        </a>
+                    </div>
+                </div>
+                <a href="{{ url_for('rider_earnings.rider_earnings') }}" class="nav-item active" data-tab="earnings">
+                    <i class="bi bi-cash-coin icon"></i>
+                    <span>Earnings</span>
+                </a>
+                <a href="{{ url_for('rider_chat.rider_chat') }}" class="nav-item" data-tab="chat">
+                    <i class="bi bi-chat-dots icon"></i>
+                    <span>Chat</span>
+                </a>
+                <a href="{{ url_for('rider_report_user.report_user_page') }}" class="nav-item" data-tab="report-user">
+                    <i class="bi bi-flag icon"></i>
+                    <span>Report User</span>
+                </a>
+                <a href="#" class="nav-item" data-tab="logout" id="logout-link" data-logout-url="{{ url_for('auth.login') }}">
+                    <i class="bi bi-box-arrow-right icon"></i>
+                    <span>Logout</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <h1>Earnings</h1>
+            </header>
+
+            <!-- Withdrawal Section -->
+            <section class="withdrawal-section">
+                <div class="withdrawal-card">
+                    <div class="withdrawal-info">
+                        <h3>Available Balance</h3>
+                        <p class="available-balance" id="availableBalance">₱0.00</p>
+                        <p class="balance-note">Minimum withdrawal: ₱100.00</p>
+                    </div>
+                    <button class="withdraw-btn" id="withdrawBtn">
+                        <i class="bi bi-wallet2"></i> Request Withdrawal
+                    </button>
+                </div>
+            </section>
+
+            <!-- Filter Section -->
+            <section class="filter-section">
+                <div class="filter-group">
+                    <label for="startDate">Filter by Date:</label>
+                    <div class="date-range-inputs">
+                        <input type="date" id="startDate" class="date-input">
+                        <span class="date-separator">to</span>
+                        <input type="date" id="endDate" class="date-input">
+                    </div>
+                </div>
+                <button class="refresh-btn" id="refreshBtn">
+                    <i class="bi bi-arrow-clockwise"></i> Refresh
+                </button>
+            </section>
+
+            <!-- Withdrawal History -->
+            <section class="withdrawal-history-section">
+                <h2>Withdrawal History</h2>
+                <div class="withdrawal-history-container">
+                    <table class="withdrawal-table">
+                        <thead>
+                            <tr>
+                                <th>Date Requested</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Date Processed</th>
+                            </tr>
+                        </thead>
+                        <tbody id="withdrawalHistoryBody">
+                            <!-- Withdrawal history will be loaded here -->
+                        </tbody>
+                    </table>
+                    
+                    <!-- Empty State for Withdrawals -->
+                    <div class="empty-state" id="emptyWithdrawalState">
+                        <i class="bi bi-wallet2 empty-icon"></i>
+                        <p>No withdrawal history</p>
+                        <p class="empty-subtitle">Request a withdrawal to see your history</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Earnings Table -->
+            <section class="earnings-section">
+                <h2>Earnings Breakdown</h2>
+                <div class="earnings-table-container">
+                    <table class="earnings-table">
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Buyer Information</th>
+                                <th>Seller Information</th>
+                                <th>Product Name</th>
+                                <th>Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody id="earningsTableBody">
+                            <!-- Earnings data will be loaded here -->
+                        </tbody>
+                    </table>
+                    
+                    <!-- Empty State -->
+                    <div class="empty-state" id="emptyState">
+                        <i class="bi bi-cash-coin empty-icon"></i>
+                        <p>No earnings data available</p>
+                        <p class="empty-subtitle">Complete deliveries to start earning</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Withdrawal Form Modal -->
+    <div id="withdrawal-modal-overlay" class="modal-overlay"></div>
+    <div id="withdrawal-modal" class="modal withdrawal-form-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">Withdrawal Request</div>
+                <button class="modal-close" id="closeWithdrawalModal">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="withdrawalForm">
+                    <div class="form-group">
+                        <label for="withdrawalAmount">Amount to Withdraw</label>
+                        <div class="input-with-currency">
+                            <span class="currency-symbol">₱</span>
+                            <input 
+                                type="number" 
+                                id="withdrawalAmount" 
+                                name="amount" 
+                                step="0.01" 
+                                min="100" 
+                                placeholder="0.00"
+                                required
+                            >
+                        </div>
+                        <small class="form-hint">
+                            Available: <span id="modalAvailableBalance">₱0.00</span> | Minimum: ₱100.00
+                        </small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="withdrawalMethod">Withdrawal Method</label>
+                        <select id="withdrawalMethod" name="method" required>
+                            <option value="Cash">Cash</option>
+                            <option value="GCash">GCash</option>
+                            <option value="Bank Transfer">Bank Transfer</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="withdrawalNotes">Notes (Optional)</label>
+                        <textarea 
+                            id="withdrawalNotes" 
+                            name="notes" 
+                            rows="3" 
+                            placeholder="Add any additional details..."
+                        ></textarea>
+                    </div>
+
+                    <div class="modal-actions">
+                        <button type="submit" class="modal-btn submit-btn">
+                            <i class="bi bi-check-circle"></i> Submit Request
+                        </button>
+                        <button type="button" class="modal-btn cancel-btn" id="cancelWithdrawalBtn">
+                            Cancel
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Withdrawal Confirmation Modal (Logout Style) -->
+    <div id="withdraw-confirm-modal-overlay"></div>
+    <div id="withdraw-confirm-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-title" id="withdrawConfirmTitle">Confirm Withdrawal</div>
+            <div class="modal-message" id="withdrawConfirmMessage"></div>
+            <div class="modal-actions">
+                <button id="confirm-withdraw" class="modal-btn">Confirm</button>
+                <button id="cancel-withdraw" class="modal-btn">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Logout Modal -->
+    <div id="logout-modal-overlay"></div>
+    <div id="logout-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-title">Do you want to Logout?</div>
+            <div class="modal-actions">
+                <button id="confirm-logout" class="modal-btn">Logout</button>
+                <button id="cancel-logout" class="modal-btn">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/rider/rider_earnings.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/logout-modal.js') }}"></script>
+</body>
+</html>

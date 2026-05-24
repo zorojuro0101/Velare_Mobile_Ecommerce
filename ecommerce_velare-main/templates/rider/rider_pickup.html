@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>List for Pickup - Veláre</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/Velare Logo Tab 1.png') }}">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@100;300;400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Goodie&display=swap" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/rider/rider_pickup.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/logout-modal.css') }}">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <img src="{{ url_for('static', filename='images/velarelogo.png') }}" alt="Velare Logo">
+                <h2>Veláre</h2>
+            </div>
+            
+            <!-- Rider Profile Section -->
+            <a href="{{ url_for('rider_profile.rider_profile') }}" class="sidebar-profile-link">
+                <div class="sidebar-profile" id="sidebarProfile">
+                    <div class="sidebar-profile-img" id="sidebarProfileImgContainer">
+                        {% if rider and rider.profile_image %}
+                            {% if rider.profile_image.startswith('http://') or rider.profile_image.startswith('https://') %}
+                                <img src="{{ rider.profile_image }}" alt="Rider Profile" id="sidebarProfileImg">
+                            {% elif rider.profile_image.startswith('static/') %}
+                                <img src="/{{ rider.profile_image }}" alt="Rider Profile" id="sidebarProfileImg">
+                            {% else %}
+                                <img src="{{ url_for('static', filename=rider.profile_image) }}" alt="Rider Profile" id="sidebarProfileImg">
+                            {% endif %}
+                        {% endif %}
+                        <div class="profile-initial" id="sidebarProfileInitial" {% if rider and rider.profile_image %}style="display:none;"{% endif %}>{{ rider.first_name[0].upper() if rider and rider.first_name else 'R' }}</div>
+                    </div>
+                    <div class="sidebar-profile-info">
+                        <h3 class="sidebar-profile-name" id="sidebarProfileName">{{ rider.first_name + ' ' + rider.last_name if rider else 'Rider Name' }}</h3>
+                        <p class="sidebar-profile-role">Delivery Rider</p>
+                    </div>
+                </div>
+            </a>
+            
+            <nav class="nav-menu">
+                <a href="{{ url_for('rider_dashboard.rider_dashboard') }}" class="nav-item" data-tab="dashboard">
+                    <i class="bi bi-speedometer2 icon"></i>
+                    <span>Dashboard</span>
+                </a>
+                <div class="nav-item-group">
+                    <a href="#" class="nav-item active" data-tab="delivery-management" id="deliveryManagementToggle">
+                        <i class="bi bi-box-seam icon"></i>
+                        <span>Delivery Management</span>
+                        <i class="bi bi-chevron-down dropdown-arrow open"></i>
+                    </a>
+                    <div class="nav-submenu open" id="deliverySubmenu" style="display: flex;">
+                        <a href="{{ url_for('rider_pickup.rider_pickup') }}" class="nav-subitem active" data-tab="list-pickup">
+                            <i class="bi bi-clipboard-check icon"></i>
+                            <span>List for Pickup</span>
+                        </a>
+                        <a href="{{ url_for('rider_activeDelivery.rider_activeDelivery') }}" class="nav-subitem" data-tab="active-delivery">
+                            <i class="bi bi-truck icon"></i>
+                            <span>List for Active Delivery</span>
+                        </a>
+                    </div>
+                </div>
+                <a href="{{ url_for('rider_earnings.rider_earnings') }}" class="nav-item" data-tab="earnings">
+                    <i class="bi bi-cash-coin icon"></i>
+                    <span>Earnings</span>
+                </a>
+                <a href="{{ url_for('rider_chat.rider_chat') }}" class="nav-item" data-tab="chat">
+                    <i class="bi bi-chat-dots icon"></i>
+                    <span>Chat</span>
+                </a>
+                <a href="{{ url_for('rider_report_user.report_user_page') }}" class="nav-item" data-tab="report-user">
+                    <i class="bi bi-flag icon"></i>
+                    <span>Report User</span>
+                </a>
+                <a href="#" class="nav-item" data-tab="logout" id="logout-link" data-logout-url="{{ url_for('auth.login') }}">
+                    <i class="bi bi-box-arrow-right icon"></i>
+                    <span>Logout</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div class="header-left">
+                    <h1>List for Pickup</h1>
+                </div>
+                <div class="header-right">
+                    <button class="refresh-btn" id="refreshBtn">
+                        <i class="bi bi-arrow-clockwise"></i> Refresh
+                    </button>
+                </div>
+            </header>
+
+            <!-- Pickup List Section -->
+            <section class="pickup-section">
+                <div class="pickup-table-container">
+                    <table class="pickup-table">
+                        <thead>
+                            <tr>
+                                <th>Order Number</th>
+                                <th>Seller Information</th>
+                                <th>Pickup Address</th>
+                                <th>Buyer</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="pickupTableBody">
+                            <!-- Pickup data will be loaded here -->
+                        </tbody>
+                    </table>
+                    
+                    <!-- Empty State -->
+                    <div class="empty-state" id="emptyState">
+                        <i class="bi bi-clipboard-check empty-icon"></i>
+                        <p>No items for pickup</p>
+                        <p class="empty-subtitle">Items ready for pickup will appear here</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Logout Modal -->
+    <div id="logout-modal-overlay"></div>
+    <div id="logout-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-title">Do you want to Logout?</div>
+            <div class="modal-actions">
+                <button id="confirm-logout" class="modal-btn">Logout</button>
+                <button id="cancel-logout" class="modal-btn">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Accept Delivery Confirmation Modal -->
+    <div id="accept-delivery-modal-overlay"></div>
+    <div id="accept-delivery-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-title">Accept this delivery?</div>
+            <div class="modal-actions">
+                <button id="confirm-accept-delivery" class="modal-btn">Accept</button>
+                <button id="cancel-accept-delivery" class="modal-btn">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/rider/rider_pickup.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/logout-modal.js') }}"></script>
+</body>
+</html>

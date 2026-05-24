@@ -326,7 +326,7 @@ class _AboutUsScreenState extends State<AboutUsScreen> with SingleTickerProvider
   Widget _buildSection1() {
     return Container(
       padding: EdgeInsets.all(24.w),
-      margin: EdgeInsets.only(bottom: 250.h),
+      margin: EdgeInsets.only(bottom: 40.h),
       child: Column(
         children: [
           // Image with fade transition (fixed height and width with proper aspect ratio)
@@ -623,7 +623,7 @@ class _AboutUsScreenState extends State<AboutUsScreen> with SingleTickerProvider
       child: Column(
         children: [
           // Image with fade transition (no shadow)
-          Container(
+          SizedBox(
             height: 250.h,
             width: double.infinity,
             child: ClipRRect(
@@ -634,6 +634,8 @@ class _AboutUsScreenState extends State<AboutUsScreen> with SingleTickerProvider
                   _section4Images[_section4ImageIndex],
                   key: ValueKey<int>(_section4ImageIndex),
                   fit: BoxFit.cover,
+                  width: double.infinity,
+                  height: double.infinity,
                   errorBuilder: (context, error, stackTrace) => Container(
                     color: AppColors.border(context),
                     child: const Icon(Icons.error),
@@ -688,18 +690,17 @@ class _AboutUsScreenState extends State<AboutUsScreen> with SingleTickerProvider
   Widget _buildSection5() {
     return Container(
       padding: EdgeInsets.all(24.w),
-      margin: EdgeInsets.only(bottom: 250.h),
+      margin: EdgeInsets.only(bottom: 40.h),
       child: Column(
         children: [
-          // Image with text overlay - reduced height to match smallest video
-          Container(
-            height: 200.h,
-            width: double.infinity,
+          // Image with text overlay - uses constraints instead of fixed height to prevent overflow
+          ConstrainedBox(
+            constraints: BoxConstraints(minHeight: 200.h),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(12.r),
               child: Stack(
                 children: [
-                  // Changing background image
+                  // Changing background image - fills the stack
                   Positioned.fill(
                     child: AnimatedSwitcher(
                       duration: const Duration(milliseconds: 1000),
@@ -707,6 +708,8 @@ class _AboutUsScreenState extends State<AboutUsScreen> with SingleTickerProvider
                         _section5Images[_section5ImageIndex],
                         key: ValueKey<int>(_section5ImageIndex),
                         fit: BoxFit.cover,
+                        width: double.infinity,
+                        height: double.infinity,
                         errorBuilder: (context, error, stackTrace) => Container(
                           color: AppColors.border(context),
                           child: const Icon(Icons.error),
@@ -729,34 +732,36 @@ class _AboutUsScreenState extends State<AboutUsScreen> with SingleTickerProvider
                       ),
                     ),
                   ),
-                  // Text content
-                  Positioned.fill(
-                    child: Padding(
-                      padding: EdgeInsets.all(20.w),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          _buildAnimatedText(
-                            'Sustainability in Every Stitch',
-                            delay: 0,
-                            style: GoogleFonts.playfairDisplay(
-                              fontSize: 28.sp,
-                              fontWeight: FontWeight.bold,
-                              color: AppColors.alwaysWhite,
-                            ),
+                  // Text content - intrinsic size drives the card height
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 20.w,
+                      vertical: 32.h,
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        _buildAnimatedText(
+                          'Sustainability in Every Stitch',
+                          delay: 0,
+                          style: GoogleFonts.playfairDisplay(
+                            fontSize: 26.sp,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.alwaysWhite,
                           ),
-                          SizedBox(height: 12.h),
-                          _buildAnimatedText(
-                            'At Velare, we design with the Earth in mind.',
-                            delay: 200,
-                            style: GoogleFonts.cormorantGaramond(
-                              fontSize: 18.sp,
-                              fontStyle: FontStyle.italic,
-                              color: Colors.white.withValues(alpha: 0.95),
-                            ),
+                        ),
+                        SizedBox(height: 12.h),
+                        _buildAnimatedText(
+                          'At Velare, we design with the Earth in mind.',
+                          delay: 200,
+                          style: GoogleFonts.cormorantGaramond(
+                            fontSize: 16.sp,
+                            fontStyle: FontStyle.italic,
+                            color: Colors.white.withValues(alpha: 0.95),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
                 ],
@@ -771,7 +776,7 @@ class _AboutUsScreenState extends State<AboutUsScreen> with SingleTickerProvider
   Widget _buildSection6() {
     return Container(
       padding: EdgeInsets.all(24.w),
-      margin: EdgeInsets.only(bottom: 250.h),
+      margin: EdgeInsets.only(bottom: 40.h),
       decoration: BoxDecoration(
         color: AppColors.surface(context),
         boxShadow: [
@@ -824,7 +829,7 @@ class _AboutUsScreenState extends State<AboutUsScreen> with SingleTickerProvider
           ),
           SizedBox(height: 24.h),
           // Image with fade transition (no shadow)
-          Container(
+          SizedBox(
             height: 250.h,
             width: double.infinity,
             child: ClipRRect(
@@ -835,6 +840,8 @@ class _AboutUsScreenState extends State<AboutUsScreen> with SingleTickerProvider
                   _section6Images[_section6ImageIndex],
                   key: ValueKey<int>(_section6ImageIndex),
                   fit: BoxFit.cover,
+                  width: double.infinity,
+                  height: double.infinity,
                   errorBuilder: (context, error, stackTrace) => Container(
                     color: AppColors.border(context),
                     child: const Icon(Icons.error),
@@ -853,7 +860,7 @@ class _AboutUsScreenState extends State<AboutUsScreen> with SingleTickerProvider
   Widget _buildSection7() {
     return Container(
       padding: EdgeInsets.all(24.w),
-      margin: EdgeInsets.only(bottom: 250.h),
+      margin: EdgeInsets.only(bottom: 40.h),
       child: Column(
         children: [
           _buildAnimatedText(
@@ -894,7 +901,7 @@ class _AboutUsScreenState extends State<AboutUsScreen> with SingleTickerProvider
   Widget _buildSection8() {
     return Container(
       padding: EdgeInsets.all(24.w),
-      margin: EdgeInsets.only(bottom: 250.h),
+      margin: EdgeInsets.only(bottom: 40.h),
       decoration: BoxDecoration(
         color: AppColors.surface(context),
         boxShadow: [

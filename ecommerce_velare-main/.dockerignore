@@ -1,0 +1,49 @@
+# Python bytecode and caches (must NOT leak from Windows host into Linux container)
+__pycache__
+**/__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info
+.pytest_cache
+.mypy_cache
+.ruff_cache
+
+# Virtual environments
+venv/
+env/
+.venv/
+ENV/
+
+# Git and editor metadata
+.git
+.gitignore
+.gitattributes
+.github/
+.vscode/
+.idea/
+
+# Local environment / secrets (compose injects them via env_file)
+.env
+.env.*
+!.env.example
+
+# OS / log artifacts
+*.log
+.DS_Store
+Thumbs.db
+
+# Migration / dev-only scripts that should not ship in production images
+migrate_profiles_to_supabase.py
+.railway-test.sh
+
+# Docker artifacts
+docker-compose*.yml
+Dockerfile.dev
+
+# Build output / temp
+build/
+dist/
+*.bak
+*.swp

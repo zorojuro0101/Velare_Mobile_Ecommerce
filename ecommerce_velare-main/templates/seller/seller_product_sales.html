@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Veláre - Product Sales Overview</title>
+	<link rel="icon" type="image/png" href="{{ url_for('static', filename='images/Velare Logo Tab 1.png') }}">
+	<!-- Google Fonts for aesthetic, expensive look -->
+	<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@100;300;400;700&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Goodie&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/accounts/myAccount_profile.css') }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/seller/seller_product_sales.css') }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/logout-modal.css') }}">
+	<!-- Bootstrap Icons CDN -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+	<!-- Chart.js for interactive charts -->
+	<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+	<div class="header-container">
+		<span class="header"><a href="{{ url_for('seller_dashboard.seller_dashboard') }}" style="color: inherit; text-decoration: none;">Veláre</a></span>
+	</div>
+	<hr class="divider">
+
+	<div class="main-content-container">
+		<div class="account-left-nav">
+			<div class="account-profile-header">
+				<div class="profile-img-placeholder">
+					{% if seller and seller.shop_logo %}
+						{% if seller.shop_logo.startswith('http://') or seller.shop_logo.startswith('https://') %}
+							<img src="{{ seller.shop_logo }}" alt="Shop Logo" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+						{% else %}
+							<img src="{{ url_for('static', filename=seller.shop_logo) }}" alt="Shop Logo" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+						{% endif %}
+					{% endif %}
+				</div>
+				<a href="{{ url_for('seller_information.seller_information') }}" class="profile-name-placeholder clickable-profile">
+					{% if seller and seller.shop_name %}
+						{{ seller.shop_name }}
+					{% else %}
+						Shop Name
+					{% endif %}
+				</a>
+			</div>
+			<div class="account-nav-divider"></div>
+			<div class="account-nav-list">
+				<a href="{{ url_for('seller_dashboard.seller_dashboard') }}" class="main-tab" style="text-decoration: none; color: inherit;">
+					<i class="bi bi-speedometer2" style="font-size:1.2em; vertical-align:middle; margin-right:10px;"></i>
+					<span class="main-tab-label">Dashboard</span>
+				</a>
+				<a href="{{ url_for('seller_product_management.seller_product_management') }}" class="main-tab" style="text-decoration: none; color: inherit;">
+					<i class="bi bi-box-seam" style="font-size:1.2em; vertical-align:middle; margin-right:10px;"></i>
+					<span class="main-tab-label">Product Management</span>
+				</a>
+				<div class="main-tab active" id="productSalesTab">
+					<i class="bi bi-graph-up-arrow" style="font-size:1.2em; vertical-align:middle; margin-right:10px;"></i>
+					<span class="main-tab-label">Product Sales</span>
+				</div>
+				<a href="{{ url_for('seller_messages.seller_messages') }}" class="main-tab" style="text-decoration: none; color: inherit;">
+					<i class="bi bi-chat-dots" style="font-size:1.2em; vertical-align:middle; margin-right:10px;"></i>
+					<span class="main-tab-label">
+						Messages
+						<span id="message-notification-dot" class="notification-dot" style="display: none;"></span>
+					</span>
+				</a>
+				<a href="{{ url_for('seller_customer_feedback.seller_customer_feedback') }}" class="main-tab" style="text-decoration: none; color: inherit;">
+					<i class="bi bi-star" style="font-size:1.2em; vertical-align:middle; margin-right:10px;"></i>
+					<span class="main-tab-label">Customer Feedback</span>
+				</a>
+				<a href="{{ url_for('seller_select_vouchers.seller_select_vouchers') }}" class="main-tab" style="text-decoration: none; color: inherit;">
+					<i class="bi bi-ticket-perforated" style="font-size:1.2em; vertical-align:middle; margin-right:10px;"></i>
+					<span class="main-tab-label">Shop Vouchers</span>
+				</a>
+				<a href="{{ url_for('seller_report_user.report_user_page') }}" class="main-tab" style="text-decoration: none; color: inherit;">
+					<i class="bi bi-flag" style="font-size:1.2em; vertical-align:middle; margin-right:10px;"></i>
+					<span class="main-tab-label">Report User</span>
+				</a>
+				<div class="main-tab" id="logout-link" data-logout-url="{{ url_for('auth.login') }}">
+					<i class="bi bi-box-arrow-right" style="font-size:1.2em; vertical-align:middle; margin-right:10px;"></i>
+					<span class="main-tab-label">Logout</span>
+				</div>
+			</div>
+			<div class="sidebar-vertical-line"></div>
+		</div>
+		<div class="account-card-container">
+			
+			<div class="dashboard-main-content">
+				
+				
+				<!-- Summary Cards (Top Row) -->
+				<div class="sales-summary-cards">
+					<div class="sales-summary-card">
+						<div class="sales-card-icon">
+							<i class="bi bi-box-seam"></i>
+						</div>
+						<div class="sales-card-content">
+							<div class="sales-card-title">Total Products Sold</div>
+							<div class="sales-card-number" id="totalProductsSold">245</div>
+							<div class="sales-card-subtitle">This Month</div>
+						</div>
+					</div>
+					<div class="sales-summary-card">
+						<div class="sales-card-icon revenue">
+							<i class="bi bi-currency-dollar"></i>
+						</div>
+						<div class="sales-card-content">
+							<div class="sales-card-title">Total Revenue</div>
+							<div class="sales-card-number" id="totalRevenue">₱125,500</div>
+							<div class="sales-card-subtitle">This Month</div>
+						</div>
+					</div>
+					<div class="sales-summary-card best-seller">
+						<div class="sales-card-icon bestseller">
+							<i class="bi bi-star-fill"></i>
+						</div>
+						<div class="sales-card-content">
+							<div class="sales-card-title">Best-Selling Product</div>
+							<div class="sales-card-product-name" id="bestSellingProduct">Luxury Handbag</div>
+							<div class="highlight-stats">
+								<span class="highlight-stat">
+									<i class="bi bi-box"></i>
+									<strong>58 units</strong> sold
+								</span>
+								
+							</div>
+						</div>
+					</div>
+					<div class="sales-summary-card commission">
+						<div class="sales-card-icon commission-icon">
+							<i class="bi bi-percent"></i>
+						</div>
+						<div class="sales-card-content">
+							<div class="sales-card-title">Platform Commission</div>
+							<div class="sales-card-number commission-amount" id="totalCommission">₱0.00</div>
+							<div class="sales-card-subtitle">5% Transaction Fee</div>
+						</div>
+					</div>
+				</div>
+				
+				<!-- Filters and Controls Section -->
+				<div class="filters-section">
+					<div class="filters-container">
+						<div class="filter-group">
+							<label for="dateFrom">
+								<i class="bi bi-calendar3"></i> Date Range
+							</label>
+							<div class="date-range-filter">
+								<input type="date" id="dateFrom" class="filter-select" placeholder="From Date">
+								<span style="margin: 0 8px;">to</span>
+								<input type="date" id="dateTo" class="filter-select" placeholder="To Date">
+							</div>
+						</div>
+						<div class="filter-group">
+							<label for="sortByFilter">
+								<i class="bi bi-sort-down"></i> Sort By
+							</label>
+							<select id="sortByFilter" class="filter-select">
+								<option value="most-sold" selected>Most Sold</option>
+								<option value="highest-revenue">Highest Revenue</option>
+								<option value="latest">Latest</option>
+							</select>
+						</div>
+					</div>
+					<button class="export-btn" id="exportSalesBtn">
+						<i class="bi bi-download"></i>
+						Export Sales Data
+					</button>
+				</div>
+
+				<!-- Sales Table -->
+				<div class="summary-card sales-table-card">
+					<div class="summary-card-header">
+						<h2 class="summary-title">Sales Details</h2>
+					</div>
+					<div class="summary-table-container">
+						<table class="orders-table">
+							<thead>
+								<tr>
+									<th class="table-header">Product Name</th>
+									<th class="table-header">Units Sold</th>
+									<th class="table-header">Total Revenue</th>
+									<th class="table-header">Date Range</th>
+								</tr>
+							</thead>
+							<tbody id="salesTableBody">
+								<tr class="table-row">
+									<td class="table-cell">Luxury Handbag</td>
+									<td class="table-cell">58</td>
+									<td class="table-cell">₱29,000</td>
+									<td class="table-cell">Oct 1-31, 2025</td>
+								</tr>
+								<tr class="table-row">
+									<td class="table-cell">Designer Shoes</td>
+									<td class="table-cell">45</td>
+									<td class="table-cell">₱36,000</td>
+									<td class="table-cell">Oct 1-31, 2025</td>
+								</tr>
+								<tr class="table-row">
+									<td class="table-cell">Premium Watch</td>
+									<td class="table-cell">32</td>
+									<td class="table-cell">₱48,000</td>
+									<td class="table-cell">Oct 1-31, 2025</td>
+								</tr>
+								<tr class="table-row">
+									<td class="table-cell">Silk Scarf</td>
+									<td class="table-cell">28</td>
+									<td class="table-cell">₱7,000</td>
+									<td class="table-cell">Oct 1-31, 2025</td>
+								</tr>
+								<tr class="table-row">
+									<td class="table-cell">Leather Wallet</td>
+									<td class="table-cell">24</td>
+									<td class="table-cell">₱7,200</td>
+									<td class="table-cell">Oct 1-31, 2025</td>
+								</tr>
+								<tr class="table-row">
+									<td class="table-cell">Pearl Necklace</td>
+									<td class="table-cell">22</td>
+									<td class="table-cell">₱11,000</td>
+									<td class="table-cell">Oct 1-31, 2025</td>
+								</tr>
+								<tr class="table-row">
+									<td class="table-cell">Cashmere Sweater</td>
+									<td class="table-cell">18</td>
+									<td class="table-cell">₱9,000</td>
+									<td class="table-cell">Oct 1-31, 2025</td>
+								</tr>
+								<tr class="table-row">
+									<td class="table-cell">Sunglasses</td>
+									<td class="table-cell">18</td>
+									<td class="table-cell">₱5,400</td>
+									<td class="table-cell">Oct 1-31, 2025</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+
+				<!-- Analytics/Graphs Section -->
+				<div class="charts-section">
+					<div class="chart-card">
+						<div class="chart-header">
+							<h3 class="chart-title" id="unitsChartTitle">
+								<i class="bi bi-bar-chart-fill"></i>
+								<span id="unitsChartLabel">Units Sold</span>
+							</h3>
+							<div class="chart-info" id="unitsChartInfo">Selected Date Range</div>
+						</div>
+						<div class="chart-container">
+							<canvas id="unitsSoldChart"></canvas>
+						</div>
+					</div>
+					<div class="chart-card">
+						<div class="chart-header">
+							<h3 class="chart-title" id="revenueChartTitle">
+								<i class="bi bi-graph-up"></i>
+								<span id="revenueChartLabel">Revenue Trend</span>
+							</h3>
+							<div class="chart-info" id="revenueChartInfo">Selected Date Range</div>
+						</div>
+						<div class="chart-container">
+							<canvas id="revenueTrendChart"></canvas>
+						</div>
+					</div>
+				</div>
+
+				<!-- Product Sold Filters Section -->
+				<div class="filters-section">
+					<div class="filters-container">
+						<div class="filter-group">
+							<label for="productSoldSearch">
+								<i class="bi bi-search"></i> Search
+							</label>
+							<input type="text" id="productSoldSearch" class="filter-select" placeholder="Search sold products..." style="min-width: 250px;">
+						</div>
+						<div class="filter-group">
+							<label for="productSoldDateFrom">
+								<i class="bi bi-calendar3"></i> Date Range
+							</label>
+							<div class="date-range-filter">
+								<input type="date" id="productSoldDateFrom" class="filter-select" placeholder="From Date">
+								<span style="margin: 0 8px;">to</span>
+								<input type="date" id="productSoldDateTo" class="filter-select" placeholder="To Date">
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Product Sold Table -->
+				<div class="summary-card product-sold-card">
+					<div class="summary-card-header">
+						<h2 class="summary-title">Product Sold</h2>
+					</div>
+					<div class="summary-table-container">
+						<table class="orders-table">
+							<thead>
+								<tr>
+									<th class="table-header">#</th>
+									<th class="table-header">Products</th>
+									<th class="table-header">Order Received</th>
+									<th class="table-header">Buyer</th>
+									<th class="table-header">Order Total</th>
+									<th class="table-header">Commission (5%)</th>
+								</tr>
+							</thead>
+							<tbody id="productSoldTableBody">
+								<tr class="table-row">
+									<td class="table-cell" colspan="6" style="text-align: center; padding: 40px;">
+										<div class="loading-spinner">Loading sold products...</div>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</div>
+
+	<!-- Logout Modal Overlay and Confirmation Modal -->
+	<div id="logout-modal-overlay"></div>
+	<div id="logout-modal" class="modal">
+		<div class="modal-content">
+			<div class="modal-title">Do you want to Logout?</div>
+			<div class="modal-actions">
+				<button id="confirm-logout" class="modal-btn">Logout</button>
+				<button id="cancel-logout" class="modal-btn">Cancel</button>
+			</div>
+		</div>
+	</div>
+	<script defer src="{{ url_for('static', filename='js/logout-modal.js') }}"></script>
+	<script defer src="{{ url_for('static', filename='js/seller/seller-dashboard-nav.js') }}"></script>
+	<script defer src="{{ url_for('static', filename='js/seller/seller-nav-hover.js') }}"></script>
+	<script defer src="{{ url_for('static', filename='js/seller/seller_product_sales.js') }}"></script>
+	<script defer src="{{ url_for('static', filename='js/seller/dashboard-notifications.js') }}"></script>
+</body>
+</html>

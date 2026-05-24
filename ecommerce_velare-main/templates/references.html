@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Veláre - References</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/Velare Logo Tab 1.png') }}">
+    <!-- Optimized Google Fonts - Combined into one request -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@100;300;400;700&family=Cormorant+Garamond:wght@500;600;700&family=Cinzel:wght@700&family=Goodie&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/browse_product.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/references.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/logout-modal.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/chat.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/footer.css') }}">
+  <script defer src="{{ url_for('static', filename='js/search-anim.js') }}"></script>
+</head>
+<body>
+    <!-- Hamburger menu outside header for proper z-index stacking -->
+    <div id="menuToggle" style="display: flex; align-items: center; gap: 10px;">
+      <button id="hamburgerBtn" aria-label="Open menu" type="button">
+        <div class="bar bar--top"></div>
+        <div class="bar bar--bottom"></div>
+      </button>
+    </div>
+    
+    <div class="header-container">
+  <span class="header"><a href="{{ url_for('index.index') }}" style="color: inherit; text-decoration: none;">Veláre</a></span>
+  <div class="icon-bar">
+      <div class="icon-wrapper search-icon-wrapper">
+        <img id="search-icon" src="{{ url_for('static', filename='images/search.png') }}" alt="Search" class="icon">
+        <span class="icon-label">Search</span>
+        <form id="search-form" class="search-form-animated" action="{{ url_for('browse_product.browse_product') }}" method="get" autocomplete="off">
+          <input type="text" name="q" placeholder="Search product" class="search-input">
+        </form>
+      </div>
+            <div class="icon-wrapper notification-icon-wrapper">
+                <i class="bi bi-bell icon" id="notification-bell" style="font-size: 1.3rem;"></i>
+                <span class="notification-badge" id="notification-badge" style="display: none;">0</span>
+                <span class="icon-label">Notifications</span>
+                <div class="notification-dropdown">
+                    <div class="notification-header">Notifications</div>
+                    <div class="notification-list" id="notification-list">
+                        <div class="notification-loading">Loading...</div>
+                    </div>
+                </div>
+            </div>
+            <a href="{{ url_for('favorite.favorite') }}" class="icon-wrapper favorite-icon-wrapper" style="text-decoration:none; color:inherit;">
+                <img src="{{ url_for('static', filename='images/star.png') }}" alt="Star" class="icon">
+                <span class="favorite-badge" id="favorite-badge" style="display: none;">0</span>
+                <span class="icon-label">Favorite</span>
+            </a>
+            <div class="icon-wrapper profile-icon-wrapper">
+                <img src="{{ url_for('static', filename='images/user.png') }}" alt="User" class="icon"><span class="icon-label">{% if session.get('logged_in') %}Profile{% else %}Login{% endif %}</span>
+                <div class="profile-dropdown">
+                    {% if session.get('logged_in') %}
+                        <a href="{{ url_for('myAccount_profile.myAccount_profile') }}" class="dropdown-item"><span class="dropdown-item-text">My Account</span></a>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" id="logout-link" class="dropdown-item" data-logout-url="{{ url_for('auth.login') }}"><span class="dropdown-item-text">Logout</span></a>
+                    {% else %}
+                        <a href="{{ url_for('auth.login') }}" class="dropdown-item"><span class="dropdown-item-text">Login</span></a>
+                        <div class="dropdown-divider"></div>
+                        <a href="{{ url_for('auth.register') }}" class="dropdown-item"><span class="dropdown-item-text">Register</span></a>
+                    {% endif %}
+                </div>
+            </div>
+            <a href="{{ url_for('cart.cart') }}" class="icon-wrapper cart-icon-wrapper" style="text-decoration:none; color:inherit;">
+                <img src="{{ url_for('static', filename='images/shopping-cart.png') }}" alt="Cart" class="icon">
+                <span class="cart-badge" id="cart-badge" style="display: none;">0</span>
+                <span class="icon-label">Cart</span>
+            </a>
+        </div>
+    </div>
+  <hr class="divider">
+  <div class="side-menu-overlay"></div>
+  <nav class="side-menu">
+    <div class="side-menu-divider"></div>
+    <a href="{{ url_for('browse_product.browse_product') }}" class="category-link"><span>All Products</span></a>
+    <a href="{{ url_for('browse_product.browse_product', category='dresses-skirts') }}" class="category-link"><span>Dresses & Skirts</span></a>
+    <a href="{{ url_for('browse_product.browse_product', category='tops-blouses') }}" class="category-link"><span>Tops & Blouses</span></a>
+    <a href="{{ url_for('browse_product.browse_product', category='activewear-yoga') }}" class="category-link"><span>Activewear & Yoga Pants</span></a>
+    <a href="{{ url_for('browse_product.browse_product', category='lingerie-sleepwear') }}" class="category-link"><span>Lingerie & Sleepwear</span></a>
+    <a href="{{ url_for('browse_product.browse_product', category='jackets-coats') }}" class="category-link"><span>Jackets & Coats</span></a>
+    <a href="{{ url_for('browse_product.browse_product', category='shoes-accessories') }}" class="category-link"><span>Shoes & Accessories</span></a>
+    <div class="side-menu-divider"></div>
+    <a href="{{ url_for('about_us.about_us') }}" class="category-link"><span>About Us</span></a>
+  </nav>
+    <script>
+      const hamburgerBtn = document.getElementById('hamburgerBtn');
+      const sideMenu = document.querySelector('.side-menu');
+      const overlay = document.querySelector('.side-menu-overlay');
+      hamburgerBtn.addEventListener('click', function() {
+        const isOpen = sideMenu.classList.toggle('open');
+        overlay.classList.toggle('show', isOpen);
+        hamburgerBtn.classList.toggle('open', isOpen);
+      });
+      overlay.addEventListener('click', function() {
+        sideMenu.classList.remove('open');
+        overlay.classList.remove('show');
+        hamburgerBtn.classList.remove('open');
+      });
+    </script>
+  
+  <!-- VIDEO PLACEHOLDER START -->
+  <div class="video-placeholder-full">
+      <video class="video-bg" src="{{ url_for('static', filename='videos/sampleVid.mp4') }}" autoplay muted loop playsinline></video>
+      <div class="video-overlay-text">
+          <h1 class="main-title">References</h1>
+          <p class="subtitle">Our Sources & Inspirations</p>
+      </div>
+  </div>
+  <!-- VIDEO PLACEHOLDER END -->
+
+  <!-- References Content -->
+  <section class="references-content">
+      <div class="references-intro">
+          <h2 class="section-title">Research & Resources</h2>
+          <p class="section-description">Explore the sources that inspire and inform our commitment to sustainable fashion, women empowerment, and ethical practices.</p>
+      </div>
+
+      <!-- References Grid -->
+      <div class="references-grid">
+          <!-- Reference Card 1 -->
+          <a href="https://sdgs.un.org/goals" target="_blank" class="reference-card">
+              <div class="reference-image">
+                  <img src="https://logo.clearbit.com/un.org" alt="UN SDGs">
+              </div>
+              <h3 class="reference-title">UN Sustainable Development Goals</h3>
+              <p class="reference-description">United Nations global goals for sustainable development</p>
+              <span class="reference-link">Visit Source <i class="bi bi-arrow-right"></i></span>
+          </a>
+
+          <!-- Reference Card 2 -->
+          <a href="https://www.fwrd.com/" target="_blank" class="reference-card">
+              <div class="reference-image">
+                  <img src="https://logo.clearbit.com/fwrd.com" alt="FWRD">
+              </div>
+              <h3 class="reference-title">FWRD</h3>
+              <p class="reference-description">Luxury fashion and designer collections</p>
+              <span class="reference-link">Visit Source <i class="bi bi-arrow-right"></i></span>
+          </a>
+
+          <!-- Reference Card 3 -->
+          <a href="https://www.anthropic.com/claude/sonnet" target="_blank" class="reference-card">
+              <div class="reference-image">
+                  <img src="https://logo.clearbit.com/anthropic.com" alt="Claude AI">
+              </div>
+              <h3 class="reference-title">Claude Sonnet AI</h3>
+              <p class="reference-description">AI assistant for research and development</p>
+              <span class="reference-link">Visit Source <i class="bi bi-arrow-right"></i></span>
+          </a>
+
+          <!-- Reference Card 4 -->
+          <a href="https://shopee.ph" target="_blank" class="reference-card">
+              <div class="reference-image">
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fe/Shopee.svg/320px-Shopee.svg.png" alt="Shopee">
+              </div>
+              <h3 class="reference-title">Shopee Philippines</h3>
+              <p class="reference-description">E-commerce platform and market research</p>
+              <span class="reference-link">Visit Source <i class="bi bi-arrow-right"></i></span>
+          </a>
+
+          <!-- Reference Card 5 -->
+          <a href="https://www.gemini.com/" target="_blank" class="reference-card">
+              <div class="reference-image">
+                  <img src="https://logo.clearbit.com/gemini.com" alt="Gemini">
+              </div>
+              <h3 class="reference-title">Gemini</h3>
+              <p class="reference-description">Technology and innovation platform</p>
+              <span class="reference-link">Visit Source <i class="bi bi-arrow-right"></i></span>
+          </a>
+
+          <!-- Reference Card 6 -->
+          <a href="https://www.chanel.com/us/" target="_blank" class="reference-card">
+              <div class="reference-image">
+                  <img src="https://logo.clearbit.com/chanel.com" alt="Chanel">
+              </div>
+              <h3 class="reference-title">Chanel</h3>
+              <p class="reference-description">Luxury fashion house and design inspiration</p>
+              <span class="reference-link">Visit Source <i class="bi bi-arrow-right"></i></span>
+          </a>
+
+          <!-- Reference Card 7 -->
+          <a href="https://www.dior.com/en_au/fashion" target="_blank" class="reference-card">
+              <div class="reference-image">
+                  <img src="https://logo.clearbit.com/dior.com" alt="Dior">
+              </div>
+              <h3 class="reference-title">Dior</h3>
+              <p class="reference-description">Haute couture and luxury fashion excellence</p>
+              <span class="reference-link">Visit Source <i class="bi bi-arrow-right"></i></span>
+          </a>
+
+          <!-- Reference Card 8 -->
+          <a href="https://www.uniqlo.com/" target="_blank" class="reference-card">
+              <div class="reference-image">
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/92/UNIQLO_logo.svg/320px-UNIQLO_logo.svg.png" alt="Uniqlo">
+              </div>
+              <h3 class="reference-title">Uniqlo</h3>
+              <p class="reference-description">Innovative clothing and sustainable practices</p>
+              <span class="reference-link">Visit Source <i class="bi bi-arrow-right"></i></span>
+          </a>
+
+          <!-- Reference Card 9 -->
+          <a href="https://code.visualstudio.com/" target="_blank" class="reference-card">
+              <div class="reference-image">
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Visual_Studio_Code_1.35_icon.svg/320px-Visual_Studio_Code_1.35_icon.svg.png" alt="VS Code">
+              </div>
+              <h3 class="reference-title">VS Code</h3>
+              <p class="reference-description">Development tool for platform creation</p>
+              <span class="reference-link">Visit Source <i class="bi bi-arrow-right"></i></span>
+          </a>
+
+          <!-- Reference Card 10 -->
+          <a href="https://chatgpt.com/" target="_blank" class="reference-card">
+              <div class="reference-image">
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/ChatGPT_logo.svg/320px-ChatGPT_logo.svg.png" alt="ChatGPT">
+              </div>
+              <h3 class="reference-title">ChatGPT</h3>
+              <p class="reference-description">AI assistant for content and research</p>
+              <span class="reference-link">Visit Source <i class="bi bi-arrow-right"></i></span>
+          </a>
+      </div>
+  </section>
+
+  <!-- Logout Modal -->
+  <div id="logout-modal-overlay"></div>
+  <div id="logout-modal" class="modal">
+      <div class="modal-content">
+          <div class="modal-title">Do you want to Logout?</div>
+          <div class="modal-actions">
+              <button id="confirm-logout" class="modal-btn">Logout</button>
+              <button id="cancel-logout" class="modal-btn">Cancel</button>
+          </div>
+      </div>
+  </div>
+
+  <!-- Chat Widget -->
+  <div id="chat-widget"></div>
+
+  <!-- Footer -->
+  <footer class="footer">
+      <div class="footer-container">
+          <!-- Footer Top Section -->
+          <div class="footer-content">
+              <!-- About Section -->
+              <div class="footer-section">
+                  <h3 class="footer-title">About Veláre</h3>
+                  <p class="footer-description">Veláre is your premier destination for elegant and sophisticated fashion. We bring you curated collections that celebrate style, quality, and timeless elegance.</p>
+                  <a href="{{ url_for('about_us.about_us') }}" class="footer-link">Learn More About Us</a>
+              </div>
+
+              <!-- Quick Links Section -->
+              <div class="footer-section">
+                  <h3 class="footer-title">Quick Links</h3>
+                  <ul class="footer-links footer-links-two-column">
+                      <li><a href="{{ url_for('browse_product.browse_product') }}" class="footer-link">Shop All</a></li>
+                      <li><a href="{{ url_for('browse_product.browse_product', category='dresses-skirts') }}" class="footer-link">Dresses & Skirts</a></li>
+                      <li><a href="{{ url_for('browse_product.browse_product', category='tops-blouses') }}" class="footer-link">Tops & Blouses</a></li>
+                      <li><a href="{{ url_for('browse_product.browse_product', category='activewear-yoga') }}" class="footer-link">Activewear & Yoga</a></li>
+                      <li><a href="{{ url_for('browse_product.browse_product', category='lingerie-sleepwear') }}" class="footer-link">Lingerie & Sleepwear</a></li>
+                      <li><a href="{{ url_for('browse_product.browse_product', category='jackets-coats') }}" class="footer-link">Jackets & Coats</a></li>
+                      <li><a href="{{ url_for('browse_product.browse_product', category='shoes-accessories') }}" class="footer-link">Shoes & Accessories</a></li>
+                      <li><a href="{{ url_for('favorite.favorite') }}" class="footer-link">My Favorites</a></li>
+                  </ul>
+              </div>
+
+              <!-- Our Values Section -->
+              <div class="footer-section">
+                  <h3 class="footer-title">Our Values</h3>
+                  <ul class="footer-links">
+                      <li><a href="{{ url_for('about_us.about_us') }}#section-4" class="footer-link">Women Empowerment</a></li>
+                      <li><a href="{{ url_for('about_us.about_us') }}#section-5" class="footer-link">Sustainability</a></li>
+                      <li><a href="{{ url_for('about_us.about_us') }}#section-6" class="footer-link">Innovation</a></li>
+                      <li><a href="{{ url_for('about_us.about_us') }}#section-7" class="footer-link">Collaboration</a></li>
+                      <li><a href="{{ url_for('references.references') }}" class="footer-link">References</a></li>
+                  </ul>
+              </div>
+
+              <!-- Contact & Social Section -->
+              <div class="footer-section">
+                  <h3 class="footer-title">Get In Touch</h3>
+                  <div class="contact-info">
+                      <p class="contact-item">
+                          <span class="contact-label">Phone:</span>
+                          <a href="tel:09956776157" class="footer-link">09956776157</a>
+                      </p>
+                      <p class="contact-item">
+                          <span class="contact-label">Location:</span>
+                          <span class="footer-text">Philippines</span>
+                      </p>
+                  </div>
+                  <div class="social-links">
+                      <a href="https://web.facebook.com/symon.beato.3" target="_blank" rel="noopener noreferrer" class="social-link facebook" title="Facebook">
+                          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                              <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                          </svg>
+                      </a>
+                      <a href="https://www.instagram.com/j_mx_21/" target="_blank" rel="noopener noreferrer" class="social-link instagram" title="Instagram">
+                          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                              <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0m0 2c5.514 0 10 4.486 10 10s-4.486 10-10 10S2 17.514 2 12 6.486 2 12 2m0 2c-4.411 0-8 3.589-8 8s3.589 8 8 8 8-3.589 8-8-3.589-8-8-8m0 2c3.309 0 6 2.691 6 6s-2.691 6-6 6-6-2.691-6-6 2.691-6 6-6m5.5-1c-.828 0-1.5.672-1.5 1.5s.672 1.5 1.5 1.5 1.5-.672 1.5-1.5-.672-1.5-1.5-1.5"/>
+                          </svg>
+                      </a>
+                  </div>
+              </div>
+          </div>
+
+          <!-- Footer Bottom Section -->
+          <div class="footer-bottom">
+              <p class="footer-copyright">&copy; 2024 Veláre. All rights reserved.</p>
+          </div>
+      </div>
+  </footer>
+
+  <script defer src="{{ url_for('static', filename='js/logout-modal.js') }}"></script>
+  <script defer src="{{ url_for('static', filename='js/index.js') }}"></script>
+  <script defer src="{{ url_for('static', filename='js/category-navigation.js') }}"></script>
+  <script defer src="{{ url_for('static', filename='js/cart-badge.js') }}"></script>
+  <script defer src="{{ url_for('static', filename='js/notifications.js') }}"></script>
+  <script defer src="{{ url_for('static', filename='js/chat.js') }}"></script>
+</body>
+</html>

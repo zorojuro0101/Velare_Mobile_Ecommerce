@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Veláre - About Us</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/Velare Logo Tab 1.png') }}">
+    <!-- Optimized Google Fonts - Combined into one request -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@100;300;400;700&family=Cormorant+Garamond:wght@500;600;700&family=Cinzel:wght@700&family=Goodie&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/browse_product.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/about_us.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/logout-modal.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/chat.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/footer.css') }}">
+  <script defer src="{{ url_for('static', filename='js/search-anim.js') }}"></script>
+</head>
+<body>
+    <!-- Hamburger menu outside header for proper z-index stacking -->
+    <div id="menuToggle" style="display: flex; align-items: center; gap: 10px;">
+      <button id="hamburgerBtn" aria-label="Open menu" type="button">
+        <div class="bar bar--top"></div>
+        <div class="bar bar--bottom"></div>
+      </button>
+    </div>
+    
+    <div class="header-container">
+  <span class="header"><a href="{{ url_for('index.index') }}" style="color: inherit; text-decoration: none;">Veláre</a></span>
+  <div class="icon-bar">
+      <div class="icon-wrapper search-icon-wrapper">
+        <img id="search-icon" src="{{ url_for('static', filename='images/search.png') }}" alt="Search" class="icon">
+        <span class="icon-label">Search</span>
+        <form id="search-form" class="search-form-animated" action="{{ url_for('browse_product.browse_product') }}" method="get" autocomplete="off">
+          <input type="text" name="q" placeholder="Search product" class="search-input">
+        </form>
+      </div>
+            <div class="icon-wrapper notification-icon-wrapper">
+                <i class="bi bi-bell icon" id="notification-bell" style="font-size: 1.3rem;"></i>
+                <span class="notification-badge" id="notification-badge" style="display: none;">0</span>
+                <span class="icon-label">Notifications</span>
+                <div class="notification-dropdown">
+                    <div class="notification-header">Notifications</div>
+                    <div class="notification-list" id="notification-list">
+                        <div class="notification-loading">Loading...</div>
+                    </div>
+                </div>
+            </div>
+            <a href="{{ url_for('favorite.favorite') }}" class="icon-wrapper favorite-icon-wrapper" style="text-decoration:none; color:inherit;">
+                <img src="{{ url_for('static', filename='images/star.png') }}" alt="Star" class="icon">
+                <span class="favorite-badge" id="favorite-badge" style="display: none;">0</span>
+                <span class="icon-label">Favorite</span>
+            </a>
+            <div class="icon-wrapper profile-icon-wrapper">
+                <img src="{{ url_for('static', filename='images/user.png') }}" alt="User" class="icon"><span class="icon-label"></span>
+                <div class="profile-dropdown">
+                    {% if session.get('logged_in') %}
+                        <a href="{{ url_for('myAccount_profile.myAccount_profile') }}" class="dropdown-item">My Account</a>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" id="logout-link" class="dropdown-item" data-logout-url="{{ url_for('auth.login') }}">Logout</a>
+                    {% else %}
+                        <a href="{{ url_for('auth.login') }}" class="dropdown-item">Login</a>
+                        <div class="dropdown-divider"></div>
+                        <a href="{{ url_for('auth.register') }}" class="dropdown-item">Register</a>
+                    {% endif %}
+                </div>
+            </div>
+            <a href="{{ url_for('cart.cart') }}" class="icon-wrapper cart-icon-wrapper" style="text-decoration:none; color:inherit;">
+                <img src="{{ url_for('static', filename='images/shopping-cart.png') }}" alt="Cart" class="icon">
+                <span class="cart-badge" id="cart-badge" style="display: none;">0</span>
+                <span class="icon-label">Cart</span>
+            </a>
+        </div>
+    </div>
+  <hr class="divider">
+  
+  <!-- VIDEO PLACEHOLDER START -->
+  <div class="video-placeholder-full">
+      <video class="video-bg" src="{{ url_for('static', filename='videos/pm_11872_1214_1214538-06xy8yl893-ori.webm') }}" autoplay muted loop playsinline></video>
+      <div class="video-overlay-text">
+          <h1 class="main-title">About Us</h1>
+          <p class="subtitle">Where Elegance Meets Purpose</p>
+      </div>
+  </div>
+  <!-- VIDEO PLACEHOLDER END -->
+
+    <div class="side-menu-overlay"></div>
+  <nav class="side-menu">
+    <div class="side-menu-divider"></div>
+    <a href="{{ url_for('browse_product.browse_product') }}" class="category-link"><span>All Products</span></a>
+    <a href="{{ url_for('browse_product.browse_product', category='dresses-skirts') }}" class="category-link"><span>Dresses & Skirts</span></a>
+    <a href="{{ url_for('browse_product.browse_product', category='tops-blouses') }}" class="category-link"><span>Tops & Blouses</span></a>
+    <a href="{{ url_for('browse_product.browse_product', category='activewear-yoga') }}" class="category-link"><span>Activewear & Yoga Pants</span></a>
+    <a href="{{ url_for('browse_product.browse_product', category='lingerie-sleepwear') }}" class="category-link"><span>Lingerie & Sleepwear</span></a>
+    <a href="{{ url_for('browse_product.browse_product', category='jackets-coats') }}" class="category-link"><span>Jackets & Coats</span></a>
+    <a href="{{ url_for('browse_product.browse_product', category='shoes-accessories') }}" class="category-link"><span>Shoes & Accessories</span></a>
+    <div class="side-menu-divider"></div>
+    <!-- About Us link is hidden when on About Us page -->
+  </nav>
+    <script>
+      const hamburgerBtn = document.getElementById('hamburgerBtn');
+      const sideMenu = document.querySelector('.side-menu');
+      const overlay = document.querySelector('.side-menu-overlay');
+      hamburgerBtn.addEventListener('click', function() {
+        const isOpen = sideMenu.classList.toggle('open');
+        overlay.classList.toggle('show', isOpen);
+        hamburgerBtn.classList.toggle('open', isOpen);
+      });
+      overlay.addEventListener('click', function() {
+        sideMenu.classList.remove('open');
+        overlay.classList.remove('show');
+        hamburgerBtn.classList.remove('open');
+      });
+    </script>
+    
+    <!-- Content area -->
+    <section class="about-content">
+        <!-- First Section: Image Left, Content Right -->
+        <div class="content-section section-1 fade-in-section">
+            <div class="image-placeholder">
+                <div class="slideshow-image active" style="background-image: url('{{ url_for('static', filename='images/about_us_images/cae471df4fa9995898498a7a69a0fe6b.jpg') }}'); background-size: cover; background-position: center;"></div>
+                <div class="slideshow-image" style="background-image: url('{{ url_for('static', filename='images/about_us_images/dilaw.png') }}'); background-size: cover; background-position: center;"></div>
+                <div class="slideshow-image" style="background-image: url('{{ url_for('static', filename='images/about_us_images/sayaw.png') }}'); background-size: cover; background-position: center;"></div>
+                <div class="slideshow-image" style="background-image: url('{{ url_for('static', filename='images/about_us_images/Untitled design (1).png') }}'); background-size: cover; background-position: center;"></div>
+                <div class="slideshow-image" style="background-image: url('{{ url_for('static', filename='images/about_us_images/VO090118_coverstory02 copy2.webp') }}'); background-size: cover; background-position: center;"></div>
+            </div>
+            <div class="text-content">
+                <img src="{{ url_for('static', filename='images/velarelogo.png') }}" alt="Velare Logo" class="velare-logo">
+                <p class="statement">Velare is more than a label — it's a movement redefining what luxury stands for.</p>
+                <p class="statement">We believe that true elegance is not only worn — it's lived.</p>
+                <p class="statement">Crafted with intention, guided by conscience, and inspired by beauty that empowers women and sustains the world we share.</p>
+            </div>
+        </div>
+
+        <!-- Second Section: Text Left, Content Right -->
+        <div class="content-section section-2 fade-in-section">
+            <div class="text-content-left">
+                <h2 class="story-title">Our Story:</h2>
+                <h3 class="story-subtitle">Born from <span class="highlight">Elegance</span></h3>
+                <h3 class="story-subtitle">Guided by <span class="highlight">Conscience</span></h3>
+            </div>
+            <div class="text-content-right">
+                <p class="story-description">Founded on the belief that fashion should embody both artistry and responsibility, Velare was created to celebrate women — their strength, creativity, and grace.</p>
+            </div>
+        </div>
+
+        <!-- Third Section: Sustainability Statement -->
+        <div class="content-section section-3 fade-in-section">
+            <div class="sustainability-content">
+                <p class="sustainability-statement">We embrace sustainability not as a trend, but as a principle. From our in-house production led by women artisans to our use of biodegradable materials, every collection reflects our commitment to beauty that uplifts, respects, and endures.</p>
+                <p class="sdg-intro">Our journey is shaped by the United Nations Sustainable Development Goals, particularly:</p>
+                <div class="sdg-grid">
+                    <div class="sdg-placeholder">
+                        <img src="{{ url_for('static', filename='images/SDG5.png') }}" alt="SDG 5 - Gender Equality" class="sdg-image">
+                    </div>
+                    <div class="sdg-placeholder">
+                        <img src="{{ url_for('static', filename='images/SDG8.png') }}" alt="SDG 8 - Decent Work and Economic Growth" class="sdg-image">
+                    </div>
+                    <div class="sdg-placeholder">
+                        <img src="{{ url_for('static', filename='images/SDG12.png') }}" alt="SDG 12 - Responsible Consumption and Production" class="sdg-image">
+                    </div>
+                    <div class="sdg-placeholder">
+                        <img src="{{ url_for('static', filename='images/SDG13.png') }}" alt="SDG 13 - Climate Action" class="sdg-image">
+                    </div>
+                    <div class="sdg-placeholder">
+                        <img src="{{ url_for('static', filename='images/SDG15.png') }}" alt="SDG 15 - Life on Land" class="sdg-image">
+                    </div>
+                    <div class="sdg-placeholder">
+                        <img src="{{ url_for('static', filename='images/SDG17.png') }}" alt="SDG 17 - Partnerships for the Goals" class="sdg-image">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Fourth Section: Empowerment - Image Left, Content Right -->
+        <div id="section-4" class="content-section section-4 fade-in-section">
+            <div class="image-placeholder">
+                <div class="slideshow-image-section4 active" style="background-image: url('{{ url_for('static', filename='images/about_us_images/about_us_section4/pexels-photo-8483558.webp') }}'); background-size: cover; background-position: center;"></div>
+                <div class="slideshow-image-section4" style="background-image: url('{{ url_for('static', filename='images/about_us_images/about_us_section4/Website-FEATURED-IMAGE-1200-×-628px-56.webp') }}'); background-size: cover; background-position: center;"></div>
+                <div class="slideshow-image-section4" style="background-image: url('{{ url_for('static', filename='images/about_us_images/about_us_section4/Women-Climate-Change_7a6f315d-6c08-431f-a4e4-31476ff9c786_1000x.webp') }}'); background-size: cover; background-position: center;"></div>
+            </div>
+            <div class="empowerment-content">
+                <h2 class="empowerment-title">Empowering Women and Communities</h2>
+                <p class="empowerment-description">Behind every creation lies a story of empowerment. Through our in-house production, Velare provides meaningful opportunities for women artisans — nurturing craftsmanship, leadership, and independence.</p>
+                <p class="empowerment-description">We take pride in the diversity of our community — from designers and tailors to local suppliers — each one contributing to a tapestry of culture, creativity, and collaboration. Every piece carries their touch, their story, their artistry.</p>
+                <div class="empowerment-sdg">
+                    <img src="{{ url_for('static', filename='images/SDG5.png') }}" alt="SDG 5 - Gender Equality" class="empowerment-sdg-image">
+                    <img src="{{ url_for('static', filename='images/SDG8.png') }}" alt="SDG 8 - Decent Work and Economic Growth" class="empowerment-sdg-image">
+                </div>
+            </div>
+        </div>
+
+        <!-- Fifth Section: Sustainability in Every Stitch -->
+        <div id="section-5" class="content-section section-5 fade-in-section">
+            <div class="sustainability-hero">
+                <div class="sustainability-hero-background">
+                    <div class="slideshow-image-section5 active" style="background-image: url('{{ url_for('static', filename='images/about_us_images/about_us_section5/EDITED-Blog-RESDA-Uganda-Sewing-Center-Sept-Visit-USANA-Foundation-scaled.jpg') }}'); background-size: cover; background-position: center;"></div>
+                    <div class="slideshow-image-section5" style="background-image: url('{{ url_for('static', filename='images/about_us_images/about_us_section5/habi-filipino-weaving-techniques-865050.webp') }}'); background-size: cover; background-position: center;"></div>
+                    <div class="slideshow-image-section5" style="background-image: url('{{ url_for('static', filename='images/about_us_images/about_us_section5/isatou-ceesay.png') }}'); background-size: cover; background-position: center;"></div>
+                    <div class="slideshow-image-section5" style="background-image: url('{{ url_for('static', filename='images/about_us_images/about_us_section5/WomenPlantingTrees.jpg') }}'); background-size: cover; background-position: center;"></div>
+                </div>
+                <div class="sustainability-hero-content">
+                    <h1 class="sustainability-main-title">Sustainability in Every Stitch</h1>
+                    <p class="sustainability-subtitle">At Velare, we design with the Earth in mind.</p>
+                </div>
+            </div>
+            <div class="sustainability-details">
+                <div class="sustainability-sdg-left">
+                    <img src="{{ url_for('static', filename='images/SDG12.png') }}" alt="SDG 12 - Responsible Consumption and Production" class="sustainability-sdg-image">
+                    <img src="{{ url_for('static', filename='images/SDG13.png') }}" alt="SDG 13 - Climate Action" class="sustainability-sdg-image">
+                </div>
+                <div class="sustainability-text">
+                    <p class="sustainability-description">We source biodegradable and ethically produced materials, craft using low-impact processes, and package with eco-conscious care. Every fabric we select, every stitch we make, reflects our dedication to SDG 12: Responsible Consumption and Production and SDG 13: Climate Action. Our mission is not only to dress the modern woman — but to preserve the beauty of the world she lives in.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sixth Section: Tradition Meets Innovation -->
+        <div id="section-6" class="content-section section-6 fade-in-section">
+            <div class="tradition-content">
+                <h2 class="tradition-title">Tradition Meets Innovation</h2>
+                <p class="tradition-description">We honor craftsmanship passed down through generations while embracing innovation that advances sustainability.</p>
+                <p class="tradition-description">Guided by SDG 9: Industry, Innovation, and Infrastructure, we invest in modern methods and technologies that preserve both quality and planet.</p>
+                <p class="tradition-description">The result — timeless pieces that embody modern luxury, without compromise.</p>
+                <div class="tradition-sdg-container">
+                    <img src="{{ url_for('static', filename='images/SDG9.png') }}" alt="SDG 9 - Industry, Innovation, and Infrastructure" class="tradition-sdg-image">
+                </div>
+            </div>
+            <div class="image-placeholder">
+                <div class="slideshow-image-section6 active" style="background-image: url('{{ url_for('static', filename='images/about_us_images/about_us_section6/card-from-seed-to-store-roadmap.jpg') }}'); background-size: cover; background-position: center;"></div>
+                <div class="slideshow-image-section6" style="background-image: url('{{ url_for('static', filename='images/about_us_images/about_us_section6/china.jpg') }}'); background-size: cover; background-position: center;"></div>
+                <div class="slideshow-image-section6" style="background-image: url('{{ url_for('static', filename='images/about_us_images/about_us_section6/shutterstock_778298764-1_auto.png') }}'); background-size: cover; background-position: center;"></div>
+            </div>
+        </div>
+
+        <!-- Seventh Section: Collaborating for Change -->
+        <div id="section-7" class="content-section section-7 fade-in-section">
+            <div class="collaboration-content">
+                <h2 class="collaboration-title">Collaborating for Change</h2>
+                <p class="collaboration-subtitle">Meaningful impact is never achieved alone.</p>
+                <p class="collaboration-description">Through partnerships with local cooperatives, eco-design advocates, and community organizations, we advance SDG 17: Partnerships for the Goals — building a network that uplifts artisans and encourages responsible fashion practices. Together, we are redefining what luxury can mean: inclusive, conscious, and transformative.</p>
+            </div>
+            <div class="collaboration-sdg">
+                <img src="{{ url_for('static', filename='images/SDG17.png') }}" alt="SDG 17 - Partnerships for the Goals" class="collaboration-sdg-image">
+            </div>
+        </div>
+
+        <!-- Partnership Showcase -->
+        <div class="content-section section-8 fade-in-section">
+            <div class="partnership-grid">
+                <a href="https://r2rshop.com/" target="_blank" rel="noopener noreferrer" class="partnership-item" style="text-decoration: none; color: inherit;">
+                    <div class="partnership-image-placeholder">
+                        <video class="partnership-video" autoplay muted loop playsinline>
+                            <source src="{{ url_for('static', filename='videos/about_us_partners/Rags to Riches.mp4') }}" type="video/mp4">
+                        </video>
+                    </div>
+                    <h3 class="partnership-label">Rags to Riches</h3>
+                </a>
+                <a href="https://www.habiphilippinetextilecouncil.com/" target="_blank" rel="noopener noreferrer" class="partnership-item" style="text-decoration: none; color: inherit;">
+                    <div class="partnership-image-placeholder">
+                        <video class="partnership-video" autoplay muted loop playsinline>
+                            <source src="{{ url_for('static', filename='videos/about_us_partners/habi.mp4') }}" type="video/mp4">
+                        </video>
+                    </div>
+                    <h3 class="partnership-label">Habi</h3>
+                </a>
+                <a href="https://sparkphilippines.org/" target="_blank" rel="noopener noreferrer" class="partnership-item" style="text-decoration: none; color: inherit;">
+                    <div class="partnership-image-placeholder">
+                        <video class="partnership-video" autoplay muted loop playsinline>
+                            <source src="{{ url_for('static', filename='videos/about_us_partners/Spark.mp4') }}" type="video/mp4">
+                        </video>
+                    </div>
+                    <h3 class="partnership-label">Spark</h3>
+                </a>
+            </div>
+        </div>
+
+        <!-- Ninth Section: Our Promise -->
+        <div class="content-section section-9 fade-in-section">
+            <div class="promise-hero">
+                <div class="promise-hero-background">
+                    <video class="promise-video" autoplay muted loop playsinline>
+                        <source src="{{ url_for('static', filename='videos/about_us_partners/last video.mp4') }}" type="video/mp4">
+                    </video>
+                </div>
+                <div class="promise-hero-content">
+                    <h1 class="promise-main-title">Our Promise</h1>
+                    <p class="promise-subtitle">Velare stands for beauty that empowers, fashion that respects, and luxury that sustains.</p>
+                </div>
+            </div>
+            <div class="promise-description-container">
+                <p class="promise-description">We promise to continue our journey toward an elegant future — one that celebrates women, diversity, and the planet that inspires us. Because in every thread we weave, and in every life we touch, we believe fashion should always serve a greater purpose.</p>
+            </div>
+        </div>
+    </section>
+
+  <!-- Logout Confirmation Modal -->
+  <div id="logout-modal-overlay"></div>
+  <div id="logout-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-title">Do you want to Logout?</div>
+      <div class="modal-actions">
+        <button id="confirm-logout" class="modal-btn">Logout</button>
+        <button id="cancel-logout" class="modal-btn">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chat Widget -->
+  <div id="chat-widget">
+      <div id="chat-button">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M20 2H4C2.9 2 2 2.9 2 4V22L6 18H20C21.1 18 22 17.1 22 16V4C22 2.9 21.1 2 20 2ZM20 16H5.17L4 17.17V4H20V16Z" fill="currentColor"/>
+              <circle cx="7" cy="10" r="1" fill="currentColor"/>
+              <circle cx="12" cy="10" r="1" fill="currentColor"/>
+              <circle cx="17" cy="10" r="1" fill="currentColor"/>
+          </svg>
+          <span>Chat</span>
+      </div>
+      
+      <div id="chat-window" class="chat-window-hidden">
+          <!-- Left Panel: Contact List -->
+          <div class="chat-left-panel">
+              <div class="chat-header">
+                  <h3>Chat</h3>
+                  <div class="chat-controls">
+                      <button id="close-chat" class="chat-control-btn">
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <path d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12L19 6.41Z" fill="currentColor"/>
+                          </svg>
+                      </button>
+                  </div>
+              </div>
+              
+              <div class="chat-search">
+                  <input type="text" placeholder="Search name" class="chat-search-input">
+              </div>
+              
+              <div class="chat-contacts">
+                  <div class="chat-contact">
+                      <div class="contact-avatar">
+                          <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%23bf9f4a'/%3E%3Ctext x='16' y='20' text-anchor='middle' fill='white' font-size='12' font-weight='bold'%3EV%3C/text%3E%3C/svg%3E" alt="Velare Support">
+                      </div>
+                      <div class="contact-info">
+                          <div class="contact-name">Velare Support</div>
+                          <div class="contact-message">How can we help you today?</div>
+                      </div>
+                      <div class="contact-time">Now</div>
+                  </div>
+                  
+                  <div class="chat-contact">
+                      <div class="contact-avatar">
+                          <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%23181818'/%3E%3Ctext x='16' y='20' text-anchor='middle' fill='white' font-size='12' font-weight='bold'%3ES%3C/text%3E%3C/svg%3E" alt="Sales Team">
+                      </div>
+                      <div class="contact-info">
+                          <div class="contact-name">Sales Team</div>
+                          <div class="contact-message">Thank you for your interest!</div>
+                      </div>
+                      <div class="contact-time">2m</div>
+                  </div>
+                  
+                  <div class="chat-contact">
+                      <div class="contact-avatar">
+                          <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%232c2236'/%3E%3Ctext x='16' y='20' text-anchor='middle' fill='white' font-size='12' font-weight='bold'%3EC%3C/text%3E%3C/svg%3E" alt="Customer Care">
+                      </div>
+                      <div class="contact-info">
+                          <div class="contact-name">Customer Care</div>
+                          <div class="contact-message">Your order has been processed</div>
+                      </div>
+                      <div class="contact-time">1h</div>
+                  </div>
+              </div>
+          </div>
+          
+          <!-- Right Panel: Conversation or Welcome -->
+          <div class="chat-right-panel">
+              <div class="chat-welcome">
+                  <div class="welcome-icon">
+                      <svg width="80" height="60" viewBox="0 0 100 75" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <rect x="10" y="15" width="80" height="50" rx="8" fill="#e0d7c6" stroke="#bf9f4a" stroke-width="2"/>
+                          <rect x="15" y="20" width="70" height="30" rx="4" fill="#fafafa"/>
+                          <rect x="20" y="25" width="25" height="3" rx="1.5" fill="#bf9f4a"/>
+                          <rect x="20" y="30" width="35" height="3" rx="1.5" fill="#bf9f4a"/>
+                          <rect x="20" y="35" width="20" height="3" rx="1.5" fill="#bf9f4a"/>
+                          <circle cx="65" cy="35" r="8" fill="#181818"/>
+                          <circle cx="65" cy="35" r="3" fill="white"/>
+                          <circle cx="67" cy="33" r="1" fill="#181818"/>
+                          <circle cx="69" cy="35" r="1" fill="#181818"/>
+                          <circle cx="67" cy="37" r="1" fill="#181818"/>
+                      </svg>
+                  </div>
+                  <h4>Welcome to Velare Chat</h4>
+                  <p>Search and connect with sellers to start chatting</p>
+              </div>
+              
+              <div class="chat-conversation">
+                  <div class="conversation-header">
+                      <div class="conversation-contact">
+                          <div class="conversation-avatar">
+                              <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%23bf9f4a'/%3E%3Ctext x='16' y='20' text-anchor='middle' fill='white' font-size='12' font-weight='bold'%3EV%3C/text%3E%3C/svg%3E" alt="Contact">
+                          </div>
+                          <div class="conversation-info">
+                              <div class="conversation-name">Velare Support</div>
+                          </div>
+                      </div>
+                  </div>
+                  
+                  <div class="conversation-messages">
+                      <div class="message received">
+                          <div class="message-content">
+                              <p>Hello! Welcome to Velare. How can we assist you today?</p>
+                          </div>
+                          <div class="message-time">2:30 PM</div>
+                      </div>
+                      
+                      <div class="message sent">
+                          <div class="message-content">
+                              <p>Hi! I'm interested in your new collection.</p>
+                          </div>
+                          <div class="message-time">2:32 PM</div>
+                      </div>
+                      
+                      <div class="message received">
+                          <div class="message-content">
+                              <p>Great! Our latest collection features elegant designs perfect for any occasion. Would you like me to show you some recommendations?</p>
+                          </div>
+                          <div class="message-time">2:33 PM</div>
+                      </div>
+                  </div>
+                  
+                  <div class="conversation-input">
+                      <input type="text" placeholder="Type your message..." class="message-input">
+                      <button class="send-button">
+                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <path d="M2.01 21L23 12L2.01 3L2 10L17 12L2 14L2.01 21Z" fill="currentColor"/>
+                          </svg>
+                      </button>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+      <div class="footer-container">
+          <!-- Footer Top Section -->
+          <div class="footer-content">
+              <!-- About Section -->
+              <div class="footer-section">
+                  <h3 class="footer-title">About Veláre</h3>
+                  <p class="footer-description">Veláre is your premier destination for elegant and sophisticated fashion. We bring you curated collections that celebrate style, quality, and timeless elegance.</p>
+                  <a href="{{ url_for('about_us.about_us') }}" class="footer-link">Learn More About Us</a>
+              </div>
+
+              <!-- Quick Links Section -->
+              <div class="footer-section">
+                  <h3 class="footer-title">Quick Links</h3>
+                  <ul class="footer-links footer-links-two-column">
+                      <li><a href="{{ url_for('browse_product.browse_product') }}" class="footer-link">Shop All</a></li>
+                      <li><a href="{{ url_for('browse_product.browse_product', category='dresses-skirts') }}" class="footer-link">Dresses & Skirts</a></li>
+                      <li><a href="{{ url_for('browse_product.browse_product', category='tops-blouses') }}" class="footer-link">Tops & Blouses</a></li>
+                      <li><a href="{{ url_for('browse_product.browse_product', category='activewear-yoga') }}" class="footer-link">Activewear & Yoga</a></li>
+                      <li><a href="{{ url_for('browse_product.browse_product', category='lingerie-sleepwear') }}" class="footer-link">Lingerie & Sleepwear</a></li>
+                      <li><a href="{{ url_for('browse_product.browse_product', category='jackets-coats') }}" class="footer-link">Jackets & Coats</a></li>
+                      <li><a href="{{ url_for('browse_product.browse_product', category='shoes-accessories') }}" class="footer-link">Shoes & Accessories</a></li>
+                      <li><a href="{{ url_for('favorite.favorite') }}" class="footer-link">My Favorites</a></li>
+                  </ul>
+              </div>
+
+              <!-- Our Values Section -->
+              <div class="footer-section">
+                  <h3 class="footer-title">Our Values</h3>
+                  <ul class="footer-links">
+                      <li><a href="{{ url_for('about_us.about_us') }}#section-4" class="footer-link">Women Empowerment</a></li>
+                      <li><a href="{{ url_for('about_us.about_us') }}#section-5" class="footer-link">Sustainability</a></li>
+                      <li><a href="{{ url_for('about_us.about_us') }}#section-6" class="footer-link">Innovation</a></li>
+                      <li><a href="{{ url_for('about_us.about_us') }}#section-7" class="footer-link">Collaboration</a></li>
+                      <li><a href="{{ url_for('references.references') }}" class="footer-link">References</a></li>
+                  </ul>
+              </div>
+
+              <!-- Contact & Social Section -->
+              <div class="footer-section">
+                  <h3 class="footer-title">Get In Touch</h3>
+                  <div class="contact-info">
+                      <p class="contact-item">
+                          <span class="contact-label">Phone:</span>
+                          <a href="tel:09956776157" class="footer-link">09956776157</a>
+                      </p>
+                      <p class="contact-item">
+                          <span class="contact-label">Location:</span>
+                          <span class="footer-text">Philippines</span>
+                      </p>
+                  </div>
+                  <div class="social-links">
+                      <a href="https://web.facebook.com/symon.beato.3" target="_blank" rel="noopener noreferrer" class="social-link facebook" title="Facebook">
+                          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                              <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                          </svg>
+                      </a>
+                      <a href="#" class="social-link instagram" title="Instagram">
+                          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                              <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0m0 2c5.514 0 10 4.486 10 10s-4.486 10-10 10S2 17.514 2 12 6.486 2 12 2m0 2c-4.411 0-8 3.589-8 8s3.589 8 8 8 8-3.589 8-8-3.589-8-8-8m0 2c3.309 0 6 2.691 6 6s-2.691 6-6 6-6-2.691-6-6 2.691-6 6-6m5.5-1c-.828 0-1.5.672-1.5 1.5s.672 1.5 1.5 1.5 1.5-.672 1.5-1.5-.672-1.5-1.5-1.5"/>
+                          </svg>
+                      </a>
+                  </div>
+              </div>
+          </div>
+
+          <!-- Footer Bottom Section -->
+          <div class="footer-bottom">
+              <div class="footer-bottom-content">
+                  <p class="copyright">&copy; 2025 Veláre. All Rights Reserved.</p>
+                  <div class="footer-bottom-links">
+                  </div>
+              </div>
+          </div>
+      </div>
+  </footer>
+
+  <script defer src="{{ url_for('static', filename='js/logout-modal.js') }}"></script>
+  <script defer src="{{ url_for('static', filename='js/index.js') }}"></script>
+  <script defer src="{{ url_for('static', filename='js/category-navigation.js') }}"></script>
+  <script defer src="{{ url_for('static', filename='js/about_us.js') }}"></script>
+  <script defer src="{{ url_for('static', filename='js/cart-badge.js') }}"></script>
+  <script defer src="{{ url_for('static', filename='js/notifications.js') }}"></script>
+  <script defer src="{{ url_for('static', filename='js/chat.js') }}"></script>
+</body>
+</html>

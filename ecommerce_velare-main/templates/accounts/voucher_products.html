@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if voucher %}{{ voucher['voucher_name'] }} - {% endif %}Veláre</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/Velare Logo Tab 1.png') }}">
+    <!-- Optimized Google Fonts - Combined into one request -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@100;300;400;700&family=Cormorant+Garamond:wght@500;600;700&family=Cinzel:wght@700&family=Goodie&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/browse_product.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/logout-modal.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/chat.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/footer.css') }}">
+    <script defer src="{{ url_for('static', filename='js/search-anim.js') }}"></script>
+</head>
+<body>
+    <div id="menuToggle" style="display: flex; align-items: center; gap: 10px;">
+        <button id="hamburgerBtn" aria-label="Open menu" type="button">
+            <div class="bar bar--top"></div>
+            <div class="bar bar--bottom"></div>
+        </button>
+        <a href="{{ url_for('myAccount_vouchers.myAccount_vouchers') }}" class="category-indicator" style="font-family: 'Playfair Display', serif; font-size: 1rem; color: #181818; font-weight: 600; text-decoration: none;">Vouchers</a>
+    </div>
+    
+    <div class="header-container">
+        <span class="header"><a href="{{ url_for('index.index') }}" style="color: inherit; text-decoration: none;">Veláre</a></span>
+        <div class="icon-bar">
+            <div class="icon-wrapper search-icon-wrapper">
+                <img id="search-icon" src="{{ url_for('static', filename='images/search.png') }}" alt="Search" class="icon">
+                <span class="icon-label">Search</span>
+                <form id="search-form" class="search-form-animated" action="{{ url_for('browse_product.browse_product') }}" method="get" autocomplete="off">
+                    <input type="text" name="q" placeholder="Search product" class="search-input">
+                </form>
+            </div>
+            <div class="icon-wrapper notification-icon-wrapper">
+                <i class="bi bi-bell icon" id="notification-bell" style="font-size: 1.3rem;"></i>
+                <span class="notification-badge" id="notification-badge" style="display: none;">0</span>
+                <span class="icon-label">Notifications</span>
+                <div class="notification-dropdown">
+                    <div class="notification-header">Notifications</div>
+                    <div class="notification-list" id="notification-list">
+                        <div class="notification-loading">Loading...</div>
+                    </div>
+                </div>
+            </div>
+            <a href="{{ url_for('favorite.favorite') }}" class="icon-wrapper" style="text-decoration:none; color:inherit;"><img src="{{ url_for('static', filename='images/star.png') }}" alt="Star" class="icon"><span class="icon-label">Favorite</span></a>
+            <div class="icon-wrapper profile-icon-wrapper">
+                <img src="{{ url_for('static', filename='images/user.png') }}" alt="User" class="icon"><span class="icon-label"></span>
+                <div class="profile-dropdown">
+                    <a href="{{ url_for('myAccount_profile.myAccount_profile') }}" class="dropdown-item">My Account</a>
+                    <div class="dropdown-divider"></div>
+                    <a href="#" id="logout-link" class="dropdown-item" data-logout-url="{{ url_for('auth.login') }}">Logout</a>
+                </div>
+            </div>
+            <a href="{{ url_for('cart.cart') }}" class="icon-wrapper cart-icon-wrapper" style="text-decoration:none; color:inherit;">
+                <img src="{{ url_for('static', filename='images/shopping-cart.png') }}" alt="Cart" class="icon">
+                <span class="cart-badge" id="cart-badge" style="display: none;">0</span>
+                <span class="icon-label">Cart</span>
+            </a>
+        </div>
+    </div>
+    <hr class="divider">
+    
+    {% if voucher %}
+    <div class="hero-image-section" style="background: linear-gradient(135deg, #bf9f4a 0%, #D3BD9B 100%); position: relative; height: 400px; display: flex; align-items: center; justify-content: center; color: #fff;">
+        <div style="text-align: center; z-index: 1;">
+            <div style="font-size: 4rem; margin-bottom: 20px; opacity: 0.9;">
+                <i class="bi bi-{% if voucher['voucher_type'] == 'free_shipping' %}truck{% else %}percent{% endif %}"></i>
+            </div>
+            <h1 style="font-family: 'Playfair Display', serif; font-size: 2.5rem; font-weight: 700; margin-bottom: 12px;">{{ voucher['voucher_name'] }}</h1>
+            <p style="font-family: 'Montserrat', sans-serif; font-size: 1.1rem; margin-bottom: 16px; opacity: 0.95;">{{ voucher['discount_percent'] }}% OFF • Valid until {{ voucher['end_date'].strftime('%B %d, %Y') }}</p>
+            <div style="display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.2); padding: 8px 20px; border-radius: 20px; font-family: 'Montserrat', sans-serif; font-size: 0.95rem; backdrop-filter: blur(10px);">
+                <i class="bi bi-shop"></i> {{ voucher['shop_count'] }} Shop{{ 's' if voucher['shop_count'] > 1 else '' }}
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="hero-image-section">
+        <img src="{{ url_for('static', filename='images/sampleimage4.webp') }}" alt="Hero Image" class="hero-image">
+    </div>
+    {% endif %}
+    
+    <div class="side-menu-overlay"></div>
+    <nav class="side-menu">
+        <a href="{{ url_for('browse_product.browse_product') }}" class="category-link"><span>All Products</span></a>
+        <a href="{{ url_for('browse_product.browse_product', category='dresses-skirts') }}" class="category-link"><span>Dresses & Skirts</span></a>
+        <a href="{{ url_for('browse_product.browse_product', category='tops-blouses') }}" class="category-link"><span>Tops & Blouses</span></a>
+        <a href="{{ url_for('browse_product.browse_product', category='activewear-yoga') }}" class="category-link"><span>Activewear & Yoga Pants</span></a>
+        <a href="{{ url_for('browse_product.browse_product', category='lingerie-sleepwear') }}" class="category-link"><span>Lingerie & Sleepwear</span></a>
+        <a href="{{ url_for('browse_product.browse_product', category='jackets-coats') }}" class="category-link"><span>Jackets & Coats</span></a>
+        <a href="{{ url_for('browse_product.browse_product', category='shoes-accessories') }}" class="category-link"><span>Shoes & Accessories</span></a>
+        <div class="side-menu-divider"></div>
+        <a href="{{ url_for('about_us.about_us') }}" class="category-link"><span>About Us</span></a>
+    </nav>
+    
+    <script>
+        const hamburgerBtn = document.getElementById('hamburgerBtn');
+        const sideMenu = document.querySelector('.side-menu');
+        const overlay = document.querySelector('.side-menu-overlay');
+        hamburgerBtn.addEventListener('click', function() {
+            const isOpen = sideMenu.classList.toggle('open');
+            overlay.classList.toggle('show', isOpen);
+            hamburgerBtn.classList.toggle('open', isOpen);
+        });
+        overlay.addEventListener('click', function() {
+            sideMenu.classList.remove('open');
+            overlay.classList.remove('show');
+            hamburgerBtn.classList.remove('open');
+        });
+    </script>
+    
+    <div class="products-container">
+        <div class="products-grid">
+            {% if voucher and products %}
+                {% for product in products %}
+                <a href="{{ url_for('view_item.view_item', product_id=product.product_id) }}" style="text-decoration: none; color: inherit;">
+                    <div class="product-card">
+                        <div class="product-image-placeholder">
+                            {% if product.image_url %}
+                                {% if product.image_url.startswith('http://') or product.image_url.startswith('https://') %}
+                                    <img src="{{ product.image_url }}" alt="{{ product.product_name }}">
+                                {% elif product.image_url.startswith('static/') %}
+                                    <img src="/{{ product.image_url }}" alt="{{ product.product_name }}">
+                                {% else %}
+                                    <img src="{{ url_for('static', filename=product.image_url) }}" alt="{{ product.product_name }}">
+                                {% endif %}
+                            {% else %}
+                                <img src="{{ url_for('static', filename='images/sampleimage1.jpg') }}" alt="{{ product.product_name }}">
+                            {% endif %}
+                        </div>
+                        <div class="product-info">
+                            <h3 class="product-name">{{ product.product_name }}</h3>
+                            <p class="product-material">{{ product.materials or 'Premium Materials' }}</p>
+                            <p class="product-price">₱{{ "%.2f"|format(product.price) }}</p>
+                            {% if product.rating and product.rating > 0 %}
+                                <p style="font-size: 0.85rem; color: #bf9f4a; margin-top: 5px;">⭐ {{ "%.1f"|format(product.rating) }} ({{ product.total_reviews or 0 }} reviews)</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </a>
+                {% endfor %}
+            {% elif voucher %}
+                <div style="grid-column: 1 / -1; text-align: center; padding: 60px 20px; color: #666;">
+                    <h3 style="font-family: 'Playfair Display', serif; font-size: 1.8rem; margin-bottom: 10px;">No Products Available</h3>
+                    <p>There are no products available with this voucher yet.</p>
+                    <a href="{{ url_for('myAccount_vouchers.myAccount_vouchers') }}" class="empty-state-btn">Back to Vouchers</a>
+                </div>
+            {% else %}
+                <div style="grid-column: 1 / -1; text-align: center; padding: 60px 20px; color: #666;">
+                    <h3 style="font-family: 'Playfair Display', serif; font-size: 1.8rem; margin-bottom: 10px;">Voucher Not Found</h3>
+                    <p>The voucher you're looking for doesn't exist.</p>
+                    <a href="{{ url_for('myAccount_vouchers.myAccount_vouchers') }}" class="empty-state-btn">Back to Vouchers</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div id="logout-modal-overlay"></div>
+    <div id="logout-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-title">Do you want to Logout?</div>
+            <div class="modal-actions">
+                <button id="confirm-logout" class="modal-btn">Logout</button>
+                <button id="cancel-logout" class="modal-btn">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="chat-widget">
+        <div id="chat-button">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M20 2H4C2.9 2 2 2.9 2 4V22L6 18H20C21.1 18 22 17.1 22 16V4C22 2.9 21.1 2 20 2ZM20 16H5.17L4 17.17V4H20V16Z" fill="currentColor"/>
+                <circle cx="7" cy="10" r="1" fill="currentColor"/>
+                <circle cx="12" cy="10" r="1" fill="currentColor"/>
+                <circle cx="17" cy="10" r="1" fill="currentColor"/>
+            </svg>
+            <span>Chat</span>
+        </div>
+        
+        <div id="chat-window" class="chat-window-hidden">
+            <div class="chat-left-panel">
+                <div class="chat-header">
+                    <h3>Chat</h3>
+                    <div class="chat-controls">
+                        <button id="close-chat" class="chat-control-btn">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12L19 6.41Z" fill="currentColor"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="chat-search">
+                    <input type="text" placeholder="Search name" class="chat-search-input">
+                </div>
+                
+                <div class="chat-contacts">
+                    <div class="chat-contact">
+                        <div class="contact-avatar">
+                            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%23bf9f4a'/%3E%3Ctext x='16' y='20' text-anchor='middle' fill='white' font-size='12' font-weight='bold'%3EV%3C/text%3E%3C/svg%3E" alt="Velare Support">
+                        </div>
+                        <div class="contact-info">
+                            <div class="contact-name">Velare Support</div>
+                            <div class="contact-message">How can we help you today?</div>
+                        </div>
+                        <div class="contact-time">Now</div>
+                    </div>
+                    
+                    <div class="chat-contact">
+                        <div class="contact-avatar">
+                            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%23181818'/%3E%3Ctext x='16' y='20' text-anchor='middle' fill='white' font-size='12' font-weight='bold'%3ES%3C/text%3E%3C/svg%3E" alt="Sales Team">
+                        </div>
+                        <div class="contact-info">
+                            <div class="contact-name">Sales Team</div>
+                            <div class="contact-message">Thank you for your interest!</div>
+                        </div>
+                        <div class="contact-time">2m</div>
+                    </div>
+                    
+                    <div class="chat-contact">
+                        <div class="contact-avatar">
+                            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%232c2236'/%3E%3Ctext x='16' y='20' text-anchor='middle' fill='white' font-size='12' font-weight='bold'%3EC%3C/text%3E%3C/svg%3E" alt="Customer Care">
+                        </div>
+                        <div class="contact-info">
+                            <div class="contact-name">Customer Care</div>
+                            <div class="contact-message">Your order has been processed</div>
+                        </div>
+                        <div class="contact-time">1h</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="chat-right-panel">
+                <div class="chat-welcome">
+                    <div class="welcome-icon">
+                        <svg width="80" height="60" viewBox="0 0 100 75" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="10" y="15" width="80" height="50" rx="8" fill="#e0d7c6" stroke="#bf9f4a" stroke-width="2"/>
+                            <rect x="15" y="20" width="70" height="30" rx="4" fill="#fafafa"/>
+                            <rect x="20" y="25" width="25" height="3" rx="1.5" fill="#bf9f4a"/>
+                            <rect x="20" y="30" width="35" height="3" rx="1.5" fill="#bf9f4a"/>
+                            <rect x="20" y="35" width="20" height="3" rx="1.5" fill="#bf9f4a"/>
+                            <circle cx="65" cy="35" r="8" fill="#181818"/>
+                            <circle cx="65" cy="35" r="3" fill="white"/>
+                            <circle cx="67" cy="33" r="1" fill="#181818"/>
+                            <circle cx="69" cy="35" r="1" fill="#181818"/>
+                            <circle cx="67" cy="37" r="1" fill="#181818"/>
+                        </svg>
+                    </div>
+                    <h4>Welcome to Velare Chat</h4>
+                    <p>Search and connect with sellers to start chatting</p>
+                </div>
+                
+                <div class="chat-conversation">
+                    <div class="conversation-header">
+                        <div class="conversation-contact">
+                            <div class="conversation-avatar">
+                                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%23bf9f4a'/%3E%3Ctext x='16' y='20' text-anchor='middle' fill='white' font-size='12' font-weight='bold'%3EV%3C/text%3E%3C/svg%3E" alt="Contact">
+                            </div>
+                            <div class="conversation-info">
+                                <div class="conversation-name">Velare Support</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="conversation-messages">
+                        <div class="message received">
+                            <div class="message-content">
+                                <p>Hello! Welcome to Velare. How can we assist you today?</p>
+                            </div>
+                            <div class="message-time">2:30 PM</div>
+                        </div>
+                        
+                        <div class="message sent">
+                            <div class="message-content">
+                                <p>Hi! I'm interested in your new collection.</p>
+                            </div>
+                            <div class="message-time">2:32 PM</div>
+                        </div>
+                        
+                        <div class="message received">
+                            <div class="message-content">
+                                <p>Great! Our latest collection features elegant designs perfect for any occasion. Would you like me to show you some recommendations?</p>
+                            </div>
+                            <div class="message-time">2:33 PM</div>
+                        </div>
+                    </div>
+                    
+                    <div class="conversation-input">
+                        <input type="text" placeholder="Type your message..." class="message-input">
+                        <button class="send-button">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M2.01 21L23 12L2.01 3L2 10L17 12L2 14L2.01 21Z" fill="currentColor"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3 class="footer-title">About Veláre</h3>
+                    <p class="footer-description">Veláre is your premier destination for elegant and sophisticated fashion. We bring you curated collections that celebrate style, quality, and timeless elegance.</p>
+                    <a href="{{ url_for('about_us.about_us') }}" class="footer-link">Learn More About Us</a>
+                </div>
+
+                <div class="footer-section">
+                    <h3 class="footer-title">Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="{{ url_for('browse_product.browse_product') }}" class="footer-link">Shop All</a></li>
+                        <li><a href="{{ url_for('browse_product.browse_product', category='dresses-skirts') }}" class="footer-link">Dresses & Skirts</a></li>
+                        <li><a href="{{ url_for('browse_product.browse_product', category='tops-blouses') }}" class="footer-link">Tops & Blouses</a></li>
+                        <li><a href="{{ url_for('favorite.favorite') }}" class="footer-link">My Favorites</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h3 class="footer-title">Customer Service</h3>
+                    <ul class="footer-links">
+                        <li><a href="{{ url_for('about_us.about_us') }}" class="footer-link">About Us</a></li>
+                        <li><a href="#" class="footer-link">Contact Us</a></li>
+                        <li><a href="#" class="footer-link">FAQ</a></li>
+                        <li><a href="#" class="footer-link">Shipping Info</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h3 class="footer-title">Get In Touch</h3>
+                    <div class="contact-info">
+                        <p class="contact-item">
+                            <span class="contact-label">Phone:</span>
+                            <a href="tel:09956776157" class="footer-link">09956776157</a>
+                        </p>
+                        <p class="contact-item">
+                            <span class="contact-label">Location:</span>
+                            <span class="footer-text">Philippines</span>
+                        </p>
+                    </div>
+                    <div class="social-links">
+                        <a href="https://web.facebook.com/symon.beato.3" target="_blank" rel="noopener noreferrer" class="social-link facebook" title="Facebook">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                            </svg>
+                        </a>
+                        <a href="#" class="social-link instagram" title="Instagram">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0m0 2c5.514 0 10 4.486 10 10s-4.486 10-10 10S2 17.514 2 12 6.486 2 12 2m0 2c-4.411 0-8 3.589-8 8s3.589 8 8 8 8-3.589 8-8-3.589-8-8-8m0 2c3.309 0 6 2.691 6 6s-2.691 6-6 6-6-2.691-6-6 2.691-6 6-6m5.5-1c-.828 0-1.5.672-1.5 1.5s.672 1.5 1.5 1.5 1.5-.672 1.5-1.5-.672-1.5-1.5-1.5"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <div class="footer-bottom-content">
+                    <p class="copyright">&copy; 2025 Veláre. All Rights Reserved.</p>
+                    <div class="footer-bottom-links">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script defer src="{{ url_for('static', filename='js/logout-modal.js') }}"></script>
+    <script defer src="{{ url_for('static', filename='js/index.js') }}"></script>
+    <script defer src="{{ url_for('static', filename='js/category-navigation.js') }}"></script>
+    <script defer src="{{ url_for('static', filename='js/cart-badge.js') }}"></script>
+    <script defer src="{{ url_for('static', filename='js/chat.js') }}"></script>
+    <script defer src="{{ url_for('static', filename='js/notifications.js') }}"></script>
+</body>
+</html>

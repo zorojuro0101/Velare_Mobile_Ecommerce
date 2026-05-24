@@ -1,0 +1,50 @@
+name: Flutter APK Auto Release
+
+# Lalaban lang ang script na ito kapag nag-push ka ng code na may tag (e.g., v1.0.0)
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Kukunin ng GitHub ang code mo mula sa repository mo
+      - name: Checkout repository code
+        uses: actions/checkout@v4
+
+      # 2. I-set up ang Java (kailangan ito para sa Android build)
+      - name: Set up Java Environment
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      # 3. I-set up ang Flutter sa GitHub cloud machine
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.x' # Gagamitin ang pinakabagong stable version ng Flutter 3
+          channel: 'stable'
+          cache: true # Para mabilis ang susunod na mga build
+
+      # 4. I-download ang mga packages/dependencies na nasa pubspec.yaml mo
+      - name: Install dependencies
+        run: flutter pub get
+
+      # 5. I-build na ang APK gamit ang release mode
+      - name: Build APK
+        run: flutter build apk --release
+
+      # 6. Awtomatikong gagawa ng Release sa GitHub at i-u-upload ang APK doon
+      - name: Create GitHub Release and Upload APK
+        uses: softprops/action-gh-release@v2
+        with:
+          files: build/app/outputs/flutter-apk/app-release.apk
+          name: Release ${{ github.ref_name }}
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Automatic itong ibinibigay ng GitHub para may permiso siyang mag-upload

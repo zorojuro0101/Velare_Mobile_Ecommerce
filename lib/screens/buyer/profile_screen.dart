@@ -41,6 +41,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   String? _profilePicture;
   String? _gender;
   String? _phoneNumber;
+  String? _idType;
+  String? _idFilePath;
   
   int _cartCount = 0;
   int _unreadChatCount = 0;
@@ -91,7 +93,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       // Get buyer info from buyers table
       final buyerResponse = await Supabase.instance.client
           .from('buyers')
-          .select('first_name, last_name, profile_image, gender, phone_number')
+          .select('first_name, last_name, profile_image, gender, phone_number, id_type, id_file_path')
           .eq('buyer_id', buyerId)
           .maybeSingle();
 
@@ -110,6 +112,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
           _profilePicture = buyerResponse?['profile_image']?.toString();
           _gender = buyerResponse?['gender']?.toString();
           _phoneNumber = buyerResponse?['phone_number']?.toString();
+          _idType = buyerResponse?['id_type']?.toString();
+          _idFilePath = buyerResponse?['id_file_path']?.toString();
         });
       }
     } catch (e) {
@@ -160,6 +164,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
         profilePicture: _profilePicture,
         gender: _gender,
         phoneNumber: _phoneNumber,
+        idType: _idType,
+        idFilePath: _idFilePath,
         onUpdate: _loadUserInfo,
       ),
     );
@@ -221,6 +227,28 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
+  /// Builds a fallback avatar showing the user's first initial in gold.
+  Widget _buildInitialAvatar(double fontSize) {
+    final initial = (_firstName != null && _firstName!.isNotEmpty)
+        ? _firstName![0].toUpperCase()
+        : (_userEmail != null && _userEmail!.isNotEmpty)
+            ? _userEmail![0].toUpperCase()
+            : 'U';
+    return Container(
+      color: const Color(0xFFD4AF37).withValues(alpha: 0.15),
+      child: Center(
+        child: Text(
+          initial,
+          style: GoogleFonts.playfairDisplay(
+            fontSize: fontSize,
+            fontWeight: FontWeight.bold,
+            color: const Color(0xFFD4AF37),
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget _buildHeader() {
     return Container(
       margin: EdgeInsets.all(16.w),
@@ -261,19 +289,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ? CachedNetworkImage(
                       imageUrl: ImageHelper.getImageUrl(_profilePicture!),
                       fit: BoxFit.cover,
-                      placeholder: (context, url) => Container(
-                        color: AppColors.surfaceVariant2(context),
-                        child: Icon(Icons.person, size: 40.r, color: AppColors.textFaint(context)),
-                      ),
-                      errorWidget: (context, url, error) => Container(
-                        color: AppColors.surfaceVariant2(context),
-                        child: Icon(Icons.person, size: 40.r, color: AppColors.textFaint(context)),
-                      ),
+                      placeholder: (context, url) => _buildInitialAvatar(36.sp),
+                      errorWidget: (context, url, error) => _buildInitialAvatar(36.sp),
                     )
-                  : Container(
-                      color: AppColors.surfaceVariant2(context),
-                      child: Icon(Icons.person, size: 40.r, color: AppColors.textFaint(context)),
-                    ),
+                  : _buildInitialAvatar(36.sp),
             ),
           ),
           SizedBox(width: 16.w),
@@ -576,6 +595,8 @@ class _ProfileInfoModal extends StatefulWidget {
   final String? profilePicture;
   final String? gender;
   final String? phoneNumber;
+  final String? idType;
+  final String? idFilePath;
   final VoidCallback onUpdate;
 
   const _ProfileInfoModal({
@@ -585,6 +606,8 @@ class _ProfileInfoModal extends StatefulWidget {
     this.profilePicture,
     this.gender,
     this.phoneNumber,
+    this.idType,
+    this.idFilePath,
     required this.onUpdate,
   });
 
@@ -630,8 +653,23 @@ class _ProfileInfoModalState extends State<_ProfileInfoModal> {
         if (buyerId == null) return;
 
         final bytes = await pickedFile.readAsBytes();
-        final fileExtension = pickedFile.path.split('.').last;
-        final fileName = 'buyer_${buyerId}_${DateTime.now().millisecondsSinceEpoch}.$fileExtension';
+        final fileExtension = pickedFile.path.split('.').last.toLowerCase();
+
+        // Build a filename matching the format:
+        // buyer_{id}_{yyyyMMdd}_{HHmmss}_{uuid8}_{originalName}.ext
+        final now = DateTime.now();
+        final datePart =
+            '${now.year}${now.month.toString().padLeft(2, '0')}${now.day.toString().padLeft(2, '0')}';
+        final timePart =
+            '${now.hour.toString().padLeft(2, '0')}${now.minute.toString().padLeft(2, '0')}${now.second.toString().padLeft(2, '0')}';
+        final originalName = pickedFile.name
+            .replaceAll(RegExp(r'\.[^.]+$'), '') // strip extension
+            .replaceAll(RegExp(r'[^a-zA-Z0-9_]'), '_'); // sanitize
+        // 8-char hex token for uniqueness
+        final token = now.millisecondsSinceEpoch.toRadixString(16).substring(0, 8);
+
+        final fileName =
+            'buyer_${buyerId}_${datePart}_${timePart}_${token}_$originalName.$fileExtension';
         final filePath = 'static/uploads/profiles/$fileName';
         
         // Upload to Images bucket
@@ -639,14 +677,18 @@ class _ProfileInfoModalState extends State<_ProfileInfoModal> {
             .from('Images')
             .uploadBinary(filePath, bytes, fileOptions: const FileOptions(upsert: true));
 
+        // Get the full public URL to store in the database
+        final publicUrl = Supabase.instance.client.storage
+            .from('Images')
+            .getPublicUrl(filePath);
+
         if (mounted) {
           setState(() {
-            _newProfilePicture = filePath;
+            _newProfilePicture = publicUrl;
           });
           SnackBarHelper.showSuccess(context, 'Image uploaded successfully');
         }
       } catch (e) {
-        print('Error uploading image: $e');
         if (mounted) {
           SnackBarHelper.showError(context, 'Failed to upload image: $e');
         }
@@ -688,6 +730,25 @@ class _ProfileInfoModalState extends State<_ProfileInfoModal> {
     }
   }
 
+  /// Builds a fallback avatar for the modal showing the user's first initial in gold.
+  Widget _buildModalInitialAvatar() {
+    final initial = (widget.firstName != null && widget.firstName!.isNotEmpty)
+        ? widget.firstName![0].toUpperCase()
+        : (widget.userEmail != null && widget.userEmail!.isNotEmpty)
+            ? widget.userEmail![0].toUpperCase()
+            : 'U';
+    return Center(
+      child: Text(
+        initial,
+        style: GoogleFonts.playfairDisplay(
+          fontSize: 44.sp,
+          fontWeight: FontWeight.bold,
+          color: const Color(0xFFD4AF37),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -708,12 +769,30 @@ class _ProfileInfoModalState extends State<_ProfileInfoModal> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    'Profile Information',
-                    style: GoogleFonts.playfairDisplay(
-                      fontSize: 20.sp,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  Row(
+                    children: [
+                      // Back button to dismiss the modal
+                      InkWell(
+                        onTap: () => Navigator.pop(context),
+                        borderRadius: BorderRadius.circular(20.r),
+                        child: Padding(
+                          padding: EdgeInsets.all(4.w),
+                          child: Icon(
+                            Icons.arrow_back,
+                            size: 22.r,
+                            color: AppColors.onSurface(context),
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: 8.w),
+                      Text(
+                        'Profile Information',
+                        style: GoogleFonts.playfairDisplay(
+                          fontSize: 20.sp,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
                   ),
                   if (!_isEditing)
                     TextButton(
@@ -739,7 +818,7 @@ class _ProfileInfoModalState extends State<_ProfileInfoModal> {
                         width: 100.w,
                         height: 100.h,
                         decoration: BoxDecoration(
-                          color: AppColors.border(context),
+                          color: const Color(0xFFD4AF37).withValues(alpha: 0.15),
                           shape: BoxShape.circle,
                         ),
                         child: _newProfilePicture != null && _newProfilePicture!.isNotEmpty
@@ -747,11 +826,11 @@ class _ProfileInfoModalState extends State<_ProfileInfoModal> {
                                 child: CachedNetworkImage(
                                   imageUrl: ImageHelper.getImageUrl(_newProfilePicture!),
                                   fit: BoxFit.cover,
-                                  placeholder: (context, url) => Icon(Icons.person, size: 50.r, color: AppColors.textMuted(context)),
-                                  errorWidget: (context, url, error) => Icon(Icons.person, size: 50.r, color: AppColors.textMuted(context)),
+                                  placeholder: (context, url) => _buildModalInitialAvatar(),
+                                  errorWidget: (context, url, error) => _buildModalInitialAvatar(),
                                 ),
                               )
-                            : Icon(Icons.person, size: 50.r, color: AppColors.textMuted(context)),
+                            : _buildModalInitialAvatar(),
                       ),
                       if (_isEditing)
                         Positioned(
@@ -780,6 +859,8 @@ class _ProfileInfoModalState extends State<_ProfileInfoModal> {
               _buildInfoField('Phone Number', _phoneController, _isEditing),
               SizedBox(height: 16.h),
               _buildGenderField(),
+              SizedBox(height: 16.h),
+              _buildVerificationIdSection(),
               if (_isEditing) ...[
                 SizedBox(height: 24.h),
                 Row(
@@ -943,6 +1024,230 @@ class _ProfileInfoModalState extends State<_ProfileInfoModal> {
                 ),
         ),
       ],
+    );
+  }
+
+  /// Read-only section that shows the ID type the buyer selected during
+  /// registration plus a thumbnail of the uploaded ID file. Tapping the
+  /// thumbnail opens a fullscreen, pinch-to-zoom viewer.
+  Widget _buildVerificationIdSection() {
+    final idType = widget.idType;
+    final idPath = widget.idFilePath;
+    final hasId = idPath != null && idPath.isNotEmpty;
+    final imageUrl = hasId ? ImageHelper.getImageUrl(idPath) : '';
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Verification ID',
+          style: GoogleFonts.goudyBookletter1911(
+            fontSize: 12.sp,
+            fontWeight: FontWeight.w600,
+            color: AppColors.textMuted(context),
+          ),
+        ),
+        SizedBox(height: 8.h),
+        Container(
+          padding: EdgeInsets.all(12.w),
+          decoration: BoxDecoration(
+            color: AppColors.scaffoldBackground(context),
+            borderRadius: BorderRadius.circular(8.r),
+            border: Border.all(color: AppColors.border(context)),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Icon(Icons.badge_outlined,
+                      size: 18.r, color: AppColors.textMuted(context)),
+                  SizedBox(width: 8.w),
+                  Expanded(
+                    child: Text(
+                      idType != null && idType.isNotEmpty
+                          ? idType
+                          : 'No ID type on file',
+                      style: GoogleFonts.goudyBookletter1911(
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w500,
+                        color: idType != null && idType.isNotEmpty
+                            ? AppColors.onSurface(context)
+                            : AppColors.textFaint(context),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 12.h),
+              if (hasId)
+                GestureDetector(
+                  onTap: () => _showIdImageDialog(imageUrl),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(8.r),
+                    child: Stack(
+                      children: [
+                        AspectRatio(
+                          aspectRatio: 16 / 10,
+                          child: CachedNetworkImage(
+                            imageUrl: imageUrl,
+                            fit: BoxFit.cover,
+                            placeholder: (context, url) => Container(
+                              color: AppColors.surfaceVariant2(context),
+                              child: Center(
+                                child: SizedBox(
+                                  width: 20.w,
+                                  height: 20.w,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: AppColors.textMuted(context),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            errorWidget: (context, url, error) => Container(
+                              color: AppColors.surfaceVariant2(context),
+                              child: Center(
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(Icons.broken_image_outlined,
+                                        size: 32.r,
+                                        color: AppColors.textFaint(context)),
+                                    SizedBox(height: 4.h),
+                                    Text(
+                                      'Failed to load ID image',
+                                      style: GoogleFonts.goudyBookletter1911(
+                                        fontSize: 12.sp,
+                                        color: AppColors.textFaint(context),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Positioned(
+                          right: 8,
+                          bottom: 8,
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 8.w, vertical: 4.h),
+                            decoration: BoxDecoration(
+                              color: Colors.black.withValues(alpha: 0.55),
+                              borderRadius: BorderRadius.circular(20.r),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(Icons.zoom_in,
+                                    size: 14.r, color: Colors.white),
+                                SizedBox(width: 4.w),
+                                Text(
+                                  'Tap to view',
+                                  style: GoogleFonts.goudyBookletter1911(
+                                    fontSize: 11.sp,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                )
+              else
+                Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.symmetric(vertical: 16.h),
+                  decoration: BoxDecoration(
+                    color: AppColors.surfaceVariant2(context),
+                    borderRadius: BorderRadius.circular(8.r),
+                  ),
+                  child: Column(
+                    children: [
+                      Icon(Icons.image_not_supported_outlined,
+                          size: 28.r, color: AppColors.textFaint(context)),
+                      SizedBox(height: 6.h),
+                      Text(
+                        'No ID image uploaded',
+                        style: GoogleFonts.goudyBookletter1911(
+                          fontSize: 12.sp,
+                          color: AppColors.textFaint(context),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  void _showIdImageDialog(String imageUrl) {
+    showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        backgroundColor: Colors.transparent,
+        insetPadding: EdgeInsets.all(12.w),
+        child: Stack(
+          children: [
+            Center(
+              child: InteractiveViewer(
+                minScale: 1,
+                maxScale: 5,
+                child: CachedNetworkImage(
+                  imageUrl: imageUrl,
+                  fit: BoxFit.contain,
+                  placeholder: (context, url) => SizedBox(
+                    width: 32.w,
+                    height: 32.w,
+                    child: const CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: Colors.white,
+                    ),
+                  ),
+                  errorWidget: (context, url, error) => Container(
+                    padding: EdgeInsets.all(20.w),
+                    color: AppColors.surface(context),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.error_outline,
+                            size: 48.r, color: Colors.red),
+                        SizedBox(height: 8.h),
+                        Text(
+                          'Failed to load ID image',
+                          style: GoogleFonts.goudyBookletter1911(
+                            fontSize: 14.sp,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Positioned(
+              top: 10,
+              right: 10,
+              child: IconButton(
+                icon: Icon(Icons.close, color: Colors.white, size: 28.r),
+                onPressed: () => Navigator.pop(context),
+                style: IconButton.styleFrom(
+                  backgroundColor: Colors.black.withValues(alpha: 0.5),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

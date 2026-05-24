@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Veláre - Seller Dashboard</title>
+	<link rel="icon" type="image/png" href="{{ url_for('static', filename='images/Velare Logo Tab 1.png') }}">
+	<!-- Google Fonts for aesthetic, expensive look -->
+	<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@100;300;400;700&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Goodie&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/accounts/myAccount_profile.css') }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/seller/seller_dashboard.css') }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/logout-modal.css') }}">
+	<!-- Bootstrap Icons CDN -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+<body>
+	<div class="header-container">
+		<span class="header"><a href="{{ url_for('seller_dashboard.seller_dashboard') }}" style="color: inherit; text-decoration: none;">Veláre</a></span>
+	</div>
+	<hr class="divider">
+
+	<div class="main-content-container">
+		<div class="account-left-nav">
+			<div class="account-profile-header">
+				<div class="profile-img-placeholder">
+					{% if seller and seller.shop_logo %}
+						{% if seller.shop_logo.startswith('http://') or seller.shop_logo.startswith('https://') %}
+							<img src="{{ seller.shop_logo }}" alt="Shop Logo" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+						{% else %}
+							<img src="{{ url_for('static', filename=seller.shop_logo) }}" alt="Shop Logo" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+						{% endif %}
+					{% endif %}
+				</div>
+				<a href="{{ url_for('seller_information.seller_information') }}" class="profile-name-placeholder clickable-profile">
+					{% if seller and seller.shop_name %}
+						{{ seller.shop_name }}
+					{% else %}
+						Shop Name
+					{% endif %}
+				</a>
+			</div>
+			<div class="account-nav-divider"></div>
+			<div class="account-nav-list">
+				<div class="main-tab active" id="sellerDashboardTab">
+					<i class="bi bi-speedometer2" style="font-size:1.2em; vertical-align:middle; margin-right:10px;"></i>
+					<span class="main-tab-label">Dashboard</span>
+				</div>
+				<a href="{{ url_for('seller_product_management.seller_product_management') }}" class="main-tab" style="text-decoration: none; color: inherit;">
+					<i class="bi bi-box-seam" style="font-size:1.2em; vertical-align:middle; margin-right:10px;"></i>
+					<span class="main-tab-label">Product Management</span>
+				</a>
+				<a href="{{ url_for('seller_product_sales.seller_product_sales') }}" class="main-tab" style="text-decoration: none; color: inherit;">
+					<i class="bi bi-graph-up-arrow" style="font-size:1.2em; vertical-align:middle; margin-right:10px;"></i>
+					<span class="main-tab-label">Product Sales</span>
+				</a>
+				<a href="{{ url_for('seller_messages.seller_messages') }}" class="main-tab" style="text-decoration: none; color: inherit;">
+					<i class="bi bi-chat-dots" style="font-size:1.2em; vertical-align:middle; margin-right:10px;"></i>
+					<span class="main-tab-label">
+						Messages
+						<span id="message-notification-dot" class="notification-dot" style="display: none;"></span>
+					</span>
+				</a>
+				<a href="{{ url_for('seller_customer_feedback.seller_customer_feedback') }}" class="main-tab" style="text-decoration: none; color: inherit;">
+					<i class="bi bi-star" style="font-size:1.2em; vertical-align:middle; margin-right:10px;"></i>
+					<span class="main-tab-label">Customer Feedback</span>
+				</a>
+				<a href="{{ url_for('seller_select_vouchers.seller_select_vouchers') }}" class="main-tab" style="text-decoration: none; color: inherit;">
+					<i class="bi bi-ticket-perforated" style="font-size:1.2em; vertical-align:middle; margin-right:10px;"></i>
+					<span class="main-tab-label">Shop Vouchers</span>
+				</a>
+				<a href="{{ url_for('seller_report_user.report_user_page') }}" class="main-tab" style="text-decoration: none; color: inherit;">
+					<i class="bi bi-flag" style="font-size:1.2em; vertical-align:middle; margin-right:10px;"></i>
+					<span class="main-tab-label">Report User</span>
+				</a>
+				<div class="main-tab" id="logout-link" data-logout-url="{{ url_for('auth.login') }}">
+					<i class="bi bi-box-arrow-right" style="font-size:1.2em; vertical-align:middle; margin-right:10px;"></i>
+					<span class="main-tab-label">Logout</span>
+				</div>
+			</div>
+			<div class="sidebar-vertical-line"></div>
+		</div>
+		<div class="account-card-container">
+			
+			<div class="dashboard-main-content">
+				<div class="order-status-cards">
+					<a href="#" class="order-status-card">
+						<div class="order-status-title">Pending Shipment</div>
+						<div class="order-status-number">{{ order_stats.pending_count if order_stats else 0 }}</div>
+					</a>
+					<a href="#" class="order-status-card">
+						<div class="order-status-title">In Transit</div>
+						<div class="order-status-number">{{ order_stats.shipped_count if order_stats else 0 }}</div>
+					</a>
+					<a href="#" class="order-status-card">
+						<div class="order-status-title">Delivered</div>
+						<div class="order-status-number">{{ order_stats.delivered_count if order_stats else 0 }}</div>
+					</a>
+					<a href="#" class="order-status-card">
+						<div class="order-status-title">Cancelled</div>
+						<div class="order-status-number">{{ order_stats.cancelled_count if order_stats else 0 }}</div>
+					</a>
+				</div>
+				
+				<!-- Recent Orders Table -->
+				<div class="orders-section">
+					<div class="section-header">
+						<h2 class="section-title">Recent Orders</h2>
+						<a href="{{ url_for('seller_product_management.seller_product_management') }}?tab=orders" class="see-more-link">See all orders</a>
+					</div>
+					<div class="orders-table-container">
+						<table class="orders-table">
+							<thead>
+								<tr>
+									<th>Order #</th>
+									<th>Product Image</th>
+									<th>Product Name</th>
+									<th>Customer</th>
+									<th>Date</th>
+									<th>Amount</th>
+									<th>Status</th>
+								</tr>
+							</thead>
+							<tbody>
+								{% if recent_orders %}
+									{% for order in recent_orders %}
+									<tr class="order-row">
+										<td>{{ order.order_number }}</td>
+										<td>
+											<div class="product-image-cell">
+												{% if order.order_items and order.order_items[0].image %}
+													{% if order.order_items[0].image.startswith('http://') or order.order_items[0].image.startswith('https://') %}
+														<img src="{{ order.order_items[0].image }}" alt="Product">
+													{% else %}
+														<img src="/{{ order.order_items[0].image }}" alt="Product">
+													{% endif %}
+												{% else %}
+													<div class="no-image">No Image</div>
+												{% endif %}
+											</div>
+										</td>
+										<td>
+											<div class="product-name-cell">
+												{% if order.order_items|length > 1 %}
+													<!-- Multiple products - show first with dropdown -->
+													<div class="product-dropdown-container">
+														<div class="product-main-item">
+															<span class="product-name">{{ order.order_items[0].product_name }}</span>
+															{% if order.order_items[0].variant_color or order.order_items[0].variant_size %}
+															<span class="item-variant">{{ order.order_items[0].variant_color }}{% if order.order_items[0].variant_color and order.order_items[0].variant_size %} • {% endif %}{{ order.order_items[0].variant_size }}</span>
+															{% endif %}
+															<span class="item-qty-inline">Qty: {{ order.order_items[0].quantity }}</span>
+															<button class="product-dropdown-toggle" onclick="toggleDropdown('dropdown-{{ order.order_id }}')">
+																<i class="bi bi-chevron-down"></i>
+																<span class="item-count">+{{ order.order_items|length - 1 }} more</span>
+															</button>
+														</div>
+														<div class="product-dropdown-list" id="dropdown-{{ order.order_id }}" style="display: none;">
+															{% for item in order.order_items[1:] %}
+															<div class="dropdown-item-detailed">
+																<div class="item-image">
+																	{% if item.image %}
+																		{% if item.image.startswith('http://') or item.image.startswith('https://') %}
+																			<img src="{{ item.image }}" alt="{{ item.product_name }}">
+																		{% else %}
+																			<img src="/{{ item.image }}" alt="{{ item.product_name }}">
+																		{% endif %}
+																	{% else %}
+																		<div class="no-image-small">No Image</div>
+																	{% endif %}
+																</div>
+																<div class="item-details">
+																	<div class="item-name">{{ item.product_name }}</div>
+																	{% if item.variant_color or item.variant_size %}
+																	<div class="item-variant">{{ item.variant_color }}{% if item.variant_color and item.variant_size %} • {% endif %}{{ item.variant_size }}</div>
+																	{% endif %}
+																</div>
+																<div class="item-qty">Qty: {{ item.quantity }}</div>
+															</div>
+															{% endfor %}
+														</div>
+													</div>
+												{% else %}
+													<!-- Single product -->
+													<div class="product-single">
+														<span class="product-name">{{ order.order_items[0].product_name }}</span>
+														{% if order.order_items[0].variant_color or order.order_items[0].variant_size %}
+														<div class="item-variant-inline">{{ order.order_items[0].variant_color }}{% if order.order_items[0].variant_color and order.order_items[0].variant_size %} • {% endif %}{{ order.order_items[0].variant_size }}</div>
+														{% endif %}
+														<div class="item-qty-inline">Qty: {{ order.order_items[0].quantity }}</div>
+													</div>
+												{% endif %}
+											</div>
+										</td>
+										<td>{{ order.buyer_name }}</td>
+										<td>{{ order.created_at.strftime('%Y-%m-%d') if order.created_at else '—' }}</td>
+										<td>₱{{ "{:,.2f}".format(order.subtotal) }}</td>
+										<td>
+											<span class="status-badge status-{{ order.order_status }}">
+												{% if order.order_status == 'pending' %}
+													Pending
+												{% elif order.order_status == 'in_transit' %}
+													In Transit
+												{% elif order.order_status == 'delivered' %}
+													Delivered
+												{% elif order.order_status == 'cancelled' %}
+													Cancelled
+												{% else %}
+													{{ order.order_status }}
+												{% endif %}
+											</span>
+										</td>
+									</tr>
+									{% endfor %}
+								{% else %}
+									<tr>
+										<td colspan="7" style="text-align: center; padding: 32px;">No orders yet</td>
+									</tr>
+								{% endif %}
+							</tbody>
+						</table>
+					</div>
+				</div>
+
+				<!-- Product Sold Section -->
+				<div class="orders-section product-sold-section">
+					<div class="section-header">
+						<h2 class="section-title">Product Sold</h2>
+						<a href="{{ url_for('seller_product_management.seller_product_management') }}?tab=product-sold" class="see-more-link">See all sold products</a>
+					</div>
+					<div class="orders-table-container">
+						<table class="orders-table sold-table">
+							<thead>
+								<tr>
+									<th>#</th>
+									<th>Products</th>
+									<th>Order Received Date</th>
+									<th>Buyer</th>
+									<th>Order Total</th>
+									<th>Commission (5%)</th>
+								</tr>
+							</thead>
+							<tbody>
+								{% if sold_orders %}
+									{% for order in sold_orders %}
+									<tr>
+										<td>#{{ '%03d'|format(loop.index) }}</td>
+										<td>
+											<div class="products-list">
+												{% for item in order.sold_items %}
+												<div class="product-item-compact">
+													<span class="product-name">{{ item.product_name }}</span>
+													{% if item.variant_color or item.variant_size %}
+													<span class="product-variant">({{ item.variant_color }}{% if item.variant_color and item.variant_size %}, {% endif %}{{ item.variant_size }})</span>
+													{% endif %}
+													<span class="product-qty">× {{ item.quantity }}</span>
+												</div>
+												{% endfor %}
+											</div>
+										</td>
+										<td>{{ order.order_received_date.strftime('%b %d, %Y') if order.order_received_date else '—' }}</td>
+										<td>{{ order.buyer_name }}</td>
+										<td class="price-positive">+₱{{ "{:,.2f}".format(order.order_total) }}</td>
+										<td class="commission-negative">-₱{{ "{:,.2f}".format(order.commission_amount) }}</td>
+									</tr>
+									{% endfor %}
+								{% else %}
+									<tr>
+										<td colspan="6" style="text-align: center; padding: 40px;">No sold products yet</td>
+									</tr>
+								{% endif %}
+							</tbody>
+						</table>
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</div>
+
+	<!-- Logout Modal Overlay and Confirmation Modal -->
+	<div id="logout-modal-overlay"></div>
+	<div id="logout-modal" class="modal">
+		<div class="modal-content">
+			<div class="modal-title">Do you want to Logout?</div>
+			<div class="modal-actions">
+				<button id="confirm-logout" class="modal-btn">Logout</button>
+				<button id="cancel-logout" class="modal-btn">Cancel</button>
+			</div>
+		</div>
+	</div>
+	<script defer src="{{ url_for('static', filename='js/logout-modal.js') }}"></script>
+	<script defer src="{{ url_for('static', filename='js/seller/seller-dashboard-nav.js') }}"></script>
+	<script defer src="{{ url_for('static', filename='js/seller/seller-nav-hover.js') }}"></script>
+	<script defer src="{{ url_for('static', filename='js/seller/dashboard-notifications.js') }}"></script>
+	<script>
+		function toggleDropdown(dropdownId) {
+			const dropdown = document.getElementById(dropdownId);
+			const button = event.currentTarget;
+			const icon = button.querySelector('i');
+			
+			if (dropdown.style.display === 'none') {
+				dropdown.style.display = 'block';
+				icon.classList.remove('bi-chevron-down');
+				icon.classList.add('bi-chevron-up');
+			} else {
+				dropdown.style.display = 'none';
+				icon.classList.remove('bi-chevron-up');
+				icon.classList.add('bi-chevron-down');
+			}
+		}
+	</script>
+</body>
+</html>

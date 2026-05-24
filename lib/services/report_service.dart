@@ -1,3 +1,4 @@
+import 'package:image_picker/image_picker.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/report_model.dart';
 import 'auth_service.dart';
@@ -6,11 +7,14 @@ class ReportService {
   final _supabase = Supabase.instance.client;
   final _authService = AuthService();
 
+  static const String _storageBucket = 'Images';
+  static const String _evidenceFolder = 'static/uploads/reports';
+
   Future<List<Report>> getMyReports() async {
     try {
       await _authService.initialize();
       final userId = _authService.currentUserId;
-      
+
       if (userId == null) {
         throw Exception('User not logged in');
       }
@@ -33,7 +37,7 @@ class ReportService {
         String? reportedUserName;
         final reportedUserId = item['reported_user_id'];
         final reportedUserType = item['reported_user_type'];
-        
+
         try {
           if (reportedUserType == 'seller') {
             final sellerResponse = await _supabase
@@ -49,13 +53,14 @@ class ReportService {
                 .eq('user_id', reportedUserId)
                 .maybeSingle();
             if (riderResponse != null) {
-              reportedUserName = '${riderResponse['first_name']} ${riderResponse['last_name']}';
+              reportedUserName =
+                  '${riderResponse['first_name']} ${riderResponse['last_name']}';
             }
           }
         } catch (e) {
           print('Error fetching reported user name: $e');
         }
-        
+
         item['reported_user_name'] = reportedUserName ?? 'Unknown';
         reports.add(Report.fromJson(item));
       }
@@ -65,6 +70,56 @@ class ReportService {
       print('Error loading reports: $e');
       throw Exception('Failed to load reports: $e');
     }
+  }
+
+  /// Uploads an evidence image to Supabase Storage and returns the
+  /// fully-qualified public URL. Throws on failure so the caller can show
+  /// a clear error to the user instead of silently saving a local path.
+  Future<String> uploadEvidence(XFile imageFile) async {
+    final buyerId = _authService.currentBuyerId;
+    if (buyerId == null) {
+      throw Exception('User not logged in');
+    }
+
+    final bytes = await imageFile.readAsBytes();
+    if (bytes.isEmpty) {
+      throw Exception('Selected image is empty');
+    }
+
+    final rawExt = imageFile.path.split('.').last.toLowerCase();
+    final ext = rawExt.isEmpty ? 'jpg' : rawExt;
+    final contentType = 'image/${ext == 'jpg' ? 'jpeg' : ext}';
+
+    final fileName =
+        'report_${buyerId}_${DateTime.now().millisecondsSinceEpoch}.$ext';
+    final filePath = '$_evidenceFolder/$fileName';
+
+    print('ReportService - uploading evidence to Supabase: $filePath');
+
+    try {
+      await _supabase.storage
+          .from(_storageBucket)
+          .uploadBinary(
+            filePath,
+            bytes,
+            fileOptions: FileOptions(
+              contentType: contentType,
+              upsert: true,
+            ),
+          )
+          .timeout(const Duration(seconds: 30));
+    } on StorageException catch (e) {
+      print('ReportService - Supabase storage error: ${e.message}');
+      throw Exception('Storage upload failed: ${e.message}');
+    } catch (e) {
+      print('ReportService - upload error: $e');
+      throw Exception('Failed to upload evidence: $e');
+    }
+
+    final publicUrl =
+        _supabase.storage.from(_storageBucket).getPublicUrl(filePath);
+    print('ReportService - evidence uploaded. Public URL: $publicUrl');
+    return publicUrl;
   }
 
   Future<bool> submitReport({
@@ -79,7 +134,7 @@ class ReportService {
     try {
       await _authService.initialize();
       final userId = _authService.currentUserId;
-      
+
       if (userId == null) {
         throw Exception('User not logged in');
       }
@@ -108,7 +163,7 @@ class ReportService {
     try {
       await _authService.initialize();
       final userId = _authService.currentUserId;
-      
+
       if (userId == null) {
         throw Exception('User not logged in');
       }

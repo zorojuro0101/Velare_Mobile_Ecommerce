@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Veláre - My Address</title>
+		<link rel="icon" type="image/png" href="{{ url_for('static', filename='images/Velare Logo Tab 1.png') }}">
+		<!-- Optimized Google Fonts - Combined into one request -->
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@100;300;400;700&family=Cormorant+Garamond:wght@500;600;700&family=Cinzel:wght@700&family=Goodie&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/accounts/myAccount_address.css') }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/logout-modal.css') }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/chat.css') }}">
+	<script defer src="{{ url_for('static', filename='js/search-anim.js') }}"></script>
+	<script defer src="{{ url_for('static', filename='js/myAccount_navigation.js') }}"></script>
+	<!-- Bootstrap Icons CDN -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+	
+	{% include 'accounts/_profile_preload.html' %}
+</head>
+<body>
+		<!-- Hamburger menu outside header for proper z-index stacking -->
+		<div id="menuToggle" style="display: flex; align-items: center; gap: 10px;">
+			<button id="hamburgerBtn" aria-label="Open menu" type="button">
+				<div class="bar bar--top"></div>
+				<div class="bar bar--bottom"></div>
+			</button>
+		</div>
+		
+		<div class="header-container">
+			<span class="header"><a href="{{ url_for('index.index') }}" style="color: inherit; text-decoration: none;">Veláre</a></span>
+				<div class="icon-bar">
+						<div class="icon-wrapper search-icon-wrapper">
+							<img id="search-icon" src="{{ url_for('static', filename='images/search.png') }}" alt="Search" class="icon">
+							<span class="icon-label">Search</span>
+							<form id="search-form" class="search-form-animated" action="{{ url_for('browse_product.browse_product') }}" method="get" autocomplete="off">
+								<input type="text" name="q" placeholder="Search product" class="search-input">
+							</form>
+						</div>
+						<div class="icon-wrapper notification-icon-wrapper">
+							<i class="bi bi-bell icon" id="notification-bell" style="font-size: 1.3rem;"></i>
+							<span class="notification-badge" id="notification-badge" style="display: none;">0</span>
+							<span class="icon-label">Notifications</span>
+							<div class="notification-dropdown">
+								<div class="notification-header">Notifications</div>
+								<div class="notification-list" id="notification-list">
+									<div class="notification-loading">Loading...</div>
+								</div>
+							</div>
+						</div>
+						<a href="{{ url_for('favorite.favorite') }}" class="icon-wrapper" style="text-decoration:none; color:inherit;"><img src="{{ url_for('static', filename='images/star.png') }}" alt="Star" class="icon"><span class="icon-label">Favorite</span></a>
+						<div class="icon-wrapper profile-icon-wrapper">
+								<img src="{{ url_for('static', filename='images/user.png') }}" alt="User" class="icon"><span class="icon-label"></span>
+								<div class="profile-dropdown">
+										<a href="#" class="dropdown-item">My Account</a>
+										<div class="dropdown-divider"></div>
+										   <!-- Removed duplicate Logout link -->
+										<a href="#" id="logout-link" class="dropdown-item" data-logout-url="{{ url_for('auth.login') }}">Logout</a>
+								</div>
+						</div>
+						<a href="{{ url_for('cart.cart') }}" class="icon-wrapper cart-icon-wrapper" style="text-decoration:none; color:inherit;">
+							<img src="{{ url_for('static', filename='images/shopping-cart.png') }}" alt="Cart" class="icon">
+							<span class="cart-badge" id="cart-badge" style="display: none;">0</span>
+							<span class="icon-label">Cart</span>
+						</a>
+				</div>
+		</div>
+		<hr class="divider">
+
+		<div class="main-content-container">
+			<!-- Hidden profile data for JavaScript (NO API CALLS NEEDED) -->
+			<script id="profileData" type="application/json">
+			{
+				"phone_number": "{{ user_profile.phone_number if user_profile and user_profile.phone_number else '' }}"
+			}
+			</script>
+			<div class="account-left-nav">
+				<div class="account-profile-header">
+				<div class="profile-img-placeholder" id="sidebarProfileImg" {% if user_profile and user_profile.profile_image %}{% if user_profile.profile_image.startswith('http://') or user_profile.profile_image.startswith('https://') %}style="background-image: url('{{ user_profile.profile_image }}'); background-size: cover; background-position: center;"{% elif user_profile.profile_image.startswith('static/') %}style="background-image: url('/{{ user_profile.profile_image }}'); background-size: cover; background-position: center;"{% else %}style="background-image: url('{{ url_for('static', filename=user_profile.profile_image) }}'); background-size: cover; background-position: center;"{% endif %}{% endif %}>
+					<div class="profile-initial" id="sidebarProfileInitial" {% if user_profile and user_profile.profile_image %}style="display:none;"{% endif %}>{{ user_profile.first_name[0].upper() if user_profile and user_profile.first_name else 'G' }}</div>
+				</div>
+				<div class="profile-name-placeholder" id="sidebarProfileName">{% if user_profile and user_profile.first_name %}{{ user_profile.first_name }} {{ user_profile.last_name }}{% else %}Guest User{% endif %}</div>
+			</div>
+				<script>
+				// Apply cached profile data IMMEDIATELY after sidebar renders
+				(function(){
+					var cached = sessionStorage.getItem('userProfile') || sessionStorage.getItem('sidebarProfileCache');
+					if (cached) {
+						try {
+							var p = JSON.parse(cached);
+							var nameEl = document.getElementById('sidebarProfileName');
+							var imgEl = document.getElementById('sidebarProfileImg');
+							var initialEl = document.getElementById('sidebarProfileInitial');
+							if (nameEl && (p.first_name || p.name)) {
+								nameEl.textContent = p.name || (p.first_name + ' ' + p.last_name);
+							}
+							if (imgEl && (p.profile_image || p.image)) {
+								var img = p.profile_image || (p.image ? p.image.replace(/^url\(['"]?|['"]?\)$/g, '') : null);
+								if (img) {
+									imgEl.style.backgroundImage = "url('" + img + "')";
+									if (initialEl) initialEl.style.display = 'none';
+								} else {
+									if (initialEl) initialEl.style.display = 'flex';
+								}
+							} else {
+								if (initialEl) initialEl.style.display = 'flex';
+							}
+						} catch(e) {}
+					}
+				})();
+				</script>
+				<div class="account-nav-divider"></div>
+				<div class="account-nav-list">
+					<div class="main-tab has-sub" id="myAccountTab">
+						<i class="bi bi-person-circle" style="font-size:1.2em; vertical-align:middle; margin-right:10px;"></i>
+						<span class="main-tab-label">My Account</span>
+					</div>
+					<div class="sub-tabs open" id="myAccountSubTabs" >
+						<a href="{{ url_for('myAccount_profile.myAccount_profile') }}" class="sub-tab" id="profileTab"><span class="sub-tab-label">Profile</span></a>
+						<a href="{{ url_for('myAccount_address.myAccount_address') }}" class="sub-tab active" id="addressesTab"><span class="sub-tab-label">Addresses</span></a>
+						<a href="{{ url_for('myAccount_changepass.myAccount_changepass') }}" class="sub-tab" id="changePasswordTab"><span class="sub-tab-label">Change Password</span></a>
+					</div>
+					<a href="{{ url_for('myAccount_purchases.myAccount_purchases') }}" class="main-tab" style="text-decoration:none; color:inherit;">
+						<i class="bi bi-bag-check" style="font-size:1.2em; vertical-align:middle; margin-right:10px;"></i>
+						<span class="main-tab-label">My Purchases</span>
+					</a>
+					<a href="{{ url_for('myAccount_notification.myAccount_notification') }}" class="main-tab" id="notificationsTab" style="text-decoration:none; color:inherit;">
+					<span style="position: relative; display: inline-block;">
+						<i class="bi bi-bell" style="font-size:1.2em; vertical-align:middle; margin-right:10px;"></i>
+						<span class="notification-badge" id="notificationBadge" style="display: none;">0</span>
+					</span>
+					<span class="main-tab-label">Notifications</span>
+				</a>
+					<a href="{{ url_for('myAccount_vouchers.myAccount_vouchers') }}" class="main-tab" id="vouchersTab" style="text-decoration:none; color:inherit;">
+						<i class="bi bi-ticket-perforated" style="font-size:1.2em; vertical-align:middle; margin-right:10px;"></i>
+						<span class="main-tab-label">My Vouchers</span>
+					</a>
+					<a href="{{ url_for('buyer_report_user.report_user_page') }}" class="main-tab" id="reportUserTab" style="text-decoration:none; color:inherit;">
+						<i class="bi bi-flag" style="font-size:1.2em; vertical-align:middle; margin-right:10px;"></i>
+						<span class="main-tab-label">Report User</span>
+					</a>
+				</div>
+				<div class="sidebar-vertical-line"></div>
+			</div>
+			<div class="account-card-container">
+				<div class="account-card-bg">
+					<div class="profile-section-title-row" style="display: flex; align-items: center; gap: 18px; position: relative;">
+						<h2 class="profile-section-title" style="margin-bottom: 0;">My Address</h2>
+						<!-- Floating Add Address Button -->
+						<button class="floating-add-address-btn" id="openAddAddressModalBtn" title="Add New Address">
+							<span style="font-size:1.3em;vertical-align:middle;">+</span>
+						</button>
+					</div>
+					<hr class="profile-section-divider">
+					<div class="profile-content-row">
+						{% if addresses %}
+							{% for address in addresses %}
+							<div class="address-placeholder {% if address.is_default %}default-address{% endif %}" data-address-id="{{ address.address_id }}" 
+								data-recipient-name="{{ address.recipient_name }}"
+								data-phone-number="{{ address.phone_number }}"
+								data-house-number="{{ address.house_number or '' }}"
+								data-street-name="{{ address.street_name or '' }}"
+								data-full-address="{{ address.full_address }}"
+								data-region="{{ address.region }}"
+								data-province="{{ address.province }}"
+								data-city="{{ address.city }}"
+								data-barangay="{{ address.barangay }}"
+								data-postal-code="{{ address.postal_code }}">
+								<div class="address-flex-row">
+									<div class="address-info-col">
+										<div class="address-name">{{ address.recipient_name }} {% if address.is_default %}<span style="color:#bfa14a;font-size:0.9em;">(Default)</span>{% endif %}</div>
+										<div class="address-number">{{ address.phone_number }}</div>
+										<div class="address-details">
+											{{ address.full_address }}, {{ address.postal_code }}
+										</div>
+									</div>
+									<div class="address-actions-col">
+										<div class="address-actions">
+											<span class="edit-address-link address-action-link" data-address-id="{{ address.address_id }}">Edit</span>
+											<span class="delete-address-link address-action-link" data-address-id="{{ address.address_id }}">Delete</span>
+											{% if not address.is_default %}
+											<button class="set-default-address-btn" data-address-id="{{ address.address_id }}">Set as Default</button>
+											{% endif %}
+										</div>
+									</div>
+								</div>
+								<div class="address-divider"></div>
+							</div>
+							{% endfor %}
+						{% else %}
+							<div class="address-placeholder">
+								<p style="text-align:center; color:#6d6552; font-size:1.1rem;">No addresses found. Click the + button to add your first address.</p>
+							</div>
+						{% endif %}
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="side-menu-overlay"></div>
+  <nav class="side-menu">
+    <div class="side-menu-divider"></div>
+    <a href="{{ url_for('browse_product.browse_product') }}" class="category-link"><span>All Products</span></a>
+    <a href="{{ url_for('browse_product.browse_product', category='dresses-skirts') }}" class="category-link"><span>Dresses & Skirts</span></a>
+    <a href="{{ url_for('browse_product.browse_product', category='tops-blouses') }}" class="category-link"><span>Tops & Blouses</span></a>
+    <a href="{{ url_for('browse_product.browse_product', category='activewear-yoga') }}" class="category-link"><span>Activewear & Yoga Pants</span></a>
+    <a href="{{ url_for('browse_product.browse_product', category='lingerie-sleepwear') }}" class="category-link"><span>Lingerie & Sleepwear</span></a>
+    <a href="{{ url_for('browse_product.browse_product', category='jackets-coats') }}" class="category-link"><span>Jackets & Coats</span></a>
+    <a href="{{ url_for('browse_product.browse_product', category='shoes-accessories') }}" class="category-link"><span>Shoes & Accessories</span></a>
+    <div class="side-menu-divider"></div>
+    <a href="{{ url_for('about_us.about_us') }}" class="category-link"><span>About Us</span></a>
+  </nav>
+    
+      
+    
+
+		<script src="{{ url_for('static', filename='js/accounts/sidebar_profile.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/accounts/myAccount_address.js') }}"></script>
+	<script defer src="{{ url_for('static', filename='js/category-navigation.js') }}"></script>
+</body>
+
+	<!-- Add Address Modal -->
+	<div id="addAddressModal" class="modal" style="display:none;">
+		<div class="modal-content add-address-modal-content">
+			<div class="modal-title">Add New Address</div>
+			<form id="addAddressForm" autocomplete="off">
+				<div class="form-group">
+					<label for="fullName">Full Name</label>
+					<input type="text" id="fullName" name="fullName" required>
+				</div>
+				<div class="form-group">
+					<label for="phoneNumber">Phone Number</label>
+					<input type="tel" id="phoneNumber" name="phoneNumber" pattern="09[0-9]{9}" maxlength="11" placeholder="09123456789">
+				</div>
+				<div class="form-group" style="position:relative;">
+					<label for="addressField">Address</label>
+					<input type="text" id="addressField" name="addressField" readonly placeholder="Select Region, Province, City, Barangay" required style="cursor:pointer; background:#f5f5f5;">
+					<!-- Address Tabs Dropdown Panel -->
+					<div id="addressTabsDropdown" class="address-tabs-dropdown" style="display:none;">
+						<div class="address-tabs">
+							<button type="button" class="address-tab active" data-tab="region">Region</button>
+							<button type="button" class="address-tab" data-tab="province" disabled>Province</button>
+							<button type="button" class="address-tab" data-tab="city" disabled>City</button>
+							<button type="button" class="address-tab" data-tab="barangay" disabled>Barangay</button>
+						</div>
+						<div class="address-tabs-underline-bg">
+							<div class="address-tabs-underline" id="addressTabsUnderline"></div>
+						</div>
+						<div class="address-tab-content" id="regionTabContent">
+							<label>Select Region</label>
+							<select id="tabRegionSelect">
+								<option value="">Select Region</option>
+							</select>
+						</div>
+						<div class="address-tab-content" id="provinceTabContent" style="display:none;">
+							<label>Select Province</label>
+							<select id="tabProvinceSelect">
+								<option value="">Select Province</option>
+							</select>
+						</div>
+						<div class="address-tab-content" id="cityTabContent" style="display:none;">
+							<label>Select City/Municipality</label>
+							<select id="tabCitySelect">
+								<option value="">Select City/Municipality</option>
+							</select>
+						</div>
+						<div class="address-tab-content" id="barangayTabContent" style="display:none;">
+							<label>Select Barangay</label>
+							<select id="tabBarangaySelect">
+								<option value="">Select Barangay</option>
+							</select>
+						</div>
+						<div class="modal-actions" style="margin-top:18px;">
+							<button type="button" id="cancelAddressTabsBtn" class="modal-btn">Cancel</button>
+							<button type="button" id="confirmAddressTabsBtn" class="modal-btn" disabled>Confirm</button>
+						</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="streetName">Street Name</label>
+					<input type="text" id="streetName" name="streetName">
+				</div>
+				<div class="form-group">
+					<label for="houseNumber">House Number</label>
+					<input type="text" id="houseNumber" name="houseNumber">
+				</div>
+				<div class="form-group">
+					<label for="postalCode">Postal Code</label>
+					<input type="text" id="postalCode" name="postalCode" pattern="[0-9]{4}" maxlength="4" required>
+				</div>
+				<div class="modal-actions">
+					<button type="button" id="cancelAddAddressBtn" class="modal-btn">Cancel</button>
+					<button type="submit" class="modal-btn">Submit</button>
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<!-- Edit Address Modal -->
+	<div id="editAddressModal" class="modal" style="display:none;">
+		<div class="modal-content add-address-modal-content">
+			<div class="modal-title">Edit Address</div>
+			<form id="editAddressForm" autocomplete="off">
+				<input type="hidden" id="editAddressId">
+				<div class="form-group">
+					<label for="editFullName">Full Name</label>
+					<input type="text" id="editFullName" name="editFullName" required>
+				</div>
+				<div class="form-group">
+					<label for="editPhoneNumber">Phone Number</label>
+					<input type="tel" id="editPhoneNumber" name="editPhoneNumber" pattern="09[0-9]{9}" maxlength="11" placeholder="09123456789" required>
+				</div>
+				<div class="form-group" style="position:relative;">
+					<label for="editAddressField">Address</label>
+					<input type="text" id="editAddressField" name="editAddressField" readonly placeholder="Select Region, Province, City, Barangay" required style="cursor:pointer; background:#f5f5f5;">
+					<!-- Address Tabs Dropdown Panel for Edit -->
+					<div id="editAddressTabsDropdown" class="address-tabs-dropdown" style="display:none;">
+						<div class="address-tabs">
+							<button type="button" class="address-tab active" data-tab="region">Region</button>
+							<button type="button" class="address-tab" data-tab="province" disabled>Province</button>
+							<button type="button" class="address-tab" data-tab="city" disabled>City</button>
+							<button type="button" class="address-tab" data-tab="barangay" disabled>Barangay</button>
+						</div>
+						<div class="address-tabs-underline-bg">
+							<div class="address-tabs-underline" id="editAddressTabsUnderline"></div>
+						</div>
+						<div class="address-tab-content" id="editRegionTabContent">
+							<label>Select Region</label>
+							<select id="editTabRegionSelect">
+								<option value="">Select Region</option>
+							</select>
+						</div>
+						<div class="address-tab-content" id="editProvinceTabContent" style="display:none;">
+							<label>Select Province</label>
+							<select id="editTabProvinceSelect">
+								<option value="">Select Province</option>
+							</select>
+						</div>
+						<div class="address-tab-content" id="editCityTabContent" style="display:none;">
+							<label>Select City/Municipality</label>
+							<select id="editTabCitySelect">
+								<option value="">Select City/Municipality</option>
+							</select>
+						</div>
+						<div class="address-tab-content" id="editBarangayTabContent" style="display:none;">
+							<label>Select Barangay</label>
+							<select id="editTabBarangaySelect">
+								<option value="">Select Barangay</option>
+							</select>
+						</div>
+						<div class="modal-actions" style="margin-top:18px;">
+							<button type="button" id="cancelEditAddressTabsBtn" class="modal-btn">Cancel</button>
+							<button type="button" id="confirmEditAddressTabsBtn" class="modal-btn" disabled>Confirm</button>
+						</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="editStreetName">Street Name</label>
+					<input type="text" id="editStreetName" name="editStreetName">
+				</div>
+				<div class="form-group">
+					<label for="editHouseNumber">House Number</label>
+					<input type="text" id="editHouseNumber" name="editHouseNumber">
+				</div>
+				<div class="form-group">
+					<label for="editPostalCode">Postal Code</label>
+					<input type="text" id="editPostalCode" name="editPostalCode" pattern="[0-9]{4}" maxlength="4" required>
+				</div>
+				<div class="modal-actions">
+					<button type="button" id="cancelEditAddressBtn" class="modal-btn">Cancel</button>
+					<button type="submit" class="modal-btn">Update</button>
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<!-- Logout Modal Overlay and Confirmation Modal -->
+	<div id="logout-modal-overlay"></div>
+	<div id="logout-modal" class="modal">
+		<div class="modal-content">
+			<div class="modal-title">Do you want to Logout?</div>
+			<div class="modal-actions">
+				<button id="confirm-logout" class="modal-btn">Logout</button>
+				<button id="cancel-logout" class="modal-btn">Cancel</button>
+			</div>
+		</div>
+	</div>
+	<!-- Chat Widget -->
+	<div id="chat-widget"><div id="chat-button"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20 2H4C2.9 2 2 2.9 2 4V22L6 18H20C21.1 18 22 17.1 22 16V4C22 2.9 21.1 2 20 2ZM20 16H5.17L4 17.17V4H20V16Z" fill="currentColor"/><circle cx="7" cy="10" r="1" fill="currentColor"/><circle cx="12" cy="10" r="1" fill="currentColor"/><circle cx="17" cy="10" r="1" fill="currentColor"/></svg><span>Chat</span></div><div id="chat-window" class="chat-window-hidden"><div class="chat-left-panel"><div class="chat-header"><h3>Chat</h3><div class="chat-controls"><button id="close-chat" class="chat-control-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12L19 6.41Z" fill="currentColor"/></svg></button></div></div><div class="chat-search"><input type="text" placeholder="Search name" class="chat-search-input"></div><div class="chat-contacts"><div class="chat-contact"><div class="contact-avatar"><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%23bf9f4a'/%3E%3Ctext x='16' y='20' text-anchor='middle' fill='white' font-size='12' font-weight='bold'%3EV%3C/text%3E%3C/svg%3E" alt="Velare Support"></div><div class="contact-info"><div class="contact-name">Velare Support</div><div class="contact-message">How can we help you today?</div></div><div class="contact-time">Now</div></div><div class="chat-contact"><div class="contact-avatar"><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%23181818'/%3E%3Ctext x='16' y='20' text-anchor='middle' fill='white' font-size='12' font-weight='bold'%3ES%3C/text%3E%3C/svg%3E" alt="Sales Team"></div><div class="contact-info"><div class="contact-name">Sales Team</div><div class="contact-message">Thank you for your interest!</div></div><div class="contact-time">2m</div></div><div class="chat-contact"><div class="contact-avatar"><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%232c2236'/%3E%3Ctext x='16' y='20' text-anchor='middle' fill='white' font-size='12' font-weight='bold'%3EC%3C/text%3E%3C/svg%3E" alt="Customer Care"></div><div class="contact-info"><div class="contact-name">Customer Care</div><div class="contact-message">Your order has been processed</div></div><div class="contact-time">1h</div></div></div></div><div class="chat-right-panel"><div class="chat-welcome"><div class="welcome-icon"><svg width="80" height="60" viewBox="0 0 100 75" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="10" y="15" width="80" height="50" rx="8" fill="#e0d7c6" stroke="#bf9f4a" stroke-width="2"/><rect x="15" y="20" width="70" height="30" rx="4" fill="#fafafa"/><rect x="20" y="25" width="25" height="3" rx="1.5" fill="#bf9f4a"/><rect x="20" y="30" width="35" height="3" rx="1.5" fill="#bf9f4a"/><rect x="20" y="35" width="20" height="3" rx="1.5" fill="#bf9f4a"/><circle cx="65" cy="35" r="8" fill="#181818"/><circle cx="65" cy="35" r="3" fill="white"/><circle cx="67" cy="33" r="1" fill="#181818"/><circle cx="69" cy="35" r="1" fill="#181818"/><circle cx="67" cy="37" r="1" fill="#181818"/></svg></div><h4>Welcome to Velare Chat</h4><p>Search and connect with sellers to start chatting</p></div><div class="chat-conversation"><div class="conversation-header"><div class="conversation-contact"><div class="conversation-avatar"><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%23bf9f4a'/%3E%3Ctext x='16' y='20' text-anchor='middle' fill='white' font-size='12' font-weight='bold'%3EV%3C/text%3E%3C/svg%3E" alt="Contact"></div><div class="conversation-info"><div class="conversation-name">Velare Support</div></div></div></div><div class="conversation-messages"><div class="message received"><div class="message-content"><p>Hello! Welcome to Velare. How can we assist you today?</p></div><div class="message-time">2:30 PM</div></div><div class="message sent"><div class="message-content"><p>Hi! I'm interested in your new collection.</p></div><div class="message-time">2:32 PM</div></div><div class="message received"><div class="message-content"><p>Great! Our latest collection features elegant designs perfect for any occasion. Would you like me to show you some recommendations?</p></div><div class="message-time">2:33 PM</div></div></div><div class="conversation-input"><input type="text" placeholder="Type your message..." class="message-input"><button class="send-button"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.01 21L23 12L2.01 3L2 10L17 12L2 14L2.01 21Z" fill="currentColor"/></svg></button></div></div></div></div></div>
+
+	<script defer src="{{ url_for('static', filename='js/logout-modal.js') }}"></script>
+	<script defer src="{{ url_for('static', filename='js/index.js') }}"></script>
+	<script defer src="{{ url_for('static', filename='js/cart-badge.js') }}"></script>
+	<script defer src="{{ url_for('static', filename='js/accounts/notification_badge.js') }}"></script>
+	<script defer src="{{ url_for('static', filename='js/notifications.js') }}"></script>
+	<script defer src="{{ url_for('static', filename='js/chat.js') }}"></script>
+</body>
+</html>

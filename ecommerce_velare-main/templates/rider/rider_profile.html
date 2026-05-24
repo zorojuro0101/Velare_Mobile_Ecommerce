@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rider Profile - Veláre</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/Velare Logo Tab 1.png') }}">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@100;300;400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Goodie&display=swap" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/rider/rider_profile.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/rider/rider_profile_new.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/logout-modal.css') }}">
+</head>
+<body>
+    <div class="profile-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <img src="{{ url_for('static', filename='images/velarelogo.png') }}" alt="Velare Logo">
+                <h2>Veláre</h2>
+            </div>
+            
+            <!-- Rider Profile Section -->
+            <div class="sidebar-profile" id="sidebarProfile">
+                <div class="sidebar-profile-img" id="sidebarProfileImgContainer">
+                    {% if rider and rider.profile_image %}
+                        {% if rider.profile_image.startswith('http://') or rider.profile_image.startswith('https://') %}
+                            <img src="{{ rider.profile_image }}" alt="Rider Profile" id="sidebarProfileImg">
+                        {% elif rider.profile_image.startswith('static/') %}
+                            <img src="/{{ rider.profile_image }}" alt="Rider Profile" id="sidebarProfileImg">
+                        {% else %}
+                            <img src="{{ url_for('static', filename=rider.profile_image) }}" alt="Rider Profile" id="sidebarProfileImg">
+                        {% endif %}
+                    {% endif %}
+                    <div class="profile-initial" id="sidebarProfileInitial" {% if rider and rider.profile_image %}style="display:none;"{% endif %}>{{ rider.first_name[0].upper() if rider and rider.first_name else 'R' }}</div>
+                </div>
+                <div class="sidebar-profile-info">
+                    <h3 class="sidebar-profile-name" id="sidebarProfileName">{{ rider.first_name + ' ' + rider.last_name if rider else 'Rider Name' }}</h3>
+                    <p class="sidebar-profile-role">Delivery Rider</p>
+                </div>
+            </div>
+            
+            <nav class="nav-menu">
+                <a href="{{ url_for('rider_dashboard.rider_dashboard') }}" class="nav-item">
+                    <i class="bi bi-speedometer2 icon"></i>
+                    <span>Dashboard</span>
+                </a>
+                <div class="nav-item-group">
+                    <a href="#" class="nav-item" data-tab="delivery-management" id="deliveryManagementToggle">
+                        <i class="bi bi-box-seam icon"></i>
+                        <span>Delivery Management</span>
+                        <i class="bi bi-chevron-down dropdown-arrow"></i>
+                    </a>
+                    <div class="nav-submenu" id="deliverySubmenu">
+                        <a href="{{ url_for('rider_pickup.rider_pickup') }}" class="nav-subitem" data-tab="list-pickup">
+                            <i class="bi bi-clipboard-check icon"></i>
+                            <span>List for Pickup</span>
+                        </a>
+                        <a href="{{ url_for('rider_activeDelivery.rider_activeDelivery') }}" class="nav-subitem" data-tab="active-delivery">
+                            <i class="bi bi-truck icon"></i>
+                            <span>List for Active Delivery</span>
+                        </a>
+                    </div>
+                </div>
+                <a href="{{ url_for('rider_earnings.rider_earnings') }}" class="nav-item" data-tab="earnings">
+                    <i class="bi bi-cash-coin icon"></i>
+                    <span>Earnings</span>
+                </a>
+                <a href="{{ url_for('rider_chat.rider_chat') }}" class="nav-item" data-tab="chat">
+                    <i class="bi bi-chat-dots icon"></i>
+                    <span>Chat</span>
+                </a>
+                <a href="{{ url_for('rider_report_user.report_user_page') }}" class="nav-item" data-tab="report-user">
+                    <i class="bi bi-flag icon"></i>
+                    <span>Report User</span>
+                </a>
+                <a href="#" class="nav-item" data-tab="logout" id="logout-link" data-logout-url="{{ url_for('auth.login') }}">
+                    <i class="bi bi-box-arrow-right icon"></i>
+                    <span>Logout</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="rider-profile-main-content">
+                <h2 class="rider-profile-title">Rider Profile</h2>
+                <hr class="rider-profile-divider">
+                
+                <div class="rider-profile-content">
+                    <div class="profile-content-row">
+                        <form class="profile-form" id="riderProfileForm" enctype="multipart/form-data">
+                            <div class="form-group">
+                                <label for="riderFirstName">First Name</label>
+                                <input type="text" id="riderFirstName" name="first_name" placeholder="Enter first name" value="{{ rider.first_name if rider else '' }}" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="riderLastName">Last Name</label>
+                                <input type="text" id="riderLastName" name="last_name" placeholder="Enter last name" value="{{ rider.last_name if rider else '' }}" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="riderEmail">Email</label>
+                                <input type="email" id="riderEmail" name="email" placeholder="Enter email address" value="{{ rider.email if rider else '' }}" readonly>
+                            </div>
+                            
+                            <div class="form-group" id="phoneFormGroup">
+                                <label for="riderPhoneNumber">Phone Number</label>
+                                <span id="addPhoneLink" {% if rider and rider.phone_number and rider.phone_number != 'N/A' %}style="display: none;"{% endif %}>Add</span>
+                                <input type="tel" id="riderPhoneNumber" name="phone_number" placeholder="09XXXXXXXXX" maxlength="11" pattern="[0-9]{11}" value="{{ rider.phone_number if rider and rider.phone_number and rider.phone_number != 'N/A' else '' }}" {% if rider and rider.phone_number and rider.phone_number != 'N/A' %}style="display: block;"{% else %}style="display: none;"{% endif %}>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="riderVehicleType">Vehicle Type</label>
+                                <select id="riderVehicleType" name="vehicle_type" required>
+                                    <option value="">Select vehicle type</option>
+                                    <option value="Motorcycle" {% if rider and rider.vehicle_type and rider.vehicle_type|lower == 'motorcycle' %}selected{% endif %}>Motorcycle</option>
+                                    <option value="Bicycle" {% if rider and rider.vehicle_type and (rider.vehicle_type|lower == 'bicycle' or rider.vehicle_type|lower == 'ebike') %}selected{% endif %}>Bicycle</option>
+                                    <option value="Tricycle" {% if rider and rider.vehicle_type and rider.vehicle_type|lower == 'tricycle' %}selected{% endif %}>Tricycle</option>
+                                    <option value="Car" {% if rider and rider.vehicle_type and rider.vehicle_type|lower == 'car' %}selected{% endif %}>Car</option>
+                                    <option value="Van" {% if rider and rider.vehicle_type and rider.vehicle_type|lower == 'van' %}selected{% endif %}>Van</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="riderPlateNumber">Plate Number</label>
+                                <input type="text" id="riderPlateNumber" name="plate_number" placeholder="Enter plate number" value="{{ rider.plate_number if rider and rider.plate_number else '' }}">
+                            </div>
+                            
+                            <!-- Profile image file input (hidden, inside form) -->
+                            <input type="file" id="riderPictureInput" name="profile_image" accept="image/*" hidden>
+                            
+                            <!-- Save Button -->
+                            <div class="form-group save-button-container">
+                                <button type="submit" form="riderProfileForm" class="save-btn">Save Changes</button>
+                            </div>
+                        </form>
+                        
+                        <div class="profile-vertical-divider"></div>
+                        
+                        <div class="profile-image-section">
+                            <div class="profile-picture-container {% if rider and rider.profile_image %}has-image{% endif %}">
+                                {% if rider and rider.profile_image %}
+                                    {% if rider.profile_image.startswith('http://') or rider.profile_image.startswith('https://') %}
+                                        <img src="{{ rider.profile_image }}" alt="Profile Picture" style="width: 100%; height: 100%; object-fit: cover;">
+                                    {% elif rider.profile_image.startswith('static/') %}
+                                        <img src="/{{ rider.profile_image }}" alt="Profile Picture" style="width: 100%; height: 100%; object-fit: cover;">
+                                    {% else %}
+                                        <img src="{{ url_for('static', filename=rider.profile_image) }}" alt="Profile Picture" style="width: 100%; height: 100%; object-fit: cover;">
+                                    {% endif %}
+                                    <div class="upload-overlay">
+                                        <i class="bi bi-camera"></i>
+                                        <span>Change Photo</span>
+                                    </div>
+                                {% else %}
+                                    <div class="upload-placeholder">
+                                        <i class="bi bi-person"></i>
+                                        <span>Upload Photo</span>
+                                    </div>
+                                    <div class="upload-overlay" style="display: none;">
+                                        <i class="bi bi-camera"></i>
+                                        <span>Change Photo</span>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <p class="upload-hint">JPG or PNG only</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Verification Documents Section -->
+                    <div class="documents-section">
+                        <h3 class="documents-title">Verification Documents</h3>
+                        
+                        <form class="documents-form" id="documentsForm" enctype="multipart/form-data">
+                            <div class="documents-row">
+                                <!-- OR/CR Column -->
+                                <div class="document-column">
+                                    <label class="document-label">OR/CR</label>
+                                    <div class="document-image-container {% if rider and rider.orcr_file_path %}has-image{% endif %}" id="orcrImageContainer">
+                                        {% if rider and rider.orcr_file_path %}
+                                            {% if rider.orcr_file_path.startswith('http://') or rider.orcr_file_path.startswith('https://') %}
+                                                <img src="{{ rider.orcr_file_path }}" alt="OR/CR" id="orcrImagePreview" style="width: 100%; height: 100%; object-fit: cover;">
+                                            {% elif rider.orcr_file_path.startswith('static/') %}
+                                                <img src="/{{ rider.orcr_file_path }}" alt="OR/CR" id="orcrImagePreview" style="width: 100%; height: 100%; object-fit: cover;">
+                                            {% else %}
+                                                <img src="{{ url_for('static', filename=rider.orcr_file_path) }}" alt="OR/CR" id="orcrImagePreview" style="width: 100%; height: 100%; object-fit: cover;">
+                                            {% endif %}
+                                            <div class="upload-overlay">
+                                                <i class="bi bi-camera"></i>
+                                                <span>Update OR/CR</span>
+                                            </div>
+                                        {% else %}
+                                            <div class="upload-placeholder">
+                                                <i class="bi bi-file-earmark-text"></i>
+                                                <span>Upload OR/CR</span>
+                                            </div>
+                                            <div class="upload-overlay" style="display: none;">
+                                                <i class="bi bi-camera"></i>
+                                                <span>Update OR/CR</span>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    <input type="file" id="orcrImageInput" name="or_cr" accept="image/*" hidden>
+                                    <p class="upload-hint">JPG or PNG only</p>
+                                </div>
+                                
+                                <!-- Driver's License Column -->
+                                <div class="document-column">
+                                    <label class="document-label">Driver's License</label>
+                                    <div class="document-image-container {% if rider and rider.driver_license_file_path %}has-image{% endif %}" id="licenseImageContainer">
+                                        {% if rider and rider.driver_license_file_path %}
+                                            {% if rider.driver_license_file_path.startswith('http://') or rider.driver_license_file_path.startswith('https://') %}
+                                                <img src="{{ rider.driver_license_file_path }}" alt="Driver's License" id="licenseImagePreview" style="width: 100%; height: 100%; object-fit: cover;">
+                                            {% elif rider.driver_license_file_path.startswith('static/') %}
+                                                <img src="/{{ rider.driver_license_file_path }}" alt="Driver's License" id="licenseImagePreview" style="width: 100%; height: 100%; object-fit: cover;">
+                                            {% else %}
+                                                <img src="{{ url_for('static', filename=rider.driver_license_file_path) }}" alt="Driver's License" id="licenseImagePreview" style="width: 100%; height: 100%; object-fit: cover;">
+                                            {% endif %}
+                                            <div class="upload-overlay">
+                                                <i class="bi bi-camera"></i>
+                                                <span>Update License</span>
+                                            </div>
+                                        {% else %}
+                                            <div class="upload-placeholder">
+                                                <i class="bi bi-card-image"></i>
+                                                <span>Upload License</span>
+                                            </div>
+                                            <div class="upload-overlay" style="display: none;">
+                                                <i class="bi bi-camera"></i>
+                                                <span>Update License</span>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    <input type="file" id="licenseImageInput" name="drivers_license" accept="image/*" hidden>
+                                    <p class="upload-hint">JPG or PNG only</p>
+                                    
+                                    <!-- Submit Button -->
+                                    <button type="submit" class="submit-documents-btn">Submit Documents</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Logout Modal -->
+    <div id="logout-modal-overlay"></div>
+    <div id="logout-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-title">Do you want to Logout?</div>
+            <div class="modal-actions">
+                <button id="confirm-logout" class="modal-btn">Logout</button>
+                <button id="cancel-logout" class="modal-btn">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/rider/rider_profile.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/logout-modal.js') }}"></script>
+</body>
+</html>

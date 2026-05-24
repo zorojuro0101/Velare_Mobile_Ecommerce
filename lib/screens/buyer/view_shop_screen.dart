@@ -362,44 +362,10 @@ class _ViewShopScreenState extends State<ViewShopScreen> with SingleTickerProvid
     }
 
     Future<String?> uploadImage(XFile imageFile) async {
-      try {
-        final buyerId = _authService.currentBuyerId;
-        if (buyerId == null) {
-          throw Exception('User not logged in');
-        }
-
-        print('Reading image bytes...');
-        final bytes = await imageFile.readAsBytes();
-        print('Image size: ${bytes.length} bytes');
-        
-        final fileExtension = imageFile.path.split('.').last.toLowerCase();
-        final fileName = 'report_${buyerId}_${DateTime.now().millisecondsSinceEpoch}.$fileExtension';
-        final filePath = 'static/uploads/reports/$fileName';
-        
-        print('Uploading image to: $filePath');
-        
-        await Supabase.instance.client.storage
-            .from('Images')
-            .uploadBinary(
-              filePath, 
-              bytes, 
-              fileOptions: FileOptions(
-                contentType: 'image/${fileExtension == 'jpg' ? 'jpeg' : fileExtension}',
-                upsert: true,
-              ),
-            ).timeout(
-              const Duration(seconds: 30),
-              onTimeout: () {
-                throw Exception('Upload timeout');
-              },
-            );
-
-        print('Image uploaded successfully: $filePath');
-        return filePath;
-      } catch (e) {
-        print('Error uploading image: $e');
-        rethrow;
-      }
+      // Delegate to ReportService so the upload always lands in Supabase
+      // Storage and we store a fully-qualified public URL in the DB
+      // (consistent with profile/review uploads and admin/web expectations).
+      return _reportService.uploadEvidence(imageFile);
     }
 
     showDialog(

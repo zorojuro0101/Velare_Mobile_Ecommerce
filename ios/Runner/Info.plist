@@ -49,5 +49,11 @@
 	<string>Velare needs access to your microphone for voice search.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
 	<string>Velare uses speech recognition to convert your voice into search queries.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Velare needs camera access so you can take a photo of your ID during registration and upload product or profile photos.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Velare needs photo library access so you can upload an existing photo of your ID and other images.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Velare may save photos you capture to your photo library.</string>
 </dict>
 </plist>

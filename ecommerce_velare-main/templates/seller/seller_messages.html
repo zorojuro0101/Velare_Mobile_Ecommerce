@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Veláre - Messages</title>
+	<link rel="icon" type="image/png" href="{{ url_for('static', filename='images/Velare Logo Tab 1.png') }}">
+	<!-- Google Fonts for aesthetic, expensive look -->
+	<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@100;300;400;700&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Goodie&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/accounts/myAccount_profile.css') }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/seller/seller_messages.css') }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/logout-modal.css') }}">
+	<!-- Bootstrap Icons CDN -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+<body>
+	<div class="header-container">
+		<span class="header"><a href="{{ url_for('seller_dashboard.seller_dashboard') }}" style="color: inherit; text-decoration: none;">Veláre</a></span>
+	</div>
+	<hr class="divider">
+
+	<div class="main-content-container">
+		<div class="account-left-nav">
+			<div class="account-profile-header">
+				<div class="profile-img-placeholder">
+					{% if seller and seller.shop_logo %}
+						{% if seller.shop_logo.startswith('http://') or seller.shop_logo.startswith('https://') %}
+							<img src="{{ seller.shop_logo }}" alt="Shop Logo" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+						{% else %}
+							<img src="{{ url_for('static', filename=seller.shop_logo) }}" alt="Shop Logo" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+						{% endif %}
+					{% endif %}
+				</div>
+				<a href="{{ url_for('seller_information.seller_information') }}" class="profile-name-placeholder clickable-profile">
+					{% if seller and seller.shop_name %}
+						{{ seller.shop_name }}
+					{% else %}
+						Shop Name
+					{% endif %}
+				</a>
+			</div>
+			<div class="account-nav-divider"></div>
+			<div class="account-nav-list">
+				<a href="{{ url_for('seller_dashboard.seller_dashboard') }}" class="main-tab" style="text-decoration: none; color: inherit;">
+					<i class="bi bi-speedometer2" style="font-size:1.2em; vertical-align:middle; margin-right:10px;"></i>
+					<span class="main-tab-label">Dashboard</span>
+				</a>
+				<a href="{{ url_for('seller_product_management.seller_product_management') }}" class="main-tab" style="text-decoration: none; color: inherit;">
+					<i class="bi bi-box-seam" style="font-size:1.2em; vertical-align:middle; margin-right:10px;"></i>
+					<span class="main-tab-label">Product Management</span>
+				</a>
+				<a href="{{ url_for('seller_product_sales.seller_product_sales') }}" class="main-tab" style="text-decoration: none; color: inherit;">
+					<i class="bi bi-graph-up-arrow" style="font-size:1.2em; vertical-align:middle; margin-right:10px;"></i>
+					<span class="main-tab-label">Product Sales</span>
+				</a>
+				<div class="main-tab active" id="messagesTab">
+					<i class="bi bi-chat-dots" style="font-size:1.2em; vertical-align:middle; margin-right:10px;"></i>
+					<span class="main-tab-label">Messages</span>
+				</div>
+				<a href="{{ url_for('seller_customer_feedback.seller_customer_feedback') }}" class="main-tab" style="text-decoration: none; color: inherit;">
+					<i class="bi bi-star" style="font-size:1.2em; vertical-align:middle; margin-right:10px;"></i>
+					<span class="main-tab-label">Customer Feedback</span>
+				</a>
+				<a href="{{ url_for('seller_select_vouchers.seller_select_vouchers') }}" class="main-tab" style="text-decoration: none; color: inherit;">
+					<i class="bi bi-ticket-perforated" style="font-size:1.2em; vertical-align:middle; margin-right:10px;"></i>
+					<span class="main-tab-label">Shop Vouchers</span>
+				</a>
+				<a href="{{ url_for('seller_report_user.report_user_page') }}" class="main-tab" style="text-decoration: none; color: inherit;">
+					<i class="bi bi-flag" style="font-size:1.2em; vertical-align:middle; margin-right:10px;"></i>
+					<span class="main-tab-label">Report User</span>
+				</a>
+				<div class="main-tab" id="logout-link" data-logout-url="{{ url_for('auth.login') }}">
+					<i class="bi bi-box-arrow-right" style="font-size:1.2em; vertical-align:middle; margin-right:10px;"></i>
+					<span class="main-tab-label">Logout</span>
+				</div>
+			</div>
+			<div class="sidebar-vertical-line"></div>
+		</div>
+		<div class="account-card-container">
+			<div class="messages-main-content">
+				<div class="messages-container">
+					<!-- Left Column: Conversations List -->
+					<div class="conversations-panel">
+						<div class="conversations-header">
+							<h2 class="conversations-title">Messages</h2>
+							<div class="conversation-tabs">
+								<button class="tab-btn active" data-tab="all">All</button>
+								<button class="tab-btn" data-tab="buyers">Buyers</button>
+								<button class="tab-btn" data-tab="riders">Riders</button>
+							</div>
+							<div class="search-conversations">
+								<i class="bi bi-search"></i>
+								<input type="text" placeholder="Search conversations..." id="conversationSearch">
+							</div>
+						</div>
+						<div class="conversations-list" id="conversationsList">
+							<!-- Conversations will be loaded dynamically -->
+							<div class="empty-conversations">
+								<i class="bi bi-chat-dots"></i>
+								<p>No conversations yet</p>
+								<p class="empty-subtitle">Start chatting with buyers or riders</p>
+							</div>
+						</div>
+					</div>
+
+					<!-- Right Column: Chat Window -->
+					<div class="chat-panel">
+						<div class="chat-header">
+							<div class="chat-contact-info">
+								<div class="chat-avatar">
+									<img src="{{ url_for('static', filename='images/user.png') }}" alt="Contact" id="chatAvatar">
+								</div>
+								<div class="chat-contact-details">
+									<span class="chat-contact-name" id="chatContactName">Select a conversation</span>
+									<span class="chat-contact-type" id="chatContactType"></span>
+								</div>
+							</div>
+						</div>
+
+						<div class="chat-messages" id="chatMessages">
+							<!-- Messages will be loaded dynamically -->
+							<div class="empty-chat">
+								<i class="bi bi-chat-text"></i>
+								<h3>Select a conversation</h3>
+								<p>Choose a conversation from the list to start messaging</p>
+							</div>
+						</div>
+
+						<div class="chat-input-container">
+							<div class="chat-input-wrapper">
+								<input type="text" class="chat-input" id="messageInput" placeholder="Type a message...">
+							</div>
+							<button class="send-btn" id="sendBtn">
+								<i class="bi bi-send-fill"></i>
+								Send
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Logout Modal Overlay and Confirmation Modal -->
+	<div id="logout-modal-overlay"></div>
+	<div id="logout-modal" class="modal">
+		<div class="modal-content">
+			<div class="modal-title">Do you want to Logout?</div>
+			<div class="modal-actions">
+				<button id="confirm-logout" class="modal-btn">Logout</button>
+				<button id="cancel-logout" class="modal-btn">Cancel</button>
+			</div>
+		</div>
+	</div>
+	<script defer src="{{ url_for('static', filename='js/logout-modal.js') }}"></script>
+	<script defer src="{{ url_for('static', filename='js/seller/seller-dashboard-nav.js') }}"></script>
+	<script defer src="{{ url_for('static', filename='js/seller/seller-nav-hover.js') }}"></script>
+	<script defer src="{{ url_for('static', filename='js/seller/seller_messages.js') }}"></script>
+</body>
+</html>

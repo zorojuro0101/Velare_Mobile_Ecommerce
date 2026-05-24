@@ -1,0 +1,26 @@
+services:
+  web:
+    build: .
+    container_name: velare-app-dev
+    ports:
+      - "5000:5000"
+    volumes:
+      # Mount code for hot reload in development
+      - .:/app
+      # But don't overwrite dependencies
+      - /app/__pycache__
+      - /app/.pytest_cache
+    environment:
+      - FLASK_ENV=development
+      - FLASK_DEBUG=1
+      - PORT=5000
+    env_file:
+      - .env
+    restart: unless-stopped
+    networks:
+      - velare-network
+    command: python app.py
+
+networks:
+  velare-network:
+    driver: bridge

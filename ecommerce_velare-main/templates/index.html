@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Veláre</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/Velare Logo Tab 1.png') }}">
+    <!-- Optimized Google Fonts - Combined into one request -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@100;300;400;700&family=Cormorant+Garamond:wght@500;600;700&family=Cinzel:wght@700&family=Goodie&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/logout-modal.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/chat.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/footer.css') }}">
+    <script defer src="{{ url_for('static', filename='js/search-anim.js') }}"></script>
+</head>
+
+<body data-is-logged-in="{{ 'true' if is_logged_in else 'false' }}">
+    <div class="header-container">
+    <span class="header"><a href="{{ url_for('index.index') }}" style="color: inherit; text-decoration: none;">Veláre</a></span>
+        <div class="icon-bar">
+            <div class="icon-wrapper search-icon-wrapper">
+                <img id="search-icon" src="{{ url_for('static', filename='images/search.png') }}" alt="Search" class="icon">
+                <span class="icon-label">Search</span>
+                <form id="search-form" class="search-form-animated" action="{{ url_for('browse_product.browse_product') }}" method="get" autocomplete="off">
+                    <input type="text" name="q" placeholder="Search product" class="search-input">
+                </form>
+            </div>
+            <div class="icon-wrapper notification-icon-wrapper">
+                <i class="bi bi-bell icon" id="notification-bell" style="font-size: 1.3rem;"></i>
+                <span class="notification-badge" id="notification-badge" style="display: none;">0</span>
+                <span class="icon-label">Notifications</span>
+                <div class="notification-dropdown">
+                    <div class="notification-header">Notifications</div>
+                    <div class="notification-list" id="notification-list">
+                        <div class="notification-loading">Loading...</div>
+                    </div>
+                </div>
+            </div>
+            <a href="{{ url_for('favorite.favorite') }}" class="icon-wrapper favorite-icon-wrapper" style="text-decoration:none; color:inherit;">
+                <img src="{{ url_for('static', filename='images/star.png') }}" alt="Star" class="icon">
+                <span class="favorite-badge" id="favorite-badge" style="display: none;">0</span>
+                <span class="icon-label">Favorite</span>
+            </a>
+            <div class="icon-wrapper profile-icon-wrapper">
+                <img src="{{ url_for('static', filename='images/user.png') }}" alt="User" class="icon"><span class="icon-label"></span>
+                <div class="profile-dropdown">
+                    {% if is_logged_in %}
+                        {% if session.get('user_type') == 'seller' %}
+                            <a href="{{ url_for('seller_dashboard.seller_dashboard') }}" class="dropdown-item"><span class="dropdown-item-text">My Dashboard</span></a>
+                        {% elif session.get('user_type') == 'rider' %}
+                            <a href="{{ url_for('rider_dashboard.rider_dashboard') }}" class="dropdown-item"><span class="dropdown-item-text">My Dashboard</span></a>
+                        {% else %}
+                            <a href="{{ url_for('myAccount_profile.myAccount_profile') }}" class="dropdown-item"><span class="dropdown-item-text">My Account</span></a>
+                        {% endif %}
+                        <div class="dropdown-divider"></div>
+                        <a href="#" id="logout-link" class="dropdown-item" data-logout-url="{{ url_for('auth.login') }}"><span class="dropdown-item-text">Logout</span></a>
+                    {% else %}
+                        <a href="{{ url_for('auth.login') }}" class="dropdown-item"><span class="dropdown-item-text">Login</span></a>
+                        <div class="dropdown-divider"></div>
+                        <a href="{{ url_for('auth.register') }}" class="dropdown-item"><span class="dropdown-item-text">Register</span></a>
+                    {% endif %}
+                </div>
+            </div>
+            <a href="{{ url_for('cart.cart') }}" class="icon-wrapper cart-icon-wrapper" style="text-decoration:none; color:inherit;">
+                <img src="{{ url_for('static', filename='images/shopping-cart.png') }}" alt="Cart" class="icon">
+                <span class="cart-badge" id="cart-badge" style="display: none;">0</span>
+                <span class="icon-label">Cart</span>
+            </a>
+        </div>
+    </div>
+    <nav class="nav">
+        <a href="{{ url_for('browse_product.browse_product', category='dresses-skirts') }}" class="nav-tab">Dresses & Skirts</a>
+        <a href="{{ url_for('browse_product.browse_product', category='tops-blouses') }}" class="nav-tab">Tops & Blouses</a>
+        <a href="{{ url_for('browse_product.browse_product', category='activewear-yoga') }}" class="nav-tab">Activewear & Yoga Pants</a>
+        <a href="{{ url_for('browse_product.browse_product', category='lingerie-sleepwear') }}" class="nav-tab">Lingerie & Sleepwear</a>
+        <a href="{{ url_for('browse_product.browse_product', category='jackets-coats') }}" class="nav-tab">Jackets & Coats</a>
+        <a href="{{ url_for('browse_product.browse_product', category='shoes-accessories') }}" class="nav-tab">Shoes & Accessories</a>
+    </nav>
+
+
+    <!-- VIDEO PLACEHOLDER START -->
+    <div class="video-placeholder-full video-placeholder-with-shop">
+        <video class="video-bg" src="{{ url_for('static', filename='videos/pm_11872_1214_1214538-06xy8yl893-ori.webm') }}" autoplay muted loop playsinline></video>
+        <div class="shop-now-overlay">
+            <a href="{{ url_for('browse_product.browse_product') }}" class="shop-now-link">Shop now</a>
+        </div>
+    </div>
+    <!-- VIDEO PLACEHOLDER END -->
+    
+    <!-- TAGLINE SECTION START -->
+    <div class="tagline-section">
+        <div class="tagline-logo">
+            <img src="{{ url_for('static', filename='images/velarelogo.png') }}" alt="Veláre Logo">
+        </div>
+        <div class="tagline-text">
+            <p class="tagline-quote">"Sustainable fashion is timeless beauty."</p>
+            <p class="tagline-author">— Veláre</p>
+        </div>
+    </div>
+    <!-- TAGLINE SECTION END -->
+    
+    <!-- SAMPLE IMAGES SECTION START -->
+    <div class="sample-images-section">
+        <!-- First row: 2 images - Best Sellers -->
+        <div class="image-row row-2">
+            <!-- Best Seller Left -->
+            <div class="image-container" data-section="best-sellers" data-container-index="0">
+                <button class="image-nav-arrow prev" onclick="navigateImage('best-sellers', 0, -1)">
+                    <svg viewBox="0 0 24 24" fill="none">
+                        <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+                {% if best_sellers and best_sellers|length > 0 and best_sellers[0].image_url %}
+                    <a href="{{ url_for('browse_product.browse_product', filter='best-sellers') }}" class="image-link">
+                        {% if best_sellers[0].image_url.startswith('http://') or best_sellers[0].image_url.startswith('https://') %}
+                            <img src="{{ best_sellers[0].image_url }}" alt="{{ best_sellers[0].product_name }}" class="sample-image">
+                        {% else %}
+                            <img src="{{ url_for('static', filename=best_sellers[0].image_url) }}" alt="{{ best_sellers[0].product_name }}" class="sample-image">
+                        {% endif %}
+                    </a>
+                    <a href="{{ url_for('browse_product.browse_product', filter='best-sellers') }}" class="image-label">Exclusively In Demand</a>
+                {% else %}
+                    <a href="{{ url_for('browse_product.browse_product', filter='best-sellers') }}" class="image-link">
+                        <img src="{{ url_for('static', filename='images/sampleimage2.webp') }}" alt="Best Seller" class="sample-image">
+                    </a>
+                    <a href="{{ url_for('browse_product.browse_product', filter='best-sellers') }}" class="image-label">Exclusively In Demand</a>
+                {% endif %}
+                <button class="image-nav-arrow next" onclick="navigateImage('best-sellers', 0, 1)">
+                    <svg viewBox="0 0 24 24" fill="none">
+                        <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+            </div>
+            
+            <!-- Latest Product Right -->
+            <div class="image-container" data-section="latest" data-container-index="0">
+                <button class="image-nav-arrow prev" onclick="navigateImage('latest', 0, -1)">
+                    <svg viewBox="0 0 24 24" fill="none">
+                        <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+                {% if latest_products and latest_products|length > 0 and latest_products[0].image_url %}
+                    <a href="{{ url_for('browse_product.browse_product', filter='new-arrivals') }}" class="image-link">
+                        {% if latest_products[0].image_url.startswith('http://') or latest_products[0].image_url.startswith('https://') %}
+                            <img src="{{ latest_products[0].image_url }}" alt="{{ latest_products[0].product_name }}" class="sample-image" loading="lazy" decoding="async">
+                        {% else %}
+                            <img src="{{ url_for('static', filename=latest_products[0].image_url) }}" alt="{{ latest_products[0].product_name }}" class="sample-image" loading="lazy" decoding="async">
+                        {% endif %}
+                    </a>
+                    <a href="{{ url_for('browse_product.browse_product', filter='new-arrivals') }}" class="image-label">What's New</a>
+                {% else %}
+                    <a href="{{ url_for('browse_product.browse_product', filter='new-arrivals') }}" class="image-link">
+                        <img src="{{ url_for('static', filename='images/sampleimage3.webp') }}" alt="Latest" class="sample-image" loading="lazy" decoding="async">
+                    </a>
+                    <a href="{{ url_for('browse_product.browse_product', filter='new-arrivals') }}" class="image-label">What's New</a>
+                {% endif %}
+                <button class="image-nav-arrow next" onclick="navigateImage('latest', 0, 1)">
+                    <svg viewBox="0 0 24 24" fill="none">
+                        <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Second row: 1 image - Top Rating -->
+        <div class="image-row row-1">
+            <div class="image-container" data-section="top-rated" data-container-index="0">
+                <button class="image-nav-arrow prev" onclick="navigateImage('top-rated', 0, -1)">
+                    <svg viewBox="0 0 24 24" fill="none">
+                        <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+                {% if top_rated_products and top_rated_products|length > 0 and top_rated_products[0].image_url %}
+                    <a href="{{ url_for('browse_product.browse_product', filter='top-rated') }}" class="image-link">
+                        {% if top_rated_products[0].image_url.startswith('http://') or top_rated_products[0].image_url.startswith('https://') %}
+                            <img src="{{ top_rated_products[0].image_url }}" alt="{{ top_rated_products[0].product_name }}" class="sample-image" loading="lazy" decoding="async">
+                        {% else %}
+                            <img src="{{ url_for('static', filename=top_rated_products[0].image_url) }}" alt="{{ top_rated_products[0].product_name }}" class="sample-image" loading="lazy" decoding="async">
+                        {% endif %}
+                    </a>
+                    <a href="{{ url_for('browse_product.browse_product', filter='top-rated') }}" class="image-label">Beloved by Connoisseurs</a>
+                {% else %}
+                    <a href="{{ url_for('browse_product.browse_product', filter='top-rated') }}" class="image-link">
+                        <img src="{{ url_for('static', filename='images/sampleimage4.webp') }}" alt="Top Rated" class="sample-image" loading="lazy" decoding="async">
+                    </a>
+                    <a href="{{ url_for('browse_product.browse_product', filter='top-rated') }}" class="image-label">Beloved by Connoisseurs</a>
+                {% endif %}
+                <button class="image-nav-arrow next" onclick="navigateImage('top-rated', 0, 1)">
+                    <svg viewBox="0 0 24 24" fill="none">
+                        <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Third row: 1 image - Random -->
+        <div class="image-row row-1">
+            <div class="image-container" data-section="random" data-container-index="0">
+                <button class="image-nav-arrow prev" onclick="navigateImage('random', 0, -1)">
+                    <svg viewBox="0 0 24 24" fill="none">
+                        <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+                {% if random_products and random_products|length > 0 and random_products[0].image_url %}
+                    <a href="{{ url_for('browse_product.browse_product') }}" class="image-link">
+                        {% if random_products[0].image_url.startswith('http://') or random_products[0].image_url.startswith('https://') %}
+                            <img src="{{ random_products[0].image_url }}" alt="{{ random_products[0].product_name }}" class="sample-image" loading="lazy" decoding="async">
+                        {% else %}
+                            <img src="{{ url_for('static', filename=random_products[0].image_url) }}" alt="{{ random_products[0].product_name }}" class="sample-image" loading="lazy" decoding="async">
+                        {% endif %}
+                    </a>
+                    <a href="{{ url_for('browse_product.browse_product') }}" class="image-label">The Art of Choice</a>
+                {% else %}
+                    <a href="{{ url_for('browse_product.browse_product') }}" class="image-link">
+                        <img src="{{ url_for('static', filename='images/sampleimage5.webp') }}" alt="Random Product" class="sample-image" loading="lazy" decoding="async">
+                    </a>
+                    <a href="{{ url_for('browse_product.browse_product') }}" class="image-label">The Art of Choice</a>
+                {% endif %}
+                <button class="image-nav-arrow next" onclick="navigateImage('random', 0, 1)">
+                    <svg viewBox="0 0 24 24" fill="none">
+                        <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+    <!-- SAMPLE IMAGES SECTION END -->
+    
+    <script>
+        // Product data from backend
+        const productData = {
+            'best-sellers': {{ best_sellers|tojson|safe }},
+            'latest': {{ latest_products|tojson|safe }},
+            'top-rated': {{ top_rated_products|tojson|safe }},
+            'random': {{ random_products|tojson|safe }}
+        };
+        
+        // Current indices for each image container
+        const currentIndices = {
+            'best-sellers': [0],
+            'latest': [0],
+            'top-rated': [0],
+            'random': [0]
+        };
+        
+        // Hover intervals for each container
+        const hoverIntervals = {};
+        
+        function navigateImage(section, containerIndex, direction) {
+            const products = productData[section];
+            
+            if (!products || products.length === 0) {
+                return;
+            }
+            
+            // Get the specific container
+            const container = document.querySelector(`[data-section="${section}"][data-container-index="${containerIndex}"]`);
+            const img = container.querySelector('.sample-image');
+            const link = container.querySelector('.image-link');
+            
+            // Fade out (faster)
+            img.style.transition = 'opacity 0.3s ease';
+            img.style.opacity = '0';
+            
+            setTimeout(() => {
+                // Update index for this specific container
+                currentIndices[section][containerIndex] = (currentIndices[section][containerIndex] + direction + products.length) % products.length;
+                const newIndex = currentIndices[section][containerIndex];
+                
+                const product = products[newIndex];
+                
+                if (product && product.image_url) {
+                    link.href = `/view_item/${product.product_id}`;
+                    img.src = `/static/${product.image_url}`;
+                    img.alt = product.product_name;
+                    
+                    // Fade in (faster)
+                    setTimeout(() => {
+                        img.style.opacity = '1';
+                    }, 50);
+                }
+            }, 300);
+        }
+        
+        // Setup hover auto-loop for each container
+        document.addEventListener('DOMContentLoaded', () => {
+            const containers = document.querySelectorAll('.image-container[data-section]');
+            
+            containers.forEach(container => {
+                const section = container.getAttribute('data-section');
+                const containerIndex = parseInt(container.getAttribute('data-container-index'));
+                const key = `${section}-${containerIndex}`;
+                
+                // On hover - start auto loop
+                container.addEventListener('mouseenter', () => {
+                    if (hoverIntervals[key]) {
+                        clearInterval(hoverIntervals[key]);
+                    }
+                    
+                    // Fast loop - every 2 seconds
+                    hoverIntervals[key] = setInterval(() => {
+                        navigateImage(section, containerIndex, 1);
+                    }, 2000);
+                });
+                
+                // On leave - stop auto loop
+                container.addEventListener('mouseleave', () => {
+                    if (hoverIntervals[key]) {
+                        clearInterval(hoverIntervals[key]);
+                        hoverIntervals[key] = null;
+                    }
+                });
+            });
+        });
+    </script>
+    <div id="logout-modal-overlay"></div>
+    <div id="logout-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-title">Do you want to Logout?</div>
+            <div class="modal-actions">
+                <button id="confirm-logout" class="modal-btn">Logout</button>
+                <button id="cancel-logout" class="modal-btn">Cancel</button>
+            </div>
+        </div>
+    </div>
+    <!-- Chat Widget -->
+    <div id="chat-widget">
+        <div id="chat-button">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M20 2H4C2.9 2 2 2.9 2 4V22L6 18H20C21.1 18 22 17.1 22 16V4C22 2.9 21.1 2 20 2ZM20 16H5.17L4 17.17V4H20V16Z" fill="currentColor"/>
+                <circle cx="7" cy="10" r="1" fill="currentColor"/>
+                <circle cx="12" cy="10" r="1" fill="currentColor"/>
+                <circle cx="17" cy="10" r="1" fill="currentColor"/>
+            </svg>
+            <span>Chat</span>
+        </div>
+        
+        <div id="chat-window" class="chat-window-hidden">
+            <!-- Left Panel: Contact List -->
+            <div class="chat-left-panel">
+                <div class="chat-header">
+                    <h3>Chat</h3>
+                    <div class="chat-controls">
+                        <button id="close-chat" class="chat-control-btn">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12L19 6.41Z" fill="currentColor"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="chat-search">
+                    <input type="text" placeholder="Search name" class="chat-search-input">
+                </div>
+                
+                <div class="chat-contacts">
+                    <div class="chat-contact">
+                        <div class="contact-avatar">
+                            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%23bf9f4a'/%3E%3Ctext x='16' y='20' text-anchor='middle' fill='white' font-size='12' font-weight='bold'%3EV%3C/text%3E%3C/svg%3E" alt="Velare Support">
+                        </div>
+                        <div class="contact-info">
+                            <div class="contact-name">Velare Support</div>
+                            <div class="contact-message">How can we help you today?</div>
+                        </div>
+                        <div class="contact-time">Now</div>
+                    </div>
+                    
+                    <div class="chat-contact">
+                        <div class="contact-avatar">
+                            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%23181818'/%3E%3Ctext x='16' y='20' text-anchor='middle' fill='white' font-size='12' font-weight='bold'%3ES%3C/text%3E%3C/svg%3E" alt="Sales Team">
+                        </div>
+                        <div class="contact-info">
+                            <div class="contact-name">Sales Team</div>
+                            <div class="contact-message">Thank you for your interest!</div>
+                        </div>
+                        <div class="contact-time">2m</div>
+                    </div>
+                    
+                    <div class="chat-contact">
+                        <div class="contact-avatar">
+                            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%232c2236'/%3E%3Ctext x='16' y='20' text-anchor='middle' fill='white' font-size='12' font-weight='bold'%3EC%3C/text%3E%3C/svg%3E" alt="Customer Care">
+                        </div>
+                        <div class="contact-info">
+                            <div class="contact-name">Customer Care</div>
+                            <div class="contact-message">Your order has been processed</div>
+                        </div>
+                        <div class="contact-time">1h</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Right Panel: Conversation or Welcome -->
+            <div class="chat-right-panel">
+                <div class="chat-welcome">
+                    <div class="welcome-icon">
+                        <svg width="80" height="60" viewBox="0 0 100 75" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="10" y="15" width="80" height="50" rx="8" fill="#e0d7c6" stroke="#bf9f4a" stroke-width="2"/>
+                            <rect x="15" y="20" width="70" height="30" rx="4" fill="#fafafa"/>
+                            <rect x="20" y="25" width="25" height="3" rx="1.5" fill="#bf9f4a"/>
+                            <rect x="20" y="30" width="35" height="3" rx="1.5" fill="#bf9f4a"/>
+                            <rect x="20" y="35" width="20" height="3" rx="1.5" fill="#bf9f4a"/>
+                            <circle cx="65" cy="35" r="8" fill="#181818"/>
+                            <circle cx="65" cy="35" r="3" fill="white"/>
+                            <circle cx="67" cy="33" r="1" fill="#181818"/>
+                            <circle cx="69" cy="35" r="1" fill="#181818"/>
+                            <circle cx="67" cy="37" r="1" fill="#181818"/>
+                        </svg>
+                    </div>
+                    <h4>Welcome to Velare Chat</h4>
+                    <p>Search and connect with sellers to start chatting</p>
+                </div>
+                
+                <div class="chat-conversation">
+                    <div class="conversation-header">
+                        <div class="conversation-contact">
+                            <div class="conversation-avatar">
+                                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%23bf9f4a'/%3E%3Ctext x='16' y='20' text-anchor='middle' fill='white' font-size='12' font-weight='bold'%3EV%3C/text%3E%3C/svg%3E" alt="Contact">
+                            </div>
+                            <div class="conversation-info">
+                                <div class="conversation-name">Velare Support</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="conversation-messages">
+                        <div class="message received">
+                            <div class="message-content">
+                                <p>Hello! Welcome to Velare. How can we assist you today?</p>
+                            </div>
+                            <div class="message-time">2:30 PM</div>
+                        </div>
+                        
+                        <div class="message sent">
+                            <div class="message-content">
+                                <p>Hi! I'm interested in your new collection.</p>
+                            </div>
+                            <div class="message-time">2:32 PM</div>
+                        </div>
+                        
+                        <div class="message received">
+                            <div class="message-content">
+                                <p>Great! Our latest collection features elegant designs perfect for any occasion. Would you like me to show you some recommendations?</p>
+                            </div>
+                            <div class="message-time">2:33 PM</div>
+                        </div>
+                    </div>
+                    
+                    <div class="conversation-input">
+                        <input type="text" placeholder="Type your message..." class="message-input">
+                        <button class="send-button">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M2.01 21L23 12L2.01 3L2 10L17 12L2 14L2.01 21Z" fill="currentColor"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <!-- Footer Top Section -->
+            <div class="footer-content">
+                <!-- About Section -->
+                <div class="footer-section">
+                    <h3 class="footer-title">About Veláre</h3>
+                    <p class="footer-description">Veláre is your premier destination for elegant and sophisticated fashion. We bring you curated collections that celebrate style, quality, and timeless elegance.</p>
+                    <a href="{{ url_for('about_us.about_us') }}" class="footer-link">Learn More About Us</a>
+                </div>
+
+                <!-- Quick Links Section -->
+                <div class="footer-section">
+                    <h3 class="footer-title">Quick Links</h3>
+                    <ul class="footer-links footer-links-two-column">
+                        <li><a href="{{ url_for('browse_product.browse_product') }}" class="footer-link">Shop All</a></li>
+                        <li><a href="{{ url_for('browse_product.browse_product', category='dresses-skirts') }}" class="footer-link">Dresses & Skirts</a></li>
+                        <li><a href="{{ url_for('browse_product.browse_product', category='tops-blouses') }}" class="footer-link">Tops & Blouses</a></li>
+                        <li><a href="{{ url_for('browse_product.browse_product', category='activewear-yoga') }}" class="footer-link">Activewear & Yoga</a></li>
+                        <li><a href="{{ url_for('browse_product.browse_product', category='lingerie-sleepwear') }}" class="footer-link">Lingerie & Sleepwear</a></li>
+                        <li><a href="{{ url_for('browse_product.browse_product', category='jackets-coats') }}" class="footer-link">Jackets & Coats</a></li>
+                        <li><a href="{{ url_for('browse_product.browse_product', category='shoes-accessories') }}" class="footer-link">Shoes & Accessories</a></li>
+                        <li><a href="{{ url_for('favorite.favorite') }}" class="footer-link">My Favorites</a></li>
+                    </ul>
+                </div>
+
+                <!-- Our Values Section -->
+                <div class="footer-section">
+                    <h3 class="footer-title">Our Values</h3>
+                    <ul class="footer-links">
+                        <li><a href="{{ url_for('about_us.about_us') }}#section-4" class="footer-link">Women Empowerment</a></li>
+                        <li><a href="{{ url_for('about_us.about_us') }}#section-5" class="footer-link">Sustainability</a></li>
+                        <li><a href="{{ url_for('about_us.about_us') }}#section-6" class="footer-link">Innovation</a></li>
+                        <li><a href="{{ url_for('about_us.about_us') }}#section-7" class="footer-link">Collaboration</a></li>
+                        <li><a href="{{ url_for('references.references') }}" class="footer-link">References</a></li>
+                    </ul>
+                </div>
+
+                <!-- Contact & Social Section -->
+                <div class="footer-section">
+                    <h3 class="footer-title">Get In Touch</h3>
+                    <div class="contact-info">
+                        <p class="contact-item">
+                            <span class="contact-label">Phone:</span>
+                            <a href="tel:09956776157" class="footer-link">09956776157</a>
+                        </p>
+                        <p class="contact-item">
+                            <span class="contact-label">Location:</span>
+                            <span class="footer-text">Philippines</span>
+                        </p>
+                    </div>
+                    <div class="social-links">
+                        <a href="https://web.facebook.com/symon.beato.3" target="_blank" rel="noopener noreferrer" class="social-link facebook" title="Facebook">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                            </svg>
+                        </a>
+                        <a href="https://www.instagram.com/j_mx_21/" target="_blank" rel="noopener noreferrer" class="social-link instagram" title="Instagram">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0m0 2c5.514 0 10 4.486 10 10s-4.486 10-10 10S2 17.514 2 12 6.486 2 12 2m0 2c-4.411 0-8 3.589-8 8s3.589 8 8 8 8-3.589 8-8-3.589-8-8-8m0 2c3.309 0 6 2.691 6 6s-2.691 6-6 6-6-2.691-6-6 2.691-6 6-6m5.5-1c-.828 0-1.5.672-1.5 1.5s.672 1.5 1.5 1.5 1.5-.672 1.5-1.5-.672-1.5-1.5-1.5"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer Bottom Section -->
+            <div class="footer-bottom">
+                <div class="footer-bottom-content">
+                    <p class="copyright">&copy; 2025 Veláre. All Rights Reserved.</p>
+                    <div class="footer-bottom-links">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script defer src="{{ url_for('static', filename='js/logout-modal.js') }}"></script>
+    <script defer src="{{ url_for('static', filename='js/index.js') }}"></script>
+    <script defer src="{{ url_for('static', filename='js/category-navigation.js') }}"></script>
+    <script defer src="{{ url_for('static', filename='js/cart-badge.js') }}"></script>
+    <script defer src="{{ url_for('static', filename='js/notifications.js') }}"></script>
+    <script defer src="{{ url_for('static', filename='js/chat.js') }}"></script>
+</body>
+</html>

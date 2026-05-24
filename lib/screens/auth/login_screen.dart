@@ -5,6 +5,7 @@ import '../../utils/snackbar_helper.dart';
 import '../buyer/buyer_main_screen.dart';
 import '../buyer/guest_home.dart';
 import '../rider/rider_home.dart';
+import 'forgot_password_screen.dart';
 import 'register_screen.dart';
 
 import '../../utils/app_colors.dart';
@@ -132,7 +133,28 @@ class _LoginScreenState extends State<LoginScreen> {
                   obscureText: _obscurePassword,
                   validator: (v) => v!.isEmpty ? 'Enter password' : null,
                 ),
-                SizedBox(height: 24.h),
+                SizedBox(height: 8.h),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const ForgotPasswordScreen(),
+                        ),
+                      );
+                    },
+                    child: Text(
+                      'Forgot Password?',
+                      style: GoogleFonts.goudyBookletter1911(
+                        color: AppColors.onSurface(context),
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 16.h),
                 SizedBox(
                   width: double.infinity,
                   height: 48.h,

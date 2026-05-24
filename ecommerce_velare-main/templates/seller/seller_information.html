@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Veláre - Seller Information</title>
+	<link rel="icon" type="image/png" href="{{ url_for('static', filename='images/Velare Logo Tab 1.png') }}">
+	<!-- Google Fonts for aesthetic, expensive look -->
+	<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@100;300;400;700&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Goodie&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/accounts/myAccount_profile.css') }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/seller/seller_information.css') }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/logout-modal.css') }}">
+	<!-- Bootstrap Icons CDN -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+<body>
+	<div class="header-container">
+		<span class="header"><a href="{{ url_for('seller_dashboard.seller_dashboard') }}" style="color: inherit; text-decoration: none;">Veláre</a></span>
+	</div>
+	<hr class="divider">
+
+	<div class="main-content-container">
+		<div class="account-left-nav">
+			<div class="account-profile-header">
+				<div class="profile-img-placeholder">
+					{% if seller and seller.shop_logo %}
+						{% if seller.shop_logo.startswith('http://') or seller.shop_logo.startswith('https://') %}
+							<img src="{{ seller.shop_logo }}" alt="Shop Logo" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+						{% else %}
+							<img src="{{ url_for('static', filename=seller.shop_logo) }}" alt="Shop Logo" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+						{% endif %}
+					{% endif %}
+				</div>
+				<a href="{{ url_for('seller_information.seller_information') }}" class="profile-name-placeholder clickable-profile active">
+					{% if seller and seller.shop_name %}
+						{{ seller.shop_name }}
+					{% else %}
+						Shop Name
+					{% endif %}
+				</a>
+			</div>
+			<div class="account-nav-divider"></div>
+			<div class="account-nav-list">
+				<a href="{{ url_for('seller_dashboard.seller_dashboard') }}" class="main-tab" style="text-decoration: none; color: inherit;">
+					<i class="bi bi-speedometer2" style="font-size:1.2em; vertical-align:middle; margin-right:10px;"></i>
+					<span class="main-tab-label">Dashboard</span>
+				</a>
+				<a href="{{ url_for('seller_product_management.seller_product_management') }}" class="main-tab" style="text-decoration: none; color: inherit;">
+					<i class="bi bi-box-seam" style="font-size:1.2em; vertical-align:middle; margin-right:10px;"></i>
+					<span class="main-tab-label">Product Management</span>
+				</a>
+				<a href="{{ url_for('seller_product_sales.seller_product_sales') }}" class="main-tab" style="text-decoration: none; color: inherit;">
+					<i class="bi bi-graph-up-arrow" style="font-size:1.2em; vertical-align:middle; margin-right:10px;"></i>
+					<span class="main-tab-label">Product Sales</span>
+				</a>
+				<a href="{{ url_for('seller_messages.seller_messages') }}" class="main-tab" style="text-decoration: none; color: inherit;">
+					<i class="bi bi-chat-dots" style="font-size:1.2em; vertical-align:middle; margin-right:10px;"></i>
+					<span class="main-tab-label">Messages</span>
+				</a>
+				<a href="{{ url_for('seller_customer_feedback.seller_customer_feedback') }}" class="main-tab" style="text-decoration: none; color: inherit;">
+					<i class="bi bi-star" style="font-size:1.2em; vertical-align:middle; margin-right:10px;"></i>
+					<span class="main-tab-label">Customer Feedback</span>
+				</a>
+				<a href="{{ url_for('seller_select_vouchers.seller_select_vouchers') }}" class="main-tab" style="text-decoration: none; color: inherit;">
+					<i class="bi bi-ticket-perforated" style="font-size:1.2em; vertical-align:middle; margin-right:10px;"></i>
+					<span class="main-tab-label">Shop Vouchers</span>
+				</a>
+				<a href="{{ url_for('seller_report_user.report_user_page') }}" class="main-tab" style="text-decoration: none; color: inherit;">
+					<i class="bi bi-flag" style="font-size:1.2em; vertical-align:middle; margin-right:10px;"></i>
+					<span class="main-tab-label">Report User</span>
+				</a>
+				<div class="main-tab" id="logout-link" data-logout-url="{{ url_for('auth.login') }}">
+					<i class="bi bi-box-arrow-right" style="font-size:1.2em; vertical-align:middle; margin-right:10px;"></i>
+					<span class="main-tab-label">Logout</span>
+				</div>
+			</div>
+			<div class="sidebar-vertical-line"></div>
+		</div>
+		<div class="account-card-container">
+			<div class="seller-information-main-content">
+				<h2 class="seller-information-title">Seller Information</h2>
+				<hr class="seller-information-divider">
+				
+				<div class="seller-information-content">
+					<div class="profile-content-row">
+						<form class="profile-form" id="sellerInfoForm" enctype="multipart/form-data">
+							<div class="form-group">
+								<label for="sellerFirstName">First Name</label>
+								<input type="text" id="sellerFirstName" name="first_name" placeholder="Enter first name" value="{{ seller.first_name if seller else '' }}" required>
+							</div>
+							
+							<div class="form-group">
+								<label for="sellerLastName">Last Name</label>
+								<input type="text" id="sellerLastName" name="last_name" placeholder="Enter last name" value="{{ seller.last_name if seller else '' }}" required>
+							</div>
+							
+							<div class="form-group">
+								<label for="sellerShopName">Shop Name</label>
+								<input type="text" id="sellerShopName" name="shop_name" placeholder="Enter shop name" value="{{ seller.shop_name if seller else '' }}" required>
+							</div>
+							
+							<div class="form-group" id="phoneFormGroup">
+								<label for="sellerPhoneNumber">Phone Number</label>
+								<span id="addPhoneLink" {% if seller and seller.phone_number %}style="display: none;"{% endif %}>Add</span>
+								<input type="tel" id="sellerPhoneNumber" name="phone_number" placeholder="09XXXXXXXXX" maxlength="11" pattern="[0-9]{11}" value="{{ seller.phone_number if seller and seller.phone_number else '' }}" {% if seller and seller.phone_number %}style="display: block;"{% else %}style="display: none;"{% endif %}>
+							</div>
+							
+							<div class="form-group" style="position:relative;">
+								<label for="sellerAddressField">Address</label>
+								<input type="text" id="sellerAddressField" name="addressField" readonly placeholder="Select Region, Province, City, Barangay" required style="cursor:pointer; font-size: 0.85rem;">
+								<!-- Address Tabs Dropdown Panel -->
+								<div id="sellerAddressTabsDropdown" class="address-tabs-dropdown" style="display:none;">
+									<div class="address-tabs">
+										<button type="button" class="address-tab active" data-tab="region">Region</button>
+										<button type="button" class="address-tab" data-tab="province" disabled>Province</button>
+										<button type="button" class="address-tab" data-tab="city" disabled>City</button>
+										<button type="button" class="address-tab" data-tab="barangay" disabled>Barangay</button>
+									</div>
+									<div class="address-tabs-underline-bg">
+										<div class="address-tabs-underline" id="sellerAddressTabsUnderline"></div>
+									</div>
+									<div class="address-tab-content" id="sellerRegionTabContent">
+										<label>Select Region</label>
+										<select id="sellerTabRegionSelect">
+											<option value="">Select Region</option>
+										</select>
+									</div>
+									<div class="address-tab-content" id="sellerProvinceTabContent" style="display:none;">
+										<label>Select Province</label>
+										<select id="sellerTabProvinceSelect">
+											<option value="">Select Province</option>
+										</select>
+									</div>
+									<div class="address-tab-content" id="sellerCityTabContent" style="display:none;">
+										<label>Select City/Municipality</label>
+										<select id="sellerTabCitySelect">
+											<option value="">Select City/Municipality</option>
+										</select>
+									</div>
+									<div class="address-tab-content" id="sellerBarangayTabContent" style="display:none;">
+										<label>Select Barangay</label>
+										<select id="sellerTabBarangaySelect">
+											<option value="">Select Barangay</option>
+										</select>
+									</div>
+									<div class="modal-actions" style="margin-top:18px;">
+										<button type="button" id="cancelSellerAddressTabsBtn" class="modal-btn">Cancel</button>
+										<button type="button" id="confirmSellerAddressTabsBtn" class="modal-btn" disabled>Confirm</button>
+									</div>
+								</div>
+							</div>
+							
+							<div class="form-group">
+								<label for="sellerStreet">Street Name</label>
+								<input type="text" id="sellerStreet" name="street" placeholder="Street name" value="{{ seller.get('street_name', '') if seller else '' }}">
+							</div>
+							
+							<div class="form-group">
+								<label for="sellerHouseNumber">House/Building Number</label>
+								<input type="text" id="sellerHouseNumber" name="house_number" placeholder="House/Building number" value="{{ seller.get('house_number', '') if seller else '' }}">
+							</div>
+							
+							<div class="form-group">
+								<label for="sellerPostalCode">Postal Code</label>
+								<input type="text" id="sellerPostalCode" name="postal_code" pattern="[0-9]{4}" maxlength="4" placeholder="4-digit postal code" value="{{ seller.get('postal_code', '') if seller else '' }}" required>
+							</div>
+							
+							<!-- Hidden inputs for address data -->
+							<input type="hidden" id="sellerRegion" name="region" value="{{ seller.get('region', '') if seller else '' }}">
+							<input type="hidden" id="sellerProvince" name="province" value="{{ seller.get('province', '') if seller else '' }}">
+							<input type="hidden" id="sellerCity" name="city" value="{{ seller.get('city', '') if seller else '' }}">
+							<input type="hidden" id="sellerBarangay" name="barangay" value="{{ seller.get('barangay', '') if seller else '' }}">
+							
+							<!-- Shop logo file input (hidden, inside form) -->
+							<input type="file" id="sellerPictureInput" name="shop_logo" accept="image/*" hidden>
+							
+							<!-- Save Button for Seller Information -->
+							<div class="form-group save-button-container">
+								<button type="submit" form="sellerInfoForm" class="save-btn">Save Changes</button>
+							</div>
+						</form>
+						
+						<div class="profile-vertical-divider"></div>
+						
+						<div class="profile-image-section">
+							<div class="profile-picture-container {% if seller and seller.shop_logo %}has-image{% endif %}">
+								{% if seller and seller.shop_logo %}
+									{% if seller.shop_logo.startswith('http://') or seller.shop_logo.startswith('https://') %}
+										<img src="{{ seller.shop_logo }}" alt="Shop Logo" style="width: 100%; height: 100%; object-fit: cover;">
+									{% else %}
+										<img src="{{ url_for('static', filename=seller.shop_logo) }}" alt="Shop Logo" style="width: 100%; height: 100%; object-fit: cover;">
+									{% endif %}
+									<div class="upload-overlay">
+										<i class="bi bi-camera"></i>
+										<span>Change Logo</span>
+									</div>
+								{% else %}
+									<div class="upload-placeholder">
+										<i class="bi bi-shop"></i>
+										<span>Upload Logo</span>
+									</div>
+									<div class="upload-overlay" style="display: none;">
+										<i class="bi bi-camera"></i>
+										<span>Change Logo</span>
+									</div>
+								{% endif %}
+							</div>
+							<p class="upload-hint">JPG or PNG only</p>
+							
+							<div class="form-group description-group">
+								<label for="sellerShopDescription">Shop Description</label>
+								<textarea id="sellerShopDescription" name="shop_description" placeholder="Tell customers about your shop..." form="sellerInfoForm">{{ seller.shop_description if seller and seller.shop_description else '' }}</textarea>
+							</div>
+						</div>
+					</div>
+					
+					<!-- ID and Business Permit Section -->
+					<div class="documents-section">
+						<h3 class="documents-title">Verification Documents</h3>
+						
+						<form class="documents-form" id="documentsForm" enctype="multipart/form-data">
+							<div class="documents-row">
+								<!-- ID Image Column -->
+								<div class="document-column">
+									<label class="document-label">ID Image</label>
+									<div class="document-image-container {% if seller and seller.id_file_path %}has-image{% endif %}" id="idImageContainer">
+										{% if seller and seller.id_file_path %}
+											{% if seller.id_file_path.startswith('http://') or seller.id_file_path.startswith('https://') %}
+												<img src="{{ seller.id_file_path }}" alt="ID Image" id="idImagePreview" style="width: 100%; height: 100%; object-fit: cover;">
+											{% elif seller.id_file_path.startswith('static/') %}
+												<img src="/{{ seller.id_file_path }}" alt="ID Image" id="idImagePreview" style="width: 100%; height: 100%; object-fit: cover;">
+											{% else %}
+												<img src="{{ url_for('static', filename=seller.id_file_path) }}" alt="ID Image" id="idImagePreview" style="width: 100%; height: 100%; object-fit: cover;">
+											{% endif %}
+											<div class="upload-overlay">
+												<i class="bi bi-camera"></i>
+												<span>Update ID</span>
+											</div>
+										{% else %}
+											<div class="upload-placeholder">
+												<i class="bi bi-card-image"></i>
+												<span>Upload ID</span>
+											</div>
+											<div class="upload-overlay" style="display: none;">
+												<i class="bi bi-camera"></i>
+												<span>Update ID</span>
+											</div>
+										{% endif %}
+									</div>
+									<input type="file" id="idImageInput" name="id_image" accept="image/*" hidden>
+									<p class="upload-hint">JPG or PNG only</p>
+									
+									<!-- ID Type Dropdown -->
+									<select id="idTypeSelect" name="id_type" class="id-type-select">
+										<option value="">Select ID Type</option>
+										<option value="Driver's License" {% if seller and seller.id_type == "Driver's License" %}selected{% endif %}>Driver's License</option>
+										<option value="Passport" {% if seller and seller.id_type == "Passport" %}selected{% endif %}>Passport</option>
+										<option value="SSS ID" {% if seller and seller.id_type == "SSS ID" %}selected{% endif %}>SSS ID</option>
+										<option value="UMID" {% if seller and seller.id_type == "UMID" %}selected{% endif %}>UMID</option>
+										<option value="PhilHealth ID" {% if seller and seller.id_type == "PhilHealth ID" %}selected{% endif %}>PhilHealth ID</option>
+										<option value="Postal ID" {% if seller and seller.id_type == "Postal ID" %}selected{% endif %}>Postal ID</option>
+										<option value="Voter's ID" {% if seller and seller.id_type == "Voter's ID" %}selected{% endif %}>Voter's ID</option>
+										<option value="PRC ID" {% if seller and seller.id_type == "PRC ID" %}selected{% endif %}>PRC ID</option>
+									</select>
+								</div>
+								
+								<!-- Business Permit Column -->
+								<div class="document-column">
+									<label class="document-label">Business Permit</label>
+									<div class="document-image-container {% if seller and seller.business_permit_file_path %}has-image{% endif %}" id="businessPermitContainer">
+										{% if seller and seller.business_permit_file_path %}
+											{% if seller.business_permit_file_path.startswith('http://') or seller.business_permit_file_path.startswith('https://') %}
+												<img src="{{ seller.business_permit_file_path }}" alt="Business Permit" id="businessPermitPreview" style="width: 100%; height: 100%; object-fit: cover;">
+											{% elif seller.business_permit_file_path.startswith('static/') %}
+												<img src="/{{ seller.business_permit_file_path }}" alt="Business Permit" id="businessPermitPreview" style="width: 100%; height: 100%; object-fit: cover;">
+											{% else %}
+												<img src="{{ url_for('static', filename=seller.business_permit_file_path) }}" alt="Business Permit" id="businessPermitPreview" style="width: 100%; height: 100%; object-fit: cover;">
+											{% endif %}
+											<div class="upload-overlay">
+												<i class="bi bi-camera"></i>
+												<span>Update Permit</span>
+											</div>
+										{% else %}
+											<div class="upload-placeholder">
+												<i class="bi bi-file-earmark-text"></i>
+												<span>Upload Permit</span>
+											</div>
+											<div class="upload-overlay" style="display: none;">
+												<i class="bi bi-camera"></i>
+												<span>Update Permit</span>
+											</div>
+										{% endif %}
+									</div>
+									<input type="file" id="businessPermitInput" name="business_permit" accept="image/*" hidden>
+									<p class="upload-hint">JPG or PNG only</p>
+									
+									<!-- Submit Button -->
+									<button type="submit" class="submit-documents-btn">Submit Documents</button>
+								</div>
+							</div>
+						</form>
+					</div>
+					
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Logout Modal Overlay and Confirmation Modal -->
+	<div id="logout-modal-overlay"></div>
+	<div id="logout-modal" class="modal">
+		<div class="modal-content">
+			<div class="modal-title">Do you want to Logout?</div>
+			<div class="modal-actions">
+				<button id="confirm-logout" class="modal-btn">Logout</button>
+				<button id="cancel-logout" class="modal-btn">Cancel</button>
+			</div>
+		</div>
+	</div>
+	<script defer src="{{ url_for('static', filename='js/logout-modal.js') }}"></script>
+	<script defer src="{{ url_for('static', filename='js/seller/seller-dashboard-nav.js') }}"></script>
+	<script defer src="{{ url_for('static', filename='js/seller/seller-nav-hover.js') }}"></script>
+	<script defer src="{{ url_for('static', filename='js/seller/seller_information.js') }}"></script>
+</body>
+</html>

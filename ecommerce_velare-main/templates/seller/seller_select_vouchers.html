@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Veláre - Shop Vouchers</title>
+	<link rel="icon" type="image/png" href="{{ url_for('static', filename='images/Velare Logo Tab 1.png') }}">
+	<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@100;300;400;700&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Goodie&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/accounts/myAccount_profile.css') }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/seller/seller_select_vouchers.css') }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/logout-modal.css') }}">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+<body>
+	<div class="header-container">
+		<span class="header"><a href="{{ url_for('seller_dashboard.seller_dashboard') }}" style="color: inherit; text-decoration: none;">Veláre</a></span>
+	</div>
+	<hr class="divider">
+
+	<div class="main-content-container">
+		<div class="account-left-nav">
+			<div class="account-profile-header">
+				<div class="profile-img-placeholder">
+					{% if seller and seller['shop_logo'] %}
+						{% if seller['shop_logo'].startswith('http://') or seller['shop_logo'].startswith('https://') %}
+							<img src="{{ seller['shop_logo'] }}" alt="Shop Logo" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+						{% else %}
+							<img src="{{ url_for('static', filename=seller['shop_logo']) }}" alt="Shop Logo" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+						{% endif %}
+					{% endif %}
+				</div>
+				<a href="{{ url_for('seller_information.seller_information') }}" class="profile-name-placeholder clickable-profile">
+					{% if seller and seller['shop_name'] %}
+						{{ seller['shop_name'] }}
+					{% else %}
+						Shop Name
+					{% endif %}
+				</a>
+			</div>
+			<div class="account-nav-divider"></div>
+			<div class="account-nav-list">
+				<a href="{{ url_for('seller_dashboard.seller_dashboard') }}" class="main-tab" style="text-decoration: none; color: inherit;">
+					<i class="bi bi-speedometer2" style="font-size:1.2em; vertical-align:middle; margin-right:10px;"></i>
+					<span class="main-tab-label">Dashboard</span>
+				</a>
+				<a href="{{ url_for('seller_product_management.seller_product_management') }}" class="main-tab" style="text-decoration: none; color: inherit;">
+					<i class="bi bi-box-seam" style="font-size:1.2em; vertical-align:middle; margin-right:10px;"></i>
+					<span class="main-tab-label">Product Management</span>
+				</a>
+				<a href="{{ url_for('seller_product_sales.seller_product_sales') }}" class="main-tab" style="text-decoration: none; color: inherit;">
+					<i class="bi bi-graph-up-arrow" style="font-size:1.2em; vertical-align:middle; margin-right:10px;"></i>
+					<span class="main-tab-label">Product Sales</span>
+				</a>
+				<a href="{{ url_for('seller_messages.seller_messages') }}" class="main-tab" style="text-decoration: none; color: inherit;">
+					<i class="bi bi-chat-dots" style="font-size:1.2em; vertical-align:middle; margin-right:10px;"></i>
+					<span class="main-tab-label">Messages</span>
+				</a>
+				<a href="{{ url_for('seller_customer_feedback.seller_customer_feedback') }}" class="main-tab" style="text-decoration: none; color: inherit;">
+					<i class="bi bi-star" style="font-size:1.2em; vertical-align:middle; margin-right:10px;"></i>
+					<span class="main-tab-label">Customer Feedback</span>
+				</a>
+				<a href="{{ url_for('seller_select_vouchers.seller_select_vouchers') }}" class="main-tab active" style="text-decoration: none; color: inherit;">
+					<i class="bi bi-ticket-perforated" style="font-size:1.2em; vertical-align:middle; margin-right:10px;"></i>
+					<span class="main-tab-label">Shop Vouchers</span>
+				</a>
+				<a href="{{ url_for('seller_report_user.report_user_page') }}" class="main-tab" style="text-decoration: none; color: inherit;">
+					<i class="bi bi-flag" style="font-size:1.2em; vertical-align:middle; margin-right:10px;"></i>
+					<span class="main-tab-label">Report User</span>
+				</a>
+				<div class="main-tab" id="logout-link" data-logout-url="{{ url_for('auth.login') }}">
+					<i class="bi bi-box-arrow-right" style="font-size:1.2em; vertical-align:middle; margin-right:10px;"></i>
+					<span class="main-tab-label">Logout</span>
+				</div>
+			</div>
+			<div class="sidebar-vertical-line"></div>
+		</div>
+
+		<div class="account-card-container">
+			<div class="messages-main-content">
+				<div class="vouchers-content-wrapper">
+					<h2 class="product-approvals-title">Shop Vouchers</h2>
+					<hr class="product-approvals-divider">
+
+					<div class="product-approvals-content">
+					<!-- Selected Vouchers Section -->
+					<div class="vouchers-section">
+						<h3 class="section-subtitle">Active Shop Vouchers</h3>
+						<p class="section-description">These vouchers are currently available to customers shopping at your store.</p>
+						<div class="approval-cards-container">
+							{% if selected_vouchers %}
+								{% for voucher in selected_vouchers %}
+								<div class="voucher-card selected" data-voucher-id="{{ voucher.voucher_id }}">
+									<div class="voucher-header">
+										<div class="voucher-code">{{ voucher.voucher_name }}</div>
+										<div class="voucher-type-badge {% if voucher.voucher_type == 'free_shipping' %}free-shipping{% else %}discount{% endif %}">
+											{% if voucher.voucher_type == 'free_shipping' %}
+												<i class="bi bi-truck"></i> Free Shipping
+											{% else %}
+												<i class="bi bi-percent"></i> {{ voucher.discount_percent }}% Discount
+											{% endif %}
+										</div>
+									</div>
+									<div class="voucher-dates">
+										<div class="voucher-date">
+											<i class="bi bi-calendar-check"></i>
+											<span>Start: {{ voucher.start_date.strftime('%b %d, %Y') }}</span>
+										</div>
+										<div class="voucher-date">
+											<i class="bi bi-calendar-x"></i>
+											<span>End: {{ voucher.end_date.strftime('%b %d, %Y') }}</span>
+										</div>
+									</div>
+									<div class="voucher-actions">
+										<button class="remove-voucher-btn" data-voucher-id="{{ voucher.voucher_id }}" data-voucher-code="{{ voucher.voucher_code }}">
+											<i class="bi bi-x-circle"></i> Remove
+										</button>
+									</div>
+								</div>
+								{% endfor %}
+							{% else %}
+								<div class="no-vouchers">
+									<i class="bi bi-ticket-perforated"></i>
+									<p>No vouchers selected yet. Choose from available vouchers below.</p>
+								</div>
+							{% endif %}
+						</div>
+					</div>
+
+					<!-- Available Vouchers Section -->
+					<div class="vouchers-section" style="margin-top: 48px;">
+						<h3 class="section-subtitle">Available Vouchers</h3>
+						<p class="section-description">Select vouchers created by admin to offer to your customers.</p>
+						<div class="approval-cards-container">
+							{% if available_vouchers %}
+								{% for voucher in available_vouchers %}
+								<div class="voucher-card {% if voucher.is_selected %}already-selected{% endif %}" data-voucher-id="{{ voucher.voucher_id }}">
+									<div class="voucher-header">
+										<div class="voucher-code">{{ voucher.voucher_name }}</div>
+										<div class="voucher-type-badge {% if voucher.voucher_type == 'free_shipping' %}free-shipping{% else %}discount{% endif %}">
+											{% if voucher.voucher_type == 'free_shipping' %}
+												<i class="bi bi-truck"></i> Free Shipping
+											{% else %}
+												<i class="bi bi-percent"></i> {{ voucher.discount_percent }}% Discount
+											{% endif %}
+										</div>
+									</div>
+									<div class="voucher-dates">
+										<div class="voucher-date">
+											<i class="bi bi-calendar-check"></i>
+											<span>Start: {{ voucher.start_date.strftime('%b %d, %Y') }}</span>
+										</div>
+										<div class="voucher-date">
+											<i class="bi bi-calendar-x"></i>
+											<span>End: {{ voucher.end_date.strftime('%b %d, %Y') }}</span>
+										</div>
+									</div>
+									<div class="voucher-actions">
+										{% if voucher.is_selected %}
+											<button class="voucher-selected-btn" disabled>
+												<i class="bi bi-check-circle"></i> Selected
+											</button>
+										{% else %}
+											<button class="select-voucher-btn" data-voucher-id="{{ voucher.voucher_id }}" data-voucher-code="{{ voucher.voucher_code }}">
+												<i class="bi bi-plus-circle"></i> Select
+											</button>
+										{% endif %}
+									</div>
+								</div>
+								{% endfor %}
+							{% else %}
+								<div class="no-vouchers">
+									<i class="bi bi-ticket-perforated"></i>
+									<p>No vouchers available. Admin needs to create vouchers first.</p>
+								</div>
+							{% endif %}
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Select Voucher Modal -->
+	<div id="select-voucher-modal-overlay"></div>
+	<div id="select-voucher-modal" class="modal">
+		<div class="modal-content">
+			<div class="modal-title">Add Voucher to Shop?</div>
+			<div class="modal-message">
+				Add voucher "<span id="select-voucher-name"></span>" to your shop?
+			</div>
+			<div class="modal-actions">
+				<button id="confirm-select-voucher" class="modal-btn">Add</button>
+				<button id="cancel-select-voucher" class="modal-btn">Cancel</button>
+			</div>
+		</div>
+	</div>
+
+	<!-- Remove Voucher Modal -->
+	<div id="remove-voucher-modal-overlay"></div>
+	<div id="remove-voucher-modal" class="modal">
+		<div class="modal-content">
+			<div class="modal-title">Remove Voucher?</div>
+			<div class="modal-message">
+				Remove voucher "<span id="remove-voucher-name"></span>" from your shop?
+			</div>
+			<div class="modal-actions">
+				<button id="confirm-remove-voucher" class="modal-btn">Remove</button>
+				<button id="cancel-remove-voucher" class="modal-btn">Cancel</button>
+			</div>
+		</div>
+	</div>
+
+	<!-- Logout Modal -->
+	<div id="logout-modal-overlay"></div>
+	<div id="logout-modal" class="modal">
+		<div class="modal-content">
+			<div class="modal-title">Do you want to Logout?</div>
+			<div class="modal-actions">
+				<button id="confirm-logout" class="modal-btn">Logout</button>
+				<button id="cancel-logout" class="modal-btn">Cancel</button>
+			</div>
+		</div>
+	</div>
+
+	<script defer src="{{ url_for('static', filename='js/logout-modal.js') }}"></script>
+	<script defer src="{{ url_for('static', filename='js/seller/seller-select-vouchers.js') }}"></script>
+</body>
+</html>
