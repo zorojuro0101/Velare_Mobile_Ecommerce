@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../services/auth_service.dart';
@@ -21,6 +22,15 @@ const List<Map<String, String>> _kIdTypes = [
   {'value': 'other', 'label': 'Other'},
 ];
 
+/// Available rider vehicle types (mirrors the web register form).
+const List<Map<String, String>> _kVehicleTypes = [
+  {'value': 'motorcycle', 'label': 'Motorcycle'},
+  {'value': 'tricycle', 'label': 'Tricycle'},
+  {'value': 'car', 'label': 'Car'},
+  {'value': 'van', 'label': 'Van'},
+  {'value': 'truck', 'label': 'Truck'},
+];
+
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
 
@@ -37,12 +47,15 @@ class _RegisterScreenState extends State<RegisterScreen>
   final _buyerFirstNameController = TextEditingController();
   final _buyerLastNameController = TextEditingController();
   final _buyerEmailController = TextEditingController();
+  final _buyerPhoneController = TextEditingController();
   final _buyerPasswordController = TextEditingController();
 
   // Rider form controllers
   final _riderFirstNameController = TextEditingController();
   final _riderLastNameController = TextEditingController();
   final _riderEmailController = TextEditingController();
+  final _riderPhoneController = TextEditingController();
+  final _riderPlateController = TextEditingController();
   final _riderPasswordController = TextEditingController();
 
   // Focus nodes so we can detect when the user leaves the email field
@@ -73,9 +86,13 @@ class _RegisterScreenState extends State<RegisterScreen>
 
   // ID type + uploaded file (camera/gallery)
   String? _buyerIdType;
-  String? _riderIdType;
   File? _buyerIdFile;
-  File? _riderIdFile;
+
+  // Rider-specific fields. Riders don't pick a generic ID — instead they
+  // submit their vehicle info, ORCR, and Driver License (mirrors the web).
+  String? _riderVehicleType;
+  File? _riderOrcrFile;
+  File? _riderDriverLicenseFile;
 
   @override
   void initState() {
@@ -205,9 +222,10 @@ class _RegisterScreenState extends State<RegisterScreen>
     }
   }
 
-  /// Lets the user pick the ID photo from camera or storage. The file is kept
-  /// locally in state and only uploaded to Supabase Storage on submit.
-  Future<void> _pickIdImage(bool isBuyer) async {
+  /// Lets the user pick a photo from camera or storage. The file is passed
+  /// to [onPicked] so the caller decides which state slot to update (buyer
+  /// ID, rider ORCR, rider driver license, etc.).
+  Future<void> _pickImage(ValueChanged<File> onPicked) async {
     final source = await showModalBottomSheet<ImageSource>(
       context: context,
       backgroundColor: AppColors.surface(context),
@@ -262,13 +280,7 @@ class _RegisterScreenState extends State<RegisterScreen>
       );
       if (picked == null) return;
 
-      setState(() {
-        if (isBuyer) {
-          _buyerIdFile = File(picked.path);
-        } else {
-          _riderIdFile = File(picked.path);
-        }
-      });
+      onPicked(File(picked.path));
     } catch (e) {
       if (!mounted) return;
       SnackBarHelper.showError(context, 'Failed to pick image. Please try again.');
@@ -313,6 +325,17 @@ class _RegisterScreenState extends State<RegisterScreen>
     // Block submit if inline error is already showing
     if (_buyerEmailError != null) {
       SnackBarHelper.showError(context, _buyerEmailError!);
+      return;
+    }
+
+    final buyerPhone = _buyerPhoneController.text.trim();
+    if (buyerPhone.isEmpty) {
+      SnackBarHelper.showError(context, 'Please enter your phone number.');
+      return;
+    }
+    if (!RegExp(r'^09\d{9}$').hasMatch(buyerPhone)) {
+      SnackBarHelper.showError(
+          context, 'Phone number must be 11 digits and start with 09.');
       return;
     }
 
@@ -364,6 +387,7 @@ class _RegisterScreenState extends State<RegisterScreen>
       'buyer',
       firstName: _buyerFirstNameController.text.trim(),
       lastName: _buyerLastNameController.text.trim(),
+      phoneNumber: buyerPhone,
       addressData: _buyerAddress,
       idType: _buyerIdType,
       idFile: _buyerIdFile,
@@ -420,17 +444,46 @@ class _RegisterScreenState extends State<RegisterScreen>
       return;
     }
 
+    final riderPhone = _riderPhoneController.text.trim();
+    if (riderPhone.isEmpty) {
+      SnackBarHelper.showError(context, 'Please enter your phone number.');
+      return;
+    }
+    if (!RegExp(r'^09\d{9}$').hasMatch(riderPhone)) {
+      SnackBarHelper.showError(
+          context, 'Phone number must be 11 digits and start with 09.');
+      return;
+    }
+
     if (_riderAddress == null) {
       SnackBarHelper.showError(context, 'Please select your address.');
       return;
     }
 
-    if (_riderIdType == null || _riderIdType!.isEmpty) {
-      SnackBarHelper.showError(context, 'Please select your ID type.');
+    if (_riderVehicleType == null || _riderVehicleType!.isEmpty) {
+      SnackBarHelper.showError(context, 'Please select your vehicle type.');
       return;
     }
-    if (_riderIdFile == null) {
-      SnackBarHelper.showError(context, 'Please upload a photo of your ID.');
+
+    final plateNumber = _riderPlateController.text.trim();
+    if (plateNumber.isEmpty) {
+      SnackBarHelper.showError(context, 'Please enter your plate number.');
+      return;
+    }
+    // Strip spaces before the length check, matching the web's
+    // "Max 10 characters, excluding spaces" rule.
+    if (plateNumber.replaceAll(' ', '').length > 10) {
+      SnackBarHelper.showError(
+          context, 'Plate number must be at most 10 characters.');
+      return;
+    }
+
+    if (_riderOrcrFile == null) {
+      SnackBarHelper.showError(context, 'Please upload your ORCR.');
+      return;
+    }
+    if (_riderDriverLicenseFile == null) {
+      SnackBarHelper.showError(context, "Please upload your Driver's License.");
       return;
     }
 
@@ -468,9 +521,12 @@ class _RegisterScreenState extends State<RegisterScreen>
       'rider',
       firstName: _riderFirstNameController.text.trim(),
       lastName: _riderLastNameController.text.trim(),
+      phoneNumber: riderPhone,
       addressData: _riderAddress,
-      idType: _riderIdType,
-      idFile: _riderIdFile,
+      vehicleType: _riderVehicleType,
+      plateNumber: plateNumber,
+      orcrFile: _riderOrcrFile,
+      driverLicenseFile: _riderDriverLicenseFile,
     );
 
     setState(() => _isLoading = false);
@@ -622,6 +678,8 @@ class _RegisterScreenState extends State<RegisterScreen>
             isChecking: _buyerEmailChecking,
           ),
           SizedBox(height: 16.h),
+          _buildPhoneField(_buyerPhoneController),
+          SizedBox(height: 16.h),
           GestureDetector(
             onTap: () => _showAddressModal(true),
             child: _buildAddressTile(_buyerAddress),
@@ -634,7 +692,7 @@ class _RegisterScreenState extends State<RegisterScreen>
           SizedBox(height: 12.h),
           _buildIdUploadTile(
             file: _buyerIdFile,
-            onTap: () => _pickIdImage(true),
+            onTap: () => _pickImage((f) => setState(() => _buyerIdFile = f)),
             onClear: () => setState(() => _buyerIdFile = null),
           ),
           SizedBox(height: 16.h),
@@ -709,20 +767,34 @@ class _RegisterScreenState extends State<RegisterScreen>
             isChecking: _riderEmailChecking,
           ),
           SizedBox(height: 16.h),
+          _buildPhoneField(_riderPhoneController),
+          SizedBox(height: 16.h),
           GestureDetector(
             onTap: () => _showAddressModal(false),
             child: _buildAddressTile(_riderAddress),
           ),
           SizedBox(height: 16.h),
-          _buildIdTypeDropdown(
-            value: _riderIdType,
-            onChanged: (v) => setState(() => _riderIdType = v),
+          _buildVehicleTypeDropdown(
+            value: _riderVehicleType,
+            onChanged: (v) => setState(() => _riderVehicleType = v),
           ),
           SizedBox(height: 12.h),
-          _buildIdUploadTile(
-            file: _riderIdFile,
-            onTap: () => _pickIdImage(false),
-            onClear: () => setState(() => _riderIdFile = null),
+          _buildPlateNumberField(_riderPlateController),
+          SizedBox(height: 12.h),
+          _buildDocumentUploadTile(
+            label: 'ORCR (Official Receipt / Certificate of Registration)',
+            file: _riderOrcrFile,
+            onTap: () =>
+                _pickImage((f) => setState(() => _riderOrcrFile = f)),
+            onClear: () => setState(() => _riderOrcrFile = null),
+          ),
+          SizedBox(height: 12.h),
+          _buildDocumentUploadTile(
+            label: "Driver's License",
+            file: _riderDriverLicenseFile,
+            onTap: () => _pickImage(
+                (f) => setState(() => _riderDriverLicenseFile = f)),
+            onClear: () => setState(() => _riderDriverLicenseFile = null),
           ),
           SizedBox(height: 16.h),
           TextField(
@@ -827,6 +899,26 @@ class _RegisterScreenState extends State<RegisterScreen>
     );
   }
 
+  /// Phone number field. Restricts to 11 digits matching the web's
+  /// `09XXXXXXXXX` pattern.
+  Widget _buildPhoneField(TextEditingController controller) {
+    return TextField(
+      controller: controller,
+      keyboardType: TextInputType.phone,
+      maxLength: 11,
+      inputFormatters: [
+        FilteringTextInputFormatter.digitsOnly,
+      ],
+      decoration: _inputDecoration('Phone Number').copyWith(
+        hintText: '09XXXXXXXXX',
+        hintStyle: GoogleFonts.goudyBookletter1911(
+          color: AppColors.textMuted(context),
+        ),
+        counterText: '',
+      ),
+    );
+  }
+
   Widget _buildAddressTile(Map<String, String>? address) {
     return Container(
       padding: EdgeInsets.all(16.w),
@@ -890,6 +982,204 @@ class _RegisterScreenState extends State<RegisterScreen>
               .toList(),
           onChanged: onChanged,
         ),
+      ),
+    );
+  }
+
+  /// Rider vehicle type selector. Mirrors the web register form's options.
+  Widget _buildVehicleTypeDropdown({
+    required String? value,
+    required ValueChanged<String?> onChanged,
+  }) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 12.w),
+      decoration: BoxDecoration(
+        color: AppColors.surfaceVariant(context),
+        borderRadius: BorderRadius.circular(8.r),
+      ),
+      child: DropdownButtonHideUnderline(
+        child: DropdownButton<String>(
+          isExpanded: true,
+          value: value,
+          hint: Text(
+            'Select Vehicle Type',
+            style: GoogleFonts.goudyBookletter1911(
+              color: AppColors.textMuted(context),
+            ),
+          ),
+          icon: Icon(Icons.keyboard_arrow_down,
+              color: AppColors.textMuted(context)),
+          dropdownColor: AppColors.surface(context),
+          style: GoogleFonts.goudyBookletter1911(
+            color: AppColors.onSurface(context),
+            fontSize: 14.sp,
+          ),
+          items: _kVehicleTypes
+              .map(
+                (e) => DropdownMenuItem<String>(
+                  value: e['value'],
+                  child: Text(e['label']!),
+                ),
+              )
+              .toList(),
+          onChanged: onChanged,
+        ),
+      ),
+    );
+  }
+
+  /// Plate number field. Restricts to 10 characters (excluding spaces) to
+  /// match the web's rule.
+  Widget _buildPlateNumberField(TextEditingController controller) {
+    return TextField(
+      controller: controller,
+      textCapitalization: TextCapitalization.characters,
+      inputFormatters: [
+        // Cap at 10 non-space characters. Spaces are allowed but don't count.
+        TextInputFormatter.withFunction((oldValue, newValue) {
+          final stripped = newValue.text.replaceAll(' ', '');
+          if (stripped.length > 10) return oldValue;
+          return newValue;
+        }),
+      ],
+      decoration: _inputDecoration('Plate Number').copyWith(
+        hintText: 'e.g., ABC1234',
+        hintStyle: GoogleFonts.goudyBookletter1911(
+          color: AppColors.textMuted(context),
+        ),
+      ),
+    );
+  }
+
+  /// Generic document upload tile (used for ORCR and Driver's License).
+  /// Uses the same look-and-feel as [_buildIdUploadTile] so the rider form
+  /// stays visually consistent.
+  Widget _buildDocumentUploadTile({
+    required String label,
+    required File? file,
+    required VoidCallback onTap,
+    required VoidCallback onClear,
+  }) {
+    if (file == null) {
+      return GestureDetector(
+        onTap: onTap,
+        child: Container(
+          padding: EdgeInsets.all(16.w),
+          decoration: BoxDecoration(
+            color: AppColors.surfaceVariant(context),
+            borderRadius: BorderRadius.circular(8.r),
+            border: Border.all(
+              color: AppColors.border(context),
+              width: 1,
+            ),
+          ),
+          child: Row(
+            children: [
+              Icon(Icons.description_outlined,
+                  size: 22.r, color: AppColors.textMuted(context)),
+              SizedBox(width: 12.w),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      label,
+                      style: GoogleFonts.goudyBookletter1911(
+                        color: AppColors.onSurface(context),
+                        fontSize: 13.sp,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    SizedBox(height: 2.h),
+                    Text(
+                      'Tap to upload (camera or gallery)',
+                      style: GoogleFonts.goudyBookletter1911(
+                        fontSize: 11.sp,
+                        color: AppColors.textMuted(context),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Icon(Icons.cloud_upload_outlined,
+                  size: 18.r, color: AppColors.textMuted(context)),
+            ],
+          ),
+        ),
+      );
+    }
+
+    return Container(
+      padding: EdgeInsets.all(12.w),
+      decoration: BoxDecoration(
+        color: AppColors.surfaceVariant(context),
+        borderRadius: BorderRadius.circular(8.r),
+      ),
+      child: Row(
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(6.r),
+            child: Image.file(
+              file,
+              width: 56.w,
+              height: 56.w,
+              fit: BoxFit.cover,
+            ),
+          ),
+          SizedBox(width: 12.w),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  style: GoogleFonts.goudyBookletter1911(
+                    fontSize: 13.sp,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.onSurface(context),
+                  ),
+                ),
+                SizedBox(height: 2.h),
+                Text(
+                  file.path.split(Platform.pathSeparator).last,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: GoogleFonts.goudyBookletter1911(
+                    fontSize: 11.sp,
+                    color: AppColors.textMuted(context),
+                  ),
+                ),
+                SizedBox(height: 4.h),
+                Row(
+                  children: [
+                    GestureDetector(
+                      onTap: onTap,
+                      child: Text(
+                        'Change',
+                        style: GoogleFonts.goudyBookletter1911(
+                          fontSize: 12.sp,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.onSurface(context),
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 12.w),
+                    GestureDetector(
+                      onTap: onClear,
+                      child: Text(
+                        'Remove',
+                        style: GoogleFonts.goudyBookletter1911(
+                          fontSize: 12.sp,
+                          color: Colors.red.shade600,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -1163,10 +1453,13 @@ class _RegisterScreenState extends State<RegisterScreen>
     _buyerFirstNameController.dispose();
     _buyerLastNameController.dispose();
     _buyerEmailController.dispose();
+    _buyerPhoneController.dispose();
     _buyerPasswordController.dispose();
     _riderFirstNameController.dispose();
     _riderLastNameController.dispose();
     _riderEmailController.dispose();
+    _riderPhoneController.dispose();
+    _riderPlateController.dispose();
     _riderPasswordController.dispose();
     super.dispose();
   }

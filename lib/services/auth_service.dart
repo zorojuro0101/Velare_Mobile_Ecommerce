@@ -257,9 +257,15 @@ class AuthService {
     String userType, {
     String? firstName,
     String? lastName,
+    String? phoneNumber,
     Map<String, String>? addressData,
     String? idType,
     File? idFile,
+    // Rider-only fields
+    String? vehicleType,
+    String? plateNumber,
+    File? orcrFile,
+    File? driverLicenseFile,
   }) async {
     try {
       final normalizedEmail = email.trim().toLowerCase();
@@ -293,6 +299,45 @@ class AuthService {
             'success': false,
             'message': 'Failed to upload ID photo. Please try again.',
           };
+        }
+      }
+
+      // Riders submit ORCR + Driver's License instead of a generic ID.
+      // Upload both before creating the user so we don't leave orphans on
+      // storage failure.
+      String? orcrFileUrl;
+      String? driverLicenseFileUrl;
+      if (userType == 'rider') {
+        if (orcrFile != null) {
+          try {
+            orcrFileUrl = await _uploadRiderDocument(
+              file: orcrFile,
+              email: normalizedEmail,
+              kind: 'orcr',
+            );
+          } catch (e) {
+            print('Sign up - ORCR upload error: $e');
+            return {
+              'success': false,
+              'message': 'Failed to upload ORCR. Please try again.',
+            };
+          }
+        }
+        if (driverLicenseFile != null) {
+          try {
+            driverLicenseFileUrl = await _uploadRiderDocument(
+              file: driverLicenseFile,
+              email: normalizedEmail,
+              kind: 'dl',
+            );
+          } catch (e) {
+            print('Sign up - Driver License upload error: $e');
+            return {
+              'success': false,
+              'message':
+                  "Failed to upload Driver's License. Please try again.",
+            };
+          }
         }
       }
 
@@ -340,18 +385,29 @@ class AuthService {
             'user_id': _currentUserId,
             'first_name': firstName,
             'last_name': lastName,
+            if (phoneNumber != null && phoneNumber.isNotEmpty)
+              'phone_number': phoneNumber,
             if (idType != null && idType.isNotEmpty) 'id_type': idType,
             'id_file_path': ?idFileUrl,
           }).select().single();
           userRefId = buyerResponse['buyer_id'].toString();
           _currentBuyerId = userRefId;
         } else if (userType == 'rider' && firstName != null && lastName != null) {
+          // Riders submit vehicle info + ORCR + Driver License instead of
+          // a generic ID. This matches the web register form (id_type and
+          // id_file_path are intentionally NOT inserted for riders).
           final riderResponse = await _supabase.from('riders').insert({
             'user_id': _currentUserId,
             'first_name': firstName,
             'last_name': lastName,
-            if (idType != null && idType.isNotEmpty) 'id_type': idType,
-            'id_file_path': ?idFileUrl,
+            // riders.phone_number is NOT NULL in the DB, so always send a value
+            'phone_number': phoneNumber ?? '',
+            if (vehicleType != null && vehicleType.isNotEmpty)
+              'vehicle_type': vehicleType,
+            if (plateNumber != null && plateNumber.isNotEmpty)
+              'plate_number': plateNumber,
+            'orcr_file_path': ?orcrFileUrl,
+            'driver_license_file_path': ?driverLicenseFileUrl,
           }).select().single();
           userRefId = riderResponse['rider_id'].toString();
         }
@@ -371,7 +427,14 @@ class AuthService {
 
       // Save address if provided (best-effort; failure here doesn't block signup)
       if (addressData != null && userRefId != null) {
-        await _saveAddress(userType, userRefId, firstName, lastName, addressData);
+        await _saveAddress(
+          userType,
+          userRefId,
+          firstName,
+          lastName,
+          phoneNumber,
+          addressData,
+        );
       }
 
       return {'success': true, 'user_type': userType};
@@ -438,6 +501,54 @@ class AuthService {
     return _supabase.storage.from('Images').getPublicUrl(fullPath);
   }
 
+  /// Uploads a rider's supporting document (ORCR or Driver's License) to
+  /// the Supabase Storage `Images` bucket and returns the public URL. The
+  /// path mirrors the web app's convention so the admin dashboard can show
+  /// these files the same way regardless of which client uploaded them.
+  ///
+  /// [kind] should be either `'orcr'` or `'dl'`.
+  Future<String> _uploadRiderDocument({
+    required File file,
+    required String email,
+    required String kind,
+  }) async {
+    final bytes = await file.readAsBytes();
+    if (bytes.isEmpty) {
+      throw Exception('Document file is empty');
+    }
+
+    final safeEmail = email.replaceAll('@', '_').replaceAll('.', '_');
+
+    final originalPath = file.path;
+    final dotIndex = originalPath.lastIndexOf('.');
+    final ext = dotIndex >= 0 && dotIndex < originalPath.length - 1
+        ? originalPath.substring(dotIndex + 1).toLowerCase()
+        : 'jpg';
+    final contentType = _contentTypeForExtension(ext);
+
+    final token = DateTime.now()
+        .millisecondsSinceEpoch
+        .toRadixString(16)
+        .padLeft(8, '0')
+        .substring(0, 8);
+
+    final folder =
+        kind == 'orcr' ? 'static/uploads/rider_orcr' : 'static/uploads/rider_dl';
+    final filename = 'rider_${safeEmail}_${kind}_$token.$ext';
+    final fullPath = '$folder/$filename';
+
+    await _supabase.storage.from('Images').uploadBinary(
+          fullPath,
+          bytes,
+          fileOptions: FileOptions(
+            contentType: contentType,
+            upsert: true,
+          ),
+        );
+
+    return _supabase.storage.from('Images').getPublicUrl(fullPath);
+  }
+
   String _contentTypeForExtension(String ext) {
     switch (ext) {
       case 'png':
@@ -461,6 +572,7 @@ class AuthService {
     String userRefId,
     String? firstName,
     String? lastName,
+    String? phoneNumber,
     Map<String, String> addressData,
   ) async {
     try {
@@ -504,6 +616,8 @@ class AuthService {
         'user_type': userType,
         'user_ref_id': userRefId,
         'recipient_name': recipientName.isNotEmpty ? recipientName : null,
+        if (phoneNumber != null && phoneNumber.isNotEmpty)
+          'phone_number': phoneNumber,
         'full_address': fullAddress,
         'region': addressData['region'],
         'province': addressData['province'],
