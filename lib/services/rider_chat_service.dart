@@ -28,7 +28,10 @@ class RiderChatService {
       final riderId = riderData['rider_id'];
       print('RiderChatService - Rider ID: $riderId');
 
-      // Get deliveries for this rider
+      // Get deliveries for this rider. We pull `order_received` so we can
+      // tell the difference between a delivered order that the buyer has
+      // already confirmed (chat ends) and one that's still awaiting
+      // confirmation (chat stays open).
       final deliveries = await _supabase
           .from('deliveries')
           .select('''
@@ -43,6 +46,7 @@ class RiderChatService {
               buyer_id,
               seller_id,
               created_at,
+              order_received,
               sellers(
                 seller_id,
                 shop_name,
@@ -72,6 +76,20 @@ class RiderChatService {
         final buyerId = order['buyer_id'];
         final sellerId = order['seller_id'];
         final status = delivery['status'];
+        final orderReceived = order['order_received'] == true;
+
+        // A buyer's chat is "ongoing" while the rider still owes them
+        // something — either still in transit, or delivered but the buyer
+        // hasn't confirmed receipt yet. Once `order_received` flips to true,
+        // the conversation for that order is over.
+        final isOngoingForBuyer =
+            status == 'assigned' ||
+            status == 'in_transit' ||
+            (status == 'delivered' && !orderReceived);
+
+        // Seller chat is open during the pickup phase only.
+        final isOngoingForSeller =
+            status == 'assigned' || status == 'in_transit';
 
         // Group by buyer
         if (buyerId != null) {
@@ -89,13 +107,14 @@ class RiderChatService {
             'order_number': order['order_number'],
             'shop_name': order['sellers']?['shop_name'],
             'status': status,
+            'order_received': orderReceived,
             'address': delivery['delivery_address'],
             'delivered_at': delivery['delivered_at'],
           };
 
           (buyersMap[buyerId]!['deliveries'] as List).add(deliveryInfo);
 
-          if (status == 'assigned' || status == 'in_transit') {
+          if (isOngoingForBuyer) {
             (buyersMap[buyerId]!['active_deliveries'] as List).add(
               deliveryInfo,
             );
@@ -118,13 +137,14 @@ class RiderChatService {
             'delivery_id': delivery['delivery_id'],
             'order_number': order['order_number'],
             'status': status,
+            'order_received': orderReceived,
             'address': delivery['delivery_address'],
             'delivered_at': delivery['delivered_at'],
           };
 
           (sellersMap[sellerId]!['deliveries'] as List).add(deliveryInfo);
 
-          if (status == 'assigned' || status == 'in_transit') {
+          if (isOngoingForSeller) {
             (sellersMap[sellerId]!['active_deliveries'] as List).add(
               deliveryInfo,
             );
@@ -223,7 +243,11 @@ class RiderChatService {
             'contact_phone': buyerResponse['phone_number'],
             'active_deliveries': activeDeliveries,
             'all_deliveries': allDeliveries,
+            // True while the buyer still has at least one delivery that
+            // isn't fully `order_received`. Drives both the "Chat ended"
+            // pill in the list and the lock on the message input.
             'has_active_orders': activeDeliveries.isNotEmpty,
+            'is_chat_ended': activeDeliveries.isEmpty,
             'context_message': contextMessage,
             'last_message': lastMessage,
             'last_message_time': lastMessageTime,
@@ -327,6 +351,7 @@ class RiderChatService {
             'active_deliveries': activeDeliveries,
             'all_deliveries': allDeliveries,
             'has_active_orders': activeDeliveries.isNotEmpty,
+            'is_chat_ended': activeDeliveries.isEmpty,
             'context_message': contextMessage,
             'last_message': lastMessage,
             'last_message_time': lastMessageTime,
@@ -451,7 +476,11 @@ class RiderChatService {
     }
   }
 
-  /// Send a message to buyer or seller (profile-based)
+  /// Send a message to buyer or seller (profile-based).
+  ///
+  /// Throws a [StateError] if the rider has no active delivery for the given
+  /// contact — this enforces the "chat ends when the order is received" rule
+  /// at the service layer so the UI can't accidentally bypass it.
   Future<Map<String, dynamic>?> sendMessage({
     int? buyerId,
     int? sellerId,
@@ -473,6 +502,20 @@ class RiderChatService {
       if (riderData == null) return null;
 
       final riderId = riderData['rider_id'];
+
+      // Guard: only allow sending while there is an ongoing delivery for
+      // this contact. Buyers stay reachable until they confirm receipt;
+      // sellers only during pickup/in-transit.
+      final hasActive = await _hasActiveDelivery(
+        riderId: riderId,
+        buyerId: buyerId,
+        sellerId: sellerId,
+      );
+      if (!hasActive) {
+        throw StateError(
+          'Cannot send message: no active delivery for this contact.',
+        );
+      }
 
       // Get or create conversation (get the most recent one if multiple exist)
       var query = _supabase
@@ -539,6 +582,47 @@ class RiderChatService {
     } catch (e) {
       print('RiderChatService - Error in sendMessage: $e');
       return null;
+    }
+  }
+
+  /// Returns true if the rider has at least one delivery for the given
+  /// contact that is still considered "ongoing":
+  /// - Buyer: status assigned/in_transit, or delivered + order_received=false.
+  /// - Seller: status assigned/in_transit only (pickup window).
+  Future<bool> _hasActiveDelivery({
+    required dynamic riderId,
+    int? buyerId,
+    int? sellerId,
+  }) async {
+    try {
+      var query = _supabase
+          .from('deliveries')
+          .select('status, orders!inner(buyer_id, seller_id, order_received)')
+          .eq('rider_id', riderId);
+
+      final rows = await query;
+      for (final row in (rows as List)) {
+        final status = row['status'];
+        final order = row['orders'];
+        if (order == null) continue;
+
+        final orderBuyerId = order['buyer_id'];
+        final orderSellerId = order['seller_id'];
+        final orderReceived = order['order_received'] == true;
+
+        if (buyerId != null && orderBuyerId != buyerId) continue;
+        if (sellerId != null && orderSellerId != sellerId) continue;
+
+        if (status == 'assigned' || status == 'in_transit') return true;
+        if (buyerId != null && status == 'delivered' && !orderReceived) {
+          return true;
+        }
+      }
+      return false;
+    } catch (e) {
+      print('RiderChatService - _hasActiveDelivery error: $e');
+      // Fail closed — if we can't verify, refuse to send.
+      return false;
     }
   }
 

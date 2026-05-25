@@ -14,6 +14,7 @@ class ChatConversationScreen extends StatefulWidget {
   final String recipientName;
   final String? shopLogo;
   final String? userType;
+  final String? riderId;
 
   const ChatConversationScreen({
     super.key,
@@ -21,6 +22,7 @@ class ChatConversationScreen extends StatefulWidget {
     required this.recipientName,
     this.shopLogo,
     this.userType,
+    this.riderId,
   });
 
   @override
@@ -36,15 +38,63 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
   bool _isLoading = true;
   int? _revealedMessageId;
   RealtimeChannel? _messagesSubscription;
+  RealtimeChannel? _deliveriesSubscription;
   String? _buyerProfilePicture;
+
+  /// Resolved rider_id for this conversation (either provided by the caller
+  /// or fetched on init). Null for seller conversations.
+  String? _riderId;
+
+  /// Cached active state for rider chats. Re-checked whenever messages or
+  /// delivery rows change so the input locks the moment the buyer marks
+  /// the order as received.
+  bool _isChatActive = true;
 
   @override
   void initState() {
     super.initState();
+    _riderId = widget.riderId;
     _loadBuyerProfile();
+    _bootstrap();
+  }
+
+  Future<void> _bootstrap() async {
+    // Resolve rider_id if the caller didn't pass one (e.g. legacy entry
+    // points). Seller conversations keep _riderId null.
+    if (_riderId == null && widget.userType == 'rider') {
+      _riderId = await _chatService.getRiderIdForConversation(
+        widget.conversationId,
+      );
+    }
+    await _refreshChatActiveState();
     _loadMessages();
     _markAsRead();
     _setupRealtimeSubscription();
+  }
+
+  /// For rider conversations, asks the service whether the rider still has
+  /// an ongoing delivery for this buyer. Seller conversations are always
+  /// considered active.
+  Future<void> _refreshChatActiveState() async {
+    if (widget.userType != 'rider' || _riderId == null) {
+      if (_isChatActive != true && mounted) {
+        setState(() => _isChatActive = true);
+      }
+      return;
+    }
+    final buyerId = _chatService.getCurrentBuyerId();
+    if (buyerId == null) return;
+    try {
+      final active = await _chatService.isRiderChatActive(
+        buyerId: buyerId,
+        riderId: _riderId!,
+      );
+      if (mounted && _isChatActive != active) {
+        setState(() => _isChatActive = active);
+      }
+    } catch (e) {
+      print('ChatConversation - active-state check failed: $e');
+    }
   }
 
   void _loadBuyerProfile() async {
@@ -89,11 +139,39 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
           },
         )
         .subscribe();
+
+    // For rider chats, also listen on orders/deliveries so the input locks
+    // the moment the buyer (or anyone else) flips order_received to true
+    // or the delivery moves out of an ongoing state.
+    if (widget.userType == 'rider') {
+      _deliveriesSubscription = Supabase.instance.client
+          .channel('rider_chat_state_${widget.conversationId}')
+          .onPostgresChanges(
+            event: PostgresChangeEvent.update,
+            schema: 'public',
+            table: 'orders',
+            callback: (_) => _refreshChatActiveState(),
+          )
+          .onPostgresChanges(
+            event: PostgresChangeEvent.update,
+            schema: 'public',
+            table: 'deliveries',
+            callback: (_) => _refreshChatActiveState(),
+          )
+          .onPostgresChanges(
+            event: PostgresChangeEvent.insert,
+            schema: 'public',
+            table: 'deliveries',
+            callback: (_) => _refreshChatActiveState(),
+          )
+          .subscribe();
+    }
   }
 
   @override
   void dispose() {
     _messagesSubscription?.unsubscribe();
+    _deliveriesSubscription?.unsubscribe();
     _messageController.dispose();
     _scrollController.dispose();
     super.dispose();
@@ -111,6 +189,9 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
         });
         print('ChatConversation - State updated with ${_messages.length} messages');
         _scrollToBottom();
+        // Re-check whether the chat is still active after a message refresh
+        // (e.g. delivery was just delivered or marked received).
+        _refreshChatActiveState();
       }
     } catch (e) {
       print('ChatConversation - Error loading messages: $e');
@@ -143,6 +224,17 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
 
   Future<void> _sendMessage() async {
     if (_messageController.text.trim().isEmpty) return;
+
+    // Front-line gate: if the rider chat has ended, refuse without even
+    // creating an optimistic bubble. The service-level check still runs as
+    // a backstop in case the state went stale.
+    if (widget.userType == 'rider' && !_isChatActive) {
+      SnackBarHelper.showError(
+        context,
+        'Chat is closed. It will reopen when this rider is assigned to your next order.',
+      );
+      return;
+    }
 
     final userId = _chatService.getCurrentUserId();
     if (userId == null) {
@@ -195,7 +287,20 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
       setState(() {
         _messages.removeWhere((m) => m.messageId == tempMessage.messageId);
       });
-      
+
+      // The service throws StateError when the rider chat has ended. Show
+      // a clearer message and lock the UI immediately.
+      if (e is StateError) {
+        if (mounted) {
+          setState(() => _isChatActive = false);
+          SnackBarHelper.showError(
+            context,
+            'Chat is closed. It will reopen when this rider is assigned to your next order.',
+          );
+        }
+        return;
+      }
+
       if (mounted) {
         SnackBarHelper.showError(context, 'Failed to send message');
       }
@@ -308,7 +413,10 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
                         },
                       ),
           ),
-          _buildMessageInput(),
+          if (widget.userType == 'rider' && !_isChatActive)
+            _buildChatEndedBanner()
+          else
+            _buildMessageInput(),
         ],
       ),
     );
@@ -577,6 +685,44 @@ class _ChatConversationScreenState extends State<ChatConversationScreen> {
               child: IconButton(
                 icon: Icon(Icons.send, color: AppColors.surface(context), size: 20.r),
                 onPressed: _sendMessage,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// Footer that replaces the message input when a rider chat has ended.
+  /// Stays visually consistent with the rider-side banner so both halves of
+  /// the conversation read the same closure copy.
+  Widget _buildChatEndedBanner() {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+      decoration: BoxDecoration(
+        color: AppColors.surface(context),
+        border: Border(
+          top: BorderSide(color: AppColors.surfaceVariant2(context)),
+        ),
+      ),
+      child: SafeArea(
+        top: false,
+        child: Row(
+          children: [
+            Icon(
+              Icons.lock_outline,
+              size: 18.r,
+              color: AppColors.textMuted(context),
+            ),
+            SizedBox(width: 10.w),
+            Expanded(
+              child: Text(
+                'Chat ended. It will reopen when this rider is assigned to your next order.',
+                style: GoogleFonts.goudyBookletter1911(
+                  fontSize: 12.sp,
+                  color: AppColors.textMuted(context),
+                ),
               ),
             ),
           ],

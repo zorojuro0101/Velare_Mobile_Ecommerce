@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:url_launcher/url_launcher.dart';
 import '../../services/rider_service.dart';
 import '../../services/auth_service.dart';
 
@@ -219,25 +218,12 @@ class _DeliveryDetailScreenState extends State<DeliveryDetailScreen> {
             ],
           ),
           const Divider(height: 32),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Delivery Address',
-                style: GoogleFonts.goudyBookletter1911(
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              TextButton.icon(
-                onPressed: () => _openMaps(deliveryAddress),
-                icon: Icon(Icons.navigation, size: 18.r),
-                label: Text(
-                  'Navigate',
-                  style: GoogleFonts.goudyBookletter1911(fontSize: 13.sp),
-                ),
-              ),
-            ],
+          Text(
+            'Delivery Address',
+            style: GoogleFonts.goudyBookletter1911(
+              fontSize: 16.sp,
+              fontWeight: FontWeight.w600,
+            ),
           ),
           SizedBox(height: 12.h),
           Row(
@@ -629,16 +615,6 @@ class _DeliveryDetailScreenState extends State<DeliveryDetailScreen> {
           );
         }
       }
-    }
-  }
-
-  Future<void> _openMaps(String? address) async {
-    if (address == null || address.isEmpty || address == 'N/A') return;
-    final uri = Uri.parse(
-      'https://www.google.com/maps/search/?api=1&query=${Uri.encodeComponent(address)}',
-    );
-    if (await canLaunchUrl(uri)) {
-      await launchUrl(uri, mode: LaunchMode.externalApplication);
     }
   }
 

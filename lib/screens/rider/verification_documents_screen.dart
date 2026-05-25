@@ -85,6 +85,59 @@ class _VerificationDocumentsScreenState
     }
   }
 
+  /// Uploads a single document image to Supabase Storage and returns the
+  /// public URL. Mirrors the web client's path convention so files from
+  /// mobile and web land in the same folders:
+  ///   - Driver's License -> static/uploads/rider_dl/user_<userId>/driver_license_<ts>_<orig>
+  ///   - OR/CR            -> static/uploads/rider_orcr/user_<userId>/orcr_<ts>_<orig>
+  Future<String> _uploadDocumentImage({
+    required File file,
+    required int userId,
+    required String docType, // 'orcr' or 'license'
+  }) async {
+    final bytes = await file.readAsBytes();
+    if (bytes.isEmpty) {
+      throw Exception('Selected $docType image is empty');
+    }
+
+    // Preserve original extension; default to jpg if missing.
+    final originalName = file.path.split(RegExp(r'[\\/]+')).last;
+    final dotIndex = originalName.lastIndexOf('.');
+    final ext = dotIndex >= 0 && dotIndex < originalName.length - 1
+        ? originalName.substring(dotIndex + 1).toLowerCase()
+        : 'jpg';
+    final baseName = dotIndex >= 0
+        ? originalName.substring(0, dotIndex)
+        : originalName;
+
+    // Sanitize the base name to keep storage paths safe.
+    final safeBase = baseName.replaceAll(RegExp(r'[^A-Za-z0-9_\-]+'), '_');
+
+    final contentType = 'image/${ext == 'jpg' ? 'jpeg' : ext}';
+    final timestamp = DateTime.now().millisecondsSinceEpoch;
+
+    final folder = docType == 'orcr'
+        ? 'static/uploads/rider_orcr/user_$userId'
+        : 'static/uploads/rider_dl/user_$userId';
+    final prefix = docType == 'orcr' ? 'orcr' : 'driver_license';
+    final fileName = '${prefix}_${timestamp}_$safeBase.$ext';
+    final filePath = '$folder/$fileName';
+
+    await _supabase.storage
+        .from('Images')
+        .uploadBinary(
+          filePath,
+          bytes,
+          fileOptions: FileOptions(
+            contentType: contentType,
+            upsert: true,
+          ),
+        )
+        .timeout(const Duration(seconds: 30));
+
+    return _supabase.storage.from('Images').getPublicUrl(filePath);
+  }
+
   Future<void> _uploadDocuments() async {
     if (_orcrImage == null && _licenseImage == null) {
       SnackBarHelper.showError(
@@ -97,57 +150,42 @@ class _VerificationDocumentsScreenState
     setState(() => _isUploading = true);
 
     try {
-      final userId = AuthService().currentUserId;
-      if (userId == null) throw Exception('User not logged in');
+      final userIdStr = AuthService().currentUserId;
+      if (userIdStr == null) throw Exception('User not logged in');
+      final userId = int.parse(userIdStr);
 
-      final riderId = _riderData?['rider_id'];
-      if (riderId == null) throw Exception('Rider ID not found');
+      if (_riderData?['rider_id'] == null) {
+        throw Exception('Rider ID not found');
+      }
 
       final updateData = <String, dynamic>{};
 
       // Upload OR/CR
       if (_orcrImage != null) {
-        final orcrFileName =
-            'rider_${riderId}_orcr_${DateTime.now().millisecondsSinceEpoch}.jpg';
-        final orcrPath = 'rider_documents/$riderId/$orcrFileName';
-
-        await _supabase.storage
-            .from('documents')
-            .upload(
-              orcrPath,
-              _orcrImage!,
-              fileOptions: const FileOptions(upsert: true),
-            );
-
-        final orcrUrl = _supabase.storage
-            .from('documents')
-            .getPublicUrl(orcrPath);
+        final orcrUrl = await _uploadDocumentImage(
+          file: _orcrImage!,
+          userId: userId,
+          docType: 'orcr',
+        );
         updateData['orcr_file_path'] = orcrUrl;
       }
 
       // Upload Driver's License
       if (_licenseImage != null) {
-        final licenseFileName =
-            'rider_${riderId}_license_${DateTime.now().millisecondsSinceEpoch}.jpg';
-        final licensePath = 'rider_documents/$riderId/$licenseFileName';
-
-        await _supabase.storage
-            .from('documents')
-            .upload(
-              licensePath,
-              _licenseImage!,
-              fileOptions: const FileOptions(upsert: true),
-            );
-
-        final licenseUrl = _supabase.storage
-            .from('documents')
-            .getPublicUrl(licensePath);
+        final licenseUrl = await _uploadDocumentImage(
+          file: _licenseImage!,
+          userId: userId,
+          docType: 'license',
+        );
         updateData['driver_license_file_path'] = licenseUrl;
       }
 
       // Update database
       if (updateData.isNotEmpty) {
-        await _supabase.from('riders').update(updateData).eq('user_id', userId);
+        await _supabase
+            .from('riders')
+            .update(updateData)
+            .eq('user_id', userId);
       }
 
       setState(() {
@@ -161,10 +199,23 @@ class _VerificationDocumentsScreenState
       if (mounted) {
         SnackBarHelper.showSuccess(context, 'Documents uploaded successfully!');
       }
-    } catch (e) {
+    } on StorageException catch (e) {
+      print('VerificationDocs - Supabase storage error: ${e.message}');
       setState(() => _isUploading = false);
       if (mounted) {
-        SnackBarHelper.showError(context, 'Failed to upload documents');
+        SnackBarHelper.showError(
+          context,
+          'Storage upload failed: ${e.message}',
+        );
+      }
+    } catch (e) {
+      print('VerificationDocs - upload error: $e');
+      setState(() => _isUploading = false);
+      if (mounted) {
+        SnackBarHelper.showError(
+          context,
+          'Failed to upload documents: ${e.toString().replaceAll('Exception: ', '')}',
+        );
       }
     }
   }

@@ -92,8 +92,21 @@ class ChatService {
         unreadCountMap[convId] = (unreadCountMap[convId] ?? 0) + 1;
       }
 
+      // Batch the rider-active check: collect all rider_ids appearing in
+      // this buyer's conversations, then resolve their active state in one
+      // query so we don't fan out per row.
+      final riderIds = <String>{};
+      for (final item in response as List) {
+        final r = item['rider_id']?.toString();
+        if (r != null && r.isNotEmpty) riderIds.add(r);
+      }
+      final activeRiderIds = await _activeRiderIdsForBuyer(
+        buyerId: buyerId,
+        riderIds: riderIds,
+      );
+
       final conversations = <ChatConversation>[];
-      
+
       for (var item in response as List) {
         try {
           final conversationId = item['conversation_id'] as int;
@@ -131,7 +144,13 @@ class ChatService {
           
           // Get unread count from map (already fetched in batch)
           final actualUnreadCount = unreadCountMap[conversationId] ?? 0;
-          
+
+          // Rider conversations are only "active" while the rider has an
+          // ongoing delivery for this buyer. Seller conversations stay open.
+          final bool isChatActive = sellerUserType == 'rider'
+              ? (riderId != null && activeRiderIds.contains(riderId))
+              : true;
+
           // Create new conversation with correct data
           final updatedConversation = ChatConversation(
             conversationId: conversation.conversationId,
@@ -145,6 +164,8 @@ class ChatService {
             shopLogo: shopLogo,
             buyerName: conversation.buyerName,
             sellerUserType: sellerUserType,
+            isChatActive: isChatActive,
+            riderId: riderId,
           );
           
           conversations.add(updatedConversation);
@@ -157,6 +178,74 @@ class ChatService {
     } catch (e) {
       print('ChatService - Error in getConversations: $e');
       return [];
+    }
+  }
+
+  /// Returns the subset of [riderIds] that still have an ongoing delivery
+  /// for [buyerId]. Used to mark rider conversations as active vs. ended.
+  Future<Set<String>> _activeRiderIdsForBuyer({
+    required String buyerId,
+    required Set<String> riderIds,
+  }) async {
+    if (riderIds.isEmpty) return <String>{};
+    try {
+      final rows = await _supabase
+          .from('deliveries')
+          .select(
+            'rider_id, status, orders!inner(buyer_id, order_received)',
+          )
+          .inFilter('rider_id', riderIds.toList())
+          .inFilter('status', ['assigned', 'in_transit', 'delivered']);
+
+      final active = <String>{};
+      for (final row in (rows as List)) {
+        final rid = row['rider_id']?.toString();
+        if (rid == null) continue;
+        final status = row['status'];
+        final order = row['orders'];
+        if (order == null) continue;
+        if (order['buyer_id']?.toString() != buyerId) continue;
+
+        final orderReceived = order['order_received'] == true;
+        final isActive = status == 'assigned' ||
+            status == 'in_transit' ||
+            (status == 'delivered' && !orderReceived);
+        if (isActive) active.add(rid);
+      }
+      return active;
+    } catch (e) {
+      print('ChatService - _activeRiderIdsForBuyer error: $e');
+      return <String>{};
+    }
+  }
+
+  /// Returns true if the given rider currently has an ongoing delivery for
+  /// [buyerId]. The conversation screen calls this on open and on every
+  /// realtime tick so the input locks instantly when the buyer marks the
+  /// order as received.
+  Future<bool> isRiderChatActive({
+    required String buyerId,
+    required String riderId,
+  }) async {
+    final active = await _activeRiderIdsForBuyer(
+      buyerId: buyerId,
+      riderIds: {riderId},
+    );
+    return active.contains(riderId);
+  }
+
+  /// Resolves the rider_id linked to a given conversation, if any.
+  Future<String?> getRiderIdForConversation(int conversationId) async {
+    try {
+      final row = await _supabase
+          .from('conversations')
+          .select('rider_id')
+          .eq('conversation_id', conversationId)
+          .maybeSingle();
+      return row?['rider_id']?.toString();
+    } catch (e) {
+      print('ChatService - getRiderIdForConversation error: $e');
+      return null;
     }
   }
 
@@ -188,7 +277,31 @@ class ChatService {
       print('ChatService - senderId: $senderId');
       print('ChatService - senderType: $senderType');
       print('ChatService - message: $message');
-      
+
+      // Defence in depth: if this conversation is linked to a rider,
+      // refuse to send unless that rider currently has an ongoing
+      // delivery for the buyer side of the conversation. Mirrors the
+      // gate on the rider screen and keeps the chat closed once the
+      // buyer has marked the order as received.
+      final convRow = await _supabase
+          .from('conversations')
+          .select('buyer_id, rider_id')
+          .eq('conversation_id', conversationId)
+          .maybeSingle();
+      final buyerOnConv = convRow?['buyer_id']?.toString();
+      final riderOnConv = convRow?['rider_id']?.toString();
+      if (riderOnConv != null && buyerOnConv != null) {
+        final canChat = await isRiderChatActive(
+          buyerId: buyerOnConv,
+          riderId: riderOnConv,
+        );
+        if (!canChat) {
+          throw StateError(
+            'Chat is closed. The rider has no active delivery for this order.',
+          );
+        }
+      }
+
       // Insert message - use message_text and include sender_type
       print('ChatService - Inserting message...');
       await _supabase.from('messages').insert({
@@ -210,7 +323,7 @@ class ChatService {
       print('ChatService - Conversation updated successfully');
     } catch (e) {
       print('ChatService - Error in sendMessage: $e');
-      throw Exception('Failed to send message: $e');
+      rethrow;
     }
   }
 

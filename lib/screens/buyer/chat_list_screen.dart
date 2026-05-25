@@ -68,6 +68,33 @@ class _ChatListScreenState extends State<ChatListScreen> {
             _loadConversations();
           },
         )
+        // Listen on order/delivery state too — these flip rider rows
+        // between "Ongoing delivery" and "Chat ended" as soon as a rider
+        // is (re)assigned or the buyer marks an order as received.
+        .onPostgresChanges(
+          event: PostgresChangeEvent.insert,
+          schema: 'public',
+          table: 'deliveries',
+          callback: (_) => _loadConversations(),
+        )
+        .onPostgresChanges(
+          event: PostgresChangeEvent.update,
+          schema: 'public',
+          table: 'deliveries',
+          callback: (_) => _loadConversations(),
+        )
+        .onPostgresChanges(
+          event: PostgresChangeEvent.insert,
+          schema: 'public',
+          table: 'orders',
+          callback: (_) => _loadConversations(),
+        )
+        .onPostgresChanges(
+          event: PostgresChangeEvent.update,
+          schema: 'public',
+          table: 'orders',
+          callback: (_) => _loadConversations(),
+        )
         .subscribe();
   }
 
@@ -348,6 +375,9 @@ class _ChatListScreenState extends State<ChatListScreen> {
     print('Final display name: $displayName');
     print('================================');
 
+    final isRider = conversation.sellerUserType == 'rider';
+    final isEnded = isRider && !conversation.isChatActive;
+
     return GestureDetector(
       onTap: () {
         Navigator.push(
@@ -358,6 +388,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
               recipientName: displayName,
               shopLogo: conversation.shopLogo,
               userType: conversation.sellerUserType,
+              riderId: conversation.riderId,
             ),
           ),
         ).then((_) => _loadConversations());
@@ -370,7 +401,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
           borderRadius: BorderRadius.circular(12.r),
           border: conversation.unreadCount > 0
               ? Border.all(color: AppColors.onSurface(context), width: 1.5)
-              : null,
+              : Border.all(color: AppColors.surfaceVariant2(context), width: 1),
         ),
         child: Row(
           children: [
@@ -413,6 +444,9 @@ class _ChatListScreenState extends State<ChatListScreen> {
                             fontWeight: conversation.unreadCount > 0
                                 ? FontWeight.w600
                                 : FontWeight.w500,
+                            color: isEnded
+                                ? AppColors.textMuted(context)
+                                : null,
                           ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -467,10 +501,49 @@ class _ChatListScreenState extends State<ChatListScreen> {
                         ),
                     ],
                   ),
+                  if (isRider) ...[
+                    SizedBox(height: 6.h),
+                    _buildRiderStatusPill(isEnded: isEnded),
+                  ],
                 ],
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildRiderStatusPill({required bool isEnded}) {
+    if (isEnded) {
+      return Container(
+        padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 3.h),
+        decoration: BoxDecoration(
+          color: AppColors.surfaceVariant2(context),
+          borderRadius: BorderRadius.circular(10.r),
+        ),
+        child: Text(
+          'Chat ended',
+          style: GoogleFonts.goudyBookletter1911(
+            fontSize: 11.sp,
+            color: AppColors.textMuted(context),
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      );
+    }
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 3.h),
+      decoration: BoxDecoration(
+        color: const Color(0xFFD4AF37).withValues(alpha: 0.18),
+        borderRadius: BorderRadius.circular(10.r),
+      ),
+      child: Text(
+        'Ongoing delivery',
+        style: GoogleFonts.goudyBookletter1911(
+          fontSize: 11.sp,
+          color: const Color(0xFF8B7355),
+          fontWeight: FontWeight.w600,
         ),
       ),
     );

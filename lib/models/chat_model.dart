@@ -11,6 +11,17 @@ class ChatConversation {
   final String? buyerName;
   final String? sellerUserType;
 
+  /// Only meaningful for rider conversations.
+  ///
+  /// `true` while the rider has an ongoing delivery for this buyer
+  /// (assigned/in_transit, or delivered with `order_received = false`).
+  /// Seller conversations always report `true`.
+  final bool isChatActive;
+
+  /// rider_id linked to this conversation, if any. Surfaced so the
+  /// conversation screen can re-verify the active-chat rule.
+  final String? riderId;
+
   ChatConversation({
     required this.conversationId,
     required this.buyerId,
@@ -23,6 +34,8 @@ class ChatConversation {
     this.shopLogo,
     this.buyerName,
     this.sellerUserType,
+    this.isChatActive = true,
+    this.riderId,
   });
 
   factory ChatConversation.fromJson(Map<String, dynamic> json) {
@@ -50,6 +63,7 @@ class ChatConversation {
       shopLogo: json['shop_logo']?.toString(),
       buyerName: json['buyer_name']?.toString(),
       sellerUserType: json['seller_user_type']?.toString(),
+      riderId: json['rider_id']?.toString(),
     );
   }
 }
