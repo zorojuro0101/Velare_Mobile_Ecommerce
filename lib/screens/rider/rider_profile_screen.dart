@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -662,12 +661,61 @@ class _ProfileInfoModalState extends State<_ProfileInfoModal> {
     super.dispose();
   }
 
+  Future<ImageSource?> _showImageSourceSheet() async {
+    return showModalBottomSheet<ImageSource>(
+      context: context,
+      backgroundColor: AppColors.surface(context),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16.r)),
+      ),
+      builder: (ctx) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SizedBox(height: 8.h),
+            Container(
+              width: 40.w,
+              height: 4.h,
+              decoration: BoxDecoration(
+                color: AppColors.border(ctx),
+                borderRadius: BorderRadius.circular(2.r),
+              ),
+            ),
+            SizedBox(height: 12.h),
+            ListTile(
+              leading:
+                  Icon(Icons.photo_camera, color: AppColors.onSurface(ctx)),
+              title: Text(
+                'Take a photo',
+                style: GoogleFonts.goudyBookletter1911(fontSize: 15.sp),
+              ),
+              onTap: () => Navigator.pop(ctx, ImageSource.camera),
+            ),
+            ListTile(
+              leading:
+                  Icon(Icons.photo_library, color: AppColors.onSurface(ctx)),
+              title: Text(
+                'Upload from gallery',
+                style: GoogleFonts.goudyBookletter1911(fontSize: 15.sp),
+              ),
+              onTap: () => Navigator.pop(ctx, ImageSource.gallery),
+            ),
+            SizedBox(height: 8.h),
+          ],
+        ),
+      ),
+    );
+  }
+
   Future<void> _pickImage() async {
+    final source = await _showImageSourceSheet();
+    if (source == null) return;
+
     final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(
-      source: ImageSource.gallery,
-      maxWidth: 800,
-      maxHeight: 800,
+    final XFile? pickedFile = await picker.pickImage(
+      source: source,
+      maxWidth: 1920,
+      maxHeight: 1920,
       imageQuality: 85,
     );
     if (pickedFile == null) return;
@@ -678,21 +726,42 @@ class _ProfileInfoModalState extends State<_ProfileInfoModal> {
       if (userId == null) return;
 
       final riderId = widget.riderData['rider_id'];
-      final extension = pickedFile.path.split('.').last;
-      final timestamp = DateTime.now().millisecondsSinceEpoch;
-      final fileName = 'rider_${riderId}_$timestamp.$extension';
+      final bytes = await pickedFile.readAsBytes();
+      final fileExtension = pickedFile.path.split('.').last.toLowerCase();
+
+      // Build filename matching the format used elsewhere in the app:
+      // rider_{id}_{yyyyMMdd}_{HHmmss}_{token8}_{originalName}.ext
+      final now = DateTime.now();
+      final datePart =
+          '${now.year}${now.month.toString().padLeft(2, '0')}${now.day.toString().padLeft(2, '0')}';
+      final timePart =
+          '${now.hour.toString().padLeft(2, '0')}${now.minute.toString().padLeft(2, '0')}${now.second.toString().padLeft(2, '0')}';
+      final originalName = pickedFile.name
+          .replaceAll(RegExp(r'\.[^.]+$'), '') // strip extension
+          .replaceAll(RegExp(r'[^a-zA-Z0-9_]'), '_'); // sanitize
+      // 8-char hex token for uniqueness
+      final token =
+          now.millisecondsSinceEpoch.toRadixString(16).substring(0, 8);
+
+      final fileName =
+          'rider_${riderId}_${datePart}_${timePart}_${token}_$originalName.$fileExtension';
       final filePath = 'static/uploads/profiles/$fileName';
 
-      final file = File(pickedFile.path);
-      await Supabase.instance.client.storage.from('Images').upload(
+      // Upload to Supabase 'Images' bucket
+      await Supabase.instance.client.storage.from('Images').uploadBinary(
             filePath,
-            file,
+            bytes,
             fileOptions: const FileOptions(cacheControl: '3600', upsert: true),
           );
 
+      // Get the full public URL to store in the database
+      final publicUrl = Supabase.instance.client.storage
+          .from('Images')
+          .getPublicUrl(filePath);
+
       if (mounted) {
         setState(() {
-          _newProfilePicture = filePath;
+          _newProfilePicture = publicUrl;
           _isUploadingImage = false;
         });
         SnackBarHelper.showSuccess(context, 'Image uploaded successfully');
